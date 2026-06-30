@@ -22,7 +22,7 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   ...STUDY_TOPICS.flatMap((topic) => [
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/learn/index.html`, label: `P3 ${topic.name} Learn` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`, label: `P3 ${topic.name} Learn bridge` },
-    { path: `${P3_COURSE_ID}/topics/${topic.slug}/skill-check/index.html`, label: `P3 ${topic.name} Checked Practice bridge` },
+    { path: `${P3_COURSE_ID}/topics/${topic.slug}/skill-check/index.html`, label: `P3 ${topic.name} Checked Practice` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/exam-training/index.html`, label: `P3 ${topic.name} Exam Training` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/worksheet/index.html`, label: `P3 ${topic.name} printable Checked Practice worksheet` },
   ]),

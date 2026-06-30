@@ -562,19 +562,12 @@ try {
 
   for (const [oldAlgebraPath, bridgeTitle, buttonLabel] of [
     ['p3/topics/algebra/field-guide/index.html', 'Algebra — Learn', 'Learn'],
-    ['p3/topics/algebra/skill-check/index.html', 'Algebra — Checked Practice', 'Continue'],
     ['p3/topics/logarithmic-and-exponential-functions/field-guide/index.html', 'Logarithmic and Exponential Functions — Learn', 'Learn'],
-    ['p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'Logarithmic and Exponential Functions — Checked Practice', 'Continue'],
     ['p3/topics/differentiation/field-guide/index.html', 'Differentiation — Learn', 'Learn'],
-    ['p3/topics/differentiation/skill-check/index.html', 'Differentiation — Checked Practice', 'Continue'],
     ['p3/topics/integration/field-guide/index.html', 'Integration — Learn', 'Learn'],
-    ['p3/topics/integration/skill-check/index.html', 'Integration — Checked Practice', 'Continue'],
     ['p3/topics/numerical-solution-of-equations/field-guide/index.html', 'Numerical Solution of Equations — Learn', 'Learn'],
-    ['p3/topics/numerical-solution-of-equations/skill-check/index.html', 'Numerical Solution of Equations — Checked Practice', 'Continue'],
     ['p3/topics/differential-equations/field-guide/index.html', 'Differential Equations — Learn', 'Learn'],
-    ['p3/topics/differential-equations/skill-check/index.html', 'Differential Equations — Checked Practice', 'Continue'],
     ['p3/topics/complex-numbers/field-guide/index.html', 'Complex Numbers — Learn', 'Learn'],
-    ['p3/topics/complex-numbers/skill-check/index.html', 'Complex Numbers — Checked Practice', 'Continue'],
   ]) {
     await waitForStaticEnhancement(page, oldAlgebraPath);
     const oldAlgebraRouteResult = await page.evaluate(([title, expectedButtonLabel]) => {
@@ -587,6 +580,27 @@ try {
     }, [bridgeTitle, buttonLabel]);
     if (!oldAlgebraRouteResult.bridgeTitle || !oldAlgebraRouteResult.hasLearnLink || oldAlgebraRouteResult.oldForms !== 0) {
       fail(`${oldAlgebraPath} must be a clean Learn bridge.`);
+    }
+  }
+
+  for (const checkedPracticePath of [
+    'p3/topics/algebra/skill-check/index.html',
+    'p3/topics/logarithmic-and-exponential-functions/skill-check/index.html',
+    'p3/topics/differentiation/skill-check/index.html',
+    'p3/topics/integration/skill-check/index.html',
+    'p3/topics/numerical-solution-of-equations/skill-check/index.html',
+    'p3/topics/differential-equations/skill-check/index.html',
+    'p3/topics/complex-numbers/skill-check/index.html',
+  ]) {
+    await waitForStaticEnhancement(page, checkedPracticePath);
+    const checkedPracticeResult = await page.evaluate(() => ({
+      title: document.body.innerText.includes('Checked Practice'),
+      skillForms: document.querySelectorAll('[data-check-skill-answer]').length,
+      learnForms: document.querySelectorAll('[data-check-learn-answer]').length,
+      firstFormVisible: Boolean(document.querySelector('[data-check-skill-answer]')?.closest('.practice-card:not([hidden])')),
+    }));
+    if (!checkedPracticeResult.title || checkedPracticeResult.skillForms === 0 || checkedPracticeResult.learnForms !== 0 || !checkedPracticeResult.firstFormVisible) {
+      fail(`${checkedPracticePath} must render the separate Checked Practice flow.`);
     }
   }
 

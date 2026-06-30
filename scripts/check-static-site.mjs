@@ -607,7 +607,6 @@ for (const page of p3LearnPages) {
       'data-learn-answer-reveal hidden',
       'data-learn-requires-similar="true"',
       'data-learn-saves-skill-pass="false"',
-      'data-learn-saves-skill-pass="true"',
     ]) {
       if (!html.includes(requiredCopy)) {
         console.error(`${page} is missing ${authoredContract.topicName} Learn contract marker: ${requiredCopy}`);
@@ -617,14 +616,22 @@ for (const page of p3LearnPages) {
   }
 }
 
-for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/(?:field-guide|skill-check)\/index\.html$/.test(page))) {
+for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/field-guide\/index\.html$/.test(page))) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
-  const isFieldGuideBridge = page.includes('/field-guide/');
-  const expectedTitle = isFieldGuideBridge ? '— Learn' : '— Checked Practice';
-  const expectedButton = isFieldGuideBridge ? 'Learn' : 'Continue';
+  const expectedTitle = '— Learn';
+  const expectedButton = 'Learn';
   if (!text.includes(expectedTitle) || !text.includes(expectedButton) || !pageAnchors(html).some((href) => resolveHtmlHref(page, href).endsWith('/learn/index.html'))) {
     console.error(`${page} must be a clean Learn bridge.`);
+    process.exit(1);
+  }
+}
+
+for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/skill-check\/index\.html$/.test(page))) {
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  const text = visibleBodyText(html);
+  if (!text.includes('Checked Practice') || !html.includes('data-check-skill-answer') || html.includes('data-check-learn-answer')) {
+    console.error(`${page} must render the separate Checked Practice flow.`);
     process.exit(1);
   }
 }

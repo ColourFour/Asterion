@@ -59,7 +59,7 @@
     },
     {
       "path": "p3/topics/algebra/skill-check/index.html",
-      "label": "P3 Algebra Checked Practice bridge"
+      "label": "P3 Algebra Checked Practice"
     },
     {
       "path": "p3/topics/algebra/exam-training/index.html",
@@ -79,7 +79,7 @@
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/skill-check/index.html",
-      "label": "P3 Logarithmic and Exponential Functions Checked Practice bridge"
+      "label": "P3 Logarithmic and Exponential Functions Checked Practice"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/exam-training/index.html",
@@ -99,7 +99,7 @@
     },
     {
       "path": "p3/topics/trigonometry/skill-check/index.html",
-      "label": "P3 Trigonometry Checked Practice bridge"
+      "label": "P3 Trigonometry Checked Practice"
     },
     {
       "path": "p3/topics/trigonometry/exam-training/index.html",
@@ -119,7 +119,7 @@
     },
     {
       "path": "p3/topics/differentiation/skill-check/index.html",
-      "label": "P3 Differentiation Checked Practice bridge"
+      "label": "P3 Differentiation Checked Practice"
     },
     {
       "path": "p3/topics/differentiation/exam-training/index.html",
@@ -139,7 +139,7 @@
     },
     {
       "path": "p3/topics/integration/skill-check/index.html",
-      "label": "P3 Integration Checked Practice bridge"
+      "label": "P3 Integration Checked Practice"
     },
     {
       "path": "p3/topics/integration/exam-training/index.html",
@@ -159,7 +159,7 @@
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/skill-check/index.html",
-      "label": "P3 Numerical Solution of Equations Checked Practice bridge"
+      "label": "P3 Numerical Solution of Equations Checked Practice"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/exam-training/index.html",
@@ -179,7 +179,7 @@
     },
     {
       "path": "p3/topics/vectors/skill-check/index.html",
-      "label": "P3 Vectors Checked Practice bridge"
+      "label": "P3 Vectors Checked Practice"
     },
     {
       "path": "p3/topics/vectors/exam-training/index.html",
@@ -199,7 +199,7 @@
     },
     {
       "path": "p3/topics/differential-equations/skill-check/index.html",
-      "label": "P3 Differential Equations Checked Practice bridge"
+      "label": "P3 Differential Equations Checked Practice"
     },
     {
       "path": "p3/topics/differential-equations/exam-training/index.html",
@@ -219,7 +219,7 @@
     },
     {
       "path": "p3/topics/complex-numbers/skill-check/index.html",
-      "label": "P3 Complex Numbers Checked Practice bridge"
+      "label": "P3 Complex Numbers Checked Practice"
     },
     {
       "path": "p3/topics/complex-numbers/exam-training/index.html",

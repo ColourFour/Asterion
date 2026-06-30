@@ -371,7 +371,7 @@ function fieldGuidePagePath(topic: StudyTopic): string {
 }
 
 function practicePagePath(topic: StudyTopic): string {
-  return learnPagePath(topic);
+  return skillCheckPagePath(topic);
 }
 
 function learnPagePath(topic: StudyTopic): string {
@@ -695,7 +695,7 @@ function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P
     fieldGuideTotal: Math.max(1, context.learnSteps.length),
     requiredCheckIds: checkableSkillCheckIdsForRegion(context.region.id),
     fieldGuideHref: hrefToPage(pagePath, learnPagePath(context.topic)),
-    skillCheckHref: hrefToPage(pagePath, learnPagePath(context.topic)),
+    skillCheckHref: hrefToPage(pagePath, skillCheckPagePath(context.topic)),
   }));
 }
 
@@ -725,7 +725,7 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
   const learnStepTotal = Math.max(1, learnSteps.length);
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   return `
-    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(region.id)}" data-unit-name="${escapeAttr(topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, learnPagePath(topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, topicExamTrainingPagePath(topic)))}">
+    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(region.id)}" data-unit-name="${escapeAttr(topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, learnPagePath(topic)))}" data-skill-href="${escapeAttr(hrefToPage(fromPagePath, skillCheckPagePath(topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, topicExamTrainingPagePath(topic)))}">
       <div class="path-unit-number">Unit ${index + 1}</div>
       <div class="path-unit-main">
         <header>
@@ -744,8 +744,8 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
         <span data-progress-skill="${escapeAttr(region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillCheckIds))}" data-label="Checked">Checked: 0/${requiredSkillCheckIds.length} passed</span>
         <span data-progress-exam="${escapeAttr(region.id)}" data-label="Exam">Exam: 0 self-marked</span>
       </div>
-      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, learnPagePath(topic))}" data-path-unit-primary-action>
-        Start Learn
+      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, skillCheckPagePath(topic))}" data-path-unit-primary-action>
+        Start Checked Practice
       </a>
       <details class="path-unit-direct-routes">
         <summary>Direct routes</summary>
@@ -1975,11 +1975,11 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
           ${requirements.map((requirement) => `
             <li>
               <strong>${escapeHtml(requirement.name)}</strong>
-              <span>Learn 0/${requirement.fieldGuideTotal}; checked questions 0/${requirement.requiredCheckIds.length}</span>
+              <span>Checked questions 0/${requirement.requiredCheckIds.length}; optional Learn 0/${requirement.fieldGuideTotal}</span>
             </li>
           `).join('')}
         </ol>
-        ${routeLink(pagePath, learnPagePath(STUDY_TOPICS[0]), 'Start Unit 1', 'button primary-button')}
+        ${routeLink(pagePath, skillCheckPagePath(STUDY_TOPICS[0]), 'Start Unit 1', 'button primary-button')}
       </div>
       <div class="exam-review-open" data-exam-review-open hidden>
         <section class="exam-question-section" id="mixed-questions">
@@ -2495,7 +2495,7 @@ function renderLearnAnswerInput(item: SkillCheckItem): string {
               type="${multiple ? 'checkbox' : 'radio'}"
               name="submittedAnswer"
               value="${escapeAttr(option.id)}"
-              ${index === 0 ? 'required' : ''}
+              ${!multiple && index === 0 ? 'required' : ''}
             />
             <span>${renderMathText(option.label)}</span>
           </label>
@@ -2529,9 +2529,6 @@ function renderLearnCheckForm(
     ? item.expectedOptionIds
     : spec.acceptedAnswers;
   const isPrimary = variant === 'primary';
-  const savesSkillEvidence = isPrimary
-    ? step.primaryMirrorsSkillEvidence !== false
-    : step.similarMirrorsSkillEvidence !== false;
   const explanationText = isPrimary ? step.explanation : item.workedRoute.join(' ');
   const similarTargetId = `${step.id}-similar`;
   return `
@@ -2547,7 +2544,7 @@ function renderLearnCheckForm(
       data-skill-id="${escapeAttr(item.skillId)}"
       data-check-id="${escapeAttr(item.itemId)}"
       data-learn-variant="${escapeAttr(variant)}"
-      data-learn-saves-skill-pass="${savesSkillEvidence ? 'true' : 'false'}"
+      data-learn-saves-skill-pass="false"
       data-answer-type="${escapeAttr(spec.answerType)}"
       data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}"
       data-tolerance="${escapeAttr(spec.tolerance)}"
@@ -2569,14 +2566,14 @@ function renderLearnCheckForm(
       <div class="learn-after-attempt" data-learn-after-attempt hidden>
         <p><strong>${isPrimary ? 'Explanation' : 'Similar route'}:</strong> ${renderMathText(explanationText)}</p>
         ${isPrimary && step.principle ? `<p><strong>${renderMathText(step.principle.replace(/^Principle:\s*/i, 'Principle: '))}</strong></p>` : ''}
-        ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar checked question below. Clean, unhinted, unrevealed work can be saved as checked evidence.</p>' : ''}
-        ${!isPrimary ? '<p class="question-instruction">Clean correct answers here can be saved as checked evidence. Hinted or revealed attempts are saved as practice only.</p>' : ''}
+        ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar support question below, then use Checked Practice when you want pass evidence.</p>' : ''}
+        ${!isPrimary ? '<p class="question-instruction">This is Learn support. It records lesson progress only; use Checked Practice for pass evidence.</p>' : ''}
       </div>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>${renderExpectedAnswerSummary(item)}</div>
         <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
-        <p class="question-instruction">Revealed answers are saved as practice only. Retry cleanly for checked evidence.</p>
+        <p class="question-instruction">Revealed answers are saved as Learn practice only. Use Checked Practice for pass evidence.</p>
       </details>
     </form>
   `;
@@ -2639,18 +2636,17 @@ function renderLearnPage(
   const { topic, region, learnSteps } = context;
   const index = topicIndex(topic);
   const previousTopic = previousStudyTopic(topic);
-  const nextTopic = nextStudyTopic(topic);
-  const finalPath = nextTopic ? learnPagePath(nextTopic) : p3ReviewPagePath();
-  const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Export Progress';
-  const finalHref = nextTopic ? hrefToPage(pagePath, finalPath) : p3ReviewExportHref(pagePath);
+  const finalPath = skillCheckPagePath(topic);
+  const finalLabel = `${topic.name} Checked Practice`;
+  const finalHref = hrefToPage(pagePath, finalPath);
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   const body = `
     <section class="learn-mode-hero">
       <div>
         <p class="eyebrow">Unit ${index + 1} Learn</p>
         <h1>${escapeHtml(`${topic.name} — Learn`)}</h1>
-        <p>Start with Learn. Each step asks you to try first, then unlocks support, explanation, a checked similar question, and exam transfer.</p>
-        <p>Checked Practice is built into Learn. Clean correct similar answers count as stronger evidence than self-marked exam work.</p>
+        <p>Use Learn when you want support. Each step asks you to try first, then unlocks help, explanation, a similar question, and exam transfer.</p>
+        <p>Learn is optional support only. Go directly to Checked Practice when you want pass evidence.</p>
       </div>
       <div class="learn-mode-hero-actions">
         ${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}
@@ -2671,8 +2667,9 @@ function renderLearnPage(
     </section>
     <section class="next-step-card">
       <h2>After this lesson</h2>
-      <p>Module 1 of 2: Learn. Complete Step ${Math.max(1, learnSteps.length)} of ${Math.max(1, learnSteps.length)}, including the checked similar questions, then move to Module 2 of 2: Exam Training.</p>
-      <p>Clean checked answers are stronger evidence than hinted or revealed work.</p>
+      <p>Learn is optional. When you are ready for checked evidence, move to the separate Checked Practice page.</p>
+      <p>Checked Practice passes are the required local evidence before final review.</p>
+      ${routeLink(pagePath, skillCheckPagePath(topic), 'Checked Practice', 'button primary-button')}
       ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'button secondary-button')}
     </section>
   `;
@@ -2698,7 +2695,7 @@ function renderMergedModeNoticePage(
     : `${topic.name} — Checked Practice`;
   const bodyCopy = isFieldGuideRoute
     ? 'The old Field Guide has been replaced by a step-by-step Learn path. Start there, then complete Checked Practice and Exam Training.'
-    : 'You will answer similar checked questions during the Learn path. Clean correct answers count as checked evidence. Revealed or repaired answers do not.';
+    : 'Checked Practice now has its own page. Use Learn only when you want optional support before attempting checked questions.';
   const primaryLabel = isFieldGuideRoute ? 'Learn' : 'Continue';
   const body = `
     ${renderHero(
@@ -2710,7 +2707,7 @@ function renderMergedModeNoticePage(
     )}
     <section class="next-step-card">
       <h2>${escapeHtml(topic.name)} path</h2>
-      <p>Learn comes first, Checked Practice happens inside Learn, and Exam Training follows after the topic work.</p>
+      <p>Learn is optional support. Checked Practice is separate and can be started directly.</p>
     </section>
   `;
   return renderPage({
@@ -2779,16 +2776,16 @@ function renderCheckableSkillCheckForm(
 ): string {
   const spec = skillCheckAnswerSpecForItem(item);
   if (!spec) return '';
+  const acceptedAnswers = (item.options?.length && item.expectedOptionIds?.length)
+    ? item.expectedOptionIds
+    : spec.acceptedAnswers;
   const mistakeTags = Array.from(new Set([
     ...(item.mistakeTags ?? []),
     ...SKILL_CHECK_MISTAKE_TAGS,
   ]));
   return `
-    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(spec.acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
-      <label class="single-answer-field">
-        Answer
-        <input name="submittedAnswer" type="text" autocomplete="off" required />
-      </label>
+    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
+      ${renderLearnAnswerInput(item)}
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-skill-hint>Hint</button>
@@ -2822,7 +2819,7 @@ function renderCheckableSkillCheckForm(
         <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
         <p class="question-instruction">Revealed answers are saved as repaired practice and do not count as passed.</p>
       </details>
-      ${routeLink(pagePath, fieldGuidePath, 'Back to Field Guide', 'button secondary-button')}
+      ${routeLink(pagePath, fieldGuidePath, 'Learn support', 'button secondary-button')}
     </form>
   `;
 }
@@ -3168,7 +3165,7 @@ function renderPracticePage(
   const body = `
     ${renderHero(
       `Unit ${index + 1}: ${topic.name} Checked Practice`,
-      'Pass each visible check before moving on. If you need a hint or repair step, go back to Learn and try again.',
+      'Pass each visible check before moving on. If you need support first, Learn is available but optional.',
       topic.headerFormula,
       `<a class="button primary-button" href="#${escapeAttr(firstPracticeId)}">Start</a>
       ${routeLink(pagePath, fieldGuidePath, 'Learn', 'button secondary-button')}`,
@@ -3223,7 +3220,7 @@ function renderWorksheetPage(
       </div>
       <div class="worksheet-actions">
         <button class="button primary-button" type="button" onclick="window.print()">Print / Save PDF</button>
-        ${routeLink(pagePath, skillCheckPath, 'Learn', 'button secondary-button')}
+        ${routeLink(pagePath, skillCheckPath, 'Interactive Checked Practice', 'button secondary-button')}
       </div>
     </section>
     <section class="worksheet-instructions">
@@ -3495,7 +3492,7 @@ async function generate(): Promise<void> {
     const context = topicContext(topic, data);
     htmlByPath.set(learnPagePath(topic), renderLearnPage(context));
     htmlByPath.set(fieldGuidePagePath(topic), renderMergedModeNoticePage(context, 'Field Guide', fieldGuidePagePath(topic)));
-    htmlByPath.set(skillCheckPagePath(topic), renderMergedModeNoticePage(context, 'Skill Check', skillCheckPagePath(topic)));
+    htmlByPath.set(skillCheckPagePath(topic), renderPracticePage(context, skillCheckPagePath(topic), learnPagePath(topic)));
     htmlByPath.set(topicExamTrainingPagePath(topic), renderTopicExamTrainingPage(context));
     htmlByPath.set(worksheetPagePath(topic), renderWorksheetPage(context));
   }

@@ -1473,7 +1473,7 @@
       fieldGuideTotal: fieldGuideTotal,
       passCount: passCount,
       requiredCheckCount: requiredCheckIds.length,
-      complete: guideCount >= fieldGuideTotal && passCount >= requiredCheckIds.length
+      complete: requiredCheckIds.length > 0 && passCount >= requiredCheckIds.length
     };
   }
 
@@ -1494,18 +1494,16 @@
       if (statusText) {
         statusText.textContent = isOpen
           ? 'All P3 units have checked evidence in this browser. Mixed exam review is open.'
-          : completed + '/' + requirements.length + ' units have checked evidence. Finish the remaining Learn steps and checked questions first.';
+          : completed + '/' + requirements.length + ' units have checked evidence. Finish the remaining checked questions first.';
       }
       if (list) {
         list.innerHTML = statuses.map(function (status) {
           var requirement = status.requirement;
-          var targetHref = status.guideCount < status.fieldGuideTotal
-            ? requirement.fieldGuideHref
-            : requirement.skillCheckHref;
+          var targetHref = requirement.skillCheckHref;
           return '<li class="' + (status.complete ? 'is-complete' : 'is-incomplete') + '">'
             + '<div><strong>' + escapeText(requirement.name) + '</strong>'
-            + '<span>Learn ' + status.guideCount + '/' + status.fieldGuideTotal
-            + '; checked questions ' + status.passCount + '/' + status.requiredCheckCount + '</span></div>'
+            + '<span>Checked questions ' + status.passCount + '/' + status.requiredCheckCount
+            + '; optional Learn ' + status.guideCount + '/' + status.fieldGuideTotal + '</span></div>'
             + (status.complete ? '<span class="unit-state">Checked evidence</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
             + '</li>';
         }).join('');
@@ -1518,6 +1516,7 @@
     var name = card.getAttribute('data-unit-name') || card.querySelector('h2')?.textContent || 'this unit';
     var unitLabel = card.getAttribute('data-unit-label') || '';
     var learnHref = card.getAttribute('data-learn-href') || card.getAttribute('href') || '#';
+    var skillHref = card.getAttribute('data-skill-href') || learnHref;
     var examHref = card.getAttribute('data-exam-href') || learnHref;
     var guideNode = card.querySelector('[data-progress-field-guide]');
     var skillNode = card.querySelector('[data-progress-skill]');
@@ -1528,41 +1527,32 @@
       ? passedCheckIds(progress, requiredCheckIds, regionId).length
       : passingSkillAttemptsForRegion(progress, regionId).length;
     var examCount = attemptsForRegion(progress, regionId).length;
-    var guideComplete = guideCount >= fieldTotal;
     var checkedComplete = requiredCheckIds.length > 0 && passCount >= requiredCheckIds.length;
     return {
       card: card,
       name: name,
       unitLabel: unitLabel,
       learnHref: learnHref,
+      skillHref: skillHref,
       examHref: examHref,
       guideCount: guideCount,
       fieldTotal: fieldTotal,
       passCount: passCount,
       requiredCheckCount: requiredCheckIds.length,
       examCount: examCount,
-      guideComplete: guideComplete,
       checkedComplete: checkedComplete,
-      reviewReady: guideComplete && checkedComplete,
+      reviewReady: checkedComplete,
       started: guideCount > 0 || passCount > 0 || examCount > 0
     };
   }
 
   function actionForUnitStatus(status) {
-    if (!status.guideComplete) {
-      return {
-        title: (status.started ? 'Continue ' : 'Start ') + status.name + ' Learn',
-        copy: 'Learn progress in this browser: ' + status.guideCount + '/' + status.fieldTotal + ' steps. Work through the next attempt-first step.',
-        href: status.learnHref,
-        label: status.started ? 'Continue Learn' : 'Start Learn'
-      };
-    }
     if (!status.checkedComplete) {
       return {
-        title: 'Finish ' + status.name + ' Checked Practice',
-        copy: 'Learn steps are recorded here. Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '; use the checked similar questions before exam work.',
-        href: status.learnHref,
-        label: 'Continue Checked Practice'
+        title: (status.started ? 'Continue ' : 'Start ') + status.name + ' Checked Practice',
+        copy: 'Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '. Learn is optional support and does not block this route.',
+        href: status.skillHref,
+        label: status.started ? 'Continue Checked Practice' : 'Start Checked Practice'
       };
     }
     return {
@@ -3268,6 +3258,12 @@
     };
   }
 
+  function submittedAnswerFromForm(form) {
+    return new FormData(form).getAll('submittedAnswer').map(function (value) {
+      return String(value).trim();
+    }).filter(Boolean).join(', ');
+  }
+
   function saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult) {
     var progress = loadProgress();
     var attempt = {
@@ -3370,13 +3366,6 @@
     return attempt;
   }
 
-  function cleanLearnAttemptCanSaveSkill(form, checkResult) {
-    return Boolean(checkResult.isCorrect
-      && form.getAttribute('data-learn-saves-skill-pass') === 'true'
-      && form.getAttribute('data-used-hint') !== 'true'
-      && form.getAttribute('data-revealed-answer') !== 'true');
-  }
-
   function setSkillFeedback(form, message, state) {
     var feedback = form.querySelector('.skill-check-feedback');
     if (!feedback) return;
@@ -3419,7 +3408,7 @@
   }
 
   function checkSkillAnswer(form) {
-    var submittedAnswer = String(new FormData(form).get('submittedAnswer') || '').trim();
+    var submittedAnswer = submittedAnswerFromForm(form);
     var checkResult = checkSubmittedSkillAnswer(skillCheckSpecFromForm(form), submittedAnswer);
     saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
     var submitButton = form.querySelector('button[type="submit"]');
@@ -3455,15 +3444,9 @@
   }
 
   function checkLearnAnswer(form) {
-    var submittedValues = new FormData(form).getAll('submittedAnswer').map(function (value) {
-      return String(value).trim();
-    }).filter(Boolean);
-    var submittedAnswer = submittedValues.join(', ');
+    var submittedAnswer = submittedAnswerFromForm(form);
     var checkResult = checkSubmittedSkillAnswer(skillCheckSpecFromForm(form), submittedAnswer);
     saveLearnModeAttempt(form, submittedAnswer, checkResult);
-    if (cleanLearnAttemptCanSaveSkill(form, checkResult)) {
-      saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
-    }
 
     var submitButton = form.querySelector('button[type="submit"]');
     var hint = form.querySelector('[data-learn-hint]');
@@ -3489,10 +3472,7 @@
     if (similarCta && isPrimary && similar) similarCta.hidden = false;
 
     if (checkResult.isCorrect) {
-      var clean = cleanLearnAttemptCanSaveSkill(form, checkResult);
-      setSkillFeedback(form, clean
-        ? 'Correct. Saved as a clean checked answer.'
-        : 'Correct. Saved as supported practice, not strong checked evidence.', clean ? 'correct' : 'repaired');
+      setSkillFeedback(form, 'Correct. Saved as Learn progress only; use Checked Practice for pass evidence.', 'correct');
       form.classList.add('is-passed');
       if (submitButton) {
         submitButton.textContent = 'Check Answer';

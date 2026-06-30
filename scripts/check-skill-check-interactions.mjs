@@ -232,7 +232,7 @@ try {
       && Object.keys(progress.regionLearning?.algebra?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const algebraHintedState = await progressSnapshot(page);
-  assert(algebraHintedState.skillCount === 1, 'Clean similar answer should still create checked Skill Check evidence.');
+  assert(algebraHintedState.skillCount === 0, 'Learn answers must not create checked Skill Check evidence.');
   assert(algebraHintedState.completedAlgebraSteps === 1, 'Similar checked answer must complete the Learn step.');
 
   await resetPageProgress(page);
@@ -241,12 +241,33 @@ try {
   await submitAnswer(cleanAlgebraCard.locator('[data-check-learn-answer][data-learn-variant="similar"]'), '-3');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.algebra?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanAlgebraState = await progressSnapshot(page);
   assert(cleanAlgebraState.learningCount === 2, 'Clean primary and similar answers must be recorded as Learn activity.');
-  assert(cleanAlgebraState.skillCount === 1 && cleanAlgebraState.firstSkillClean, 'Clean Algebra similar answer must create clean checked evidence when configured.');
+  assert(cleanAlgebraState.skillCount === 0, 'Clean Algebra Learn answers must not create checked evidence.');
+
+  await waitForStaticEnhancement(page, oldAlgebraSkillCheckPagePath);
+  await resetPageProgress(page);
+  const checkedPracticeShape = await page.evaluate(() => ({
+    hasTitle: document.body.innerText.includes('Algebra Checked Practice'),
+    skillForms: document.querySelectorAll('[data-check-skill-answer]').length,
+    learnForms: document.querySelectorAll('[data-check-learn-answer]').length,
+    visibleSkillForm: Boolean(document.querySelector('[data-check-skill-answer]')?.closest('.practice-card:not([hidden])')),
+  }));
+  assert(checkedPracticeShape.hasTitle, 'Algebra Checked Practice must render as its own page.');
+  assert(checkedPracticeShape.skillForms > 0, 'Checked Practice must render deterministic Skill Check forms.');
+  assert(checkedPracticeShape.learnForms === 0, 'Checked Practice must not render Learn forms.');
+  assert(checkedPracticeShape.visibleSkillForm, 'A fresh student must see a Checked Practice question without Learn progress.');
+  await submitAnswer(page.locator('.practice-card:not([hidden]) [data-check-skill-answer]').first(), 'both-roots');
+  await page.waitForFunction(() => {
+    const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
+    return (progress.skillCheckAttempts?.length ?? 0) === 1;
+  });
+  const directCheckedState = await progressSnapshot(page);
+  assert(directCheckedState.learningCount === 0, 'Direct Checked Practice must not create Learn attempts.');
+  assert(directCheckedState.skillCount === 1 && directCheckedState.firstSkillClean, 'Direct Checked Practice must create clean checked evidence.');
 
   await waitForStaticEnhancement(page, logExpLearnPagePath);
   await resetPageProgress(page);
@@ -321,12 +342,12 @@ try {
   await submitAnswer(logExpSimilar, 'log_5(25)=2');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.['logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanLogExpState = await progressSnapshot(page);
   assert(cleanLogExpState.learningCount === 2, 'Clean Log/Exp primary and similar answers must save Learn activity.');
-  assert(cleanLogExpState.skillCount === 1 && cleanLogExpState.firstSkillClean, 'Clean Log/Exp similar answer must create appropriate checked evidence.');
+  assert(cleanLogExpState.skillCount === 0, 'Clean Log/Exp Learn answers must not create checked evidence.');
 
   await resetPageProgress(page);
   const hintedLogExpCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -445,12 +466,12 @@ try {
   await submitAnswer(finalTrigCard.locator('[data-check-learn-answer][data-learn-variant="similar"]'), '1+tan^2x=sec^2x');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.trigonometry?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanTrigState = await progressSnapshot(page);
   assert(cleanTrigState.learningCount === 2, 'Clean Trigonometry primary and similar answers must save Learn activity.');
-  assert(cleanTrigState.skillCount === 1 && cleanTrigState.firstSkillClean, 'Clean Trigonometry similar answer must create appropriate checked evidence.');
+  assert(cleanTrigState.skillCount === 0, 'Clean Trigonometry Learn answers must not create checked evidence.');
   assert(cleanTrigState.learningAttempts[0]?.strongEvidence === true, 'Clean primary checked work remains strong Learn activity evidence.');
 
   await waitForStaticEnhancement(page, diffLearnPagePath);
@@ -531,7 +552,7 @@ try {
   await submitAnswer(diffSimilar, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.differentiation?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanDiffState = await progressSnapshot(page);
@@ -540,7 +561,7 @@ try {
     nextUnlocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(cleanDiffState.learningCount === 2, 'Clean Differentiation primary and similar answers must save Learn activity.');
-  assert(cleanDiffState.skillCount === 1 && cleanDiffState.firstSkillClean, 'Clean Differentiation similar answer must create appropriate checked evidence.');
+  assert(cleanDiffState.skillCount === 0, 'Clean Differentiation Learn answers must not create checked evidence.');
   assert(cleanDiffState.completedDiffSteps === 1, 'Correct similar Differentiation answer must complete the lesson step.');
   assert(cleanDiffUi.transferVisible, 'Differentiation exam transfer must appear after the similar question is attempted.');
   assert(cleanDiffUi.nextUnlocked, 'Correct Differentiation similar question must unlock the next Learn step.');
@@ -673,7 +694,7 @@ try {
   await submitAnswer(integrationSimilar, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.integration?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanIntegrationState = await progressSnapshot(page);
@@ -682,7 +703,7 @@ try {
     nextUnlocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(cleanIntegrationState.learningCount === 2, 'Clean Integration primary and similar answers must save Learn activity.');
-  assert(cleanIntegrationState.skillCount === 1 && cleanIntegrationState.firstSkillClean, 'Clean Integration similar answer must create appropriate checked evidence.');
+  assert(cleanIntegrationState.skillCount === 0, 'Clean Integration Learn answers must not create checked evidence.');
   assert(cleanIntegrationState.completedIntegrationSteps === 1, 'Correct similar Integration answer must complete the lesson step.');
   assert(cleanIntegrationUi.transferVisible, 'Integration exam transfer must appear after the similar question is attempted.');
   assert(cleanIntegrationUi.nextUnlocked, 'Correct Integration similar question must unlock the next Learn step.');
@@ -815,7 +836,7 @@ try {
   await submitAnswer(iterationSimilar, 'intersection');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.['numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanIterationState = await progressSnapshot(page);
@@ -824,7 +845,7 @@ try {
     nextUnlocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(cleanIterationState.learningCount === 2, 'Clean Iteration primary and similar answers must save Learn activity.');
-  assert(cleanIterationState.skillCount === 1 && cleanIterationState.firstSkillClean, 'Clean Iteration similar answer must create appropriate checked evidence.');
+  assert(cleanIterationState.skillCount === 0, 'Clean Iteration Learn answers must not create checked evidence.');
   assert(cleanIterationState.completedIterationSteps === 1, 'Correct similar Iteration answer must complete the lesson step.');
   assert(cleanIterationUi.transferVisible, 'Iteration exam transfer must appear after the similar question is attempted.');
   assert(cleanIterationUi.nextUnlocked, 'Correct Iteration similar question must unlock the next Learn step.');
@@ -957,7 +978,7 @@ try {
   await submitAnswer(deSimilar, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.['differential-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanDeState = await progressSnapshot(page);
@@ -966,7 +987,7 @@ try {
     nextUnlocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(cleanDeState.learningCount === 2, 'Clean Differential Equations primary and similar answers must save Learn activity.');
-  assert(cleanDeState.skillCount === 1 && cleanDeState.firstSkillClean, 'Clean Differential Equations similar answer must create appropriate checked evidence.');
+  assert(cleanDeState.skillCount === 0, 'Clean Differential Equations Learn answers must not create checked evidence.');
   assert(cleanDeState.completedDeSteps === 1, 'Correct similar Differential Equations answer must complete the lesson step.');
   assert(cleanDeUi.transferVisible, 'Differential Equations exam transfer must appear after the similar question is attempted.');
   assert(cleanDeUi.nextUnlocked, 'Correct Differential Equations similar question must unlock the next Learn step.');
@@ -1099,7 +1120,7 @@ try {
   await submitAnswer(complexSimilar, '-3-4i');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
-    return (progress.skillCheckAttempts?.length ?? 0) === 1
+    return (progress.learningActivityAttempts?.length ?? 0) >= 2
       && Object.keys(progress.regionLearning?.['complex-numbers']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanComplexState = await progressSnapshot(page);
@@ -1108,7 +1129,7 @@ try {
     nextUnlocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(cleanComplexState.learningCount === 2, 'Clean Complex Numbers primary and similar answers must save Learn activity.');
-  assert(cleanComplexState.skillCount === 1 && cleanComplexState.firstSkillClean, 'Clean Complex Numbers similar answer must create appropriate checked evidence.');
+  assert(cleanComplexState.skillCount === 0, 'Clean Complex Numbers Learn answers must not create checked evidence.');
   assert(cleanComplexState.completedComplexSteps === 1, 'Correct similar Complex Numbers answer must complete the lesson step.');
   assert(cleanComplexUi.transferVisible, 'Complex Numbers exam transfer must appear after the similar question is attempted.');
   assert(cleanComplexUi.nextUnlocked, 'Correct Complex Numbers similar question must unlock the next Learn step.');
@@ -1165,21 +1186,13 @@ try {
 
   for (const [oldPath, label, expectedTitle, expectedButton] of [
     [oldAlgebraFieldGuidePagePath, 'Algebra Learn bridge', 'Algebra — Learn', 'Learn'],
-    [oldAlgebraSkillCheckPagePath, 'Algebra Checked Practice bridge', 'Algebra — Checked Practice', 'Continue'],
     [oldLogExpFieldGuidePagePath, 'Log/Exp Learn bridge', 'Logarithmic and Exponential Functions — Learn', 'Learn'],
-    [oldLogExpSkillCheckPagePath, 'Log/Exp Checked Practice bridge', 'Logarithmic and Exponential Functions — Checked Practice', 'Continue'],
     [oldTrigFieldGuidePagePath, 'Trigonometry Learn bridge', 'Trigonometry — Learn', 'Learn'],
-    [oldTrigSkillCheckPagePath, 'Trigonometry Checked Practice bridge', 'Trigonometry — Checked Practice', 'Continue'],
     [oldDiffFieldGuidePagePath, 'Differentiation Learn bridge', 'Differentiation — Learn', 'Learn'],
-    [oldDiffSkillCheckPagePath, 'Differentiation Checked Practice bridge', 'Differentiation — Checked Practice', 'Continue'],
     [oldIntegrationFieldGuidePagePath, 'Integration Learn bridge', 'Integration — Learn', 'Learn'],
-    [oldIntegrationSkillCheckPagePath, 'Integration Checked Practice bridge', 'Integration — Checked Practice', 'Continue'],
     [oldIterationFieldGuidePagePath, 'Numerical Solution Learn bridge', 'Numerical Solution of Equations — Learn', 'Learn'],
-    [oldIterationSkillCheckPagePath, 'Numerical Solution Checked Practice bridge', 'Numerical Solution of Equations — Checked Practice', 'Continue'],
     [oldDeFieldGuidePagePath, 'Differential Equations Learn bridge', 'Differential Equations — Learn', 'Learn'],
-    [oldDeSkillCheckPagePath, 'Differential Equations Checked Practice bridge', 'Differential Equations — Checked Practice', 'Continue'],
     [oldComplexFieldGuidePagePath, 'Complex Numbers Learn bridge', 'Complex Numbers — Learn', 'Learn'],
-    [oldComplexSkillCheckPagePath, 'Complex Numbers Checked Practice bridge', 'Complex Numbers — Checked Practice', 'Continue'],
   ]) {
     await waitForStaticEnhancement(page, oldPath);
     const oldRouteShape = await page.evaluate(([title, buttonLabel]) => ({
@@ -1193,7 +1206,30 @@ try {
     assert(oldRouteShape.legacyForms === 0 && oldRouteShape.learnForms === 0, `${label} route must not render an old checking flow.`);
   }
 
-  console.log('P3 Learn Mode interaction browser check passed.');
+  for (const [checkedPath, label] of [
+    [oldAlgebraSkillCheckPagePath, 'Algebra Checked Practice'],
+    [oldLogExpSkillCheckPagePath, 'Log/Exp Checked Practice'],
+    [oldTrigSkillCheckPagePath, 'Trigonometry Checked Practice'],
+    [oldDiffSkillCheckPagePath, 'Differentiation Checked Practice'],
+    [oldIntegrationSkillCheckPagePath, 'Integration Checked Practice'],
+    [oldIterationSkillCheckPagePath, 'Numerical Solution Checked Practice'],
+    [oldDeSkillCheckPagePath, 'Differential Equations Checked Practice'],
+    [oldComplexSkillCheckPagePath, 'Complex Numbers Checked Practice'],
+  ]) {
+    await waitForStaticEnhancement(page, checkedPath);
+    const checkedRouteShape = await page.evaluate(() => ({
+      hasCheckedTitle: document.body.innerText.includes('Checked Practice'),
+      skillForms: document.querySelectorAll('[data-check-skill-answer]').length,
+      learnForms: document.querySelectorAll('[data-check-learn-answer]').length,
+      visibleSkillForm: Boolean(document.querySelector('[data-check-skill-answer]')?.closest('.practice-card:not([hidden])')),
+    }));
+    assert(checkedRouteShape.hasCheckedTitle, `${label} route must show Checked Practice.`);
+    assert(checkedRouteShape.skillForms > 0, `${label} route must render Skill Check forms.`);
+    assert(checkedRouteShape.learnForms === 0, `${label} route must not render Learn forms.`);
+    assert(checkedRouteShape.visibleSkillForm, `${label} route must show a visible checked question.`);
+  }
+
+  console.log('P3 Learn and Checked Practice interaction browser check passed.');
 } finally {
   await browser.close();
 }
