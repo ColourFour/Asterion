@@ -8509,6 +8509,250 @@ body.skill-check-page .exam-question-section {
   }
 }
 
+@media screen {
+  :root:not([data-theme="dark"]) {
+    --la-control: #123247;
+    --la-control-hover: #1a4263;
+    --la-control-ink: #ffffff;
+    --la-border: #071225;
+    --la-border-strong: #123247;
+    --la-ink: #071225;
+    --la-paper: #ffffff;
+  }
+
+  :root:not([data-theme="dark"]) .site-header,
+  :root:not([data-theme="dark"]) body.home-page .site-header {
+    border-color: var(--la-border) !important;
+  }
+
+  :root:not([data-theme="dark"]) .site-nav a,
+  :root:not([data-theme="dark"]) .theme-toggle,
+  :root:not([data-theme="dark"]) body.home-page .site-nav a,
+  :root:not([data-theme="dark"]) body.home-page .site-nav span {
+    border: 0 !important;
+    color: var(--la-control-ink) !important;
+    background: var(--la-control) !important;
+    box-shadow: none !important;
+  }
+
+  :root:not([data-theme="dark"]) .site-nav a:hover,
+  :root:not([data-theme="dark"]) .site-nav a[aria-current="page"],
+  :root:not([data-theme="dark"]) .theme-toggle:hover,
+  :root:not([data-theme="dark"]) body.home-page .site-nav .nav-start-button,
+  :root:not([data-theme="dark"]) body.home-page .site-nav .nav-start-button:hover {
+    color: var(--la-control-ink) !important;
+    background: var(--la-control-hover) !important;
+  }
+
+  :root:not([data-theme="dark"]) :is(
+    .page-hero,
+    .course-selector-hero,
+    .course-picker-hero,
+    .learn-mode-hero,
+    .p3-path-hero,
+    .p3-dashboard-hero,
+    .guided-study-card,
+    .topic-card,
+    .course-card,
+    .summary-card,
+    .entry-card,
+    .exam-callout,
+    .field-guide-topic,
+    .practice-topic,
+    .practice-card,
+    .exam-question-card,
+    .next-step-card,
+    .exam-mode-grid article,
+    .exam-topic-row,
+    .progress-banner,
+    .homepage-course-panel,
+    .homepage-support-section,
+    .homepage-status-section,
+    .homepage-checklist,
+    .homepage-evidence-banner,
+    .homepage-trust-contract,
+    .learning-loop-list li,
+    .subtopic-lesson-shell,
+    .phase-panel,
+    .support-panel,
+    .diagnostic-question-card,
+    .repair-question-card,
+    .repair-lock-panel,
+    .repair-rule-panel,
+    .repair-state-example,
+    .repair-module-card,
+    .worksheet-hero,
+    .worksheet-instructions,
+    .worksheet-question-group,
+    .contract-topic-band,
+    .contract-official-topic-details,
+    .contract-table-shell,
+    .contract-skill-card,
+    .p3-next-step-panel,
+    .p3-dashboard-next-step,
+    .path-unit-card,
+    .path-principle-strip article,
+    .path-summary-panel,
+    .p3-example-problem-bar,
+    .exam-review-gate,
+    .exam-review-locked,
+    .exam-review-open,
+    .home-p3-action-card,
+    .home-p3-topic-strip,
+    .draft-seed-notice
+  ) {
+    border-color: var(--la-border) !important;
+    color: var(--la-ink);
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  :root:not([data-theme="dark"]) :is(
+    .practice-card,
+    .jump-details,
+    .phase-jump-details,
+    .practice-group-switcher,
+    .worksheet-group-switcher,
+    .attempt-form,
+    .self-marking-guidance,
+    .skill-check-hint-panel,
+    .skill-check-repair-details,
+    .skill-check-answer-details,
+    .mistake-tag-selector,
+    .worked-example-block,
+    .try-similar-block,
+    .exam-tip-block,
+    .phase-tab-list,
+    .visual-template-card,
+    .lesson-card,
+    .practice-subsection,
+    .learn-check-form,
+    .learn-after-attempt,
+    .learn-similar-panel,
+    .learn-exam-transfer,
+    .contract-skill-detail,
+    .exam-evidence-banner,
+    .mark-scheme-details,
+    .self-grade-suggestions,
+    .worksheet-question,
+    .repair-refresh li,
+    details.exam-hint-details,
+    .formula-panel,
+    .course-math-visual,
+    .exam-part-card,
+    .mark-point-list,
+    .contract-availability-summary div,
+    .contract-resource-link,
+    .contract-resource-missing,
+    .mistake-tag-options label,
+    .subnav a,
+    .phase-tab,
+    .home-p3-topic-tile,
+    .empty-state,
+    .marks-pill,
+    .field-guide-visual,
+    .is-incomplete,
+    .contract-trigger-list li,
+    .path-unit-direct-routes,
+    .contract-status,
+    .course-topic-button
+  ) {
+    border-color: var(--la-border) !important;
+    color: var(--la-ink);
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  :root:not([data-theme="dark"]) .question-figure,
+  :root:not([data-theme="dark"]) .visual-template-figure {
+    border-color: var(--la-border-strong) !important;
+    color: var(--la-ink);
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  :root:not([data-theme="dark"]) body.home-page :is(.home-p3-action-card, .home-p3-topic-tile) {
+    border-color: var(--la-border) !important;
+  }
+
+  :root:not([data-theme="dark"]) body.home-page :is(
+    .home-p3-subtitle,
+    .home-p3-diagnostic-link,
+    .home-p3-action-card strong,
+    .home-p3-action-card small,
+    .home-p3-action-card span,
+    .home-p3-topic-symbol,
+    .home-p3-topic-tile strong,
+    .home-p3-topic-tile span,
+    .home-p3-topic-tile small
+  ) {
+    color: #000000 !important;
+  }
+
+  :root:not([data-theme="dark"]) button.repair-module-tab {
+    border: 0 !important;
+    color: var(--la-control-ink) !important;
+    background: var(--la-control) !important;
+    box-shadow: none !important;
+  }
+
+  :root:not([data-theme="dark"]) :is(
+    .button,
+    button,
+    .primary-button,
+    .secondary-button,
+    .text-button,
+    .course-launch-cta,
+    .course-launch-cta-primary,
+    .course-launch-cta-secondary,
+    .path-unit-primary-action
+  ) {
+    border: 0 !important;
+    color: var(--la-control-ink) !important;
+    background: var(--la-control) !important;
+    box-shadow: none !important;
+  }
+
+  :root:not([data-theme="dark"]) :is(
+    .button,
+    button,
+    .primary-button,
+    .secondary-button,
+    .text-button,
+    .course-launch-cta,
+    .course-launch-cta-primary,
+    .course-launch-cta-secondary,
+    .path-unit-primary-action
+  ):hover {
+    color: var(--la-control-ink) !important;
+    background: var(--la-control-hover) !important;
+  }
+
+  :root:not([data-theme="dark"]) input,
+  :root:not([data-theme="dark"]) select,
+  :root:not([data-theme="dark"]) textarea,
+  :root:not([data-theme="dark"]) .attempt-form input,
+  :root:not([data-theme="dark"]) .attempt-form select,
+  :root:not([data-theme="dark"]) .field-list input,
+  :root:not([data-theme="dark"]) .skill-check-form input,
+  :root:not([data-theme="dark"]) .diagnostic-answer-field,
+  :root:not([data-theme="dark"]) .repair-answer-field,
+  :root:not([data-theme="dark"]) .single-answer-field,
+  :root:not([data-theme="dark"]) .learn-option-bank label,
+  :root:not([data-theme="dark"]) .option-list label,
+  :root:not([data-theme="dark"]) .export-progress-form input,
+  :root:not([data-theme="dark"]) .export-csv-output,
+  :root:not([data-theme="dark"]) .doing-step-list textarea {
+    border-color: var(--la-border-strong) !important;
+    color: var(--la-ink) !important;
+    background: var(--la-paper) !important;
+  }
+
+  :root:not([data-theme="dark"]) :is(.katex-mathml, .katex-mathml *) {
+    color: transparent !important;
+  }
+}
+
 @media screen and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --aa-page: #071225;
