@@ -129,7 +129,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('Check Answer');
     expect(generatorSource).toContain('home-p3-landing');
     expect(generatorSource).toContain('Master CAIE 9709');
-    expect(generatorSource).toContain('Start with Learn');
+    expect(generatorSource).toContain('Start Practice');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
@@ -141,10 +141,10 @@ describe('static P3 product contract', () => {
       expect(generatedHome).toContain('Pure Mathematics 3');
       expect(generatedHome).toContain('Learn what matters. Practice with purpose.');
       expect(generatedHome).toContain('Prepare for the exam with confidence.');
-      expect(generatedHome).toContain('Start with Learn');
+      expect(generatedHome).toContain('Start Practice');
       expect(generatedHome).toContain('Diagnostic: Where to focus');
-      expect(generatedHome).toContain('Build understanding');
-      expect(generatedHome).toContain('Check your skills');
+      expect(generatedHome).toContain('Support and checked questions');
+      expect(generatedHome).toContain('Export and repair');
       expect(generatedHome).toContain('Exam questions');
       expect(homeDocument.querySelectorAll('.home-p3-action-card')).toHaveLength(3);
       expect(homeDocument.querySelectorAll('.home-p3-topic-tile')).toHaveLength(9);
@@ -178,7 +178,7 @@ describe('static P3 product contract', () => {
       expect(generatedP3).toContain('All topic routes');
       expect(generatedP3).toContain('data-p3-next-step-panel');
       expect(generatedP3).toContain('path-unit-grid');
-      expect(generatedP3).toContain('data-progress-field-guide');
+      expect(generatedP3).not.toContain('data-progress-field-guide');
       expect(generatedP3).toContain('data-progress-skill');
       expect(generatedP3).toContain('data-progress-exam');
       expect(generatedP3).toContain('Export Progress');
@@ -208,23 +208,23 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('data-required-topics');
     expect(staticClientSource).toContain('updateExamReviewGate');
     expect(staticClientSource).toContain('All P3 units have checked evidence in this browser. Mixed exam review is open.');
-    expect(staticClientSource).toContain('Finish lesson sequence');
+    expect(staticClientSource).toContain('Finish practice');
 
     const generatedReviewPath = 'docs/p3/review/index.html';
     if (existsSync(generatedReviewPath)) {
       const generatedReview = readFileSync(generatedReviewPath, 'utf8');
       expect(generatedReview).toContain('Export Progress');
-      expect(generatedReview).toContain('Review mistakes from saved Checked Practice');
+      expect(generatedReview).toContain('Review mistakes from saved checked questions');
       expect(generatedReview).toContain('data-p3-exam-review-gate');
       expect(generatedReview).toContain('Mixed Paper 3 questions');
       expect(generatedReview).toContain('Locked until the path is complete');
       expect(generatedReview).toContain('data-review-skill-routes');
       expect(generatedReview).toContain('p3_alg_partial_fraction_form');
-      expect(generatedReview).toContain('../topics/algebra/skill-check/#practice-algebra_partial_fractions');
+      expect(generatedReview).toContain('../topics/algebra/learn/#practice-algebra_partial_fractions');
     }
   });
 
-  it('does not expose legacy self-reported Checked Practice completion controls', () => {
+  it('does not expose legacy self-reported checked-question completion controls', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
 
@@ -256,14 +256,14 @@ describe('static P3 product contract', () => {
     const algebraWorksheetPath = 'docs/p3/topics/algebra/worksheet/index.html';
     if (existsSync(algebraWorksheetPath)) {
       const worksheetSource = readFileSync(algebraWorksheetPath, 'utf8');
-      expect(worksheetSource).toContain('Algebra Checked Practice Worksheet');
+      expect(worksheetSource).toContain('Algebra Practice Worksheet');
       expect(worksheetSource).toContain('Student name:');
       expect(worksheetSource).toContain('Print / Save PDF');
     }
 
     expect(generatorSource).toContain('Check Answer');
     expect(generatorSource).toContain('Hint');
-    expect(generatorSource).toContain('Review mistakes from saved Checked Practice');
+    expect(generatorSource).toContain('Review mistakes from saved checked questions');
   });
 
   it('keeps P1 Review standalone with one module visible and mini-checks revealed after fast checks', () => {
@@ -464,7 +464,7 @@ describe('static P3 product contract', () => {
       const examPath = `docs/p3/topics/${topic.slug}/exam-training/index.html`;
       if (existsSync(learnPath)) {
         const document = new JSDOM(readFileSync(learnPath, 'utf8')).window.document;
-        expect(visibleText(document.querySelector('h1') as Element)).toBe(`${topic.name} — Learn`);
+        expect(visibleText(document.querySelector('h1') as Element)).toBe(`Unit ${STUDY_TOPICS.indexOf(topic) + 1}: ${topic.name} Practice`);
       }
       if (existsSync(examPath)) {
         const document = new JSDOM(readFileSync(examPath, 'utf8')).window.document;

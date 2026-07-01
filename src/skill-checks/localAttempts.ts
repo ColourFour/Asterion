@@ -52,6 +52,7 @@ export function isPassingSkillCheckAttempt(attempt: SkillCheckLocalAttempt): boo
   // Phase 3 pass rule: a check passes only on a correct answer before answer/repair reveal.
   return isSkillCheckLocalAttemptRecord(attempt)
     && attempt.isCorrect
+    && !attempt.usedHint
     && !attempt.revealedAnswer
     && !attempt.revealedRepairStep;
 }

@@ -134,14 +134,14 @@ describe('local Skill Check attempts', () => {
     });
   });
 
-  it('records hint use without blocking a correct unrevealed pass', () => {
+  it('does not pass a hinted correct attempt', () => {
     const hintedAttempt = attempt({ checkId: 'check-a', usedHint: true });
     const state = skillCheckPassState([hintedAttempt], ['check-a']);
 
     expect(hintedAttempt.usedHint).toBe(true);
     expect(state).toMatchObject({
-      passed: true,
-      passedCheckIds: ['check-a'],
+      passed: false,
+      passedCheckIds: [],
     });
   });
 

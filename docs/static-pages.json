@@ -51,15 +51,15 @@
     },
     {
       "path": "p3/topics/algebra/learn/index.html",
-      "label": "P3 Algebra Learn"
+      "label": "P3 Algebra Practice"
     },
     {
       "path": "p3/topics/algebra/field-guide/index.html",
-      "label": "P3 Algebra Learn bridge"
+      "label": "P3 Algebra Practice bridge"
     },
     {
       "path": "p3/topics/algebra/skill-check/index.html",
-      "label": "P3 Algebra Checked Practice"
+      "label": "P3 Algebra Practice compatibility route"
     },
     {
       "path": "p3/topics/algebra/exam-training/index.html",
@@ -71,15 +71,15 @@
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/learn/index.html",
-      "label": "P3 Logarithmic and Exponential Functions Learn"
+      "label": "P3 Logarithmic and Exponential Functions Practice"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/field-guide/index.html",
-      "label": "P3 Logarithmic and Exponential Functions Learn bridge"
+      "label": "P3 Logarithmic and Exponential Functions Practice bridge"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/skill-check/index.html",
-      "label": "P3 Logarithmic and Exponential Functions Checked Practice"
+      "label": "P3 Logarithmic and Exponential Functions Practice compatibility route"
     },
     {
       "path": "p3/topics/logarithmic-and-exponential-functions/exam-training/index.html",
@@ -91,15 +91,15 @@
     },
     {
       "path": "p3/topics/trigonometry/learn/index.html",
-      "label": "P3 Trigonometry Learn"
+      "label": "P3 Trigonometry Practice"
     },
     {
       "path": "p3/topics/trigonometry/field-guide/index.html",
-      "label": "P3 Trigonometry Learn bridge"
+      "label": "P3 Trigonometry Practice bridge"
     },
     {
       "path": "p3/topics/trigonometry/skill-check/index.html",
-      "label": "P3 Trigonometry Checked Practice"
+      "label": "P3 Trigonometry Practice compatibility route"
     },
     {
       "path": "p3/topics/trigonometry/exam-training/index.html",
@@ -111,15 +111,15 @@
     },
     {
       "path": "p3/topics/differentiation/learn/index.html",
-      "label": "P3 Differentiation Learn"
+      "label": "P3 Differentiation Practice"
     },
     {
       "path": "p3/topics/differentiation/field-guide/index.html",
-      "label": "P3 Differentiation Learn bridge"
+      "label": "P3 Differentiation Practice bridge"
     },
     {
       "path": "p3/topics/differentiation/skill-check/index.html",
-      "label": "P3 Differentiation Checked Practice"
+      "label": "P3 Differentiation Practice compatibility route"
     },
     {
       "path": "p3/topics/differentiation/exam-training/index.html",
@@ -131,15 +131,15 @@
     },
     {
       "path": "p3/topics/integration/learn/index.html",
-      "label": "P3 Integration Learn"
+      "label": "P3 Integration Practice"
     },
     {
       "path": "p3/topics/integration/field-guide/index.html",
-      "label": "P3 Integration Learn bridge"
+      "label": "P3 Integration Practice bridge"
     },
     {
       "path": "p3/topics/integration/skill-check/index.html",
-      "label": "P3 Integration Checked Practice"
+      "label": "P3 Integration Practice compatibility route"
     },
     {
       "path": "p3/topics/integration/exam-training/index.html",
@@ -151,15 +151,15 @@
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/learn/index.html",
-      "label": "P3 Numerical Solution of Equations Learn"
+      "label": "P3 Numerical Solution of Equations Practice"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/field-guide/index.html",
-      "label": "P3 Numerical Solution of Equations Learn bridge"
+      "label": "P3 Numerical Solution of Equations Practice bridge"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/skill-check/index.html",
-      "label": "P3 Numerical Solution of Equations Checked Practice"
+      "label": "P3 Numerical Solution of Equations Practice compatibility route"
     },
     {
       "path": "p3/topics/numerical-solution-of-equations/exam-training/index.html",
@@ -171,15 +171,15 @@
     },
     {
       "path": "p3/topics/vectors/learn/index.html",
-      "label": "P3 Vectors Learn"
+      "label": "P3 Vectors Practice"
     },
     {
       "path": "p3/topics/vectors/field-guide/index.html",
-      "label": "P3 Vectors Learn bridge"
+      "label": "P3 Vectors Practice bridge"
     },
     {
       "path": "p3/topics/vectors/skill-check/index.html",
-      "label": "P3 Vectors Checked Practice"
+      "label": "P3 Vectors Practice compatibility route"
     },
     {
       "path": "p3/topics/vectors/exam-training/index.html",
@@ -191,15 +191,15 @@
     },
     {
       "path": "p3/topics/differential-equations/learn/index.html",
-      "label": "P3 Differential Equations Learn"
+      "label": "P3 Differential Equations Practice"
     },
     {
       "path": "p3/topics/differential-equations/field-guide/index.html",
-      "label": "P3 Differential Equations Learn bridge"
+      "label": "P3 Differential Equations Practice bridge"
     },
     {
       "path": "p3/topics/differential-equations/skill-check/index.html",
-      "label": "P3 Differential Equations Checked Practice"
+      "label": "P3 Differential Equations Practice compatibility route"
     },
     {
       "path": "p3/topics/differential-equations/exam-training/index.html",
@@ -211,15 +211,15 @@
     },
     {
       "path": "p3/topics/complex-numbers/learn/index.html",
-      "label": "P3 Complex Numbers Learn"
+      "label": "P3 Complex Numbers Practice"
     },
     {
       "path": "p3/topics/complex-numbers/field-guide/index.html",
-      "label": "P3 Complex Numbers Learn bridge"
+      "label": "P3 Complex Numbers Practice bridge"
     },
     {
       "path": "p3/topics/complex-numbers/skill-check/index.html",
-      "label": "P3 Complex Numbers Checked Practice"
+      "label": "P3 Complex Numbers Practice compatibility route"
     },
     {
       "path": "p3/topics/complex-numbers/exam-training/index.html",

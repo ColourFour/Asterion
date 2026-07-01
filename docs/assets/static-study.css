@@ -7021,6 +7021,320 @@ body.skill-check-page .exam-question-section {
   }
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    color: #e7edf7;
+    background: #071225;
+    --bg: #071225;
+    --surface: #0f1b2f;
+    --surface-muted: #16243a;
+    --ink: #e7edf7;
+    --ink-warm: #f3f6fb;
+    --muted: #a8b4c6;
+    --muted-strong: #c6cfdd;
+    --border: rgba(173, 190, 214, 0.24);
+    --border-strong: rgba(190, 205, 226, 0.38);
+    --accent: #7ea7d9;
+    --accent-dark: #9bbce0;
+    --accent-bright: #a9c8eb;
+    --accent-soft: rgba(126, 167, 217, 0.18);
+    --sage: #7db6aa;
+    --sage-dark: #9bcac0;
+    --sage-soft: rgba(125, 182, 170, 0.16);
+    --focus: #a9c8eb;
+    --success: #88c9a2;
+    --danger: #e493a3;
+    --home-blue: #7ea7d9;
+    --home-blue-dark: #426d9e;
+    --home-navy: #071225;
+    --home-ink: #f3f6fb;
+    --home-muted: #a8b4c6;
+    --shadow-sm: 0 10px 26px rgba(0, 0, 0, 0.28);
+    --shadow: 0 22px 54px rgba(0, 0, 0, 0.34);
+  }
+
+  body {
+    color: var(--ink);
+    background:
+      radial-gradient(circle at 18% 0%, rgba(126, 167, 217, 0.14), transparent 28%),
+      linear-gradient(180deg, #071225 0%, #0a1628 48%, #050d1b 100%);
+  }
+
+  body.home-page,
+  body.home-page .home-p3-landing {
+    background:
+      radial-gradient(circle at 50% 23%, rgba(126, 167, 217, 0.15), transparent 31%),
+      radial-gradient(circle at 14% 70%, rgba(69, 103, 147, 0.14), transparent 24%),
+      radial-gradient(circle at 86% 64%, rgba(125, 182, 170, 0.1), transparent 22%),
+      linear-gradient(180deg, #071225 0%, #050d1b 58%, #030816 100%);
+  }
+
+  .site-header {
+    border-color: var(--border);
+    background: rgba(10, 22, 40, 0.88);
+    box-shadow: var(--shadow-sm);
+  }
+
+  body.home-page .site-header {
+    border-bottom-color: rgba(173, 190, 214, 0.18);
+    background: rgba(5, 13, 27, 0.82);
+  }
+
+  .brand-link,
+  .brand-link strong,
+  body.home-page .brand-link,
+  body.home-page .brand-link strong {
+    color: var(--ink-warm);
+  }
+
+  .brand-link small,
+  body.home-page .brand-link small {
+    color: var(--muted);
+  }
+
+  .brand-mark {
+    background: linear-gradient(145deg, #17243a, #24466f 58%, #496f9d);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 8px 18px rgba(0, 0, 0, 0.28);
+  }
+
+  .site-nav a {
+    color: var(--muted-strong);
+    background: rgba(15, 27, 47, 0.82);
+  }
+
+  .site-nav a:hover,
+  .site-nav a[aria-current="page"] {
+    border-color: rgba(169, 200, 235, 0.46);
+    color: #f8fbff;
+    background: #24466f;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+  }
+
+  .page-hero,
+  .course-selector-hero,
+  .course-picker-hero,
+  .learn-mode-hero,
+  .p3-path-hero,
+  .p3-dashboard-hero,
+  .guided-study-card {
+    border-color: var(--border);
+    background:
+      linear-gradient(135deg, rgba(15, 27, 47, 0.96), rgba(22, 36, 58, 0.86)),
+      var(--surface);
+    box-shadow: var(--shadow);
+  }
+
+  .topic-card,
+  .course-card,
+  .summary-card,
+  .entry-card,
+  .exam-callout,
+  .field-guide-topic,
+  .practice-topic,
+  .practice-card,
+  .exam-question-card,
+  .next-step-card,
+  .exam-mode-grid article,
+  .exam-topic-row,
+  .progress-banner,
+  .homepage-course-panel,
+  .homepage-support-section,
+  .subtopic-lesson-shell,
+  .phase-panel,
+  .support-panel,
+  .diagnostic-question-card,
+  .repair-question-card,
+  .worksheet-hero,
+  .worksheet-instructions,
+  .worksheet-question-group,
+  .contract-skill-card,
+  .contract-table-shell {
+    border-color: var(--border);
+    background: rgba(15, 27, 47, 0.94);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .course-card,
+  .course-topic-button,
+  .exam-callout,
+  .homepage-course-panel,
+  .guided-study-card {
+    background:
+      linear-gradient(135deg, rgba(15, 27, 47, 0.96), rgba(22, 36, 58, 0.82)),
+      var(--surface);
+  }
+
+  .course-card-featured {
+    border-color: rgba(155, 202, 192, 0.54);
+    background:
+      linear-gradient(135deg, rgba(19, 36, 58, 0.98), rgba(13, 28, 48, 0.9)),
+      var(--surface);
+  }
+
+  .course-card-featured::after {
+    color: rgba(169, 200, 235, 0.08);
+  }
+
+  .course-card-locked {
+    opacity: 0.72;
+  }
+
+  .course-card-locked .course-code-badge {
+    background: #475569;
+  }
+
+  .course-card-locked .course-launch-cta,
+  .disabled-button {
+    color: var(--muted);
+    background: rgba(71, 85, 105, 0.32);
+  }
+
+  .homepage-primary-label,
+  .homepage-primary-reason,
+  .draft-seed-notice,
+  .starter-note,
+  .micro-win,
+  .topic-status-chip,
+  .course-status-pill,
+  .exam-stats span,
+  .marks-pill,
+  .guided-study-progress,
+  .static-enhanced [data-complete-field-guide-topic].is-saved {
+    border-color: rgba(169, 200, 235, 0.26);
+    color: var(--muted-strong);
+    background: rgba(126, 167, 217, 0.14);
+  }
+
+  .micro-win,
+  .static-enhanced [data-complete-field-guide-topic].is-saved,
+  .progress-list .is-complete {
+    color: var(--success);
+  }
+
+  .primary-button,
+  .phase-tab.is-active,
+  .course-launch-cta-primary,
+  .site-nav .nav-start-button,
+  body.home-page .site-nav .nav-start-button {
+    border-color: rgba(169, 200, 235, 0.34);
+    color: #f8fbff;
+    background: linear-gradient(180deg, #426d9e, #24466f);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.24);
+  }
+
+  .primary-button:hover,
+  body.home-page .site-nav .nav-start-button:hover {
+    background: linear-gradient(180deg, #4d7baa, #2c537f);
+  }
+
+  .secondary-button,
+  .course-launch-cta-secondary,
+  .text-button:hover,
+  .phase-tab:hover,
+  .phase-tab:focus-visible {
+    border-color: rgba(169, 200, 235, 0.3);
+    color: var(--accent-bright);
+    background: rgba(126, 167, 217, 0.12);
+  }
+
+  .text-link,
+  .text-button,
+  .topic-card-formula,
+  .course-topic-button .topic-card-arrow {
+    color: var(--accent-bright);
+  }
+
+  .course-topic-button:hover,
+  .course-topic-button:focus-visible,
+  .topic-card:hover,
+  a.course-card:hover,
+  a.course-card:focus-visible {
+    border-color: rgba(169, 200, 235, 0.48);
+    box-shadow: var(--shadow);
+  }
+
+  .phase-jump-details,
+  .jump-details,
+  .mark-scheme-details,
+  .attempt-form,
+  .exam-evidence-banner,
+  .exam-part-card,
+  .mark-point-list,
+  .self-grade-suggestions,
+  .self-marking-guidance,
+  .skill-check-hint-panel,
+  .skill-check-repair-details,
+  .skill-check-answer-details,
+  .mistake-tag-selector,
+  .mistake-tag-options label,
+  .worked-example-block,
+  .try-similar-block,
+  .exam-tip-block,
+  .phase-tab-list,
+  .visual-template-card,
+  .lesson-card,
+  .practice-subsection,
+  .learn-check-form,
+  .learn-after-attempt,
+  .learn-similar-panel,
+  .learn-exam-transfer {
+    border-color: var(--border);
+    background: rgba(22, 36, 58, 0.82);
+  }
+
+  .question-figure,
+  .visual-template-figure {
+    border-color: rgba(173, 190, 214, 0.44);
+    background: #ffffff;
+  }
+
+  input,
+  select,
+  textarea,
+  .attempt-form input,
+  .attempt-form select,
+  .field-list input,
+  .skill-check-form input,
+  .diagnostic-answer-field,
+  .repair-answer-field,
+  .export-progress-form input,
+  .export-csv-output,
+  .doing-step-list textarea {
+    border-color: rgba(173, 190, 214, 0.32);
+    color: var(--ink);
+    background: rgba(7, 18, 37, 0.88);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: rgba(198, 207, 221, 0.62);
+  }
+
+  .compact-progress::before {
+    background: rgba(173, 190, 214, 0.2);
+  }
+
+  .worksheet-working-space {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 31px,
+      rgba(173, 190, 214, 0.2) 32px
+    );
+  }
+
+  .form-status[data-state="warning"],
+  .skill-check-feedback[data-state="repaired"],
+  .skill-check-feedback[data-state="warning"] {
+    color: #d3ad6c;
+  }
+
+  .skill-check-feedback[data-state="incorrect"] {
+    color: var(--danger);
+  }
+}
+
 @media print {
   @page {
     margin: 14mm;
