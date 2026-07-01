@@ -33,7 +33,6 @@ import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
 import { P3_COURSE_MAP } from '../src/lib/worldMap';
 import type { NormalizedQuestion, QuestionMarkPoint, QuestionPartMark, RegionDefinition } from '../src/types';
-import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirName = process.env.STATIC_SITE_OUTPUT_DIR ?? 'docs';
@@ -614,6 +613,7 @@ function renderPage(options: RenderPageOptions): string {
   const katexHref = hrefToPublicAsset(options.pagePath, 'assets/katex.min.css');
   const scriptHref = hrefToPublicAsset(options.pagePath, 'assets/static-study.js');
   const title = `${options.title} | Asterion Study`;
+  const themeBootScript = `(function(){try{var theme=window.localStorage.getItem('asterion.theme.v1');if(theme==='dark'||theme==='light'){document.documentElement.dataset.theme=theme;}}catch(error){}})();`;
 
   return `<!doctype html>
 <html lang="en">
@@ -621,6 +621,7 @@ function renderPage(options: RenderPageOptions): string {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${escapeAttr(options.description)}" />
+    <script>${themeBootScript}</script>
     <link rel="stylesheet" href="${katexHref}" />
     <link rel="stylesheet" href="${cssHref}" />
     <title>${escapeHtml(title)}</title>
@@ -640,6 +641,10 @@ function renderPage(options: RenderPageOptions): string {
         </span>
       </a>
       ${primaryNav(options.pagePath, options.active)}
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+        <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
+      </button>
     </header>
     <main id="main-content" tabindex="-1">
       ${options.body}
@@ -2721,10 +2726,6 @@ function renderCheckableSkillCheckForm(
   const acceptedAnswers = (item.options?.length && item.expectedOptionIds?.length)
     ? item.expectedOptionIds
     : spec.acceptedAnswers;
-  const mistakeTags = Array.from(new Set([
-    ...(item.mistakeTags ?? []),
-    ...SKILL_CHECK_MISTAKE_TAGS,
-  ]));
   return `
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
       ${renderLearnAnswerInput(item)}
@@ -2734,18 +2735,6 @@ function renderCheckableSkillCheckForm(
         <button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next Question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
-      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
-        <legend>What went wrong?</legend>
-        <div class="mistake-tag-options">
-          ${mistakeTags.map((tag) => `
-            <label>
-              <input type="checkbox" name="mistakeTags" value="${escapeAttr(tag)}" />
-              <span>${escapeHtml(tag)}</span>
-            </label>
-          `).join('')}
-        </div>
-        <p class="targeted-prompt" data-targeted-prompt></p>
-      </fieldset>
       <div class="skill-check-hint-panel" data-skill-hint hidden>
         <p>${renderMathText(item.hints.nudge)}</p>
         ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
