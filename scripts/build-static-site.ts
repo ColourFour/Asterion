@@ -613,7 +613,7 @@ function renderPage(options: RenderPageOptions): string {
   const katexHref = hrefToPublicAsset(options.pagePath, 'assets/katex.min.css');
   const scriptHref = hrefToPublicAsset(options.pagePath, 'assets/static-study.js');
   const title = `${options.title} | Asterion Study`;
-  const themeBootScript = `(function(){try{var theme=window.localStorage.getItem('asterion.theme.v1');if(theme==='dark'||theme==='light'){document.documentElement.dataset.theme=theme;}}catch(error){}})();`;
+  const themeBootScript = `(function(){try{var theme=window.localStorage.getItem('asterion.theme.v1');if(theme==='dark'||theme==='light'){document.documentElement.dataset.theme=theme;}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.dataset.theme='dark';}}catch(error){}})();`;
 
   return `<!doctype html>
 <html lang="en">

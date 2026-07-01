@@ -7927,3 +7927,603 @@ body.skill-check-page .exam-question-section {
     grid-template-columns: 1fr;
   }
 }
+
+@media screen {
+  :root[data-theme="dark"] {
+    --aa-page: #071225;
+    --aa-surface: #536f8d;
+    --aa-surface-soft: #607a98;
+    --aa-control: #071225;
+    --aa-ink: #ffffff;
+    --aa-control-ink: #ffffff;
+    --aa-paper: #ffffff;
+    --aa-paper-ink: #071225;
+    --aa-border: #ffffff;
+    --path-ink: #ffffff;
+    --path-muted: #f2f6fb;
+    --path-blue: #ffffff;
+    --path-green: #ffffff;
+    --path-line: rgba(255, 255, 255, 0.88);
+  }
+
+  :root[data-theme="dark"] body {
+    color: var(--aa-ink);
+    background: var(--aa-page);
+  }
+
+  :root[data-theme="dark"] .site-header,
+  :root[data-theme="dark"] body.home-page .site-header {
+    border-color: var(--aa-border);
+    background: var(--aa-page);
+  }
+
+  :root[data-theme="dark"] .site-nav a,
+  :root[data-theme="dark"] .theme-toggle,
+  :root[data-theme="dark"] body.home-page .site-nav a,
+  :root[data-theme="dark"] body.home-page .site-nav span {
+    border-color: var(--aa-border);
+    color: var(--aa-ink);
+    background: var(--aa-surface);
+  }
+
+  :root[data-theme="dark"] .site-nav a:hover,
+  :root[data-theme="dark"] .site-nav a[aria-current="page"],
+  :root[data-theme="dark"] .theme-toggle:hover,
+  :root[data-theme="dark"] body.home-page .site-nav .nav-start-button,
+  :root[data-theme="dark"] body.home-page .site-nav .nav-start-button:hover {
+    border-color: var(--aa-border);
+    color: var(--aa-control-ink);
+    background: var(--aa-control);
+  }
+
+  :root[data-theme="dark"] .skip-link {
+    color: var(--aa-paper-ink);
+    background: var(--aa-paper);
+  }
+
+  :root[data-theme="dark"] .page-hero,
+  :root[data-theme="dark"] .course-selector-hero,
+  :root[data-theme="dark"] .course-picker-hero,
+  :root[data-theme="dark"] .learn-mode-hero,
+  :root[data-theme="dark"] .p3-path-hero,
+  :root[data-theme="dark"] .p3-dashboard-hero,
+  :root[data-theme="dark"] .guided-study-card,
+  :root[data-theme="dark"] .topic-card,
+  :root[data-theme="dark"] .course-card,
+  :root[data-theme="dark"] .summary-card,
+  :root[data-theme="dark"] .entry-card,
+  :root[data-theme="dark"] .exam-callout,
+  :root[data-theme="dark"] .field-guide-topic,
+  :root[data-theme="dark"] .practice-topic,
+  :root[data-theme="dark"] .exam-question-card,
+  :root[data-theme="dark"] .next-step-card,
+  :root[data-theme="dark"] .exam-mode-grid article,
+  :root[data-theme="dark"] .exam-topic-row,
+  :root[data-theme="dark"] .progress-banner,
+  :root[data-theme="dark"] .homepage-course-panel,
+  :root[data-theme="dark"] .homepage-support-section,
+  :root[data-theme="dark"] .homepage-status-section,
+  :root[data-theme="dark"] .homepage-checklist,
+  :root[data-theme="dark"] .homepage-evidence-banner,
+  :root[data-theme="dark"] .homepage-trust-contract,
+  :root[data-theme="dark"] .learning-loop-list li,
+  :root[data-theme="dark"] .subtopic-lesson-shell,
+  :root[data-theme="dark"] .phase-panel,
+  :root[data-theme="dark"] .support-panel,
+  :root[data-theme="dark"] .diagnostic-question-card,
+  :root[data-theme="dark"] .repair-question-card,
+  :root[data-theme="dark"] .repair-lock-panel,
+  :root[data-theme="dark"] .repair-rule-panel,
+  :root[data-theme="dark"] .repair-state-example,
+  :root[data-theme="dark"] .repair-module-card,
+  :root[data-theme="dark"] .worksheet-hero,
+  :root[data-theme="dark"] .worksheet-instructions,
+  :root[data-theme="dark"] .worksheet-question-group,
+  :root[data-theme="dark"] .contract-topic-band,
+  :root[data-theme="dark"] .contract-official-topic-details,
+  :root[data-theme="dark"] .contract-table-shell,
+  :root[data-theme="dark"] .p3-next-step-panel,
+  :root[data-theme="dark"] .p3-dashboard-next-step,
+  :root[data-theme="dark"] .path-unit-card,
+  :root[data-theme="dark"] .path-principle-strip article,
+  :root[data-theme="dark"] .path-summary-panel,
+  :root[data-theme="dark"] .p3-example-problem-bar,
+  :root[data-theme="dark"] .exam-review-gate,
+  :root[data-theme="dark"] .exam-review-locked,
+  :root[data-theme="dark"] .exam-review-open,
+  :root[data-theme="dark"] .home-p3-action-card,
+  :root[data-theme="dark"] .home-p3-topic-strip,
+  :root[data-theme="dark"] .draft-seed-notice {
+    border-color: var(--aa-border);
+    color: var(--aa-ink);
+    background: var(--aa-surface);
+    box-shadow: none;
+  }
+
+  :root[data-theme="dark"] .practice-card,
+  :root[data-theme="dark"] .jump-details,
+  :root[data-theme="dark"] .phase-jump-details,
+  :root[data-theme="dark"] .practice-group-switcher,
+  :root[data-theme="dark"] .worksheet-group-switcher,
+  :root[data-theme="dark"] .attempt-form,
+  :root[data-theme="dark"] .self-marking-guidance,
+  :root[data-theme="dark"] .skill-check-hint-panel,
+  :root[data-theme="dark"] .skill-check-repair-details,
+  :root[data-theme="dark"] .skill-check-answer-details,
+  :root[data-theme="dark"] .mistake-tag-selector,
+  :root[data-theme="dark"] .worked-example-block,
+  :root[data-theme="dark"] .try-similar-block,
+  :root[data-theme="dark"] .exam-tip-block,
+  :root[data-theme="dark"] .phase-tab-list,
+  :root[data-theme="dark"] .visual-template-card,
+  :root[data-theme="dark"] .lesson-card,
+  :root[data-theme="dark"] .practice-subsection,
+  :root[data-theme="dark"] .learn-check-form,
+  :root[data-theme="dark"] .learn-after-attempt,
+  :root[data-theme="dark"] .learn-similar-panel,
+  :root[data-theme="dark"] .learn-exam-transfer,
+  :root[data-theme="dark"] .contract-skill-card,
+  :root[data-theme="dark"] .contract-skill-detail,
+  :root[data-theme="dark"] .exam-evidence-banner,
+  :root[data-theme="dark"] .mark-scheme-details,
+  :root[data-theme="dark"] .self-grade-suggestions,
+  :root[data-theme="dark"] .worksheet-question,
+  :root[data-theme="dark"] .repair-refresh li,
+  :root[data-theme="dark"] details.exam-hint-details,
+  :root[data-theme="dark"] .formula-panel,
+  :root[data-theme="dark"] .course-math-visual {
+    border-color: var(--aa-border);
+    color: var(--aa-control-ink);
+    background: var(--aa-control);
+    box-shadow: none;
+  }
+
+  :root[data-theme="dark"] .exam-part-card,
+  :root[data-theme="dark"] .mark-point-list,
+  :root[data-theme="dark"] .contract-availability-summary div,
+  :root[data-theme="dark"] .contract-resource-link,
+  :root[data-theme="dark"] .contract-resource-missing,
+  :root[data-theme="dark"] .mistake-tag-options label,
+  :root[data-theme="dark"] .subnav a,
+  :root[data-theme="dark"] .phase-tab,
+  :root[data-theme="dark"] .repair-module-tab,
+  :root[data-theme="dark"] .home-p3-topic-tile,
+  :root[data-theme="dark"] .question-figure,
+  :root[data-theme="dark"] .visual-template-figure {
+    border-color: var(--aa-border);
+    color: var(--aa-paper-ink);
+    background: var(--aa-paper);
+  }
+
+  :root[data-theme="dark"] .button,
+  :root[data-theme="dark"] button,
+  :root[data-theme="dark"] .primary-button,
+  :root[data-theme="dark"] .secondary-button,
+  :root[data-theme="dark"] .text-button,
+  :root[data-theme="dark"] .course-launch-cta,
+  :root[data-theme="dark"] .course-launch-cta-primary,
+  :root[data-theme="dark"] .course-launch-cta-secondary,
+  :root[data-theme="dark"] .path-unit-primary-action {
+    border: 0 !important;
+    color: var(--aa-ink) !important;
+    background: var(--aa-surface) !important;
+    box-shadow: none;
+  }
+
+  :root[data-theme="dark"] input,
+  :root[data-theme="dark"] select,
+  :root[data-theme="dark"] textarea,
+  :root[data-theme="dark"] .attempt-form input,
+  :root[data-theme="dark"] .attempt-form select,
+  :root[data-theme="dark"] .field-list input,
+  :root[data-theme="dark"] .skill-check-form input,
+  :root[data-theme="dark"] .diagnostic-answer-field,
+  :root[data-theme="dark"] .repair-answer-field,
+  :root[data-theme="dark"] .single-answer-field,
+  :root[data-theme="dark"] .learn-option-bank label,
+  :root[data-theme="dark"] .option-list label,
+  :root[data-theme="dark"] .export-progress-form input,
+  :root[data-theme="dark"] .export-csv-output,
+  :root[data-theme="dark"] .doing-step-list textarea {
+    border-color: var(--aa-surface) !important;
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] :is(.single-answer-field, .learn-option-bank label, .option-list label, .diagnostic-answer-field, .repair-answer-field) :where(.math-text, .katex, .katex-html, .katex-html *) {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] :is(
+    .jump-details a,
+    .phase-jump-details a,
+    .home-p3-topic-tile,
+    .contract-resource-link,
+    .contract-resource-missing,
+    .empty-state,
+    .marks-pill
+  ) {
+    border: 0 !important;
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] :is(
+    .jump-details a,
+    .phase-jump-details a,
+    .home-p3-topic-tile,
+    .contract-resource-link,
+    .contract-resource-missing,
+    .empty-state,
+    .marks-pill
+  ) :where(span, strong, small, .math-text, .katex, .katex-html, .katex-html *) {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] :is(.learn-option-bank legend, .option-list legend) {
+    color: var(--aa-ink) !important;
+  }
+
+  :root[data-theme="dark"] .practice-count {
+    color: var(--aa-ink) !important;
+  }
+
+  :root[data-theme="dark"] .worksheet-group-switcher .practice-count {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] .worksheet-controls .practice-count {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] :is(.is-incomplete, .field-guide-visual) {
+    border: 0 !important;
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] :is(.is-incomplete, .field-guide-visual) :where(h1, h2, h3, h4, p, span, strong, small, a, .text-link, .math-text, .katex, .katex-html, .katex-html *) {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] .contract-trigger-list li {
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] .path-unit-direct-routes,
+  :root[data-theme="dark"] .contract-status {
+    border: 0 !important;
+    color: var(--aa-control-ink) !important;
+    background: var(--aa-control) !important;
+  }
+
+  :root[data-theme="dark"] .contract-status {
+    background: var(--aa-page) !important;
+  }
+
+  :root[data-theme="dark"] code {
+    color: var(--aa-ink) !important;
+  }
+
+  :root[data-theme="dark"] :is(
+    .page-hero,
+    .course-selector-hero,
+    .course-picker-hero,
+    .learn-mode-hero,
+    .p3-path-hero,
+    .p3-dashboard-hero,
+    .guided-study-card,
+    .topic-card,
+    .course-card,
+    .summary-card,
+    .entry-card,
+    .exam-callout,
+    .field-guide-topic,
+    .practice-topic,
+    .exam-question-card,
+    .next-step-card,
+    .exam-mode-grid article,
+    .exam-topic-row,
+    .progress-banner,
+    .homepage-course-panel,
+    .homepage-support-section,
+    .homepage-status-section,
+    .homepage-checklist,
+    .homepage-evidence-banner,
+    .homepage-trust-contract,
+    .learning-loop-list li,
+    .subtopic-lesson-shell,
+    .phase-panel,
+    .support-panel,
+    .diagnostic-question-card,
+    .repair-question-card,
+    .repair-lock-panel,
+    .repair-rule-panel,
+    .repair-state-example,
+    .repair-module-card,
+    .worksheet-hero,
+    .worksheet-instructions,
+    .worksheet-question-group,
+    .contract-topic-band,
+    .contract-official-topic-details,
+    .contract-table-shell,
+    .p3-next-step-panel,
+    .p3-dashboard-next-step,
+    .path-unit-card,
+    .path-principle-strip article,
+    .path-summary-panel,
+    .p3-example-problem-bar,
+    .exam-review-gate,
+    .exam-review-locked,
+    .exam-review-open,
+    .home-p3-action-card,
+    .home-p3-topic-strip,
+    .draft-seed-notice
+  ) :where(h1, h2, h3, h4, h5, p, li, span, strong, small, summary, label, dt, dd, th, td, .eyebrow, .prompt, .text-link, .topic-card-formula, .math-text, .katex) {
+    color: inherit;
+  }
+
+  :root[data-theme="dark"] :is(
+    .practice-card,
+    .jump-details,
+    .phase-jump-details,
+    .practice-group-switcher,
+    .worksheet-group-switcher,
+    .attempt-form,
+    .self-marking-guidance,
+    .skill-check-hint-panel,
+    .skill-check-repair-details,
+    .skill-check-answer-details,
+    .mistake-tag-selector,
+    .worked-example-block,
+    .try-similar-block,
+    .exam-tip-block,
+    .phase-tab-list,
+    .visual-template-card,
+    .lesson-card,
+    .practice-subsection,
+    .learn-check-form,
+    .learn-after-attempt,
+    .learn-similar-panel,
+    .learn-exam-transfer,
+    .contract-skill-card,
+    .contract-skill-detail,
+    .exam-evidence-banner,
+    .mark-scheme-details,
+    .self-grade-suggestions,
+    .worksheet-question,
+    .repair-refresh li,
+    details.exam-hint-details,
+    .formula-panel,
+    .course-math-visual
+  ) :where(h1, h2, h3, h4, h5, p, li, span, strong, small, summary, label, dt, dd, th, td, legend, .eyebrow, .prompt, .text-link, .topic-card-formula, .math-text, .katex, .practice-current-skill, .practice-change-skill) {
+    color: inherit;
+  }
+
+  :root[data-theme="dark"] :where(.question-figure, .visual-template-figure, .course-math-visual) svg text,
+  :root[data-theme="dark"] .course-math-visual text {
+    fill: var(--aa-paper-ink);
+    color: var(--aa-paper-ink);
+  }
+
+  :root[data-theme="dark"] .visual-template-figure svg rect:first-of-type,
+  :root[data-theme="dark"] .course-math-visual svg rect:first-of-type {
+    fill: var(--aa-paper);
+  }
+
+  :root[data-theme="dark"] .visual-template-figure svg line,
+  :root[data-theme="dark"] .visual-template-figure svg path,
+  :root[data-theme="dark"] .visual-template-figure svg polyline,
+  :root[data-theme="dark"] .visual-template-figure svg polygon,
+  :root[data-theme="dark"] .course-math-visual svg line,
+  :root[data-theme="dark"] .course-math-visual svg path,
+  :root[data-theme="dark"] .course-math-visual svg polyline,
+  :root[data-theme="dark"] .course-math-visual svg polygon {
+    stroke: var(--aa-paper-ink);
+  }
+
+  :root[data-theme="dark"] .question-figure,
+  :root[data-theme="dark"] .visual-template-figure,
+  :root[data-theme="dark"] .course-math-visual,
+  :root[data-theme="dark"] .exam-part-card,
+  :root[data-theme="dark"] .exam-evidence-banner {
+    border-color: var(--aa-surface) !important;
+  }
+
+  :root[data-theme="dark"] .question-figure {
+    border: 0 !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] .course-math-visual {
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] .formula-panel {
+    border: 0 !important;
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] .formula-panel :where(.math-text, .katex, .katex-html, .katex-html *) {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] .exam-evidence-banner {
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root[data-theme="dark"] .katex-mathml,
+  :root[data-theme="dark"] .katex-mathml * {
+    color: transparent !important;
+  }
+
+  :root[data-theme="dark"] .katex-html,
+  :root[data-theme="dark"] .katex-html * {
+    color: inherit;
+  }
+
+  :root[data-theme="dark"] :is(
+    .page-hero,
+    .course-selector-hero,
+    .course-picker-hero,
+    .learn-mode-hero,
+    .p3-path-hero,
+    .p3-dashboard-hero,
+    .guided-study-card,
+    .topic-card,
+    .course-card,
+    .summary-card,
+    .entry-card,
+    .exam-callout,
+    .field-guide-topic,
+    .practice-topic,
+    .exam-question-card,
+    .next-step-card,
+    .exam-mode-grid article,
+    .exam-topic-row,
+    .progress-banner,
+    .homepage-course-panel,
+    .homepage-support-section,
+    .homepage-status-section,
+    .homepage-checklist,
+    .homepage-evidence-banner,
+    .homepage-trust-contract,
+    .learning-loop-list li,
+    .subtopic-lesson-shell,
+    .phase-panel,
+    .support-panel,
+    .diagnostic-question-card,
+    .repair-question-card,
+    .repair-lock-panel,
+    .repair-rule-panel,
+    .repair-state-example,
+    .repair-module-card,
+    .worksheet-hero,
+    .worksheet-instructions,
+    .worksheet-question-group,
+    .contract-topic-band,
+    .contract-official-topic-details,
+    .contract-table-shell,
+    .p3-next-step-panel,
+    .p3-dashboard-next-step,
+    .path-unit-card,
+    .path-principle-strip article,
+    .path-summary-panel,
+    .p3-example-problem-bar,
+    .exam-review-gate,
+    .exam-review-locked,
+    .exam-review-open,
+    .home-p3-action-card,
+    .home-p3-topic-strip,
+    .draft-seed-notice
+  ) :is(.button, button, .primary-button, .secondary-button, .text-button, .course-launch-cta, .course-launch-cta-primary, .course-launch-cta-secondary, .path-unit-primary-action) {
+    border: 0 !important;
+    color: var(--aa-control-ink) !important;
+    background: var(--aa-control) !important;
+  }
+
+  :root[data-theme="dark"] :is(
+    .practice-card,
+    .attempt-form,
+    .learn-check-form,
+    .learn-after-attempt,
+    .learn-similar-panel,
+    .learn-exam-transfer,
+    .repair-question-card,
+    .repair-lock-panel,
+    .skill-check-hint-panel,
+    .skill-check-repair-details,
+    .skill-check-answer-details,
+    .mark-scheme-details,
+    .self-grade-suggestions,
+    details.exam-hint-details
+  ) :is(.button, button, .primary-button, .secondary-button, .text-button) {
+    border: 0 !important;
+    color: var(--aa-ink) !important;
+    background: var(--aa-surface) !important;
+  }
+
+  :root[data-theme="dark"] :is(.practice-card, .diagnostic-question-card, .learn-step-card) {
+    border-color: var(--aa-border) !important;
+    color: var(--aa-ink) !important;
+    background: var(--aa-surface) !important;
+  }
+
+  :root[data-theme="dark"] :is(.p3-next-step-panel, .homepage-evidence-banner) {
+    border-color: var(--aa-border) !important;
+    color: var(--aa-control-ink) !important;
+    background: var(--aa-control) !important;
+  }
+
+  :root[data-theme="dark"] :is(.homepage-learning-loop, .learning-loop-list li, .homepage-trust-contract li, .homepage-trust-contract article) {
+    border-color: var(--aa-border) !important;
+    color: var(--aa-ink) !important;
+    background: var(--aa-surface) !important;
+  }
+
+  :root[data-theme="dark"] :is(.homepage-learning-loop, .learning-loop-list li, .homepage-trust-contract li, .homepage-trust-contract article) :where(h2, h3, p, span, strong, small) {
+    color: var(--aa-ink) !important;
+  }
+
+  :root[data-theme="dark"] .loop-index {
+    color: var(--aa-ink) !important;
+    background: var(--aa-control) !important;
+  }
+
+  :root[data-theme="dark"] .about-hero {
+    border-color: var(--aa-border) !important;
+    color: var(--aa-ink) !important;
+    background: var(--aa-surface) !important;
+  }
+
+  :root[data-theme="dark"] .about-hero :where(h1, p, .eyebrow) {
+    color: var(--aa-ink) !important;
+  }
+
+  :root[data-theme="dark"] .about-hero .button,
+  :root[data-theme="dark"] .p3-next-step-panel .button {
+    color: var(--aa-control-ink) !important;
+    background: var(--aa-control) !important;
+  }
+
+  :root[data-theme="dark"] .p3-next-step-panel .button {
+    color: var(--aa-ink) !important;
+    background: var(--aa-surface) !important;
+  }
+
+  :root[data-theme="dark"] .contract-table-shell :where(td, th) {
+    color: var(--aa-ink) !important;
+  }
+
+  :root[data-theme="dark"] .skill-check-form:not(.learn-check-form) .learn-option-bank legend {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] section.p3-next-step-panel a.button.primary-button {
+    color: var(--aa-ink) !important;
+    background: var(--aa-surface) !important;
+  }
+}
+
+@media screen and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --aa-page: #071225;
+    --aa-surface: #536f8d;
+    --aa-surface-soft: #607a98;
+    --aa-control: #071225;
+    --aa-ink: #ffffff;
+    --aa-control-ink: #ffffff;
+    --aa-paper: #ffffff;
+    --aa-paper-ink: #071225;
+    --aa-border: #ffffff;
+    --path-ink: #ffffff;
+    --path-muted: #f2f6fb;
+    --path-blue: #ffffff;
+    --path-green: #ffffff;
+    --path-line: rgba(255, 255, 255, 0.88);
+  }
+}
