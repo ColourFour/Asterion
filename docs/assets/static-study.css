@@ -8755,6 +8755,33 @@ body.skill-check-page .exam-question-section {
 
 @media screen and (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    color: #ffffff;
+    background: #071225;
+    --bg: #071225;
+    --surface: #536f8d;
+    --surface-muted: #607a98;
+    --ink: #ffffff;
+    --ink-warm: #ffffff;
+    --muted: #f2f6fb;
+    --muted-strong: #ffffff;
+    --border: #ffffff;
+    --border-strong: #ffffff;
+    --accent: #ffffff;
+    --accent-dark: #ffffff;
+    --accent-bright: #ffffff;
+    --accent-soft: #536f8d;
+    --sage: #ffffff;
+    --sage-dark: #ffffff;
+    --sage-soft: #536f8d;
+    --focus: #ffffff;
+    --success: #ffffff;
+    --danger: #ffffff;
+    --home-blue: #ffffff;
+    --home-blue-dark: #ffffff;
+    --home-navy: #071225;
+    --home-ink: #ffffff;
+    --home-muted: #f2f6fb;
     --aa-page: #071225;
     --aa-surface: #536f8d;
     --aa-surface-soft: #607a98;
@@ -8769,5 +8796,116 @@ body.skill-check-page .exam-question-section {
     --path-blue: #ffffff;
     --path-green: #ffffff;
     --path-line: rgba(255, 255, 255, 0.88);
+    --la-control: #536f8d;
+    --la-control-hover: #071225;
+    --la-control-ink: #ffffff;
+    --la-border: #ffffff;
+    --la-border-strong: #ffffff;
+    --la-ink: #ffffff;
+    --la-paper: #ffffff;
+  }
+
+  :root:not([data-theme="light"]) body {
+    color: var(--aa-ink);
+    background: var(--aa-page);
+  }
+
+  :root:not([data-theme="light"]) body.home-page,
+  :root:not([data-theme="light"]) body.home-page .home-p3-landing {
+    color: var(--aa-ink);
+    background: var(--aa-page);
+  }
+
+  :root:not([data-theme="light"]) .site-header,
+  :root:not([data-theme="light"]) body.home-page .site-header {
+    border-color: var(--aa-border) !important;
+    background: var(--aa-page) !important;
+  }
+
+  :root:not([data-theme="light"]) .brand-link,
+  :root:not([data-theme="light"]) .brand-link strong,
+  :root:not([data-theme="light"]) .brand-link small,
+  :root:not([data-theme="light"]) body.home-page .brand-link,
+  :root:not([data-theme="light"]) body.home-page .brand-link strong,
+  :root:not([data-theme="light"]) body.home-page .brand-link small,
+  :root:not([data-theme="light"]) body.home-page :is(
+    .home-p3-subtitle,
+    .home-p3-diagnostic-link,
+    .home-p3-action-card strong,
+    .home-p3-action-card small,
+    .home-p3-action-card span,
+    .home-p3-topic-symbol,
+    .home-p3-topic-tile strong,
+    .home-p3-topic-tile span,
+    .home-p3-topic-tile small
+  ) {
+    color: var(--aa-ink) !important;
+  }
+
+  :root:not([data-theme="light"]) .site-footer {
+    border-color: var(--aa-border);
+    color: var(--aa-ink);
+  }
+
+  :root:not([data-theme="light"]) :is(
+    .exam-part-card,
+    .mark-point-list,
+    .contract-availability-summary div,
+    .contract-resource-link,
+    .contract-resource-missing,
+    .mistake-tag-options label,
+    .subnav a,
+    .phase-tab,
+    .repair-module-tab,
+    .home-p3-topic-tile,
+    .question-figure,
+    .visual-template-figure,
+    .empty-state,
+    .marks-pill,
+    .field-guide-visual,
+    .is-incomplete,
+    .contract-trigger-list li
+  ) {
+    border-color: var(--aa-border) !important;
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root:not([data-theme="light"]) input,
+  :root:not([data-theme="light"]) select,
+  :root:not([data-theme="light"]) textarea,
+  :root:not([data-theme="light"]) .attempt-form input,
+  :root:not([data-theme="light"]) .attempt-form select,
+  :root:not([data-theme="light"]) .field-list input,
+  :root:not([data-theme="light"]) .skill-check-form input,
+  :root:not([data-theme="light"]) .diagnostic-answer-field,
+  :root:not([data-theme="light"]) .repair-answer-field,
+  :root:not([data-theme="light"]) .single-answer-field,
+  :root:not([data-theme="light"]) .learn-option-bank label,
+  :root:not([data-theme="light"]) .option-list label,
+  :root:not([data-theme="light"]) .export-progress-form input,
+  :root:not([data-theme="light"]) .export-csv-output,
+  :root:not([data-theme="light"]) .doing-step-list textarea {
+    border-color: var(--aa-surface) !important;
+    color: var(--aa-paper-ink) !important;
+    background: var(--aa-paper) !important;
+  }
+
+  :root:not([data-theme="light"]) :is(
+    .home-p3-topic-tile,
+    .contract-resource-link,
+    .contract-resource-missing,
+    .empty-state,
+    .marks-pill,
+    .field-guide-visual,
+    .is-incomplete,
+    .contract-trigger-list li,
+    .single-answer-field,
+    .learn-option-bank label,
+    .option-list label,
+    .diagnostic-answer-field,
+    .repair-answer-field
+  ) :where(h1, h2, h3, h4, p, span, strong, small, a, .text-link, .math-text, .katex, .katex-html, .katex-html *) {
+    color: var(--aa-paper-ink) !important;
   }
 }
