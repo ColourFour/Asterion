@@ -614,6 +614,7 @@ function renderPage(options: RenderPageOptions): string {
   const katexHref = hrefToPublicAsset(options.pagePath, 'assets/katex.min.css');
   const scriptHref = hrefToPublicAsset(options.pagePath, 'assets/static-study.js');
   const title = `${options.title} | Asterion Study`;
+  const themeBootScript = `(function(){try{var theme=window.localStorage.getItem('asterion.theme.v1');if(theme==='dark'||theme==='light'){document.documentElement.dataset.theme=theme;}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.dataset.theme='dark';}}catch(error){}})();`;
 
   return `<!doctype html>
 <html lang="en">
@@ -621,6 +622,7 @@ function renderPage(options: RenderPageOptions): string {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${escapeAttr(options.description)}" />
+    <script>${themeBootScript}</script>
     <link rel="stylesheet" href="${katexHref}" />
     <link rel="stylesheet" href="${cssHref}" />
     <title>${escapeHtml(title)}</title>
@@ -640,6 +642,10 @@ function renderPage(options: RenderPageOptions): string {
         </span>
       </a>
       ${primaryNav(options.pagePath, options.active)}
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+        <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
+      </button>
     </header>
     <main id="main-content" tabindex="-1">
       ${options.body}

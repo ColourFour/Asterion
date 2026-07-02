@@ -8671,22 +8671,37 @@ body.skill-check-page .exam-question-section {
     box-shadow: none !important;
   }
 
-  :root:not([data-theme="dark"]) body.home-page :is(.home-p3-action-card, .home-p3-topic-tile) {
-    border-color: var(--la-border) !important;
+  :root:not([data-theme="dark"]) body.home-page .home-p3-action-card {
+    border-color: rgba(111, 179, 255, 0.48) !important;
+    color: #ffffff !important;
+    background: rgba(8, 31, 71, 0.72) !important;
+  }
+
+  :root:not([data-theme="dark"]) body.home-page .home-p3-topic-strip {
+    border-color: rgba(111, 179, 255, 0.36) !important;
+    background: rgba(7, 25, 58, 0.72) !important;
+  }
+
+  :root:not([data-theme="dark"]) body.home-page .home-p3-topic-tile {
+    border-color: rgba(111, 179, 255, 0.28) !important;
+    color: #ffffff !important;
+    background: transparent !important;
   }
 
   :root:not([data-theme="dark"]) body.home-page :is(
     .home-p3-subtitle,
     .home-p3-diagnostic-link,
+    .home-p3-action-card,
     .home-p3-action-card strong,
     .home-p3-action-card small,
     .home-p3-action-card span,
     .home-p3-topic-symbol,
+    .home-p3-topic-tile,
     .home-p3-topic-tile strong,
     .home-p3-topic-tile span,
     .home-p3-topic-tile small
   ) {
-    color: #000000 !important;
+    color: #ffffff !important;
   }
 
   :root:not([data-theme="dark"]) button.repair-module-tab {
@@ -8907,5 +8922,59 @@ body.skill-check-page .exam-question-section {
     .repair-answer-field
   ) :where(h1, h2, h3, h4, p, span, strong, small, a, .text-link, .math-text, .katex, .katex-html, .katex-html *) {
     color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] .home-p3-topic-tile :where(span, strong, small, .home-p3-topic-symbol),
+  :root:not([data-theme="light"]) .home-p3-topic-tile :where(span, strong, small, .home-p3-topic-symbol) {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile :where(span, strong, small, .home-p3-topic-symbol),
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile :where(span, strong, small, .home-p3-topic-symbol) {
+    color: var(--aa-paper-ink) !important;
+  }
+
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile span,
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile strong,
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile small,
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile .home-p3-topic-symbol,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile span,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile strong,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile small,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile .home-p3-topic-symbol {
+    color: var(--aa-paper-ink) !important;
+  }
+}
+
+@media screen {
+  :root[data-theme="dark"] body.home-page .home-p3-topic-strip,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-strip,
+  body.home-page .home-p3-topic-strip {
+    border-color: rgba(111, 179, 255, 0.36) !important;
+    color: #ffffff !important;
+    background: rgba(7, 25, 58, 0.72) !important;
+  }
+
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile,
+  body.home-page .home-p3-topic-tile {
+    border-color: rgba(111, 179, 255, 0.28) !important;
+    color: #ffffff !important;
+    background: transparent !important;
+  }
+
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile span,
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile strong,
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile small,
+  :root[data-theme="dark"] body.home-page .home-p3-topic-tile .home-p3-topic-symbol,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile span,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile strong,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile small,
+  :root:not([data-theme="light"]) body.home-page .home-p3-topic-tile .home-p3-topic-symbol,
+  body.home-page .home-p3-topic-tile span,
+  body.home-page .home-p3-topic-tile strong,
+  body.home-page .home-p3-topic-tile small,
+  body.home-page .home-p3-topic-tile .home-p3-topic-symbol {
+    color: #ffffff !important;
   }
 }

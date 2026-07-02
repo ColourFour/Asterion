@@ -1,5 +1,6 @@
 (function () {
   var STORAGE_KEY = 'asterion.progress.v1';
+  var THEME_STORAGE_KEY = 'asterion.theme.v1';
   var PROFILE_ID = 'local-static-student';
   var MAILTO_PROGRESS_EXPORT_MAX_LENGTH = 1800;
   var REDO_DELAY_MS = 48 * 60 * 60 * 1000;
@@ -65,6 +66,62 @@
     'coefficient error': 'I made a coefficient error when...',
     'forgot constant': 'I forgot the constant when...'
   };
+
+  function safeStorageGet(key) {
+    try {
+      return window.localStorage.getItem(key);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function safeStorageSet(key, value) {
+    try {
+      window.localStorage.setItem(key, value);
+    } catch (error) {
+      // Storage can be unavailable in private or restricted browser contexts.
+    }
+  }
+
+  function systemPrefersDark() {
+    return Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  function currentThemePreference() {
+    var savedTheme = safeStorageGet(THEME_STORAGE_KEY);
+    if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
+    return systemPrefersDark() ? 'dark' : 'light';
+  }
+
+  function updateThemeToggle(theme) {
+    var button = document.querySelector('[data-theme-toggle]');
+    if (!(button instanceof HTMLButtonElement)) return;
+    var nextTheme = theme === 'dark' ? 'light' : 'dark';
+    var label = button.querySelector('[data-theme-toggle-label]');
+    button.setAttribute('aria-label', 'Switch to ' + nextTheme + ' mode');
+    button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+    button.title = 'Switch to ' + nextTheme + ' mode';
+    if (label) label.textContent = nextTheme === 'dark' ? 'Dark' : 'Light';
+  }
+
+  function applyThemePreference(theme) {
+    if (theme === 'dark' || theme === 'light') {
+      document.documentElement.dataset.theme = theme;
+      updateThemeToggle(theme);
+    }
+  }
+
+  function setupThemeToggle() {
+    applyThemePreference(currentThemePreference());
+    var button = document.querySelector('[data-theme-toggle]');
+    if (!(button instanceof HTMLButtonElement)) return;
+    button.addEventListener('click', function () {
+      var currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+      var nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      safeStorageSet(THEME_STORAGE_KEY, nextTheme);
+      applyThemePreference(nextTheme);
+    });
+  }
 
   function createId(prefix) {
     return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
@@ -4782,6 +4839,7 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     document.documentElement.classList.add('static-enhanced');
+    setupThemeToggle();
     setupHomepageDemo();
     setupProgressExportForms();
     setupP3DiagnosticFlow();
