@@ -1,6 +1,5 @@
 (function () {
   var STORAGE_KEY = 'asterion.progress.v1';
-  var THEME_STORAGE_KEY = 'asterion.theme.v1';
   var PROFILE_ID = 'local-static-student';
   var MAILTO_PROGRESS_EXPORT_MAX_LENGTH = 1800;
   var REDO_DELAY_MS = 48 * 60 * 60 * 1000;
@@ -66,62 +65,6 @@
     'coefficient error': 'I made a coefficient error when...',
     'forgot constant': 'I forgot the constant when...'
   };
-
-  function safeStorageGet(key) {
-    try {
-      return window.localStorage.getItem(key);
-    } catch (error) {
-      return null;
-    }
-  }
-
-  function safeStorageSet(key, value) {
-    try {
-      window.localStorage.setItem(key, value);
-    } catch (error) {
-      // Storage can be unavailable in private or restricted browser contexts.
-    }
-  }
-
-  function systemPrefersDark() {
-    return Boolean(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  }
-
-  function currentThemePreference() {
-    var savedTheme = safeStorageGet(THEME_STORAGE_KEY);
-    if (savedTheme === 'dark' || savedTheme === 'light') return savedTheme;
-    return systemPrefersDark() ? 'dark' : 'light';
-  }
-
-  function updateThemeToggle(theme) {
-    var button = document.querySelector('[data-theme-toggle]');
-    if (!(button instanceof HTMLButtonElement)) return;
-    var nextTheme = theme === 'dark' ? 'light' : 'dark';
-    var label = button.querySelector('[data-theme-toggle-label]');
-    button.setAttribute('aria-label', 'Switch to ' + nextTheme + ' mode');
-    button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
-    button.title = 'Switch to ' + nextTheme + ' mode';
-    if (label) label.textContent = nextTheme === 'dark' ? 'Dark' : 'Light';
-  }
-
-  function applyThemePreference(theme) {
-    if (theme === 'dark' || theme === 'light') {
-      document.documentElement.dataset.theme = theme;
-      updateThemeToggle(theme);
-    }
-  }
-
-  function setupThemeToggle() {
-    applyThemePreference(currentThemePreference());
-    var button = document.querySelector('[data-theme-toggle]');
-    if (!(button instanceof HTMLButtonElement)) return;
-    button.addEventListener('click', function () {
-      var currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-      var nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      safeStorageSet(THEME_STORAGE_KEY, nextTheme);
-      applyThemePreference(nextTheme);
-    });
-  }
 
   function createId(prefix) {
     return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
@@ -1028,7 +971,7 @@
       checkedPracticePasses: skillAttempts.filter(isPassingSkillCheckAttempt).length,
       reviewCandidates: reviewCandidates,
       selfMarkedExamAttempts: examAttempts.filter(function (attempt) { return attempt.selfMarked === true; }).length,
-      learningActivityAttempts: 0,
+      learningActivityAttempts: safeArray(progress.learningActivityAttempts).length,
       knowledgeStateUpdates: safeArray(progress.knowledge_state_updates).length,
       knowledgeErrors: safeArray(progress.knowledge_errors).length,
       knowledgeInterventions: safeArray(progress.knowledge_interventions).length
@@ -1066,13 +1009,13 @@
     var passed = isPassingSkillCheckAttempt(attempt);
     return Object.assign(blankCsvRow(exportTimestamp), {
       topic: attempt.topic || '',
-      route_page_type: 'practice',
-      activity_type: 'Checked question',
+      route_page_type: 'skill-check',
+      activity_type: 'Checked Practice',
       item_id: attempt.checkId || '',
       attempt_timestamp: attempt.timestamp || '',
       answer_result_summary: attempt.submittedAnswer || '',
       deterministic_pass_fail: passed ? 'pass' : 'fail',
-      evidence_label: passed ? 'Deterministic checked-question evidence' : 'Checked question attempt',
+      evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
       evidence_status_label: passed ? 'checked_practice_passed' : 'not_passed'
     });
   }
@@ -1092,7 +1035,7 @@
       attempt_timestamp: attempt.timestamp || '',
       answer_result_summary: state,
       deterministic_pass_fail: 'not_available',
-      evidence_label: 'Review candidate from local checked-question attempt',
+      evidence_label: 'Review candidate from local checked practice attempt',
       evidence_status_label: 'needs_checked_evidence',
       suspicion_flags: tags.join('|')
     });
@@ -1207,7 +1150,9 @@
     var examRows = safeArray(progress.attempts).map(function (attempt) {
       return examCsvRow(attempt, exportTimestamp);
     });
-    var learningRows = [];
+    var learningRows = safeArray(progress.learningActivityAttempts).map(function (attempt) {
+      return learningCsvRow(attempt, exportTimestamp);
+    });
     var knowledgeStateRows = safeArray(progress.knowledge_state_updates).map(function (update) {
       return knowledgeStateCsvRow(update, exportTimestamp);
     });
@@ -1265,7 +1210,7 @@
       '',
       'Notes:',
       'This export is generated from progress saved in this browser only.',
-      'Checked-question rows are deterministic local checks. Exam Training rows are self-marked practice, not checked evidence.'
+      'Checked Practice rows are deterministic local checks. Exam Training rows are self-marked practice, not checked evidence.'
     ];
     if (includeCsv) {
       lines = lines.concat([
@@ -1371,7 +1316,9 @@
   }
 
   function fieldGuideCompletedCount(progress, regionId, total) {
-    return 0;
+    var record = progress.regionLearning && progress.regionLearning[regionId];
+    if (record && record.fieldGuideCompletedAt) return total;
+    return Math.min(total, Object.keys(completionsFor(progress, regionId)).length);
   }
 
   function attemptsForRegion(progress, regionId) {
@@ -1391,7 +1338,7 @@
   }
 
   function isPassingSkillCheckAttempt(attempt) {
-    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.usedHint && !attempt.revealedAnswer && !attempt.revealedRepairStep);
+    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep);
   }
 
   function parseRequiredCheckIds(node) {
@@ -1518,10 +1465,11 @@
 
   function examReviewRequirementStatus(progress, requirement) {
     var fieldGuideTotal = Math.max(1, Number(requirement.fieldGuideTotal || 1));
+    var guideCount = fieldGuideCompletedCount(progress, requirement.regionId, fieldGuideTotal);
     var requiredCheckIds = requirement.requiredCheckIds.filter(function (id) { return typeof id === 'string' && id; });
     var passCount = passedCheckIds(progress, requiredCheckIds, requirement.regionId).length;
     return {
-      guideCount: 0,
+      guideCount: guideCount,
       fieldGuideTotal: fieldGuideTotal,
       passCount: passCount,
       requiredCheckCount: requiredCheckIds.length,
@@ -1555,7 +1503,7 @@
           return '<li class="' + (status.complete ? 'is-complete' : 'is-incomplete') + '">'
             + '<div><strong>' + escapeText(requirement.name) + '</strong>'
             + '<span>Checked questions ' + status.passCount + '/' + status.requiredCheckCount
-            + '</span></div>'
+            + '; optional Learn ' + status.guideCount + '/' + status.fieldGuideTotal + '</span></div>'
             + (status.complete ? '<span class="unit-state">Checked evidence</span>' : '<a class="text-link" href="' + escapeText(targetHref || '#') + '">Continue</a>')
             + '</li>';
         }).join('');
@@ -1570,7 +1518,10 @@
     var learnHref = card.getAttribute('data-learn-href') || card.getAttribute('href') || '#';
     var skillHref = card.getAttribute('data-skill-href') || learnHref;
     var examHref = card.getAttribute('data-exam-href') || learnHref;
+    var guideNode = card.querySelector('[data-progress-field-guide]');
     var skillNode = card.querySelector('[data-progress-skill]');
+    var fieldTotal = Number(guideNode?.getAttribute('data-total') || 1);
+    var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
     var requiredCheckIds = skillNode ? parseRequiredCheckIds(skillNode) : [];
     var passCount = requiredCheckIds.length
       ? passedCheckIds(progress, requiredCheckIds, regionId).length
@@ -1584,29 +1535,29 @@
       learnHref: learnHref,
       skillHref: skillHref,
       examHref: examHref,
-      guideCount: 0,
-      fieldTotal: 0,
+      guideCount: guideCount,
+      fieldTotal: fieldTotal,
       passCount: passCount,
       requiredCheckCount: requiredCheckIds.length,
       examCount: examCount,
       checkedComplete: checkedComplete,
       reviewReady: checkedComplete,
-      started: passCount > 0 || examCount > 0
+      started: guideCount > 0 || passCount > 0 || examCount > 0
     };
   }
 
   function actionForUnitStatus(status) {
     if (!status.checkedComplete) {
       return {
-        title: (status.started ? 'Continue ' : 'Start ') + status.name + ' Practice',
-        copy: 'Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '. Support questions are open and do not create progress.',
+        title: (status.started ? 'Continue ' : 'Start ') + status.name + ' Checked Practice',
+        copy: 'Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '. Learn is optional support and does not block this route.',
         href: status.skillHref,
-        label: status.started ? 'Continue Practice' : 'Start Practice'
+        label: status.started ? 'Continue Checked Practice' : 'Start Checked Practice'
       };
     }
     return {
       title: 'Try ' + status.name + ' Exam Training',
-      copy: 'Checked evidence is recorded in this browser. Exam Training is useful but remains weaker self-marked practice evidence.',
+      copy: 'Learn and Checked Practice evidence is recorded in this browser. Exam Training is useful but remains weaker self-marked practice evidence.',
       href: status.examHref,
       label: status.examCount > 0 ? 'Continue Exam Training' : 'Start Exam Training'
     };
@@ -1646,7 +1597,7 @@
       if (allReviewReady) {
         var reviewHref = panel.getAttribute('data-review-href') || '#';
         if (title) title.textContent = 'Export progress';
-        if (copy) copy.textContent = 'All checked question and self-marked exam evidence is recorded in this browser. Send your CSV to your teacher, then use mixed review as local practice guidance.';
+        if (copy) copy.textContent = 'All unit Learn and Checked Practice evidence is recorded in this browser. Send your CSV to your teacher, then use mixed review as local practice guidance.';
         if (link) {
           link.textContent = 'Export Progress';
           link.setAttribute('href', reviewHref);
@@ -1665,9 +1616,18 @@
 
   function updateProgressText() {
     var progress = loadProgress();
+    document.querySelectorAll('[data-progress-field-guide]').forEach(function (node) {
+      var regionId = node.getAttribute('data-progress-field-guide') || '';
+      var total = Number(node.getAttribute('data-total') || 1);
+      var label = node.getAttribute('data-label') || 'Learn';
+      var completed = fieldGuideCompletedCount(progress, regionId, total);
+      node.textContent = label + ': ' + completed + '/' + total;
+      node.classList.toggle('is-complete', completed >= total);
+    });
+
     document.querySelectorAll('[data-progress-skill]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-skill') || '';
-      var label = node.getAttribute('data-label') || 'Checked questions';
+      var label = node.getAttribute('data-label') || 'Checked Practice';
       var requiredCheckIds = parseRequiredCheckIds(node);
       var passCount = requiredCheckIds.length
         ? passedCheckIds(progress, requiredCheckIds, regionId).length
@@ -1704,20 +1664,25 @@
 
     document.querySelectorAll('[data-progress-status]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-status') || '';
+      var fieldTotal = Number(document.querySelector('[data-progress-field-guide="' + regionId + '"]')?.getAttribute('data-total') || 1);
+      var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
-      node.textContent = 'Local progress: ' + practiceCount + ' checked question passes, ' + examCount + ' self-marked exam evidence.';
+      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Learn steps, ' + practiceCount + ' checked question passes, ' + examCount + ' self-marked exam evidence.';
     });
 
     document.querySelectorAll('[data-progress-summary]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-summary') || '';
+      var fieldTotal = Number(node.getAttribute('data-field-total') || 1);
+      var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
       var parts = [];
+      if (guideCount > 0) parts.push(guideCount + '/' + fieldTotal + ' Learn');
       if (practiceCount > 0) parts.push(practiceCount + ' checked pass' + (practiceCount === 1 ? '' : 'es'));
       if (examCount > 0) parts.push(examCount + ' self-marked exam attempt' + (examCount === 1 ? '' : 's'));
       node.textContent = parts.length ? parts.join(' · ') : 'No saved progress yet';
-      node.style.setProperty('--progress-ratio', practiceCount > 0 ? '100%' : '0%');
+      node.style.setProperty('--progress-ratio', Math.round(Math.min(1, Math.max(0, guideCount / Math.max(1, fieldTotal))) * 100) + '%');
     });
 
     document.querySelectorAll('[data-complete-field-guide-topic]').forEach(function (button) {
@@ -1736,30 +1701,86 @@
   }
 
   function completeFieldGuideTopic(regionId, topicId, title) {
-    void regionId;
-    void topicId;
-    void title;
+    var progress = loadProgress();
+    var now = new Date().toISOString();
+    var current = progress.regionLearning[regionId] || { regionId: regionId };
+    var completions = Object.assign({}, current.fieldGuideTopicCompletions || {});
+    completions[topicId] = completions[topicId] || {
+      topicId: topicId,
+      subtopicId: topicId,
+      title: title,
+      completedAt: now,
+      source: 'field_guide'
+    };
+
+    var topicButtons = Array.from(document.querySelectorAll('[data-complete-field-guide-topic][data-region-id="' + regionId + '"]'));
+    var allComplete = topicButtons.length > 0 && topicButtons.every(function (button) {
+      var id = button.getAttribute('data-complete-field-guide-topic') || '';
+      return Boolean(completions[id]);
+    });
+
+    progress.regionLearning[regionId] = Object.assign({}, current, {
+      regionId: regionId,
+      fieldGuideStartedAt: current.fieldGuideStartedAt || now,
+      fieldGuideCompletedAt: allComplete ? (current.fieldGuideCompletedAt || now) : current.fieldGuideCompletedAt,
+      fieldGuideTopicCompletions: completions,
+      updatedAt: now
+    });
+    saveProgress(progress);
     updateProgressText();
   }
 
   function completeWholeFieldGuide(regionId) {
-    void regionId;
+    document.querySelectorAll('[data-complete-field-guide-topic][data-region-id="' + regionId + '"]').forEach(function (button) {
+      completeFieldGuideTopic(regionId, button.getAttribute('data-complete-field-guide-topic') || '', button.getAttribute('data-topic-title') || '');
+    });
+    var progress = loadProgress();
+    var now = new Date().toISOString();
+    var current = progress.regionLearning[regionId] || { regionId: regionId };
+    progress.regionLearning[regionId] = Object.assign({}, current, {
+      regionId: regionId,
+      fieldGuideStartedAt: current.fieldGuideStartedAt || now,
+      fieldGuideCompletedAt: current.fieldGuideCompletedAt || now,
+      updatedAt: now
+    });
+    saveProgress(progress);
     updateProgressText();
   }
 
   function completeLearnStepInProgress(progress, regionId, stepId, title, attemptId) {
-    void regionId;
-    void stepId;
-    void title;
-    void attemptId;
+    if (!regionId || !stepId) return progress;
+    var now = new Date().toISOString();
+    var current = progress.regionLearning[regionId] || { regionId: regionId };
+    var completions = Object.assign({}, current.fieldGuideTopicCompletions || {});
+    completions[stepId] = completions[stepId] || {
+      topicId: stepId,
+      subtopicId: stepId,
+      title: title,
+      completedAt: now,
+      source: 'quick_check',
+      activityId: stepId,
+      attemptId: attemptId
+    };
+
+    var stepCards = Array.from(document.querySelectorAll('[data-learn-step-card][data-region-id="' + regionId + '"]'));
+    var allComplete = stepCards.length > 0 && stepCards.every(function (card) {
+      var id = card.getAttribute('data-learn-step-id') || '';
+      var legacyId = card.getAttribute('data-field-guide-topic') || '';
+      return Boolean(completions[id] || completions[legacyId]);
+    });
+
+    progress.regionLearning[regionId] = Object.assign({}, current, {
+      regionId: regionId,
+      fieldGuideStartedAt: current.fieldGuideStartedAt || now,
+      fieldGuideCompletedAt: allComplete ? (current.fieldGuideCompletedAt || now) : current.fieldGuideCompletedAt,
+      fieldGuideTopicCompletions: completions,
+      updatedAt: now
+    });
     return progress;
   }
 
   function learnStepCompleted(progress, regionId, stepId) {
-    void progress;
-    void regionId;
-    void stepId;
-    return false;
+    return Boolean(completionsFor(progress, regionId)[stepId]);
   }
 
   function learnCardCompleted(progress, card) {
@@ -3012,8 +3033,39 @@
   }
 
   function selectedMistakeTags(form) {
-    return parseJsonAttribute(form, 'data-mistake-tags', [])
-      .filter(function (tag) { return typeof tag === 'string' && tag.trim(); });
+    return Array.from(form.querySelectorAll('input[name="mistakeTags"]:checked'))
+      .map(function (input) { return input instanceof HTMLInputElement ? input.value : ''; })
+      .filter(Boolean);
+  }
+
+  function targetedPromptForTags(tags) {
+    for (var index = 0; index < tags.length; index += 1) {
+      var prompt = TARGETED_MISTAKE_PROMPTS[tags[index]];
+      if (prompt) return prompt;
+    }
+    return '';
+  }
+
+  function updateTargetedPrompt(form) {
+    var prompt = form.querySelector('[data-targeted-prompt]');
+    if (!prompt) return;
+    var text = targetedPromptForTags(selectedMistakeTags(form));
+    prompt.textContent = text;
+    prompt.hidden = !text;
+  }
+
+  function updateLatestSkillCheckAttemptMistakeTags(form) {
+    var progress = loadProgress();
+    var checkId = form.getAttribute('data-check-id') || '';
+    var latestIndex = progress.skillCheckAttempts.map(function (attempt) {
+      return attempt.checkId;
+    }).lastIndexOf(checkId);
+    if (latestIndex < 0) return;
+    progress.skillCheckAttempts[latestIndex] = Object.assign({}, progress.skillCheckAttempts[latestIndex], {
+      mistakeTags: selectedMistakeTags(form)
+    });
+    progress = updateErrorClassificationFromTags(progress, checkId, selectedMistakeTags(form));
+    saveProgress(progress);
   }
 
   function reviewCandidateState(attempt) {
@@ -3102,7 +3154,7 @@
         var dueAt = interval ? repairDueTimestamp(attempt, interval) : undefined;
         if (!interval || dueAt === undefined) return;
         var candidate = {
-          topic: attempt.topic || 'P3 checked question',
+          topic: attempt.topic || 'P3 Checked Practice',
           skillId: attempt.skillId || '',
           checkId: attempt.checkId || '',
           regionId: attempt.regionId || '',
@@ -3180,7 +3232,7 @@
     groupContainer.innerHTML = groups.map(function (group) {
       return '<article class="review-group-card">'
         + '<header><div><p class="eyebrow">' + group.count + ' due</p><h3>' + escapeText(group.mistakeTag) + '</h3></div></header>'
-        + '<p class="targeted-prompt">' + escapeText(TARGETED_MISTAKE_PROMPTS[group.mistakeTag] || 'Review the related skill before trying again.') + '</p>'
+        + '<p class="targeted-prompt">' + escapeText(TARGETED_MISTAKE_PROMPTS[group.mistakeTag] || 'Review what went wrong before trying again.') + '</p>'
         + '<ul class="review-candidate-list">'
         + group.candidates.map(function (candidate) {
           var route = skillRepairRouteForCandidate(repairRoutes, candidate);
@@ -3276,10 +3328,42 @@
   }
 
   function saveLearnModeAttempt(form, submittedAnswer, checkResult) {
-    return {
+    var progress = loadProgress();
+    var now = new Date().toISOString();
+    var regionId = form.getAttribute('data-region-id') || '';
+    var stepId = form.getAttribute('data-step-id') || form.getAttribute('data-field-guide-topic-id') || '';
+    var usedHint = form.getAttribute('data-used-hint') === 'true';
+    var revealedAnswer = form.getAttribute('data-revealed-answer') === 'true';
+    var strongEvidence = Boolean(checkResult.isCorrect && !usedHint && !revealedAnswer);
+    var stepCard = form.closest('[data-learn-step-card]');
+    var requiresSimilar = stepCard?.getAttribute('data-learn-requires-similar') === 'true';
+    var variant = form.getAttribute('data-learn-variant') || 'primary';
+    var completesStep = Boolean(checkResult.isCorrect && (!requiresSimilar || variant === 'similar'));
+    var attempt = {
+      id: createId('learn_attempt'),
+      regionId: regionId,
+      activityType: 'learn_mode',
+      activityId: form.getAttribute('data-check-id') || stepId,
+      stepId: stepId,
+      variant: variant,
+      topic: form.getAttribute('data-topic') || '',
+      prompt: form.getAttribute('data-step-title') || '',
       submittedAnswer: submittedAnswer,
-      isCorrect: Boolean(checkResult.isCorrect)
+      isCorrect: Boolean(checkResult.isCorrect),
+      usedHint: usedHint,
+      revealedAnswer: revealedAnswer,
+      strongEvidence: strongEvidence,
+      mistakeTags: selectedMistakeTags(form),
+      createdAt: now,
+      completedAt: completesStep ? now : undefined
     };
+    progress.learningActivityAttempts.push(attempt);
+    if (completesStep) {
+      progress = completeLearnStepInProgress(progress, regionId, stepId, form.getAttribute('data-step-title') || '', attempt.id);
+    }
+    saveProgress(progress);
+    updateProgressText();
+    return attempt;
   }
 
   function setSkillFeedback(form, message, state) {
@@ -3331,12 +3415,8 @@
     var nextButton = form.querySelector('[data-skill-check-inline-next]');
     var repair = form.querySelector('[data-skill-repair]');
     var answerReveal = form.querySelector('[data-skill-answer-reveal]');
-    if (
-      checkResult.isCorrect
-      && form.getAttribute('data-used-hint') !== 'true'
-      && form.getAttribute('data-revealed-answer') !== 'true'
-      && form.getAttribute('data-revealed-repair-step') !== 'true'
-    ) {
+    var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
+    if (checkResult.isCorrect && form.getAttribute('data-revealed-answer') !== 'true' && form.getAttribute('data-revealed-repair-step') !== 'true') {
       setSkillFeedback(form, 'Correct. Saved as a deterministic pass.', 'correct');
       form.classList.add('is-passed');
       if (nextButton) nextButton.hidden = false;
@@ -3347,7 +3427,7 @@
       return;
     }
     if (checkResult.isCorrect) {
-      setSkillFeedback(form, 'Correct, but this used support or was already revealed or repaired, so it is not marked passed.', 'repaired');
+      setSkillFeedback(form, 'Correct, but this was already revealed or repaired, so it is not marked passed.', 'repaired');
       if (nextButton) nextButton.hidden = false;
       return;
     }
@@ -3356,6 +3436,8 @@
       submitButton.textContent = 'Try Again';
       submitButton.className = 'button primary-button';
     }
+    if (mistakePanel) mistakePanel.hidden = false;
+    updateTargetedPrompt(form);
     if (repair) repair.hidden = false;
     if (answerReveal) answerReveal.hidden = false;
     if (nextButton) nextButton.hidden = true;
@@ -3375,7 +3457,7 @@
     var stepCard = form.closest('[data-learn-step-card]');
     var variant = form.getAttribute('data-learn-variant') || 'primary';
     var isPrimary = variant === 'primary';
-    var requiresSimilar = false;
+    var requiresSimilar = stepCard?.getAttribute('data-learn-requires-similar') === 'true';
     var similar = stepCard?.querySelector('[data-learn-similar-panel]');
     var transfer = stepCard?.querySelector('[data-learn-exam-transfer]');
 
@@ -3390,19 +3472,22 @@
     if (similarCta && isPrimary && similar) similarCta.hidden = false;
 
     if (checkResult.isCorrect) {
-      setSkillFeedback(form, 'Correct. This support question does not create progress or checked evidence.', 'correct');
+      setSkillFeedback(form, 'Correct. Saved as Learn progress only; use Checked Practice for pass evidence.', 'correct');
       form.classList.add('is-passed');
       if (submitButton) {
         submitButton.textContent = 'Check Answer';
         submitButton.className = 'button secondary-button';
       }
       if (retryCta) retryCta.hidden = true;
+      if (isPrimary && requiresSimilar) {
+        setSkillFeedback(form, 'Correct. Primary step checked; complete the similar question before this lesson step is finished.', 'correct');
+      }
       window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
       updateLearnModeFlowState();
       return;
     }
 
-    setSkillFeedback(form, 'Not yet. Review the explanation, then try again or keep moving.', 'incorrect');
+    setSkillFeedback(form, 'Not yet. Review the explanation, then try this first setup again before moving on.', 'incorrect');
     form.setAttribute('data-used-hint', 'true');
     if (hint) hint.hidden = false;
     if (submitButton) {
@@ -3640,7 +3725,7 @@
     saveProgress(progress);
     if (status) {
       var gateText = attempt.masteryGate === 'skill_check_passed'
-        ? 'Checked question passed; self-marked exam practice recorded.'
+        ? 'Checked Practice passed; self-marked exam practice recorded.'
         : 'Needs checked evidence before exam practice can support this route.';
       status.textContent = attempt.trustLabel + '. Self-marked attempt saved. ' + gateText;
       status.setAttribute('data-state', attempt.suspicionFlags.length ? 'warning' : 'saved');
@@ -3924,7 +4009,7 @@
           var heading = group.querySelector('h2');
           link.className = 'button secondary-button';
           link.href = groupId ? '#' + encodeURIComponent(groupId) : '#';
-          link.textContent = heading?.textContent?.trim() || 'Practice';
+          link.textContent = heading?.textContent?.trim() || 'Checked Practice';
           groupNav.append(link);
         });
         groupSwitcher.append(groupSummary, groupNav);
@@ -3974,12 +4059,6 @@
         return heading?.textContent?.trim() || 'this skill';
       }
 
-      function activeSkillGroupCheckedQuestionCount() {
-        var activeSkillGroup = activeSkillGroupElement();
-        if (!(activeSkillGroup instanceof HTMLElement)) return 0;
-        return activeSkillGroup.querySelectorAll('[data-check-skill-answer]').length;
-      }
-
       function hashTargetIsInFlow() {
         var hash = window.location.hash ? window.location.hash.slice(1) : '';
         if (!hash) return false;
@@ -3998,8 +4077,8 @@
         var groupIndex = activeSkillGroupIndex();
         var hasNextGroup = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1;
         completionText.textContent = hasNextGroup
-          ? 'That was the practice set for ' + activeSkillLabel() + '.'
-          : 'That was the last practice set for this topic.';
+          ? 'That was the 3-question check for ' + activeSkillLabel() + '.'
+          : 'That was the last 3-question check for this topic.';
         completionAction.textContent = hasNextGroup ? 'Next subtopic' : finalLabel;
       }
 
@@ -4067,7 +4146,7 @@
         if (skillCheckGroups.length > 1 && isLastCardInChunk) {
           next.disabled = false;
           next.className = isCoordinateGeometrySkillCheck ? 'button secondary-button' : 'button primary-button';
-          next.textContent = isCoordinateGeometrySkillCheck ? 'Skip to finish practice' : 'Finish practice';
+          next.textContent = isCoordinateGeometrySkillCheck ? 'Skip to finish check' : 'Finish check';
         } else {
           next.disabled = false;
           next.className = skillCheckGroups.length > 1 && isCoordinateGeometrySkillCheck ? 'button secondary-button' : 'button primary-button';
@@ -4079,8 +4158,7 @@
         if (activeCard instanceof HTMLElement) {
           var activeSkillForm = activeCard.querySelector('[data-check-skill-answer]');
           var activeSkillPassed = activeSkillForm?.classList?.contains('is-passed');
-          var activeGroupRequiresCheckedGate = activeSkillGroupCheckedQuestionCount() > 1;
-          if (activeSkillForm && activeGroupRequiresCheckedGate && !activeSkillPassed) {
+          if (activeSkillForm && !activeSkillPassed) {
             next.className = 'button secondary-button';
             next.textContent = 'Pass to continue';
             next.disabled = true;
@@ -4229,6 +4307,124 @@
         render();
       });
 
+      render();
+    });
+  }
+
+  function updateLearnModeFlowState() {
+    var progress = loadProgress();
+    document.querySelectorAll('[data-learn-step-card]').forEach(function (card) {
+      if (!(card instanceof HTMLElement)) return;
+      var completed = learnCardCompleted(progress, card);
+      var state = card.querySelector('[data-learn-step-state]');
+      card.classList.toggle('is-complete', completed);
+      if (state) state.textContent = completed ? 'Completed' : 'Not completed';
+    });
+  }
+
+  function setupLearnModeFlow() {
+    document.querySelectorAll('[data-learn-flow]').forEach(function (flow) {
+      var cards = Array.from(flow.querySelectorAll('[data-learn-step-card]')).filter(function (card) {
+        return card instanceof HTMLElement;
+      });
+      if (!cards.length || flow.previousElementSibling?.classList.contains('learn-controls')) return;
+
+      var finalHref = flow.getAttribute('data-flow-final-href') || '';
+      var finalLabel = flow.getAttribute('data-flow-final-label') || 'Continue';
+      var index = Math.max(0, cards.findIndex(function (card) {
+        return window.location.hash.replace(/^#/, '') === card.getAttribute('data-learn-step-id');
+      }));
+      var controls = document.createElement('div');
+      controls.className = 'practice-controls learn-controls';
+      controls.setAttribute('aria-label', 'Learn navigation');
+
+      var previous = document.createElement('button');
+      previous.className = 'button secondary-button';
+      previous.type = 'button';
+      previous.textContent = 'Previous';
+
+      var label = document.createElement('span');
+      label.className = 'practice-count';
+      label.setAttribute('aria-live', 'polite');
+
+      var next = document.createElement('button');
+      next.className = 'button primary-button';
+      next.type = 'button';
+      next.textContent = 'Next step';
+
+      controls.append(previous, label, next);
+      flow.before(controls);
+
+      function currentCardComplete() {
+        var progress = loadProgress();
+        var card = cards[index];
+        return learnCardCompleted(progress, card);
+      }
+
+      function advanceLearnStep(shouldScroll) {
+        if (!currentCardComplete()) return;
+        if (index >= cards.length - 1) {
+          if (finalHref) window.location.href = finalHref;
+          else next.textContent = 'Completed lesson sequence';
+          return;
+        }
+        index += 1;
+        var stepId = cards[index].getAttribute('data-learn-step-id') || '';
+        if (stepId) window.history.replaceState(null, '', '#' + stepId);
+        render();
+        if (shouldScroll && cards[index] instanceof HTMLElement) {
+          cards[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      function render() {
+        cards.forEach(function (card, cardIndex) {
+          card.hidden = cardIndex !== index;
+        });
+        label.textContent = 'Step ' + (index + 1) + ' of ' + cards.length;
+        previous.disabled = index === 0;
+        var complete = currentCardComplete();
+        next.disabled = !complete;
+        next.textContent = index === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
+        updateLearnModeFlowState();
+        cards.forEach(function (card, cardIndex) {
+          var footer = card.querySelector('[data-learn-step-footer]');
+          var inlineNext = card.querySelector('[data-learn-inline-next]');
+          if (footer instanceof HTMLElement) footer.hidden = cardIndex !== index || !complete;
+          if (inlineNext instanceof HTMLButtonElement) {
+            inlineNext.hidden = cardIndex !== index || !complete;
+            inlineNext.disabled = cardIndex !== index || !complete;
+            inlineNext.textContent = cardIndex === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
+          }
+        });
+      }
+
+      previous.addEventListener('click', function () {
+        index = Math.max(0, index - 1);
+        render();
+      });
+
+      next.addEventListener('click', function () {
+        advanceLearnStep(false);
+      });
+
+      flow.addEventListener('click', function (event) {
+        var target = event.target;
+        if (!(target instanceof Element) || !target.closest('[data-learn-inline-next]')) return;
+        advanceLearnStep(true);
+      });
+
+      window.addEventListener('hashchange', function () {
+        var hash = window.location.hash.replace(/^#/, '');
+        var targetIndex = cards.findIndex(function (card) {
+          return card.getAttribute('data-learn-step-id') === hash;
+        });
+        if (targetIndex < 0) return;
+        index = targetIndex;
+        render();
+      });
+
+      window.addEventListener('asterion:learn-progress', render);
       render();
     });
   }
@@ -4390,7 +4586,7 @@
           panel.hidden = !isActive;
         });
         if (previous) previous.disabled = bounded === 0;
-        if (next) next.textContent = bounded === tabs.length - 1 ? 'Practice' : 'Next subtopic';
+        if (next) next.textContent = bounded === tabs.length - 1 ? 'Checked Practice' : 'Next subtopic';
         if (progress) progress.textContent = (bounded + 1) + ' of ' + tabs.length;
         if (updateHash) {
           var phaseId = tabs[bounded].getAttribute('data-phase-tab') || '';
@@ -4586,13 +4782,13 @@
 
   document.addEventListener('DOMContentLoaded', function () {
     document.documentElement.classList.add('static-enhanced');
-    setupThemeToggle();
     setupHomepageDemo();
     setupProgressExportForms();
     setupP3DiagnosticFlow();
     setupPracticeStacks();
     setupOneCardFlow();
     setupExamQuestionFlow();
+    setupLearnModeFlow();
     setupWorksheetFlow();
     setupExamSelfMarking();
     setupGuidedStudy();
@@ -4722,6 +4918,15 @@
         event.preventDefault();
         submitP1RepairModule(form, event.submitter);
       }
+    });
+
+    document.addEventListener('change', function (event) {
+      var target = event.target;
+      if (!(target instanceof HTMLInputElement) || target.name !== 'mistakeTags') return;
+      var form = target.closest('[data-check-skill-answer], [data-check-learn-answer]');
+      if (!(form instanceof HTMLFormElement)) return;
+      updateTargetedPrompt(form);
+      if (form.matches('[data-check-skill-answer]')) updateLatestSkillCheckAttemptMistakeTags(form);
     });
 
     document.addEventListener('toggle', function (event) {

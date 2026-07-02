@@ -33,6 +33,7 @@ import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
 import { P3_COURSE_MAP } from '../src/lib/worldMap';
 import type { NormalizedQuestion, QuestionMarkPoint, QuestionPartMark, RegionDefinition } from '../src/types';
+import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirName = process.env.STATIC_SITE_OUTPUT_DIR ?? 'docs';
@@ -142,12 +143,12 @@ const visibleCopyReplacements: Array<[RegExp, string]> = [
   [/Later review [^.]*\./gi, 'Check your class syllabus if your teacher has set a specific scope.'],
   [/This is a teacher-guided draft support item\./gi, 'This is an extra guided practice item.'],
   [/Use the matching draft Field Guide method/gi, 'Use the matching Learn method'],
-  [/Draft\/generated practice/gi, 'practice question'],
-  [/practice\/generated practice/gi, 'practice question'],
-  [/generated practice/gi, 'practice question'],
-  [/Skill Practice/gi, 'practice question'],
-  [/Draft Skill Checks/gi, 'practice questions'],
-  [/Draft Skill Check/gi, 'practice question'],
+  [/Draft\/generated practice/gi, 'Checked Practice'],
+  [/practice\/generated practice/gi, 'Checked Practice'],
+  [/generated practice/gi, 'Checked Practice'],
+  [/Skill Practice/gi, 'Checked Practice'],
+  [/Draft Skill Checks/gi, 'Checked Practice'],
+  [/Draft Skill Check/gi, 'Checked Practice'],
   [/draft placeholder/gi, 'practice'],
   [/practice placeholder/gi, 'practice'],
   [/placeholder/gi, 'practice'],
@@ -370,7 +371,7 @@ function fieldGuidePagePath(topic: StudyTopic): string {
 }
 
 function practicePagePath(topic: StudyTopic): string {
-  return `${P3_COURSE_ID}/topics/${topic.slug}/learn/index.html`;
+  return skillCheckPagePath(topic);
 }
 
 function learnPagePath(topic: StudyTopic): string {
@@ -613,7 +614,6 @@ function renderPage(options: RenderPageOptions): string {
   const katexHref = hrefToPublicAsset(options.pagePath, 'assets/katex.min.css');
   const scriptHref = hrefToPublicAsset(options.pagePath, 'assets/static-study.js');
   const title = `${options.title} | Asterion Study`;
-  const themeBootScript = `(function(){try{var theme=window.localStorage.getItem('asterion.theme.v1');if(theme==='dark'||theme==='light'){document.documentElement.dataset.theme=theme;}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.dataset.theme='dark';}}catch(error){}})();`;
 
   return `<!doctype html>
 <html lang="en">
@@ -621,7 +621,6 @@ function renderPage(options: RenderPageOptions): string {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="${escapeAttr(options.description)}" />
-    <script>${themeBootScript}</script>
     <link rel="stylesheet" href="${katexHref}" />
     <link rel="stylesheet" href="${cssHref}" />
     <title>${escapeHtml(title)}</title>
@@ -641,10 +640,6 @@ function renderPage(options: RenderPageOptions): string {
         </span>
       </a>
       ${primaryNav(options.pagePath, options.active)}
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
-        <span class="theme-toggle-icon" aria-hidden="true"></span>
-        <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
-      </button>
     </header>
     <main id="main-content" tabindex="-1">
       ${options.body}
@@ -658,6 +653,7 @@ function renderPage(options: RenderPageOptions): string {
 function progressList(regionId: string, fieldGuideTotal: number, requiredSkillChecks: string[] = []): string {
   return `
     <ul class="progress-list" aria-label="Local progress">
+      <li><span data-progress-field-guide="${escapeAttr(regionId)}" data-total="${fieldGuideTotal}" data-label="Learn">Learn: 0/${fieldGuideTotal}</span></li>
       <li><span data-progress-skill="${escapeAttr(regionId)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillChecks))}" data-label="Checked questions">Checked questions: 0/${requiredSkillChecks.length} passed</span></li>
       <li><span data-progress-exam="${escapeAttr(regionId)}" data-label="Exam practice evidence">Exam practice evidence: 0 saved</span></li>
     </ul>
@@ -699,7 +695,7 @@ function p3ExamReviewRequirements(contexts: TopicContext[], pagePath: string): P
     fieldGuideTotal: Math.max(1, context.learnSteps.length),
     requiredCheckIds: checkableSkillCheckIdsForRegion(context.region.id),
     fieldGuideHref: hrefToPage(pagePath, learnPagePath(context.topic)),
-    skillCheckHref: hrefToPage(pagePath, practicePagePath(context.topic)),
+    skillCheckHref: hrefToPage(pagePath, skillCheckPagePath(context.topic)),
   }));
 }
 
@@ -725,10 +721,11 @@ function p3SkillRepairRoutes(contexts: TopicContext[], pagePath: string): SkillR
 }
 
 function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index: number): string {
-  const { topic, region } = context;
+  const { topic, region, learnSteps } = context;
+  const learnStepTotal = Math.max(1, learnSteps.length);
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   return `
-    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(region.id)}" data-unit-name="${escapeAttr(topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, practicePagePath(topic)))}" data-skill-href="${escapeAttr(hrefToPage(fromPagePath, practicePagePath(topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, topicExamTrainingPagePath(topic)))}">
+    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(region.id)}" data-unit-name="${escapeAttr(topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, learnPagePath(topic)))}" data-skill-href="${escapeAttr(hrefToPage(fromPagePath, skillCheckPagePath(topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, topicExamTrainingPagePath(topic)))}">
       <div class="path-unit-number">Unit ${index + 1}</div>
       <div class="path-unit-main">
         <header>
@@ -739,20 +736,22 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
           ${renderMathText(`$${topic.headerFormula}$`)}
         </div>
       </div>
-      <p class="compact-progress path-unit-compact-progress" data-progress-summary="${escapeAttr(region.id)}" data-field-total="0">
+      <p class="compact-progress path-unit-compact-progress" data-progress-summary="${escapeAttr(region.id)}" data-field-total="${learnStepTotal}">
         No saved progress yet
       </p>
       <div class="path-unit-progress-metadata" aria-hidden="true">
+        <span data-progress-field-guide="${escapeAttr(region.id)}" data-total="${learnStepTotal}" data-label="Learn">Learn: 0/${learnStepTotal}</span>
         <span data-progress-skill="${escapeAttr(region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillCheckIds))}" data-label="Checked">Checked: 0/${requiredSkillCheckIds.length} passed</span>
         <span data-progress-exam="${escapeAttr(region.id)}" data-label="Exam">Exam: 0 self-marked</span>
       </div>
-      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, practicePagePath(topic))}" data-path-unit-primary-action>
-        Start Practice
+      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, skillCheckPagePath(topic))}" data-path-unit-primary-action>
+        Start Checked Practice
       </a>
       <details class="path-unit-direct-routes">
         <summary>Direct routes</summary>
         <nav aria-label="${escapeAttr(topic.name)} direct routes">
-          ${routeLink(fromPagePath, practicePagePath(topic), 'Practice', 'text-link')}
+          ${routeLink(fromPagePath, learnPagePath(topic), 'Learn', 'text-link')}
+          ${routeLink(fromPagePath, skillCheckPagePath(topic), 'Checked Practice', 'text-link')}
           ${routeLink(fromPagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'text-link')}
           ${routeLink(fromPagePath, worksheetPagePath(topic), 'Worksheet', 'text-link')}
         </nav>
@@ -1006,12 +1005,12 @@ function renderP3LearningPathPage(
     </section>
     <section class="path-principle-strip" aria-label="How the path works">
       <article>
-        <strong>1. Practice</strong>
-        <span>Move through support and checked questions in one flow.</span>
+        <strong>1. Learn</strong>
+        <span>Try a small question before the explanation appears.</span>
       </article>
       <article>
-        <strong>2. Checked Evidence</strong>
-        <span>Only checked questions create pass evidence.</span>
+        <strong>2. Checked Practice</strong>
+        <span>Use the similar checked question for clean evidence.</span>
       </article>
       <article>
         <strong>3. Exam Training</strong>
@@ -1101,8 +1100,8 @@ function renderP3DashboardPage(
 function renderStudyPath(): string {
   return `
     <ol class="study-path" aria-label="Recommended study path">
-      <li><strong>1. Practice</strong><span>Try support and checked questions.</span></li>
-      <li><strong>2. Checked Evidence</strong><span>Pass focused checked questions.</span></li>
+      <li><strong>1. Learn</strong><span>Read one short step.</span></li>
+      <li><strong>2. Checked Practice</strong><span>Try a focused checked question.</span></li>
       <li><strong>3. Exam Training</strong><span>Try one exam-style question.</span></li>
     </ol>
   `;
@@ -1110,11 +1109,11 @@ function renderStudyPath(): string {
 
 function renderTopicCard(fromPagePath: string, context: TopicContext, examTrainingPath = topicExamTrainingPagePath(context.topic)): string {
   const { topic, region } = context;
-  const fieldGuidePath = practicePagePath(topic);
+  const fieldGuidePath = learnPagePath(topic);
   const status = topic.slug === STUDY_TOPICS[0]?.slug ? '<span class="topic-status-chip">Start here</span>' : '';
   return `
     <article class="topic-card" data-region-card="${escapeAttr(region.id)}">
-      <a class="topic-card-main-link" href="${hrefToPage(fromPagePath, fieldGuidePath)}" aria-label="Start ${escapeAttr(topic.name)} Practice">
+      <a class="topic-card-main-link" href="${hrefToPage(fromPagePath, fieldGuidePath)}" aria-label="Start ${escapeAttr(topic.name)} Learn">
         <div class="topic-card-formula">${renderInlineFormula(topic.headerFormula)}</div>
         <div class="topic-card-heading">
           <h2>${escapeHtml(topic.name)}</h2>
@@ -1124,7 +1123,7 @@ function renderTopicCard(fromPagePath: string, context: TopicContext, examTraini
         <span class="topic-card-arrow" aria-hidden="true">&#8594;</span>
       </a>
       <div class="topic-card-shortcuts" aria-label="${escapeAttr(topic.name)} shortcuts">
-        ${routeLink(fromPagePath, practicePagePath(topic), 'Practice', 'text-link')}
+        ${routeLink(fromPagePath, learnPagePath(topic), 'Learn', 'text-link')}
         ${routeLink(fromPagePath, examTrainingPath, 'Exam Training', 'text-link')}
       </div>
     </article>
@@ -1318,7 +1317,7 @@ const homepageLearningSteps = [
   ['Try the problem', 'You attempt first. Your attempt is the center.'],
   ['Compare your first move', 'Asterion compares your move, not just your final answer.'],
   ['Learn the method', 'Explanation appears after your first attempt.'],
-  ['Complete practice questions', 'Checked cards record small-skill evidence before you proceed.'],
+  ['Complete Checked Practice', 'Deterministic checks record small-skill evidence before you proceed.'],
   ['Train on real exam questions', 'Compare with the mark-scheme image and self-mark honestly.'],
   ['Review and repair', 'Mistakes are expected, repaired, and tracked.'],
 ] as const;
@@ -1489,7 +1488,8 @@ function renderHomepageCoursePanel(pagePath: string): string {
     const modeLinks = course.id === P3_COURSE_ID
       ? [
         { label: 'Open P3', path: coursePagePath(course) },
-        { label: 'Practice', path: practicePagePath(STUDY_TOPICS[0]) },
+        { label: 'Learn', path: learnPagePath(STUDY_TOPICS[0]) },
+        { label: 'Checked Practice', path: skillCheckPagePath(STUDY_TOPICS[0]) },
         { label: 'Exam Questions', path: topicExamTrainingPagePath(STUDY_TOPICS[0]) },
       ]
       : [
@@ -1529,22 +1529,22 @@ const homepageContactEmail = 'brooker@rdfzcygj.cn';
 
 const homepageActionCards = [
   {
-    title: 'Practice',
-    subtitle: 'Support and checked questions',
+    title: 'Learn',
+    subtitle: 'Build understanding',
     icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="M5 8c4.5 0 7.5 1 11 4v15c-3.5-3-6.5-4-11-4V8Z"/><path d="M27 8c-4.5 0-7.5 1-11 4v15c3.5-3 6.5-4 11-4V8Z"/></svg>',
-    path: practicePagePath(STUDY_TOPICS[0]),
+    path: learnPagePath(STUDY_TOPICS[0]),
+  },
+  {
+    title: 'Practice',
+    subtitle: 'Check your skills',
+    icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="m7 25 3-1 15-15-2-2L8 22l-1 3Z"/><path d="m20 6 6 6"/><path d="M5 27h20"/></svg>',
+    path: skillCheckPagePath(STUDY_TOPICS[0]),
   },
   {
     title: 'Apply',
     subtitle: 'Exam questions',
     icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><circle cx="16" cy="16" r="11"/><circle cx="16" cy="16" r="7"/><circle cx="16" cy="16" r="3"/></svg>',
     path: topicExamTrainingPagePath(STUDY_TOPICS[0]),
-  },
-  {
-    title: 'Review',
-    subtitle: 'Export and repair',
-    icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="M5 25h22"/><path d="M8 22v-5"/><path d="M14 22v-9"/><path d="M20 22V9"/><path d="M7 13l6-5 6 3 6-7"/></svg>',
-    path: p3ReviewPagePath(),
   },
 ] as const;
 
@@ -1655,7 +1655,7 @@ function renderCourseSelectorPage(): string {
         <p class="home-p3-subtitle">Learn what matters. Practice with purpose.<br />Prepare for the exam with confidence.</p>
         ${renderHomepageActionCards(pagePath)}
         <div class="home-p3-cta-group">
-          <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, practicePagePath(STUDY_TOPICS[0]))}">Start Practice</a>
+          <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Start with Learn</a>
           <a class="home-p3-diagnostic-link" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">Diagnostic: Where to focus</a>
         </div>
       </div>
@@ -1787,11 +1787,11 @@ function renderContractAvailabilityLinks(pagePath: string, row: P3SkillContractP
   const { topic, availability } = row;
   const links = [
     availability.fieldGuide
-      ? contractRouteLink(pagePath, practicePagePath(topic), 'Support Questions', 'field-guide')
-      : '<span class="contract-resource-missing">Support content planned</span>',
+      ? contractRouteLink(pagePath, learnPagePath(topic), 'Learn', 'field-guide')
+      : '<span class="contract-resource-missing">Learn content planned</span>',
     availability.skillCheck
-      ? contractRouteLink(pagePath, practicePagePath(topic), 'Checked Evidence', 'skill-check')
-      : '<span class="contract-resource-missing">Checked question planned</span>',
+      ? contractRouteLink(pagePath, learnPagePath(topic), 'Checked Practice', 'skill-check')
+      : '<span class="contract-resource-missing">Checked practice planned</span>',
     availability.examTraining
       ? contractRouteLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'exam-training')
       : '<span class="contract-resource-missing">Exam training planned</span>',
@@ -1808,11 +1808,11 @@ function renderAvailabilitySummary(rows: P3SkillContractPageRow[]): string {
   return `
     <dl class="contract-availability-summary" aria-label="Content availability">
       <div>
-        <dt>Support</dt>
+        <dt>Learn</dt>
         <dd>${availabilityCount(rows, 'fieldGuide')}/${rows.length}</dd>
       </div>
       <div>
-        <dt>Checked evidence</dt>
+        <dt>Checked Practice</dt>
         <dd>${availabilityCount(rows, 'skillCheck')}/${rows.length}</dd>
       </div>
       <div>
@@ -1867,7 +1867,7 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
               ${renderAvailabilitySummary(bandRows)}
             </summary>
             <div class="contract-band-detail">
-              <p class="question-instruction">Availability shows which Asterion content exists for this skill. Progress decisions stay inside Practice and Exam Training, not this list.</p>
+              <p class="question-instruction">Availability shows which Asterion content exists for this skill. Progress decisions stay inside Learn, Checked Practice, and Exam Training, not this list.</p>
               ${bandGroups.map((group) => `
                 <section class="contract-topic-section" aria-labelledby="${escapeRawAttr(contractTopicAnchor(group.topic))}">
                   <details class="contract-official-topic-details">
@@ -1975,11 +1975,11 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
           ${requirements.map((requirement) => `
             <li>
               <strong>${escapeHtml(requirement.name)}</strong>
-              <span>Checked questions 0/${requirement.requiredCheckIds.length}</span>
+              <span>Checked questions 0/${requirement.requiredCheckIds.length}; optional Learn 0/${requirement.fieldGuideTotal}</span>
             </li>
           `).join('')}
         </ol>
-        ${routeLink(pagePath, practicePagePath(STUDY_TOPICS[0]), 'Start Unit 1', 'button primary-button')}
+        ${routeLink(pagePath, skillCheckPagePath(STUDY_TOPICS[0]), 'Start Unit 1', 'button primary-button')}
       </div>
       <div class="exam-review-open" data-exam-review-open hidden>
         <section class="exam-question-section" id="mixed-questions">
@@ -2008,10 +2008,10 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
       </div>
     </section>
     <details class="jump-details" data-mistake-review-details>
-      <summary>Review mistakes from saved checked questions</summary>
+      <summary>Review mistakes from saved Checked Practice</summary>
       <section class="summary-card review-empty-state" data-review-empty>
         <h2>No due spaced repairs yet.</h2>
-        <p>Repair groups appear when a tagged checked-question mistake reaches its delayed retrieval window. One immediate correction does not close the loop.</p>
+        <p>Repair groups appear when a tagged Checked Practice mistake reaches its delayed retrieval window. One immediate correction does not close the loop.</p>
       </section>
       <section class="review-session" data-review-session data-review-skill-routes="${escapeAttr(JSON.stringify(repairRoutes))}" hidden>
         <div class="section-heading">
@@ -2085,9 +2085,9 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
               <th>Skill ID</th>
               <th>Topic</th>
               <th>Skill title</th>
-              <th>Support</th>
-              <th>Checked evidence</th>
-              <th>Checked grading</th>
+              <th>Learn</th>
+              <th>Checked Practice</th>
+              <th>Checked Practice grading</th>
               <th>Exam Training</th>
               <th>Mapped exam questions</th>
               <th>Easy ladder</th>
@@ -2294,8 +2294,8 @@ function renderFieldGuideTopic(
       ${topic.examples.map((example, exampleIndex) => renderFieldGuideExample(topic, example, exampleIndex)).join('')}
       <footer class="section-footer">
         <div class="skill-check-transition">
-          <a class="button primary-button" href="${skillCheckHref}">Next: Practice</a>
-          <p>Opens the practice questions for this skill.</p>
+          <a class="button primary-button" href="${skillCheckHref}">Next: Skill Check</a>
+          <p>Opens 3 quick questions on this skill.</p>
         </div>
         ${nextTopicId ? `<a class="button secondary-button" href="#${escapeAttr(nextTopicId)}">Next idea</a>` : ''}
       </footer>
@@ -2375,16 +2375,16 @@ function renderFieldGuidePage(
   const body = `
     ${renderHero(
       `Unit ${index + 1}: ${topic.name}`,
-      'Work through the practice subtopics in order. Try the small problem first, then reveal only the next useful move.',
+      'Work through the Field Guide subtopics in order. Try the small problem first, then reveal only the next useful move.',
       topic.headerFormula,
-      `${previousTopic ? routeLink(pagePath, practicePagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}
-      ${routeLink(pagePath, practicePath, 'Practice', 'button primary-button')}`,
+      `${previousTopic ? routeLink(pagePath, skillCheckPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}
+      ${routeLink(pagePath, practicePath, 'Checked Practice', 'button primary-button')}`,
     )}
     ${renderP3GuidedFieldGuide(context, pagePath, practicePath)}
     <section class="next-step-card">
       <h2>After the Field Guide</h2>
-      <p>Use checked practice questions to prove these subtopics are usable without the worked route open.</p>
-      ${renderSkillCheckTransition(pagePath, practicePath, undefined, 'Practice')}
+      <p>Use the Skill Check to prove these subtopics are usable without the worked route open.</p>
+      ${renderSkillCheckTransition(pagePath, practicePath, undefined, 'Checked Practice')}
     </section>
   `;
   return renderPage({
@@ -2566,14 +2566,14 @@ function renderLearnCheckForm(
       <div class="learn-after-attempt" data-learn-after-attempt hidden>
         <p><strong>${isPrimary ? 'Explanation' : 'Similar route'}:</strong> ${renderMathText(explanationText)}</p>
         ${isPrimary && step.principle ? `<p><strong>${renderMathText(step.principle.replace(/^Principle:\s*/i, 'Principle: '))}</strong></p>` : ''}
-        ${isPrimary && step.similarCheck ? '<p class="question-instruction">A similar support question is available next. Support questions do not create checked evidence.</p>' : ''}
-        ${!isPrimary ? '<p class="question-instruction">This is a support question. It does not create progress or checked evidence.</p>' : ''}
+        ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar support question below, then use Checked Practice when you want pass evidence.</p>' : ''}
+        ${!isPrimary ? '<p class="question-instruction">This is Learn support. It records lesson progress only; use Checked Practice for pass evidence.</p>' : ''}
       </div>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>${renderExpectedAnswerSummary(item)}</div>
         <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
-        <p class="question-instruction">Revealed support answers do not create progress or checked evidence.</p>
+        <p class="question-instruction">Revealed answers are saved as Learn practice only. Use Checked Practice for pass evidence.</p>
       </details>
     </form>
   `;
@@ -2596,10 +2596,10 @@ function renderContextualLearnVisuals(step: LearnStep, fieldGuideTopics: FieldGu
 
 function renderLearnStepCard(step: LearnStep, index: number, total: number, pagePath: string, fieldGuideTopics: FieldGuideTopic[]): string {
   return `
-    <article class="practice-card learn-step-card" data-learn-step-card data-learn-step-id="${escapeAttr(step.id)}" data-field-guide-topic="${escapeAttr(step.fieldGuideTopic.id)}" data-learn-requires-similar="${step.similarCheck ? 'true' : 'false'}" data-region-id="${escapeAttr(step.primaryCheck?.regionId ?? '')}">
+    <article class="learn-step-card" data-learn-step-card data-learn-step-id="${escapeAttr(step.id)}" data-field-guide-topic="${escapeAttr(step.fieldGuideTopic.id)}" data-learn-requires-similar="${step.similarCheck ? 'true' : 'false'}" data-region-id="${escapeAttr(step.primaryCheck?.regionId ?? '')}">
       <header class="topic-section-header">
         <div>
-          <p class="eyebrow">Support question ${index + 1} of ${total}</p>
+          <p class="eyebrow">Step ${index + 1} of ${total}</p>
           <h2>${escapeHtml(step.title)}</h2>
           <p class="prompt">${renderMathText(step.stem)}</p>
           ${renderContextualLearnVisuals(step, fieldGuideTopics, pagePath)}
@@ -2609,16 +2609,22 @@ function renderLearnStepCard(step: LearnStep, index: number, total: number, page
       </header>
       ${renderLearnCheckForm(step.primaryCheck, step, pagePath, 'primary')}
       ${step.similarCheck ? `
-        <section class="learn-similar-panel" id="${escapeAttr(`${step.id}-similar`)}" data-learn-similar-panel>
+        <section class="learn-similar-panel" id="${escapeAttr(`${step.id}-similar`)}" data-learn-similar-panel hidden>
           <p class="eyebrow">${escapeHtml(step.nextStepLabel ?? 'Similar checked question')}</p>
           <h3>${renderMathText(step.similarCheck.prompt)}</h3>
           ${renderLearnCheckForm(step.similarCheck, step, pagePath, 'similar')}
         </section>
       ` : ''}
-      <section class="learn-exam-transfer" data-learn-exam-transfer>
+      <section class="learn-exam-transfer" data-learn-exam-transfer hidden>
         <p class="eyebrow">Exam transfer</p>
         <p>${renderMathText(step.examTransfer)}</p>
       </section>
+      <footer class="learn-step-footer" data-learn-step-footer hidden>
+        <span>Step ${index + 1} of ${total} complete</span>
+        <button class="button primary-button" type="button" data-learn-inline-next>
+          ${index === total - 1 ? 'Continue' : 'Continue'}
+        </button>
+      </footer>
     </article>
   `;
 }
@@ -2627,7 +2633,54 @@ function renderLearnPage(
   context: TopicContext,
   pagePath = learnPagePath(context.topic),
 ): string {
-  return renderUnifiedPracticePage(context, pagePath);
+  const { topic, region, learnSteps } = context;
+  const index = topicIndex(topic);
+  const previousTopic = previousStudyTopic(topic);
+  const finalPath = skillCheckPagePath(topic);
+  const finalLabel = `${topic.name} Checked Practice`;
+  const finalHref = hrefToPage(pagePath, finalPath);
+  const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
+  const body = `
+    <section class="learn-mode-hero">
+      <div>
+        <p class="eyebrow">Unit ${index + 1} Learn</p>
+        <h1>${escapeHtml(`${topic.name} — Learn`)}</h1>
+        <p>Use Learn when you want support. Each step asks you to try first, then unlocks help, explanation, a similar question, and exam transfer.</p>
+        <p>Learn is optional support only. Go directly to Checked Practice when you want pass evidence.</p>
+      </div>
+      <div class="learn-mode-hero-actions">
+        ${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}
+        <a class="button primary-button" href="#learn-flow">Start</a>
+      </div>
+    </section>
+    <details class="jump-details">
+      <summary>Show steps and saved progress</summary>
+      <nav class="subnav" aria-label="${escapeAttr(topic.name)} Learn steps">
+        ${learnSteps.map((step) => `<a href="#${escapeAttr(step.id)}">${escapeHtml(step.title)}</a>`).join('')}
+      </nav>
+      <div class="progress-detail-row">
+        ${progressList(region.id, Math.max(1, learnSteps.length), requiredSkillCheckIds)}
+      </div>
+    </details>
+    <section class="learn-flow" id="learn-flow" data-learn-flow data-flow-final-href="${escapeAttr(finalHref)}" data-flow-final-label="${escapeAttr(finalLabel)}">
+      ${learnSteps.length ? learnSteps.map((step, stepIndex) => renderLearnStepCard(step, stepIndex, learnSteps.length, pagePath, context.fieldGuideTopics)).join('') : '<p class="empty-state">No Learn steps are available for this topic yet.</p>'}
+    </section>
+    <section class="next-step-card">
+      <h2>After this lesson</h2>
+      <p>Learn is optional. When you are ready for checked evidence, move to the separate Checked Practice page.</p>
+      <p>Checked Practice passes are the required local evidence before final review.</p>
+      ${routeLink(pagePath, skillCheckPagePath(topic), 'Checked Practice', 'button primary-button')}
+      ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'button secondary-button')}
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: `${topic.name} — Learn`,
+    description: `Integrated P3 Learn path for ${topic.name}.`,
+    active: 'p3-topics',
+    body,
+    bodyClass: 'learn-mode-page',
+  });
 }
 
 function renderMergedModeNoticePage(
@@ -2638,29 +2691,29 @@ function renderMergedModeNoticePage(
   const { topic } = context;
   const isFieldGuideRoute = oldMode === 'Field Guide';
   const title = isFieldGuideRoute
-    ? `${topic.name} — Practice`
-    : `${topic.name} — Practice`;
+    ? `${topic.name} — Learn`
+    : `${topic.name} — Checked Practice`;
   const bodyCopy = isFieldGuideRoute
-    ? 'The old Field Guide has been replaced by the unified Practice flow.'
-    : 'This route now opens the same unified Practice flow as the main topic route.';
-  const primaryLabel = 'Practice';
+    ? 'The old Field Guide has been replaced by a step-by-step Learn path. Start there, then complete Checked Practice and Exam Training.'
+    : 'Checked Practice now has its own page. Use Learn only when you want optional support before attempting checked questions.';
+  const primaryLabel = isFieldGuideRoute ? 'Learn' : 'Continue';
   const body = `
     ${renderHero(
       title,
       bodyCopy,
       topic.headerFormula,
-      `${routeLink(pagePath, practicePagePath(topic), primaryLabel, 'button primary-button')}
+      `${routeLink(pagePath, learnPagePath(topic), primaryLabel, 'button primary-button')}
       ${routeLink(pagePath, p3TopicsIndexPagePath(), 'Back to Topic', 'button secondary-button')}`,
     )}
     <section class="next-step-card">
       <h2>${escapeHtml(topic.name)} path</h2>
-      <p>Support questions and checked questions now live in one practice flow.</p>
+      <p>Learn is optional support. Checked Practice is separate and can be started directly.</p>
     </section>
   `;
   return renderPage({
     pagePath,
     title,
-    description: `Practice bridge for ${topic.name}.`,
+    description: `${isFieldGuideRoute ? 'Learn' : 'Checked Practice'} bridge for ${topic.name}.`,
     active: 'p3-topics',
     body,
   });
@@ -2709,7 +2762,7 @@ function renderWorksheetGroup(group: SkillChecklistTopicGroup, groupIndex: numbe
         <p>${escapeHtml(group.topic.purpose)}</p>
       </header>
       <div class="worksheet-question-list">
-        ${group.authoredItems.length ? group.authoredItems.map((item, itemIndex) => renderWorksheetItem(item, questionStartIndex + itemIndex)).join('') : '<p class="empty-state">No printable practice questions are available for this group yet.</p>'}
+        ${group.authoredItems.length ? group.authoredItems.map((item, itemIndex) => renderWorksheetItem(item, questionStartIndex + itemIndex)).join('') : '<p class="empty-state">No printable Checked Practice items are available for this group yet.</p>'}
       </div>
     </section>
   `;
@@ -2726,6 +2779,10 @@ function renderCheckableSkillCheckForm(
   const acceptedAnswers = (item.options?.length && item.expectedOptionIds?.length)
     ? item.expectedOptionIds
     : spec.acceptedAnswers;
+  const mistakeTags = Array.from(new Set([
+    ...(item.mistakeTags ?? []),
+    ...SKILL_CHECK_MISTAKE_TAGS,
+  ]));
   return `
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
       ${renderLearnAnswerInput(item)}
@@ -2735,6 +2792,18 @@ function renderCheckableSkillCheckForm(
         <button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next Question</button>
       </div>
       <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+      <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden>
+        <legend>What went wrong?</legend>
+        <div class="mistake-tag-options">
+          ${mistakeTags.map((tag) => `
+            <label>
+              <input type="checkbox" name="mistakeTags" value="${escapeAttr(tag)}" />
+              <span>${escapeHtml(tag)}</span>
+            </label>
+          `).join('')}
+        </div>
+        <p class="targeted-prompt" data-targeted-prompt></p>
+      </fieldset>
       <div class="skill-check-hint-panel" data-skill-hint hidden>
         <p>${renderMathText(item.hints.nudge)}</p>
         ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
@@ -2750,7 +2819,7 @@ function renderCheckableSkillCheckForm(
         <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
         <p class="question-instruction">Revealed answers are saved as repaired practice and do not count as passed.</p>
       </details>
-      ${routeLink(pagePath, fieldGuidePath, 'Support questions', 'button secondary-button')}
+      ${routeLink(pagePath, fieldGuidePath, 'Learn support', 'button secondary-button')}
     </form>
   `;
 }
@@ -2759,11 +2828,11 @@ function renderAuthoredPractice(group: SkillChecklistTopicGroup, pagePath: strin
   if (!group.authoredItems.length) return '';
   return `
     <section class="practice-subsection">
-      <h3>Checked questions</h3>
+      <h3>Focused checks</h3>
       <div class="practice-card-stack">
         ${group.authoredItems.map((item) => `
           <article class="practice-card">
-            <p class="eyebrow">Checked evidence</p>
+            <p class="eyebrow">Skill Check</p>
             <h4>${renderMathText(item.prompt)}</h4>
             ${item.checkable === true ? renderCheckableSkillCheckForm(item, group, pagePath, fieldGuidePath) : `
               ${renderOptions(item.options ?? item.cards, item.itemId, item.inputType === 'checkbox')}
@@ -2828,7 +2897,7 @@ function renderGeneratedPracticeItem(item: GeneratedPracticeItem): string {
         <p><strong>Answer:</strong> ${renderMathText(item.answer)}</p>
         <ol>${item.workedSolution.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
       </details>
-      <p class="empty-state">Guided practice is review only. It does not create checked evidence.</p>
+      <p class="empty-state">Guided practice is review only. It does not create Skill Check pass credit.</p>
     </article>
   `;
 }
@@ -2845,33 +2914,19 @@ function renderGeneratedPractice(group: SkillChecklistTopicGroup): string {
   `;
 }
 
-function renderUnifiedPracticeGroup(
-  group: SkillChecklistTopicGroup,
-  learnSteps: LearnStep[],
-  pagePath: string,
-  fieldGuidePath: string,
-): string {
-  const supportSteps = learnSteps.filter((step) => step.fieldGuideTopic.id === group.topic.id);
-  const checkedCount = group.authoredItems.filter((item) => item.checkable === true).length;
-  const totalItems = supportSteps.length + totalSkillChecklistItems(group);
+function renderSkillPracticeGroup(group: SkillChecklistTopicGroup, pagePath: string, fieldGuidePath: string): string {
+  const totalItems = totalSkillChecklistItems(group);
+  const defaultItems = Math.min(3, totalItems);
   return `
-    <article class="practice-topic" id="practice-${escapeAttr(group.topic.id)}" data-skill-check-group data-skill-check-group-id="${escapeAttr(group.topic.id)}" data-checked-question-count="${checkedCount}">
+    <article class="practice-topic" id="practice-${escapeAttr(group.topic.id)}" data-skill-check-group data-skill-check-group-id="${escapeAttr(group.topic.id)}">
       <header class="topic-section-header">
         <div>
-          <p class="eyebrow">Subtopic practice · ${totalItems} question${totalItems === 1 ? '' : 's'}</p>
+          <p class="eyebrow">Subtopic check · ${defaultItems || totalItems} item${(defaultItems || totalItems) === 1 ? '' : 's'}</p>
           <h2>${escapeHtml(group.topic.title)}</h2>
           <p>${escapeHtml(group.topic.purpose)}</p>
-          <p class="practice-instruction">Support questions are open practice and do not create progress. Checked questions create evidence only when answered correctly before a reveal.</p>
+          <p class="practice-instruction">Pass the visible machine-checkable item to continue. Hints and revealed answers repair the attempt, but they do not count as passed.</p>
         </div>
       </header>
-      ${supportSteps.length ? `
-        <section class="practice-subsection">
-          <h3>Support questions</h3>
-          <div class="practice-card-stack">
-            ${supportSteps.map((step, stepIndex) => renderLearnStepCard(step, stepIndex, supportSteps.length, pagePath, [group.topic])).join('')}
-          </div>
-        </section>
-      ` : ''}
       ${renderAuthoredPractice(group, pagePath, fieldGuidePath)}
       ${renderQuickChecks(group)}
       ${renderGeneratedPractice(group)}
@@ -3049,7 +3104,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
           <p class="eyebrow">${escapeHtml(questionTitle(question))}</p>
           <h3>${escapeHtml(displayTopic)}</h3>
           ${displaySubtopic ? `<p>${escapeHtml(displaySubtopic)}</p>` : ''}
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than checked practice-question evidence.</p>
+          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
           ${options.reviewNote ? `<p class="question-instruction">${escapeHtml(options.reviewNote)}</p>` : ''}
         </div>
         <span class="marks-pill">${totalMarks} mark${totalMarks === 1 ? '' : 's'}</span>
@@ -3099,54 +3154,46 @@ function renderPracticePage(
   pagePath = practicePagePath(context.topic),
   fieldGuidePath = fieldGuidePagePath(context.topic),
 ): string {
-  return renderUnifiedPracticePage(context, pagePath, fieldGuidePath);
-}
-
-function renderUnifiedPracticePage(
-  context: TopicContext,
-  pagePath = practicePagePath(context.topic),
-  fieldGuidePath = practicePagePath(context.topic),
-): string {
-  const { topic, region, groups, learnSteps } = context;
+  const { topic, region, groups } = context;
   const firstPracticeId = groups[0]?.topic.id ? `practice-${groups[0].topic.id}` : 'exam-questions';
   const requiredSkillCheckIds = checkableSkillCheckIdsForRegion(region.id);
   const index = topicIndex(topic);
   const nextTopic = nextStudyTopic(topic);
-  const finalPath = nextTopic ? practicePagePath(nextTopic) : p3ReviewPagePath();
+  const finalPath = nextTopic ? fieldGuidePagePath(nextTopic) : p3ReviewPagePath();
   const finalLabel = nextTopic ? `Next unit: ${nextTopic.name}` : 'Export Progress';
   const finalHref = nextTopic ? hrefToPage(pagePath, finalPath) : p3ReviewExportHref(pagePath);
   const body = `
     ${renderHero(
-      `Unit ${index + 1}: ${topic.name} Practice`,
-      'Support questions are open. Checked questions create progress only when answered correctly before a reveal.',
+      `Unit ${index + 1}: ${topic.name} Checked Practice`,
+      'Pass each visible check before moving on. If you need support first, Learn is available but optional.',
       topic.headerFormula,
       `<a class="button primary-button" href="#${escapeAttr(firstPracticeId)}">Start</a>
-      ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'button secondary-button')}`,
+      ${routeLink(pagePath, fieldGuidePath, 'Learn', 'button secondary-button')}`,
     )}
     <details class="jump-details">
-      <summary>Show subtopics and saved checked evidence</summary>
-      <nav class="subnav" aria-label="${escapeAttr(topic.name)} practice sections">
+      <summary>Show subtopics and saved progress</summary>
+      <nav class="subnav" aria-label="${escapeAttr(topic.name)} Checked Practice sections">
         ${groups.map((group) => `<a href="#practice-${escapeAttr(group.topic.id)}">${escapeHtml(group.topic.title)}</a>`).join('')}
       </nav>
       <div class="progress-detail-row">
         ${progressList(region.id, Math.max(1, context.learnSteps.length), requiredSkillCheckIds)}
+        ${routeLink(pagePath, fieldGuidePath, 'Learn', 'button secondary-button')}
       </div>
     </details>
-    <section class="practice-stack" data-one-card-flow data-flow-label="Practice" data-default-card-limit="0" data-flow-final-href="${escapeAttr(finalHref)}" data-flow-final-label="${escapeAttr(finalLabel)}">
-      ${groups.map((group) => renderUnifiedPracticeGroup(group, learnSteps, pagePath, fieldGuidePath)).join('')}
+    <section class="practice-stack" data-one-card-flow data-flow-label="Checked Practice" data-default-card-limit="3" data-flow-final-href="${escapeAttr(finalHref)}" data-flow-final-label="${escapeAttr(finalLabel)}">
+      ${groups.map((group) => renderSkillPracticeGroup(group, pagePath, fieldGuidePath)).join('')}
     </section>
     <section class="next-step-card">
-      <h2>After this unit</h2>
-      <p>The guided controls move to ${escapeHtml(finalLabel)} after the final subtopic. Support questions stay open; only checked question passes create local evidence.</p>
+      <h2>Finish the checks first</h2>
+      <p>The guided controls move to ${escapeHtml(finalLabel)} after the final subtopic check. Use the Learn link when a check exposes a gap.</p>
     </section>
   `;
   return renderPage({
     pagePath,
-    title: `${topic.name} Practice`,
-    description: `Static P3 practice flow for ${topic.name}.`,
+    title: `${topic.name} Checked Practice`,
+    description: `Static Checked Practice for ${topic.name}.`,
     active: 'p3-topics',
     body,
-    bodyClass: 'learn-mode-page',
   });
 }
 
@@ -3166,28 +3213,28 @@ function renderWorksheetPage(
   const body = `
     <section class="worksheet-hero">
       <p class="eyebrow">Printable worksheet</p>
-      <h1>${escapeHtml(topic.name)} Practice Worksheet</h1>
+      <h1>${escapeHtml(topic.name)} Checked Practice Worksheet</h1>
       <div class="worksheet-meta">
         <p>Student name: <span></span></p>
         <p>Date: <span></span></p>
       </div>
       <div class="worksheet-actions">
         <button class="button primary-button" type="button" onclick="window.print()">Print / Save PDF</button>
-        ${routeLink(pagePath, skillCheckPath, 'Interactive Practice', 'button secondary-button')}
+        ${routeLink(pagePath, skillCheckPath, 'Interactive Checked Practice', 'button secondary-button')}
       </div>
     </section>
     <section class="worksheet-instructions">
       <h2>Questions</h2>
-      <p>Show working clearly. Move through one group at a time, then use the interactive Practice page for deterministic checking after this worksheet.</p>
+      <p>Show working clearly. Move through one group at a time, then use the interactive Checked Practice page for deterministic checking after this worksheet.</p>
     </section>
     <section class="worksheet-flow" data-worksheet-flow data-flow-label="${escapeAttr(`${topic.shortName} worksheet group`)}">
-      ${items.length ? worksheetGroups : '<p class="empty-state">No printable practice questions are available for this topic yet.</p>'}
+      ${items.length ? worksheetGroups : '<p class="empty-state">No printable Checked Practice items are available for this topic yet.</p>'}
     </section>
   `;
   return renderPage({
     pagePath,
     title: `${topic.name} Worksheet`,
-    description: `Printable P3 practice worksheet for ${topic.name}.`,
+    description: `Printable P3 Checked Practice worksheet for ${topic.name}.`,
     active: 'p3-topics',
     body,
     bodyClass: 'worksheet-page',
@@ -3204,10 +3251,10 @@ function renderTopicExamTrainingPage(
   const body = `
     ${renderHero(
       `${topic.name} — Exam Training`,
-      'Try one Paper 3 question at a time. Self-mark honestly and keep checked practice-question evidence separate.',
+      'Try one Paper 3 question at a time. Self-mark honestly and keep Checked Practice evidence separate.',
       topic.headerFormula,
       `${questions.length ? '<a class="button primary-button" href="#topic-exam-questions">Start</a>' : ''}
-      ${routeLink(pagePath, practicePagePath(topic), 'Practice', 'button secondary-button')}
+      ${routeLink(pagePath, learnPagePath(topic), 'Learn', 'button secondary-button')}
       ${routeLink(pagePath, topicsIndexPath, 'Back to P3', 'button text-button')}`,
       'Module 2 of 2: Exam Training',
     )}
@@ -3215,7 +3262,7 @@ function renderTopicExamTrainingPage(
       <div class="section-heading">
         <div>
           <h2>Exam questions</h2>
-          <p>Self-marked exam work is useful practice evidence, but it is weaker than checked practice-question evidence.</p>
+          <p>Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
         </div>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="${escapeAttr(topic.name)} exam question">

@@ -71,7 +71,8 @@ The site does not require a backend, authentication, Supabase, class codes, teac
 Canonical P3 topic task routes:
 
 ```text
-/p3/topics/<topic>/learn/
+/p3/topics/<topic>/field-guide/
+/p3/topics/<topic>/skill-check/
 /p3/topics/<topic>/exam-training/
 ```
 
@@ -81,9 +82,7 @@ Static support route:
 /p3/topics/<topic>/worksheet/
 ```
 
-Worksheet pages are print/PDF views of topic Skill Check items. They do not replace the interactive Practice route and do not create pass state.
-
-`/p3/topics/<topic>/learn/` is the unified Practice flow: support questions and checked evidence questions appear in one student path. Legacy `/field-guide/` and `/skill-check/` URLs remain generated for compatibility and route students back into the same Practice experience.
+Worksheet pages are print/PDF views of topic Skill Check items. They do not replace the interactive Skill Check route and do not create pass state.
 
 The supported P3 topic slugs are:
 
@@ -105,7 +104,7 @@ The build does not generate legacy unprefixed topic pages, `/regions/`, `/p3/reg
 
 The P3 Review page includes an `Export local progress CSV` action. It reads only `localStorage` data from the current browser and downloads a CSV; there is no account, cloud sync, class roster, or teacher dashboard.
 
-CSV exports include available Skill Check attempts, Exam Training attempts, and derived Review candidates. Support/Learn questions do not create export progress. Missing fields are left blank or marked `not_available`.
+CSV exports include available Skill Check attempts, Exam Training attempts, local learning activity rows, and derived Review candidates. Missing fields are left blank or marked `not_available`.
 
 Printable worksheet pages use browser print / Save as PDF. Print styles hide navigation and buttons, show student/date lines, and leave working space under each question. Answers are not printed on the student worksheet.
 

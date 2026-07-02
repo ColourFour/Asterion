@@ -4,6 +4,7 @@ import type {
   KnowledgeInterventionPlan,
   KnowledgeSchedulingInstruction,
   KnowledgeSkillStateUpdate,
+  LearningActivityAttempt,
   SkillCheckAttemptRecord,
   StoredProgress,
 } from '../types';
@@ -136,7 +137,7 @@ export function localProgressSubmissionSummary(progress: Partial<StoredProgress>
     checkedPracticePasses: skillAttempts.filter(isPassingSkillCheckAttempt).length,
     reviewCandidates,
     selfMarkedExamAttempts: examAttempts.filter((attempt) => attempt.selfMarked === true).length,
-    learningActivityAttempts: 0,
+    learningActivityAttempts: Array.isArray(progress.learningActivityAttempts) ? progress.learningActivityAttempts.length : 0,
     knowledgeStateUpdates: Array.isArray(progress.knowledge_state_updates) ? progress.knowledge_state_updates.length : 0,
     knowledgeErrors: Array.isArray(progress.knowledge_errors) ? progress.knowledge_errors.length : 0,
     knowledgeInterventions: Array.isArray(progress.knowledge_interventions) ? progress.knowledge_interventions.length : 0,
@@ -181,13 +182,13 @@ function rowForSkillCheckAttempt(attempt: SkillCheckAttemptRecord, exportTimesta
   return {
     ...blankRow(exportTimestamp),
     topic: attempt.topic,
-    route_page_type: 'practice',
-    activity_type: 'Checked question',
+    route_page_type: 'skill-check',
+    activity_type: 'Checked Practice',
     item_id: attempt.checkId,
     attempt_timestamp: attempt.timestamp,
     answer_result_summary: attempt.submittedAnswer,
     deterministic_pass_fail: passed ? 'pass' : 'fail',
-    evidence_label: passed ? 'Deterministic checked-question evidence' : 'Checked question attempt',
+    evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
     evidence_status_label: passed ? 'checked_practice_passed' : 'not_passed',
     suspicion_flags: '',
   };
@@ -213,7 +214,7 @@ function rowForReviewCandidate(attempt: SkillCheckAttemptRecord, exportTimestamp
     attempt_timestamp: attempt.timestamp,
     answer_result_summary: state,
     deterministic_pass_fail: 'not_available',
-    evidence_label: 'Review candidate from local checked-question attempt',
+    evidence_label: 'Review candidate from local checked practice attempt',
     evidence_status_label: 'needs_checked_evidence',
     suspicion_flags: tags.join('|'),
   };
@@ -233,6 +234,23 @@ function rowForExamAttempt(attempt: Attempt, exportTimestamp: string): LocalProg
     evidence_label: attempt.evidenceLabel ?? (attempt.selfMarked ? 'Self-marked attempt' : 'Exam practice evidence'),
     evidence_status_label: examEvidenceStatusLabel(attempt),
     suspicion_flags: (attempt.suspicionFlags ?? []).join('|'),
+  };
+}
+
+function rowForLearningActivity(attempt: LearningActivityAttempt, exportTimestamp: string): LocalProgressCsvRow {
+  const isLearnMode = attempt.activityType === 'learn_mode';
+  return {
+    ...blankRow(exportTimestamp),
+    topic: attempt.topic ?? attempt.regionId,
+    route_page_type: isLearnMode ? 'learn' : 'field-guide',
+    activity_type: isLearnMode ? 'Learn' : (attempt.activityType ?? 'Learn'),
+    item_id: attempt.activityId ?? attempt.id,
+    attempt_timestamp: attempt.completedAt ?? attempt.createdAt ?? '',
+    answer_result_summary: attempt.submittedAnswer ?? attempt.prompt ?? '',
+    deterministic_pass_fail: typeof attempt.isCorrect === 'boolean' ? (attempt.isCorrect ? 'pass' : 'fail') : 'not_available',
+    evidence_label: 'Local learning activity',
+    evidence_status_label: attempt.strongEvidence ? 'checked_learning_activity' : 'content_activity_only',
+    suspicion_flags: (attempt.mistakeTags ?? []).join('|'),
   };
 }
 
@@ -320,7 +338,9 @@ export function localProgressCsvRows(
   const examRows = Array.isArray(progress.attempts)
     ? progress.attempts.map((attempt) => rowForExamAttempt(attempt, exportTimestamp))
     : [];
-  const learningRows: LocalProgressCsvRow[] = [];
+  const learningRows = Array.isArray(progress.learningActivityAttempts)
+    ? progress.learningActivityAttempts.map((attempt) => rowForLearningActivity(attempt, exportTimestamp))
+    : [];
   const knowledgeStateRows = Array.isArray(progress.knowledge_state_updates)
     ? progress.knowledge_state_updates.map((update) => rowForKnowledgeStateUpdate(update, exportTimestamp))
     : [];

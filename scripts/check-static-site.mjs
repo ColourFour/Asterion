@@ -365,7 +365,7 @@ for (const [skillId, triggers] of contractTriggers) {
 
 const contractLinks = hrefsWithCanonicalPaths(needToKnowHtml);
 if (!contractLinks.length) {
-  console.error('P3 Need to Know page has no generated Practice or Exam Training links.');
+  console.error('P3 Need to Know page has no generated Learn, Checked Practice, or Exam Training links.');
   process.exit(1);
 }
 const needToKnowText = visibleBodyText(needToKnowHtml);
@@ -380,7 +380,7 @@ for (const forbiddenLabel of ['Needs Learn', 'Needs Checked Practice', 'Needs Ex
     process.exit(1);
   }
 }
-for (const requiredLabel of ['Support content planned', 'Checked question planned', 'Content availability']) {
+for (const requiredLabel of ['Learn content planned', 'Checked practice planned', 'Content availability']) {
   if (!needToKnowText.includes(requiredLabel)) {
     console.error(`P3 Need to Know page does not show neutral availability wording: ${requiredLabel}`);
     process.exit(1);
@@ -460,11 +460,8 @@ for (const page of p3LearnPages) {
   const topicSlug = page.split('/')[2];
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const learnStepCount = (html.match(/data-learn-step-card/g) ?? []).length;
-  const checkedQuestionCount = (html.match(/data-check-skill-answer/g) ?? []).length;
-  const requiredPracticeSections = [
-    'data-one-card-flow',
+  const requiredLessonSections = [
     'data-check-learn-answer',
-    'data-check-skill-answer',
     'data-show-learn-hint',
     'data-learn-after-attempt',
     'data-learn-similar-panel',
@@ -473,21 +470,16 @@ for (const page of p3LearnPages) {
     'Exam transfer',
   ];
 
-  for (const sectionLabel of requiredPracticeSections) {
+  for (const sectionLabel of requiredLessonSections) {
     const sectionCount = (html.match(new RegExp(sectionLabel.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) ?? []).length;
     if (sectionCount < Math.min(1, learnStepCount)) {
-      console.error(`${page} is missing unified Practice section "${sectionLabel}".`);
+      console.error(`${page} is missing Learn Mode section "${sectionLabel}".`);
       process.exit(1);
     }
   }
 
-  if (!learnStepCount || !checkedQuestionCount) {
-    console.error(`${page} must include support questions and checked evidence questions.`);
-    process.exit(1);
-  }
-
-  if (html.includes('data-progress-field-guide') || html.includes('data-learn-flow')) {
-    console.error(`${page} must not render Learn progress or the old gated Learn flow.`);
+  if (!learnStepCount) {
+    console.error(`${page} has no Learn Mode steps.`);
     process.exit(1);
   }
 
@@ -617,7 +609,7 @@ for (const page of p3LearnPages) {
       'data-learn-saves-skill-pass="false"',
     ]) {
       if (!html.includes(requiredCopy)) {
-        console.error(`${page} is missing ${authoredContract.topicName} Practice contract marker: ${requiredCopy}`);
+        console.error(`${page} is missing ${authoredContract.topicName} Learn contract marker: ${requiredCopy}`);
         process.exit(1);
       }
     }
@@ -627,10 +619,10 @@ for (const page of p3LearnPages) {
 for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/field-guide\/index\.html$/.test(page))) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
-  const expectedTitle = '— Practice';
-  const expectedButton = 'Practice';
+  const expectedTitle = '— Learn';
+  const expectedButton = 'Learn';
   if (!text.includes(expectedTitle) || !text.includes(expectedButton) || !pageAnchors(html).some((href) => resolveHtmlHref(page, href).endsWith('/learn/index.html'))) {
-    console.error(`${page} must be a clean Practice bridge.`);
+    console.error(`${page} must be a clean Learn bridge.`);
     process.exit(1);
   }
 }
@@ -638,8 +630,8 @@ for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/field-gui
 for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/skill-check\/index\.html$/.test(page))) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
-  if (!text.includes('Practice') || !html.includes('data-check-skill-answer') || !html.includes('data-check-learn-answer') || html.includes('data-learn-flow')) {
-    console.error(`${page} must render the unified Practice compatibility flow.`);
+  if (!text.includes('Checked Practice') || !html.includes('data-check-skill-answer') || html.includes('data-check-learn-answer')) {
+    console.error(`${page} must render the separate Checked Practice flow.`);
     process.exit(1);
   }
 }
