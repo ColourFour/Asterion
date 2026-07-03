@@ -309,6 +309,80 @@ describe('static P3 product contract', () => {
     }
   });
 
+  it('renders explicit answer-format guidance for deterministic typed answer inputs', () => {
+    const oldGenericInstruction = 'Type a compact expression, e.g. ln(5x) or x^2-x-6.';
+    const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+
+    expect(generatorSource).toContain('answerFormatGuidance');
+    expect(generatorSource).toContain('renderAnswerFormatLine');
+    expect(generatorSource).toContain('data-answer-format');
+    expect(generatorSource).not.toContain(oldGenericInstruction);
+
+    for (const generatedPath of [
+      'docs/p3/topics/vectors/learn/index.html',
+      'docs/p3/topics/trigonometry/learn/index.html',
+      'docs/p3/topics/algebra/learn/index.html',
+      'docs/p3/topics/algebra/skill-check/index.html',
+      'docs/p3/diagnostic/index.html',
+      'docs/p3/repair-lane/index.html',
+    ]) {
+      if (!existsSync(generatedPath)) continue;
+      expect(readFileSync(generatedPath, 'utf8'), generatedPath).not.toContain(oldGenericInstruction);
+    }
+
+    if (existsSync('docs/p3/topics/vectors/learn/index.html')) {
+      const document = new JSDOM(readFileSync('docs/p3/topics/vectors/learn/index.html', 'utf8')).window.document;
+      const notationStep = document.querySelector('[data-learn-step-id="learn-vectors-2d-3d-notation"]');
+      expect(notationStep).not.toBeNull();
+      if (notationStep) {
+        expect(visibleText(notationStep)).toContain('Answer format: column-vector components as (a,b,c), with commas.');
+        expect(notationStep.querySelector('input[name="submittedAnswer"]')?.getAttribute('placeholder')).toBe('(a,b,c)');
+      }
+    }
+
+    if (existsSync('docs/p3/topics/trigonometry/learn/index.html')) {
+      const document = new JSDOM(readFileSync('docs/p3/topics/trigonometry/learn/index.html', 'utf8')).window.document;
+      expect(visibleText(document.body)).toContain('Answer format: separate values with commas, e.g. a, b.');
+      expect(document.querySelector('input[name="submittedAnswer"][placeholder="a, b"]')).not.toBeNull();
+    }
+
+    if (existsSync('docs/p3/topics/algebra/learn/index.html')) {
+      const document = new JSDOM(readFileSync('docs/p3/topics/algebra/learn/index.html', 'utf8')).window.document;
+      expect(visibleText(document.body)).toContain('Answer format: number, fraction, radical, or pi form.');
+      expect(document.querySelector('input[name="submittedAnswer"][placeholder="3/2"]')).not.toBeNull();
+    }
+
+    if (existsSync('docs/p3/topics/algebra/skill-check/index.html')) {
+      const document = new JSDOM(readFileSync('docs/p3/topics/algebra/skill-check/index.html', 'utf8')).window.document;
+      const twoValueForm = document.querySelector('[data-check-id="sc-alg-polynomial-division-core-001"]');
+      expect(twoValueForm).not.toBeNull();
+      if (twoValueForm) {
+        expect(visibleText(twoValueForm)).toContain('Answer format: type a compact expression using ^ for powers.');
+        expect(visibleText(twoValueForm)).toContain('Answer format: number, fraction, radical, or pi form.');
+        expect(twoValueForm.querySelector('input[aria-label="quotient"]')?.getAttribute('placeholder')).toBe('x^2-x-6');
+        expect(twoValueForm.querySelector('input[aria-label="remainder"]')?.getAttribute('placeholder')).toBe('3/2');
+      }
+    }
+
+    if (existsSync('docs/p3/diagnostic/index.html')) {
+      const document = new JSDOM(readFileSync('docs/p3/diagnostic/index.html', 'utf8')).window.document;
+      const diagnosticInput = document.querySelector('[data-diagnostic-mark-point]');
+      expect(diagnosticInput).not.toBeNull();
+      expect(diagnosticInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
+      expect(diagnosticInput?.getAttribute('placeholder')).toBeTruthy();
+      expect(visibleText(document.body)).toContain('Answer format:');
+    }
+
+    if (existsSync('docs/p3/repair-lane/index.html')) {
+      const document = new JSDOM(readFileSync('docs/p3/repair-lane/index.html', 'utf8')).window.document;
+      const repairInput = document.querySelector('[data-p1-repair-fast-question]');
+      expect(repairInput).not.toBeNull();
+      expect(repairInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
+      expect(repairInput?.getAttribute('placeholder')).toBeTruthy();
+      expect(visibleText(document.body)).toContain('Answer format:');
+    }
+  });
+
   it('keeps local agent-loop run artifacts out of git status noise', () => {
     const gitignore = readFileSync('.gitignore', 'utf8').split(/\r?\n/);
 

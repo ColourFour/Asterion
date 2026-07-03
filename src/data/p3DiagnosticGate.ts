@@ -57,6 +57,8 @@ export interface P3DiagnosticMarkPoint {
   acceptedAnswers: string[];
   tolerance?: number;
   orderMatters?: boolean;
+  answerFormatHint?: string;
+  answerPlaceholder?: string;
   riskFlags: P3DiagnosticRiskFlag[];
   criticalFoundationSkill?: 'manipulation' | 'equation';
 }

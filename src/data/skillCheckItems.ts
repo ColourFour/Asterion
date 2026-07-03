@@ -58,6 +58,8 @@ export interface SkillCheckItem {
   answerType?: SkillCheckAnswerType;
   acceptedAnswers?: string[];
   orderInsensitive?: boolean;
+  answerFormatHint?: string;
+  answerPlaceholder?: string;
   repairStep?: string;
   mistakeTags?: string[];
   checkable?: boolean;

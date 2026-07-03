@@ -32,8 +32,9 @@ import { REQUIRED_STATIC_STUDY_PAGE_PATHS, STATIC_STUDY_PAGE_ROUTES } from '../s
 import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
 import { P3_COURSE_MAP } from '../src/lib/worldMap';
-import type { NormalizedQuestion, QuestionMarkPoint, QuestionPartMark, RegionDefinition } from '../src/types';
+import type { NormalizedQuestion, QuestionMarkPoint, QuestionPartMark, QuickCheckTwoValueField, RegionDefinition } from '../src/types';
 import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
+import { answerFormatGuidance, type AnswerFormatGuidance } from '../src/lib/answerFormatGuidance';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirName = process.env.STATIC_SITE_OUTPUT_DIR ?? 'docs';
@@ -792,17 +793,30 @@ function renderP3NextStepPanel(pagePath: string): string {
 function renderDiagnosticInput(question: P3DiagnosticQuestion): string {
   return `
     <div class="diagnostic-mark-grid">
-      ${question.markPoints.map((markPoint) => `
+      ${question.markPoints.map((markPoint) => {
+        const guidance = answerFormatGuidance({
+          answerType: markPoint.answerType,
+          acceptedAnswers: markPoint.acceptedAnswers,
+          expectedAnswer: markPoint.acceptedAnswers[0],
+          prompt: question.prompt,
+          label: markPoint.label,
+          answerFormatHint: markPoint.answerFormatHint,
+          answerPlaceholder: markPoint.answerPlaceholder,
+        });
+        return `
         <label class="single-answer-field diagnostic-answer-field">
           <span>${renderMathText(markPoint.label)}</span>
+          ${renderAnswerFormatLine(guidance)}
           <input
             name="${escapeAttr(`${question.id}::${markPoint.id}`)}"
             type="text"
             autocomplete="off"
+            ${placeholderAttr(guidance)}
             data-diagnostic-mark-point
             data-question-id="${escapeAttr(question.id)}"
             data-mark-point-id="${escapeAttr(markPoint.id)}"
             data-section-id="${escapeAttr(question.sectionId)}"
+            data-answer-format="${escapeAttr(guidance.instruction)}"
             data-risk-flags="${escapeAttr(JSON.stringify(markPoint.riskFlags))}"
             data-critical-foundation-skill="${escapeAttr(markPoint.criticalFoundationSkill ?? '')}"
             data-answer-type="${escapeAttr(markPoint.answerType)}"
@@ -811,7 +825,8 @@ function renderDiagnosticInput(question: P3DiagnosticQuestion): string {
             data-order-matters="${markPoint.orderMatters === true ? 'true' : 'false'}"
           />
         </label>
-      `).join('')}
+      `;
+      }).join('')}
     </div>
   `;
 }
@@ -912,15 +927,26 @@ function renderP3DiagnosticPage(pagePath = p3DiagnosticPagePath()): string {
 
 function renderP1RepairQuestionInput(question: P1RepairQuestion, phase: 'fast' | 'mini'): string {
   const attrPrefix = phase === 'fast' ? 'data-p1-repair-fast-question' : 'data-p1-repair-mini-check';
+  const guidance = answerFormatGuidance({
+    answerType: question.answerType,
+    acceptedAnswers: question.acceptedAnswers,
+    expectedAnswer: question.acceptedAnswers[0],
+    prompt: question.prompt,
+    answerFormatHint: question.answerFormatHint,
+    answerPlaceholder: question.answerPlaceholder,
+  });
   return `
     <label class="single-answer-field repair-answer-field">
       <span>${renderMathText(question.prompt)}</span>
+      ${renderAnswerFormatLine(guidance)}
       <input
         name="${escapeAttr(question.id)}"
         type="text"
         autocomplete="off"
+        ${placeholderAttr(guidance)}
         ${attrPrefix}
         data-question-id="${escapeAttr(question.id)}"
+        data-answer-format="${escapeAttr(guidance.instruction)}"
         data-answer-type="${escapeAttr(question.answerType)}"
         data-accepted-answers="${escapeAttr(JSON.stringify(question.acceptedAnswers))}"
         data-correction="${escapeAttr(question.correction)}"
@@ -2480,12 +2506,51 @@ function renderOptions(options: Array<{ id: string; label: string }> | undefined
   `;
 }
 
+function renderAnswerFormatLine(guidance: AnswerFormatGuidance): string {
+  return `<small class="answer-format-guidance">${escapeHtml(guidance.instruction)}</small>`;
+}
+
+function placeholderAttr(guidance: AnswerFormatGuidance): string {
+  return guidance.placeholder ? ` placeholder="${escapeAttr(guidance.placeholder)}"` : '';
+}
+
+function itemAnswerFormatGuidance(item: SkillCheckItem, acceptedAnswers?: string[]): AnswerFormatGuidance {
+  return answerFormatGuidance({
+    answerType: item.answerType,
+    inputType: item.inputType,
+    acceptedAnswers: acceptedAnswers ?? item.acceptedAnswers,
+    expectedAnswer: item.expectedAnswer,
+    prompt: item.prompt,
+    answerFormatHint: item.answerFormatHint,
+    answerPlaceholder: item.answerPlaceholder,
+  });
+}
+
+function fieldAnswerType(field: QuickCheckTwoValueField): string {
+  const values = Array.isArray(field.expectedAnswer) ? field.expectedAnswer : [field.expectedAnswer];
+  const sample = values[0] ?? '';
+  return /^[$\\\s{}0-9./+−-]+$/.test(sample) ? 'numeric' : 'expression-text';
+}
+
+function fieldAnswerFormatGuidance(field: QuickCheckTwoValueField): AnswerFormatGuidance {
+  return answerFormatGuidance({
+    answerType: fieldAnswerType(field),
+    acceptedAnswers: Array.isArray(field.expectedAnswer) ? field.expectedAnswer : [field.expectedAnswer],
+    expectedAnswer: field.expectedAnswer,
+    label: field.label,
+    answerFormatHint: field.answerFormatHint,
+    answerPlaceholder: field.answerPlaceholder,
+  });
+}
+
 function renderSkillCheckAnswerInput(item: SkillCheckItem): string {
   if (item.inputType === 'numeric') {
+    const guidance = itemAnswerFormatGuidance(item);
     return `
       <label class="single-answer-field">
         Answer
-        <input type="text" aria-label="${escapeAttr(`${item.itemId} answer`)}" />
+        ${renderAnswerFormatLine(guidance)}
+        <input type="text" aria-label="${escapeAttr(`${item.itemId} answer`)}"${placeholderAttr(guidance)} />
       </label>
     `;
   }
@@ -2493,9 +2558,16 @@ function renderSkillCheckAnswerInput(item: SkillCheckItem): string {
   if (item.inputType === 'two_value' && item.fields?.length) {
     return `
       <div class="field-list">
-        ${item.fields.map((field) => `
-          <label>${escapeHtml(field.label)} <input type="text" aria-label="${escapeAttr(field.label)}" /></label>
-        `).join('')}
+        ${item.fields.map((field) => {
+          const guidance = fieldAnswerFormatGuidance(field);
+          return `
+          <label>
+            <span>${escapeHtml(field.label)}</span>
+            ${renderAnswerFormatLine(guidance)}
+            <input type="text" aria-label="${escapeAttr(field.label)}"${placeholderAttr(guidance)} />
+          </label>
+        `;
+        }).join('')}
       </div>
     `;
   }
@@ -2538,26 +2610,13 @@ function renderExpectedAnswerSummary(item: SkillCheckItem): string {
   `;
 }
 
-function learnAnswerFormatHelp(item: SkillCheckItem): string {
-  if (item.inputType === 'multiple_choice') return 'Choose one answer.';
-  if (item.inputType === 'checkbox') return 'Choose all matching answers.';
-  if (item.answerType === 'multi-value') return 'Type all values separated by commas, e.g. pi/6, 5pi/6.';
-  if (item.answerType === 'complex-number') return 'Type complex numbers as 3+2i or 3-2i.';
-  if (item.answerType === 'coordinate') return 'Type coordinates as a tuple, e.g. (3,-2,6).';
-  if (item.answerType === 'interval') return 'Type a bounded interval or inequality, e.g. -1/3 < x < 1/3.';
-  if (item.answerType === 'numeric') return 'Type an integer, decimal, or simple fraction.';
-  if (item.answerType === 'expression-text') return 'Type a compact expression, e.g. ln(5x) or x^2-x-6.';
-  if (item.answerType === 'exact-text') return 'Type the requested word or short phrase.';
-  return 'Type your answer.';
-}
-
-function renderLearnAnswerInput(item: SkillCheckItem): string {
+function renderLearnAnswerInput(item: SkillCheckItem, acceptedAnswers?: string[]): string {
   const options = item.options ?? item.cards ?? [];
   if (options.length && (item.inputType === 'multiple_choice' || item.inputType === 'checkbox')) {
     const multiple = item.inputType === 'checkbox';
     return `
       <fieldset class="learn-option-bank">
-        <legend>${escapeHtml(learnAnswerFormatHelp(item))}</legend>
+        <legend>${escapeHtml(multiple ? 'Choose all matching answers.' : 'Choose one answer.')}</legend>
         ${options.map((option, index) => `
           <label>
             <input
@@ -2572,15 +2631,28 @@ function renderLearnAnswerInput(item: SkillCheckItem): string {
       </fieldset>
     `;
   }
-  const helper = item.inputType === 'checkbox'
-    ? 'Type all matching answers, separated by commas.'
-    : item.inputType === 'ordered_cards'
-      ? 'Type the order or the resulting expression.'
-      : learnAnswerFormatHelp(item);
+  if (item.inputType === 'two_value' && item.fields?.length) {
+    return `
+      <div class="field-list">
+        ${item.fields.map((field) => {
+          const guidance = fieldAnswerFormatGuidance(field);
+          return `
+          <label>
+            <span>${escapeHtml(field.label)}</span>
+            ${renderAnswerFormatLine(guidance)}
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="${escapeAttr(field.label)}"${placeholderAttr(guidance)} required />
+          </label>
+        `;
+        }).join('')}
+      </div>
+    `;
+  }
+  const guidance = itemAnswerFormatGuidance(item, acceptedAnswers);
   return `
     <label class="single-answer-field">
-      <span>${escapeHtml(helper)}</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+      <span>${escapeHtml(item.inputType === 'ordered_cards' ? 'Type the order or resulting expression.' : 'Answer')}</span>
+      ${renderAnswerFormatLine(guidance)}
+      <input name="submittedAnswer" type="text" autocomplete="off"${placeholderAttr(guidance)} required />
     </label>
   `;
 }
@@ -2620,7 +2692,7 @@ function renderLearnCheckForm(
       data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}"
       data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}"
     >
-      ${renderLearnAnswerInput(item)}
+      ${renderLearnAnswerInput(item, acceptedAnswers)}
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
@@ -2854,7 +2926,7 @@ function renderCheckableSkillCheckForm(
   ]));
   return `
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
-      ${renderLearnAnswerInput(item)}
+      ${renderLearnAnswerInput(item, acceptedAnswers)}
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-skill-hint>Hint</button>

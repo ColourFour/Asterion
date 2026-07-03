@@ -314,6 +314,8 @@ export interface QuickCheckTwoValueField {
   displayPrefix?: string;
   displaySuffix?: string;
   tolerance?: number;
+  answerFormatHint?: string;
+  answerPlaceholder?: string;
 }
 
 export interface QuickCheckContract {
@@ -328,6 +330,8 @@ export interface QuickCheckContract {
   displayPrefix?: string;
   displaySuffix?: string;
   tolerance?: number;
+  answerFormatHint?: string;
+  answerPlaceholder?: string;
   hint?: string;
   workedFirstStep?: string;
   explanation?: string;

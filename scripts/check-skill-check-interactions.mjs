@@ -571,9 +571,9 @@ try {
     const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
     const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
     const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('span')?.textContent || '';
+    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
     const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('span')?.getBoundingClientRect();
+    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
     return {
       stepId: activeCard?.getAttribute('data-learn-step-id'),
       hasTextInput: Boolean(input),
@@ -583,7 +583,7 @@ try {
   });
   assert(diffTypedHelp.stepId === 'learn-diff-power-negative-fractional', 'Differentiation second step should expose a typed input.');
   assert(diffTypedHelp.hasTextInput, 'Differentiation typed steps must render a text answer input.');
-  assert(/Type a compact expression/i.test(diffTypedHelp.helpText), `Differentiation typed input must show answer-format help; saw "${diffTypedHelp.helpText}".`);
+  assert(/Answer format: type a compact expression using \^ for powers\./i.test(diffTypedHelp.helpText), `Differentiation typed input must show answer-format help; saw "${diffTypedHelp.helpText}".`);
   assert(diffTypedHelp.helpNearInput, 'Differentiation answer-format help must be placed near the typed input.');
 
   await resetPageProgress(page);
@@ -713,9 +713,9 @@ try {
     const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
     const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
     const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('span')?.textContent || '';
+    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
     const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('span')?.getBoundingClientRect();
+    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
     return {
       stepId: activeCard?.getAttribute('data-learn-step-id'),
       hasTextInput: Boolean(input),
@@ -725,7 +725,7 @@ try {
   });
   assert(integrationTypedHelp.stepId === 'learn-int-power-negative-fractional', 'Integration second step should expose a typed input.');
   assert(integrationTypedHelp.hasTextInput, 'Integration typed steps must render a text answer input.');
-  assert(/Type a compact expression/i.test(integrationTypedHelp.helpText), `Integration typed input must show answer-format help; saw "${integrationTypedHelp.helpText}".`);
+  assert(/Answer format: type a compact expression using \^ for powers\./i.test(integrationTypedHelp.helpText), `Integration typed input must show answer-format help; saw "${integrationTypedHelp.helpText}".`);
   assert(integrationTypedHelp.helpNearInput, 'Integration answer-format help must be placed near the typed input.');
 
   await resetPageProgress(page);
@@ -855,9 +855,9 @@ try {
     const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
     const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
     const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('span')?.textContent || '';
+    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
     const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('span')?.getBoundingClientRect();
+    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
     return {
       stepId: activeCard?.getAttribute('data-learn-step-id'),
       hasTextInput: Boolean(input),
@@ -867,7 +867,7 @@ try {
   });
   assert(iterationTypedHelp.stepId === 'learn-iteration-rearrange-fixed-point', 'Iteration second step should expose a typed input.');
   assert(iterationTypedHelp.hasTextInput, 'Iteration typed steps must render a text answer input.');
-  assert(/Type a compact expression/i.test(iterationTypedHelp.helpText), `Iteration typed input must show answer-format help; saw "${iterationTypedHelp.helpText}".`);
+  assert(/Answer format: type a compact expression using \^ for powers\./i.test(iterationTypedHelp.helpText), `Iteration typed input must show answer-format help; saw "${iterationTypedHelp.helpText}".`);
   assert(iterationTypedHelp.helpNearInput, 'Iteration answer-format help must be placed near the typed input.');
 
   await resetPageProgress(page);
@@ -997,9 +997,9 @@ try {
     const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
     const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
     const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('span')?.textContent || '';
+    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
     const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('span')?.getBoundingClientRect();
+    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
     return {
       stepId: activeCard?.getAttribute('data-learn-step-id'),
       hasTextInput: Boolean(input),
@@ -1009,7 +1009,7 @@ try {
   });
   assert(deTypedHelp.stepId === 'learn-de-separate-variables', 'Differential Equations second step should expose a typed input.');
   assert(deTypedHelp.hasTextInput, 'Differential Equations typed steps must render a text answer input.');
-  assert(/Type a compact expression/i.test(deTypedHelp.helpText), `Differential Equations typed input must show answer-format help; saw "${deTypedHelp.helpText}".`);
+  assert(/Answer format: type a compact expression using \^ for powers\./i.test(deTypedHelp.helpText), `Differential Equations typed input must show answer-format help; saw "${deTypedHelp.helpText}".`);
   assert(deTypedHelp.helpNearInput, 'Differential Equations answer-format help must be placed near the typed input.');
 
   await resetPageProgress(page);
@@ -1139,9 +1139,9 @@ try {
     const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
     const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
     const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('span')?.textContent || '';
+    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
     const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('span')?.getBoundingClientRect();
+    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
     return {
       stepId: activeCard?.getAttribute('data-learn-step-id'),
       hasTextInput: Boolean(input),
@@ -1151,7 +1151,7 @@ try {
   });
   assert(complexTypedHelp.stepId === 'learn-complex-multiply-i-squared', 'Complex Numbers second step should expose a typed input.');
   assert(complexTypedHelp.hasTextInput, 'Complex Numbers typed steps must render a text answer input.');
-  assert(/Type complex numbers as 3\+2i or 3-2i/i.test(complexTypedHelp.helpText), `Complex Numbers typed input must show complex-number format help; saw "${complexTypedHelp.helpText}".`);
+  assert(/Answer format: complex number in a\+bi form\./i.test(complexTypedHelp.helpText), `Complex Numbers typed input must show complex-number format help; saw "${complexTypedHelp.helpText}".`);
   assert(complexTypedHelp.helpNearInput, 'Complex Numbers answer-format help must be placed near the typed input.');
 
   await resetPageProgress(page);

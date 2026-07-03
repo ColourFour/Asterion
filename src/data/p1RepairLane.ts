@@ -23,6 +23,8 @@ export interface P1RepairQuestion {
   correction: string;
   tolerance?: number;
   orderMatters?: boolean;
+  answerFormatHint?: string;
+  answerPlaceholder?: string;
 }
 
 export interface P1RepairModuleDefinition {

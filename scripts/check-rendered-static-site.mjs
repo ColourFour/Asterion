@@ -124,7 +124,7 @@ async function assertLearnVisualBasics(browser) {
           const primaryForm = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"]');
           const firstAnswerControl = primaryForm?.querySelector('input[name="submittedAnswer"]');
           const checkButton = primaryForm?.querySelector('button[type="submit"]');
-          const typedHelp = primaryForm?.querySelector('.single-answer-field > span');
+          const typedHelp = primaryForm?.querySelector('.single-answer-field .answer-format-guidance');
           const optionLegend = primaryForm?.querySelector('.learn-option-bank legend');
           const visibleOptionLabels = Array.from(primaryForm?.querySelectorAll('.learn-option-bank label') ?? []).filter(isVisible);
           const visibleMathOverflow = Array.from(document.querySelectorAll('.learn-step-card .math-text, .learn-step-card .katex')).some((element) => {

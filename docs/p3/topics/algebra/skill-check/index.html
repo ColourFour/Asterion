@@ -1191,8 +1191,9 @@
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Polynomial Division" data-skill-id="p3_alg_polynomial_remainder_factor" data-check-id="sc-alg-polynomial-division-foundation-001" data-answer-type="multi-value" data-accepted-answers="[&quot;divide-leading, multiply-back, subtract, continue&quot;]" data-tolerance="" data-order-matters="true" data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]">
 
     <label class="single-answer-field">
-      <span>Type the order or the resulting expression.</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+      <span>Type the order or resulting expression.</span>
+      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
+      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
     </label>
 
       <div class="skill-check-actions">
@@ -1288,10 +1289,21 @@
 
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Polynomial Division" data-skill-id="p3_alg_polynomial_remainder_factor" data-check-id="sc-alg-polynomial-division-core-001" data-answer-type="multi-value" data-accepted-answers="[&quot;x^2+5x+9, 23&quot;,&quot;quotient x^2+5x+9, remainder 23&quot;]" data-tolerance="" data-order-matters="true" data-mistake-tags="[&quot;coefficient error&quot;,&quot;sign error&quot;,&quot;incomplete reasoning&quot;]">
 
-    <label class="single-answer-field">
-      <span>Type all values separated by commas, e.g. pi/6, 5pi/6.</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
-    </label>
+      <div class="field-list">
+
+          <label>
+            <span>quotient</span>
+            <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="quotient" placeholder="x^2-x-6" required />
+          </label>
+
+          <label>
+            <span>remainder</span>
+            <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="remainder" placeholder="3/2" required />
+          </label>
+
+      </div>
 
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
@@ -1390,10 +1402,21 @@
 
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Polynomial Division" data-skill-id="p3_alg_polynomial_remainder_factor" data-check-id="sc-alg-polynomial-division-challenge-001" data-answer-type="multi-value" data-accepted-answers="[&quot;x^2-x+3, 4&quot;,&quot;quotient x^2-x+3, remainder 4&quot;]" data-tolerance="" data-order-matters="true" data-mistake-tags="[&quot;coefficient error&quot;,&quot;sign error&quot;,&quot;incomplete reasoning&quot;]">
 
-    <label class="single-answer-field">
-      <span>Type all values separated by commas, e.g. pi/6, 5pi/6.</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
-    </label>
+      <div class="field-list">
+
+          <label>
+            <span>quotient</span>
+            <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="quotient" placeholder="x^2-x-6" required />
+          </label>
+
+          <label>
+            <span>remainder</span>
+            <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="remainder" placeholder="3/2" required />
+          </label>
+
+      </div>
 
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
@@ -1492,10 +1515,21 @@
 
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Polynomial Division" data-skill-id="p3_alg_polynomial_remainder_factor" data-check-id="sc-alg-polynomial-division-quartic-002" data-answer-type="multi-value" data-accepted-answers="[&quot;x^2-2, 2&quot;,&quot;quotient x^2-2, remainder 2&quot;]" data-tolerance="" data-order-matters="true" data-mistake-tags="[&quot;coefficient error&quot;,&quot;sign error&quot;,&quot;incomplete reasoning&quot;]">
 
-    <label class="single-answer-field">
-      <span>Type all values separated by commas, e.g. pi/6, 5pi/6.</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
-    </label>
+      <div class="field-list">
+
+          <label>
+            <span>quotient</span>
+            <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="quotient" placeholder="x^2-x-6" required />
+          </label>
+
+          <label>
+            <span>remainder</span>
+            <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="remainder" placeholder="3/2" required />
+          </label>
+
+      </div>
 
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
@@ -1798,8 +1832,9 @@
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Remainder and Factor Theorem" data-skill-id="p3_alg_polynomial_remainder_factor" data-check-id="sc-alg-remainder-factor-core-001" data-answer-type="numeric" data-accepted-answers="[&quot;17/4&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;sign error&quot;,&quot;calculator&quot;,&quot;method choice&quot;]">
 
     <label class="single-answer-field">
-      <span>Type an integer, decimal, or simple fraction.</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+      <span>Answer</span>
+      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
     </label>
 
       <div class="skill-check-actions">
@@ -1891,10 +1926,21 @@
 
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Remainder and Factor Theorem" data-skill-id="p3_alg_polynomial_remainder_factor" data-check-id="sc-alg-remainder-factor-challenge-001" data-answer-type="coordinate" data-accepted-answers="[&quot;(0,-7)&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;method choice&quot;,&quot;sign error&quot;,&quot;coefficient error&quot;]">
 
-    <label class="single-answer-field">
-      <span>Type coordinates as a tuple, e.g. (3,-2,6).</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
-    </label>
+      <div class="field-list">
+
+          <label>
+            <span>a</span>
+            <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="a" placeholder="3/2" required />
+          </label>
+
+          <label>
+            <span>b</span>
+            <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="b" placeholder="3/2" required />
+          </label>
+
+      </div>
 
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
@@ -1993,10 +2039,21 @@
 
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Remainder and Factor Theorem" data-skill-id="p3_alg_polynomial_remainder_factor" data-check-id="sc-alg-remainder-factor-nonmonic-002" data-answer-type="coordinate" data-accepted-answers="[&quot;(-6,0)&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;coefficient error&quot;,&quot;sign error&quot;,&quot;method choice&quot;]">
 
-    <label class="single-answer-field">
-      <span>Type coordinates as a tuple, e.g. (3,-2,6).</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
-    </label>
+      <div class="field-list">
+
+          <label>
+            <span>a</span>
+            <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="a" placeholder="3/2" required />
+          </label>
+
+          <label>
+            <span>b</span>
+            <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="b" placeholder="3/2" required />
+          </label>
+
+      </div>
 
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
@@ -3150,8 +3207,9 @@
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Binomial Expansions" data-skill-id="p3_alg_binomial_terms_coefficients" data-check-id="sc-alg-binomial-foundation-001" data-answer-type="numeric" data-accepted-answers="[&quot;4&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]">
 
     <label class="single-answer-field">
-      <span>Type an integer, decimal, or simple fraction.</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+      <span>Answer</span>
+      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
     </label>
 
       <div class="skill-check-actions">
@@ -3382,8 +3440,9 @@
     <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="algebra" data-topic="Binomial Expansions" data-skill-id="p3_alg_binomial_terms_coefficients" data-check-id="sc-alg-binomial-challenge-001" data-answer-type="numeric" data-accepted-answers="[&quot;-72&quot;]" data-tolerance="" data-order-matters="false" data-mistake-tags="[&quot;coefficient error&quot;,&quot;sign error&quot;,&quot;method choice&quot;]">
 
     <label class="single-answer-field">
-      <span>Type an integer, decimal, or simple fraction.</span>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+      <span>Answer</span>
+      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
+      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
     </label>
 
       <div class="skill-check-actions">
