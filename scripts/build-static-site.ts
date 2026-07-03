@@ -114,6 +114,8 @@ interface RenderPageOptions {
   active: 'courses' | 'p1' | 'p3' | 'm1' | 's1' | 'p3-diagnostic' | 'p1-repair' | 'p3-topics' | 'p3-exam-training';
   body: string;
   bodyClass?: string;
+  hideThemeToggle?: boolean;
+  forcedTheme?: 'dark' | 'light';
 }
 
 const mathDelimiterPattern = /(\$\$[\s\S]+?\$\$|\$(?!\$)[\s\S]+?\$)/g;
@@ -358,6 +360,10 @@ function p3ReviewPagePath(): string {
   return `${P3_COURSE_ID}/review/index.html`;
 }
 
+function p3ExamTrainingPagePath(): string {
+  return `${P3_COURSE_ID}/exam-training/index.html`;
+}
+
 function p3ContentQaPagePath(): string {
   return `${P3_COURSE_ID}/content-qa/index.html`;
 }
@@ -596,7 +602,7 @@ function primaryNav(pagePath: string, active: RenderPageOptions['active']): stri
     { key: 'courses', label: 'Home', path: 'index.html' },
     { key: 'p1-repair', label: 'P1 Review', path: p1RepairLanePagePath() },
     { key: 'p3-topics', label: 'P3 Units', path: p3TopicsIndexPagePath() },
-    { key: 'p3-exam-training', label: 'Export Progress', path: p3ReviewPagePath() },
+    { key: 'p3-exam-training', label: 'Exam Training', path: p3ExamTrainingPagePath() },
   ];
   const activeKey = ['p1', 'm1', 's1'].includes(active) ? 'courses' : active;
 
@@ -614,7 +620,14 @@ function renderPage(options: RenderPageOptions): string {
   const katexHref = hrefToPublicAsset(options.pagePath, 'assets/katex.min.css');
   const scriptHref = hrefToPublicAsset(options.pagePath, 'assets/static-study.js');
   const title = `${options.title} | Asterion Study`;
-  const themeBootScript = `(function(){try{var theme=window.localStorage.getItem('asterion.theme.v1');if(theme==='dark'||theme==='light'){document.documentElement.dataset.theme=theme;}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.dataset.theme='dark';}}catch(error){}})();`;
+  const themeBootScript = options.forcedTheme
+    ? `(function(){document.documentElement.dataset.theme='${options.forcedTheme}';})();`
+    : `(function(){try{var theme=window.localStorage.getItem('asterion.theme.v1');if(theme==='dark'||theme==='light'){document.documentElement.dataset.theme=theme;}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.dataset.theme='dark';}}catch(error){}})();`;
+  const themeToggle = options.hideThemeToggle ? '' : `
+      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="theme-toggle-icon" aria-hidden="true"></span>
+        <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
+      </button>`;
 
   return `<!doctype html>
 <html lang="en">
@@ -642,10 +655,7 @@ function renderPage(options: RenderPageOptions): string {
         </span>
       </a>
       ${primaryNav(options.pagePath, options.active)}
-      <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
-        <span class="theme-toggle-icon" aria-hidden="true"></span>
-        <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
-      </button>
+      ${themeToggle}
     </header>
     <main id="main-content" tabindex="-1">
       ${options.body}
@@ -968,7 +978,7 @@ function renderP1RepairLanePage(pagePath = p1RepairLanePagePath()): string {
     ${renderHero(
       'P1 Review',
       'Short prerequisite review for core P1 algebra and calculus fluency before P3 Exam Training.',
-      'x^2-9, \\quad \\sin^2 x+\\cos^2 x=1, \\quad \\frac{dy}{dx}, \\quad \\int f(x)\\,dx',
+      'x^2-9, \\quad \\sin^2 x+\\cos^2 x=1, \\quad \\frac{dy}{dx}',
       '<a class="button primary-button" href="#repair-modules">Start review</a>',
       'CAIE 9709 foundation review',
     )}
@@ -1675,6 +1685,8 @@ function renderCourseSelectorPage(): string {
     active: 'courses',
     body,
     bodyClass: 'home-page',
+    hideThemeToggle: true,
+    forcedTheme: 'dark',
   });
 }
 
@@ -2035,7 +2047,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
     pagePath,
     title: 'Export Progress',
     description: 'Email local P3 progress and review saved mistakes after the sequential P3 unit path.',
-    active: 'p3-exam-training',
+    active: 'p3',
     body,
     bodyClass: 'exam-training-page',
   });
@@ -2051,6 +2063,56 @@ function ladderAvailabilityText(row: P3SkillContractPageRow, ladderLevel: typeof
   return ladderLevel === 'mixed'
     ? `Mapped questions (${bucket.questionIds.length})`
     : `Available (${bucket.questionIds.length})`;
+}
+
+function renderP3ContentQaMobileCards(rows: P3SkillContractPageRow[]): string {
+  return `
+    <div class="contract-qa-card-list" aria-label="Mobile skill QA summaries">
+      ${rows.map((row) => {
+        const mappedCount = typeof row.mappedExamQuestionCount === 'number' ? String(row.mappedExamQuestionCount) : 'Unknown';
+        const notes = [...(row.skill.reviewFlags ?? []), row.skill.notes].filter(Boolean).join('; ') || 'None';
+        return `
+          <article class="contract-qa-mobile-card" data-skill-id="${escapeRawAttr(row.skill.id)}">
+            <header>
+              <code>${escapeRawHtml(row.skill.id)}</code>
+              <span class="contract-status contract-status-${escapeRawAttr(statusClassName(row.statusLabel))}">${escapeRawHtml(row.statusLabel)}</span>
+            </header>
+            <h3>${escapeRawHtml(row.skill.title)}</h3>
+            <dl>
+              <div>
+                <dt>Topic</dt>
+                <dd>${escapeRawHtml(row.skill.officialTopic)}</dd>
+              </div>
+              <div>
+                <dt>Learn</dt>
+                <dd>${availabilityText(row.availability.fieldGuide)}</dd>
+              </div>
+              <div>
+                <dt>Checked Practice</dt>
+                <dd>${availabilityText(row.availability.skillCheck)}</dd>
+              </div>
+              <div>
+                <dt>Exam Training</dt>
+                <dd>${availabilityText(row.availability.examTraining)}</dd>
+              </div>
+              <div>
+                <dt>Mapped count</dt>
+                <dd>${escapeRawHtml(mappedCount)}</dd>
+              </div>
+              <div>
+                <dt>Evidence status</dt>
+                <dd>${escapeRawHtml(row.statusLabel)}</dd>
+              </div>
+              <div class="contract-qa-card-notes">
+                <dt>Notes</dt>
+                <dd>${escapeRawHtml(notes)}</dd>
+              </div>
+            </dl>
+          </article>
+        `;
+      }).join('')}
+    </div>
+  `;
 }
 
 function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPagePath()): string {
@@ -2084,6 +2146,7 @@ function renderP3ContentQaPage(data: StaticSiteData, pagePath = p3ContentQaPageP
           <p>${rows.length} P3 skills. P1, M1, and S1 are not part of this contract.</p>
         </div>
       </div>
+      ${renderP3ContentQaMobileCards(rows)}
       <div class="contract-table-scroll">
         <table class="contract-qa-table">
           <thead>
@@ -2958,7 +3021,6 @@ interface ExamSelfMarkPart {
   subpartId?: string;
   label: string;
   marksAvailable: number;
-  markSchemeText?: string;
   markPoints?: QuestionMarkPoint[];
   primaryTopicId?: string;
   skillRef?: string;
@@ -2973,7 +3035,6 @@ function examSelfMarkParts(question: NormalizedQuestion, totalMarks = marksAvail
       subpartId: part.subpartId,
       label: part.label,
       marksAvailable: part.marksAvailable,
-      markSchemeText: part.markSchemeText,
       markPoints: part.markPoints,
       primaryTopicId: part.primaryTopicId,
       skillRef: part.skillRef,
@@ -2983,19 +3044,13 @@ function examSelfMarkParts(question: NormalizedQuestion, totalMarks = marksAvail
   return [{
     label: 'Whole question',
     marksAvailable: totalMarks,
-    markSchemeText: question.textQuality?.markSchemeText,
   }];
 }
 
 function renderMarkPointControls(part: ExamSelfMarkPart, partIndex: number): string {
   const markPoints = part.markPoints ?? [];
   if (!markPoints.length) {
-    return part.markSchemeText
-      ? `<details class="self-marking-guidance">
-          <summary>Self-marking guidance</summary>
-          <p>${escapeRawHtml(part.markSchemeText)}</p>
-        </details>`
-      : '<p class="self-marking-guidance-note">Self-marking guidance is the mark-scheme image for this part.</p>';
+    return '<p class="self-marking-guidance-note">Self-marking guidance is the mark-scheme image for this part.</p>';
   }
   return `
     <fieldset class="mark-point-list">
@@ -3302,7 +3357,7 @@ function renderExamTrainingTopicCard(fromPagePath: string, context: TopicContext
 
 function renderExamTrainingPage(
   data: StaticSiteData,
-  pagePath = `${P3_COURSE_ID}/exam-training/index.html`,
+  pagePath = p3ExamTrainingPagePath(),
   topicsIndexPath = p3TopicsIndexPagePath(),
   examTrainingPathForTopic = topicExamTrainingPagePath,
 ): string {
@@ -3490,6 +3545,7 @@ async function generate(): Promise<void> {
   htmlByPath.set(p3TopicsIndexPagePath(), renderP3TopicsIndexPage(data));
   htmlByPath.set(p3DiagnosticPagePath(), renderP3DiagnosticPage());
   htmlByPath.set(p1RepairLanePagePath(), renderP1RepairLanePage());
+  htmlByPath.set(p3ExamTrainingPagePath(), renderExamTrainingPage(data));
   htmlByPath.set(p3NeedToKnowPagePath(), renderP3NeedToKnowPage(data));
   htmlByPath.set(p3ReviewPagePath(), renderP3ReviewPage(data));
   htmlByPath.set(p3ContentQaPagePath(), renderP3ContentQaPage(data));

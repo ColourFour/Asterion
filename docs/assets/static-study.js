@@ -112,9 +112,9 @@
   }
 
   function setupThemeToggle() {
-    applyThemePreference(currentThemePreference());
     var button = document.querySelector('[data-theme-toggle]');
     if (!(button instanceof HTMLButtonElement)) return;
+    applyThemePreference(currentThemePreference());
     button.addEventListener('click', function () {
       var currentTheme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
       var nextTheme = currentTheme === 'dark' ? 'light' : 'dark';

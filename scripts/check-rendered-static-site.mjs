@@ -18,18 +18,40 @@ const p3LearnVisualPages = [
   'p3/topics/numerical-solution-of-equations/learn/index.html',
 ];
 
-const requiredRenderedPages = [
+const p3TopicSlugs = [
+  'algebra',
+  'logarithmic-and-exponential-functions',
+  'trigonometry',
+  'vectors',
+  'differentiation',
+  'integration',
+  'differential-equations',
+  'complex-numbers',
+  'numerical-solution-of-equations',
+];
+
+const p3ExamTrainingPages = p3TopicSlugs.map((slug) => `p3/topics/${slug}/exam-training/index.html`);
+
+const p3SkillSelectorPages = p3TopicSlugs.flatMap((slug) => [
+  `p3/topics/${slug}/skill-check/index.html`,
+  `p3/topics/${slug}/worksheet/index.html`,
+]);
+
+const requiredRenderedPages = Array.from(new Set([
   'index.html',
   'p1/index.html',
   'p3/index.html',
   'm1/index.html',
   's1/index.html',
+  'p3/content-qa/index.html',
   ...p3LearnVisualPages,
+  ...p3ExamTrainingPages,
+  ...p3SkillSelectorPages,
   'p3/topics/algebra/field-guide/index.html',
   'p3/topics/algebra/skill-check/index.html',
   'p3/topics/algebra/exam-training/index.html',
   'p3/topics/complex-numbers/exam-training/index.html',
-];
+]));
 
 function pageUrl(pagePath) {
   return pathToFileURL(path.join(siteRoot, pagePath)).href;
@@ -149,6 +171,131 @@ async function assertLearnVisualBasics(browser) {
     } finally {
       await visualPage.close();
     }
+  }
+}
+
+async function assertExamTrainingMobileVisuals(browser) {
+  const visualPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+
+  try {
+    for (const pagePath of p3ExamTrainingPages) {
+      await waitForStaticEnhancement(visualPage, pagePath);
+      const result = await visualPage.evaluate(() => {
+        const isVisible = (element) => {
+          if (!element || element.hidden) return false;
+          const style = getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+        };
+        const unreadablePattern = /[\uE000-\uF8FF\u{F0000}-\u{FFFFD}\u{100000}-\u{10FFFD}\uFFFD]/u;
+        const supportTexts = Array.from(document.querySelectorAll('.mark-point-list label span, .self-marking-guidance, .self-marking-guidance-note'))
+          .map((element) => (element.textContent || '').trim())
+          .filter(Boolean);
+        const overflowingControls = Array.from(document.querySelectorAll('fieldset, .exam-part-card, .mark-point-list, .exam-question-card header, .exam-evidence-banner'))
+          .filter(isVisible)
+          .map((element) => {
+            const rect = element.getBoundingClientRect();
+            return {
+              selector: element.className || element.tagName.toLowerCase(),
+              left: rect.left,
+              right: rect.right,
+            };
+          })
+          .filter((item) => item.left < -1 || item.right > window.innerWidth + 1);
+        return {
+          horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+          unreadableSupportText: supportTexts.find((text) => unreadablePattern.test(text)),
+          overflowingControls,
+        };
+      });
+
+      if (result.horizontalOverflow) {
+        fail(`${pagePath} has horizontal overflow at 390x844.`);
+      }
+      if (result.unreadableSupportText) {
+        fail(`${pagePath} exposes unreadable mark-point/self-marking support text at 390x844.`);
+      }
+      if (result.overflowingControls.length) {
+        fail(`${pagePath} has exam controls outside the mobile viewport at 390x844: ${JSON.stringify(result.overflowingControls.slice(0, 3))}`);
+      }
+    }
+  } finally {
+    await visualPage.close();
+  }
+}
+
+async function assertMobileSkillSelectorLabels(browser) {
+  const visualPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+
+  try {
+    for (const pagePath of p3SkillSelectorPages) {
+      await waitForStaticEnhancement(visualPage, pagePath);
+      const result = await visualPage.evaluate(() => {
+        const isVisible = (element) => {
+          if (!element || element.hidden) return false;
+          const style = getComputedStyle(element);
+          const rect = element.getBoundingClientRect();
+          return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+        };
+        const clippedLabels = Array.from(document.querySelectorAll('.practice-current-skill'))
+          .filter(isVisible)
+          .map((element) => {
+            const style = getComputedStyle(element);
+            return {
+              text: (element.textContent || '').replace(/\s+/g, ' ').trim(),
+              whiteSpace: style.whiteSpace,
+              overflow: style.overflow,
+              clientWidth: element.clientWidth,
+              scrollWidth: element.scrollWidth,
+            };
+          })
+          .filter((item) => item.whiteSpace === 'nowrap' || (item.overflow !== 'visible' && item.scrollWidth > item.clientWidth + 2));
+        return {
+          labelCount: document.querySelectorAll('.practice-current-skill').length,
+          clippedLabels,
+        };
+      });
+
+      if (result.clippedLabels.length) {
+        fail(`${pagePath} has clipped mobile current-skill labels at 390x844: ${JSON.stringify(result.clippedLabels.slice(0, 2))}`);
+      }
+    }
+  } finally {
+    await visualPage.close();
+  }
+}
+
+async function assertContentQaMobileCards(browser) {
+  const visualPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
+
+  try {
+    await waitForStaticEnhancement(visualPage, 'p3/content-qa/index.html');
+    const result = await visualPage.evaluate(() => {
+      const isVisible = (element) => {
+        if (!element || element.hidden) return false;
+        const style = getComputedStyle(element);
+        const rect = element.getBoundingClientRect();
+        return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+      };
+      return {
+        horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+        cardListVisible: isVisible(document.querySelector('.contract-qa-card-list')),
+        cardCount: Array.from(document.querySelectorAll('.contract-qa-mobile-card')).filter(isVisible).length,
+        tableVisible: isVisible(document.querySelector('.contract-table-scroll')),
+      };
+    });
+
+    if (result.horizontalOverflow) {
+      fail('Internal Content QA has horizontal overflow at 390x844.');
+    }
+    if (!result.cardListVisible || result.cardCount === 0) {
+      fail('Internal Content QA must render readable mobile QA cards at 390x844.');
+    }
+    if (result.tableVisible) {
+      fail('Internal Content QA should hide the wide QA table on narrow mobile screens.');
+    }
+  } finally {
+    await visualPage.close();
   }
 }
 
@@ -559,6 +706,9 @@ try {
   }
 
   await assertLearnVisualBasics(browser);
+  await assertExamTrainingMobileVisuals(browser);
+  await assertMobileSkillSelectorLabels(browser);
+  await assertContentQaMobileCards(browser);
 
   for (const [oldAlgebraPath, bridgeTitle, buttonLabel] of [
     ['p3/topics/algebra/field-guide/index.html', 'Algebra — Learn', 'Learn'],

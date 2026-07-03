@@ -16,6 +16,7 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   { path: `${P3_COURSE_ID}/diagnostic/index.html`, label: 'P3 diagnostic gate' },
   { path: `${P3_COURSE_ID}/repair-lane/index.html`, label: 'P1 Review prerequisite practice' },
   { path: `${P3_COURSE_ID}/topics/index.html`, label: 'P3 unit sequence' },
+  { path: `${P3_COURSE_ID}/exam-training/index.html`, label: 'P3 Exam Training' },
   { path: `${P3_COURSE_ID}/need-to-know/index.html`, label: 'P3 Need to Know checklist' },
   { path: `${P3_COURSE_ID}/review/index.html`, label: 'P3 final exam review' },
   { path: `${P3_COURSE_ID}/content-qa/index.html`, label: 'Internal P3 Content QA table' },

@@ -93,6 +93,7 @@ describe('static P3 product contract', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/need-to-know/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/review/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/content-qa/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/exam-training/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p1/need-to-know/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('m1/content-qa/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('s1/content-qa/index.html');
@@ -108,7 +109,6 @@ describe('static P3 product contract', () => {
     }
 
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/topics/index.html');
-    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p3/exam-training/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('regions/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('topics/algebra/index.html');
   });
@@ -148,6 +148,8 @@ describe('static P3 product contract', () => {
       expect(generatedHome).toContain('Exam questions');
       expect(homeDocument.querySelectorAll('.home-p3-action-card')).toHaveLength(3);
       expect(homeDocument.querySelectorAll('.home-p3-topic-tile')).toHaveLength(9);
+      expect(homeDocument.querySelector('[data-theme-toggle]')).toBeNull();
+      expect(generatedHome).toContain("document.documentElement.dataset.theme='dark'");
       for (const topicLabel of ['Algebra', 'Log/Exp', 'Complex', 'Trigonometry', 'Vectors', 'Differentiation', 'Integration', 'Diff Eq', 'Iteration']) {
         expect(generatedHome).toContain(topicLabel);
       }
@@ -181,7 +183,7 @@ describe('static P3 product contract', () => {
       expect(generatedP3).toContain('data-progress-field-guide');
       expect(generatedP3).toContain('data-progress-skill');
       expect(generatedP3).toContain('data-progress-exam');
-      expect(generatedP3).toContain('Export Progress');
+      expect(generatedP3).toContain('Export progress');
       expect(generatedP3).toContain('review/#export-progress');
       expect(generatedP3.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
       expect(generatedP3.match(/data-path-unit-primary-action/g)?.length).toBe(9);
@@ -273,7 +275,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain("{ key: 'courses', label: 'Home'");
     expect(generatorSource).toContain("{ key: 'p1-repair', label: 'P1 Review'");
     expect(generatorSource).toContain("{ key: 'p3-topics', label: 'P3 Units'");
-    expect(generatorSource).toContain("{ key: 'p3-exam-training', label: 'Export Progress'");
+    expect(generatorSource).toContain("{ key: 'p3-exam-training', label: 'Exam Training'");
     expect(generatorSource).toContain('data-p1-repair-module-tab');
     expect(generatorSource).toContain('data-p1-repair-mini-check-panel hidden');
     expect(generatorSource).toContain('Submit Fast Check');
@@ -293,7 +295,8 @@ describe('static P3 product contract', () => {
       const document = new JSDOM(generatedP1Review).window.document;
       const navLabels = Array.from(document.querySelectorAll('.site-nav a')).map(visibleText);
 
-      expect(navLabels).toEqual(['Home', 'P1 Review', 'P3 Units', 'Export Progress']);
+      expect(navLabels).toEqual(['Home', 'P1 Review', 'P3 Units', 'Exam Training']);
+      expect(document.querySelector('[data-theme-toggle]')).not.toBeNull();
       expect(document.querySelectorAll('[data-p1-repair-module-tab]')).toHaveLength(5);
       expect(document.querySelectorAll('[data-p1-repair-module]')).toHaveLength(5);
       expect(document.querySelectorAll('[data-p1-repair-module][hidden]')).toHaveLength(4);

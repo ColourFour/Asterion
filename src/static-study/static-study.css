@@ -937,7 +937,67 @@ main > * {
   gap: 14px;
 }
 
+.contract-qa-card-list {
+  display: none;
+}
+
+.contract-qa-mobile-card {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.contract-qa-mobile-card header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.contract-qa-mobile-card h3 {
+  margin: 0;
+  color: var(--ink-warm);
+  font-size: 1rem;
+}
+
+.contract-qa-mobile-card dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin: 0;
+}
+
+.contract-qa-mobile-card dl > div {
+  display: grid;
+  grid-template-columns: minmax(104px, auto) minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.contract-qa-mobile-card dt {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.contract-qa-mobile-card dd {
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.contract-qa-mobile-card code {
+  color: var(--sage-dark);
+  font-size: 0.84rem;
+}
+
 .contract-table-scroll {
+  max-width: 100%;
   overflow-x: auto;
 }
 
@@ -6074,14 +6134,23 @@ body.skill-check-page .exam-question-section {
 .exam-question-card {
   display: grid;
   gap: 15px;
+  min-width: 0;
+  max-width: 100%;
   padding: 18px;
 }
 
 .exam-question-card header {
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
-  justify-content: space-between;
   gap: 12px;
+}
+
+.exam-question-card header > *,
+.exam-question-card header h3,
+.exam-question-card header p {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .question-figure {
@@ -6111,6 +6180,8 @@ body.skill-check-page .exam-question-section {
   grid-template-columns: minmax(0, 1fr);
   gap: 11px;
   align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
   padding: 14px;
   border: 1px solid rgba(12, 33, 69, 0.16);
   border-radius: var(--radius);
@@ -6123,6 +6194,8 @@ body.skill-check-page .exam-question-section {
   gap: 8px 12px;
   align-items: center;
   justify-content: space-between;
+  min-width: 0;
+  max-width: 100%;
   padding: 10px 12px;
   border: 1px solid rgba(61, 86, 109, 0.2);
   border-radius: var(--radius);
@@ -6132,9 +6205,11 @@ body.skill-check-page .exam-question-section {
 .exam-evidence-banner span,
 .coarse-marking-note,
 .self-marking-guidance-note {
+  min-width: 0;
   color: var(--muted);
   font-size: 0.94rem;
   font-weight: 800;
+  overflow-wrap: anywhere;
 }
 
 .exam-part-list {
@@ -6145,6 +6220,9 @@ body.skill-check-page .exam-question-section {
 .exam-part-card {
   display: grid;
   gap: 10px;
+  min-width: 0;
+  max-width: 100%;
+  min-inline-size: 0;
   margin: 0;
   padding: 13px;
   border: 1px solid rgba(82, 97, 122, 0.22);
@@ -6154,13 +6232,19 @@ body.skill-check-page .exam-question-section {
 
 .exam-part-card legend,
 .mark-point-list legend {
+  max-width: 100%;
   padding: 0 4px;
   font-weight: 900;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 
 .mark-point-list {
   display: grid;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  min-inline-size: 0;
   margin: 2px 0 0;
   padding: 10px;
   border: 1px solid rgba(61, 86, 109, 0.16);
@@ -6170,14 +6254,24 @@ body.skill-check-page .exam-question-section {
 
 .mark-point-list label {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: auto minmax(0, 1fr);
   gap: 8px;
   align-items: start;
+  min-width: 0;
+}
+
+.mark-point-list label > span,
+.exam-part-card label > span,
+.inline-check > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .self-grade-suggestions {
   display: grid;
   gap: 6px;
+  min-width: 0;
+  max-width: 100%;
   padding: 8px 10px;
   border: 1px solid rgba(61, 86, 109, 0.14);
   border-radius: var(--radius);
@@ -6725,6 +6819,20 @@ body.skill-check-page .exam-question-section {
     padding: 12px;
   }
 
+  .contract-qa-card-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .contract-table-scroll {
+    display: none;
+  }
+
+  .contract-qa-mobile-card dl > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+
   .brand-mark {
     width: 38px;
     height: 38px;
@@ -6979,6 +7087,8 @@ body.skill-check-page .exam-question-section {
   }
 
   .practice-group-summary {
+    flex-wrap: wrap;
+    align-items: flex-start;
     min-height: 38px;
     padding: 8px 10px;
   }
@@ -6986,6 +7096,38 @@ body.skill-check-page .exam-question-section {
   .practice-current-skill,
   .practice-count {
     font-size: 0.88rem;
+  }
+
+  .practice-current-skill {
+    flex: 1 1 210px;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: normal;
+    line-height: 1.25;
+  }
+
+  .practice-change-skill {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .exam-question-card header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .exam-question-card .marks-pill {
+    justify-self: start;
+  }
+
+  .exam-evidence-banner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: start;
+  }
+
+  .exam-commit-checkbox,
+  .inline-check {
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
   .visual-template-card {

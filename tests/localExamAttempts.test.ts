@@ -137,7 +137,7 @@ describe('local exam self-marked attempts', () => {
     ]);
   });
 
-  it('creates tickable mark points only when mark-scheme text matches official part marks', () => {
+  it('creates tickable mark points only from reviewed plain-text mark points', () => {
     const questions = normalizeQuestionBank({
       questions: [
         {
@@ -151,17 +151,18 @@ describe('local exam self-marked attempts', () => {
               subpart_id: 'fixture_q01_a',
               label: 'a',
               marks: 2,
-              mark_scheme_text: {
-                text: '(a) Use the correct method M1 Obtain the stated value A1',
-              },
+              reviewed_mark_points: [
+                { mark_code: 'M1', label: 'Use the correct method' },
+                { mark_code: 'A1', label: 'Obtain the stated value' },
+              ],
             },
             {
               subpart_id: 'fixture_q01_b',
               label: 'b',
               marks: 1,
-              mark_scheme_text: {
-                text: '(b) State the final interval B1',
-              },
+              reviewed_mark_points: [
+                { mark_code: 'B1', label: 'State the final interval' },
+              ],
             },
           ],
         },
@@ -177,7 +178,7 @@ describe('local exam self-marked attempts', () => {
               label: 'a',
               marks: 1,
               mark_scheme_text: {
-                text: '(a) This guidance mentions M1 and A1, so it is not a clean one-mark split.',
+                text: '(a) Use the value \uF02D 2 and finish the method M1',
               },
             },
             {
@@ -218,18 +219,17 @@ describe('local exam self-marked attempts', () => {
       expect.objectContaining({ markCode: 'B1', label: 'State the final interval' }),
     ]);
     expect(questions[1].parts?.[0].markPoints).toBeUndefined();
-    expect(questions[1].parts?.[0].markSchemeText).toContain('not a clean one-mark split');
+    expect(questions[1].parts?.[0]).toEqual(expect.objectContaining({
+      label: '(a)',
+      marksAvailable: 1,
+    }));
     expect(questions[2].parts).toEqual([
       expect.objectContaining({
         label: '(whole)',
         marksAvailable: 3,
-        markPoints: [
-          expect.objectContaining({ markCode: 'M1', label: 'Use the log law' }),
-          expect.objectContaining({ markCode: 'A1', label: 'Remove logarithms' }),
-          expect.objectContaining({ markCode: 'A1', label: 'Obtain the final expression' }),
-        ],
       }),
     ]);
+    expect(questions[2].parts?.[0].markPoints).toBeUndefined();
   });
 
   it('does not award mastery for a high self-marked exam score without Checked Practice pass', () => {

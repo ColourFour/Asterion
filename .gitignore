@@ -16,6 +16,7 @@ agentic-loop-template/
 *.trace
 *.tsbuildinfo
 screenshots/
+audit-artifacts/
 reports/*.json
 reports/screenshots/
 mockups/

@@ -636,7 +636,7 @@ for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/skill-che
   }
 }
 
-for (const course of ['p1', 'p3', 'm1', 's1']) {
+for (const course of ['p1', 'm1', 's1']) {
   const page = `${course}/exam-training/index.html`;
   if (existsSync(path.join(siteRoot, page))) {
     console.error(`${page} should not exist on the static P3 product branch.`);
@@ -708,7 +708,6 @@ const forbiddenRouteDirectories = [
   'regions',
   'exam-training',
   'p3/regions',
-  'p3/exam-training',
   'p1/topics',
   'm1/topics',
   's1/topics',
