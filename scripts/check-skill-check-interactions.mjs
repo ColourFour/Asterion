@@ -208,7 +208,7 @@ try {
   assert(algebraInitialShape.oldSkillForms === 0, 'Learn Mode must not render legacy Skill Check forms.');
   assert(algebraInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Algebra problem.');
   assert(algebraInitialShape.answerRevealHidden, 'Answer reveal must be unavailable before a submitted Learn attempt.');
-  assert(algebraInitialShape.nextOpen, 'Learn Mode next button must remain available before the step is completed.');
+  assert(!algebraInitialShape.nextOpen, 'Learn Mode next button must stay disabled before the step is completed.');
 
   const algebraCard = page.locator('[data-learn-step-card]:not([hidden])').first();
   const algebraPrimary = algebraCard.locator('[data-check-learn-answer][data-learn-variant="primary"]');
@@ -246,7 +246,7 @@ try {
   assert(algebraWrongState.retryCtaFocused, 'Wrong Learn attempt must focus the retry-first action before the similar action.');
   assert(algebraWrongState.learnMistakePanelMissing, 'Learn Mode must not ask students to choose what went wrong after a miss.');
   assert(algebraWrongState.transferHidden, 'Exam transfer must stay hidden until the similar checked question is attempted.');
-  assert(algebraWrongState.nextStillOpen, 'Wrong primary attempt must leave navigation available without completing the step.');
+  assert(!algebraWrongState.nextStillOpen, 'Wrong primary attempt must keep navigation locked without completing the step.');
   assert(!algebraWrongState.celebrationOpen, 'Wrong Learn attempt must not open the correct-answer celebration modal.');
 
   await algebraPrimary.locator('[data-retry-learn-primary]').click();
@@ -349,7 +349,7 @@ try {
   assert(logExpInitialShape.similarHidden, 'Log/Exp similar question must be hidden before primary attempt.');
   assert(logExpInitialShape.transferHidden, 'Log/Exp exam transfer must be hidden before primary attempt.');
   assert(logExpInitialShape.answerRevealHidden, 'Log/Exp answer reveal must be unavailable before first submitted attempt.');
-  assert(logExpInitialShape.nextOpen, 'Log/Exp next button must remain available before the step is completed.');
+  assert(!logExpInitialShape.nextOpen, 'Log/Exp next button must stay disabled before the step is completed.');
 
   const logExpOptionForm = page.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"]').first();
   await logExpOptionForm.locator('.learn-option-bank label').first().click();
@@ -386,7 +386,7 @@ try {
   assert(logExpAfterPrimary.principleVisible, 'Log/Exp principle must reveal after primary attempt.');
   assert(logExpAfterPrimary.similarVisible, 'Log/Exp similar checked question must reveal after primary attempt.');
   assert(logExpAfterPrimary.transferHidden, 'Log/Exp exam transfer must stay hidden until similar attempt.');
-  assert(logExpAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
+  assert(!logExpAfterPrimary.nextOpen, 'Primary-only answer must keep navigation locked while the similar check remains required.');
 
   await submitAnswer(logExpSimilar, 'log_5(25)=2');
   await page.waitForFunction(() => {
@@ -475,7 +475,7 @@ try {
   assert(trigAfterPrimary.principleVisible, 'Principle must reveal after primary attempt.');
   assert(trigAfterPrimary.similarVisible, 'Similar checked question must reveal after primary attempt.');
   assert(trigAfterPrimary.transferHidden, 'Exam transfer must stay hidden until similar attempt.');
-  assert(trigAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
+  assert(!trigAfterPrimary.nextOpen, 'Primary-only answer must keep navigation locked while the similar check remains required.');
 
   await trigSimilar.locator('[data-show-learn-hint]').click();
   await submitAnswer(trigSimilar, '1+tan^2x=sec^2x');
@@ -570,7 +570,7 @@ try {
   assert(diffInitialShape.similarHidden, 'Differentiation similar question must be hidden before primary attempt.');
   assert(diffInitialShape.transferHidden, 'Differentiation exam transfer must be hidden before primary/similar attempt.');
   assert(diffInitialShape.answerRevealHidden, 'Differentiation answer reveal must be unavailable before first submitted attempt.');
-  assert(diffInitialShape.nextOpen, 'Differentiation next button must remain available before the step is completed.');
+  assert(!diffInitialShape.nextOpen, 'Differentiation next button must stay disabled before the step is completed.');
   assert(diffInitialShape.passiveLearningCount === 0 && diffInitialShape.passiveSkillCount === 0, 'Passive Differentiation page view must not create evidence.');
 
   const diffCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -596,7 +596,7 @@ try {
   assert(diffAfterPrimary.similarVisible, 'Differentiation similar checked question must reveal after primary attempt.');
   assert(diffAfterPrimary.transferHidden, 'Differentiation exam transfer must stay hidden until similar attempt.');
   assert(diffAfterPrimary.answerRevealVisible, 'Differentiation answer reveal must become available after a submitted attempt.');
-  assert(diffAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
+  assert(!diffAfterPrimary.nextOpen, 'Primary-only answer must keep navigation locked while the similar check remains required.');
 
   await submitAnswer(diffSimilar, 'correct');
   await page.waitForFunction(() => {
@@ -712,7 +712,7 @@ try {
   assert(integrationInitialShape.similarHidden, 'Integration similar question must be hidden before primary attempt.');
   assert(integrationInitialShape.transferHidden, 'Integration exam transfer must be hidden before primary/similar attempt.');
   assert(integrationInitialShape.answerRevealHidden, 'Integration answer reveal must be unavailable before first submitted attempt.');
-  assert(integrationInitialShape.nextOpen, 'Integration next button must remain available before the step is completed.');
+  assert(!integrationInitialShape.nextOpen, 'Integration next button must stay disabled before the step is completed.');
   assert(integrationInitialShape.passiveLearningCount === 0 && integrationInitialShape.passiveSkillCount === 0, 'Passive Integration page view must not create evidence.');
 
   const integrationCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -738,7 +738,7 @@ try {
   assert(integrationAfterPrimary.similarVisible, 'Integration similar checked question must reveal after primary attempt.');
   assert(integrationAfterPrimary.transferHidden, 'Integration exam transfer must stay hidden until similar attempt.');
   assert(integrationAfterPrimary.answerRevealVisible, 'Integration answer reveal must become available after a submitted attempt.');
-  assert(integrationAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
+  assert(!integrationAfterPrimary.nextOpen, 'Primary-only answer must keep navigation locked while the similar check remains required.');
 
   await submitAnswer(integrationSimilar, 'correct');
   await page.waitForFunction(() => {
@@ -854,7 +854,7 @@ try {
   assert(iterationInitialShape.similarHidden, 'Iteration similar question must be hidden before primary attempt.');
   assert(iterationInitialShape.transferHidden, 'Iteration exam transfer must be hidden before primary/similar attempt.');
   assert(iterationInitialShape.answerRevealHidden, 'Iteration answer reveal must be unavailable before first submitted attempt.');
-  assert(iterationInitialShape.nextOpen, 'Iteration next button must remain available before the step is completed.');
+  assert(!iterationInitialShape.nextOpen, 'Iteration next button must stay disabled before the step is completed.');
   assert(iterationInitialShape.passiveLearningCount === 0 && iterationInitialShape.passiveSkillCount === 0, 'Passive Iteration page view must not create evidence.');
 
   const iterationCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -880,7 +880,7 @@ try {
   assert(iterationAfterPrimary.similarVisible, 'Iteration similar checked question must reveal after primary attempt.');
   assert(iterationAfterPrimary.transferHidden, 'Iteration exam transfer must stay hidden until similar attempt.');
   assert(iterationAfterPrimary.answerRevealVisible, 'Iteration answer reveal must become available after a submitted attempt.');
-  assert(iterationAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
+  assert(!iterationAfterPrimary.nextOpen, 'Primary-only answer must keep navigation locked while the similar check remains required.');
 
   await submitAnswer(iterationSimilar, 'intersection');
   await page.waitForFunction(() => {
@@ -996,7 +996,7 @@ try {
   assert(deInitialShape.similarHidden, 'Differential Equations similar question must be hidden before primary attempt.');
   assert(deInitialShape.transferHidden, 'Differential Equations exam transfer must be hidden before primary/similar attempt.');
   assert(deInitialShape.answerRevealHidden, 'Differential Equations answer reveal must be unavailable before first submitted attempt.');
-  assert(deInitialShape.nextOpen, 'Differential Equations next button must remain available before the step is completed.');
+  assert(!deInitialShape.nextOpen, 'Differential Equations next button must stay disabled before the step is completed.');
   assert(deInitialShape.passiveLearningCount === 0 && deInitialShape.passiveSkillCount === 0, 'Passive Differential Equations page view must not create evidence.');
 
   const deCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -1022,7 +1022,7 @@ try {
   assert(deAfterPrimary.similarVisible, 'Differential Equations similar checked question must reveal after primary attempt.');
   assert(deAfterPrimary.transferHidden, 'Differential Equations exam transfer must stay hidden until similar attempt.');
   assert(deAfterPrimary.answerRevealVisible, 'Differential Equations answer reveal must become available after a submitted attempt.');
-  assert(deAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
+  assert(!deAfterPrimary.nextOpen, 'Primary-only answer must keep navigation locked while the similar check remains required.');
 
   await submitAnswer(deSimilar, 'correct');
   await page.waitForFunction(() => {
@@ -1138,7 +1138,7 @@ try {
   assert(complexInitialShape.similarHidden, 'Complex Numbers similar question must be hidden before primary attempt.');
   assert(complexInitialShape.transferHidden, 'Complex Numbers exam transfer must be hidden before primary/similar attempt.');
   assert(complexInitialShape.answerRevealHidden, 'Complex Numbers answer reveal must be unavailable before first submitted attempt.');
-  assert(complexInitialShape.nextOpen, 'Complex Numbers next button must remain available before the step is completed.');
+  assert(!complexInitialShape.nextOpen, 'Complex Numbers next button must stay disabled before the step is completed.');
   assert(complexInitialShape.passiveLearningCount === 0 && complexInitialShape.passiveSkillCount === 0, 'Passive Complex Numbers page view must not create evidence.');
 
   const complexCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -1164,7 +1164,7 @@ try {
   assert(complexAfterPrimary.similarVisible, 'Complex Numbers similar checked question must reveal after primary attempt.');
   assert(complexAfterPrimary.transferHidden, 'Complex Numbers exam transfer must stay hidden until similar attempt.');
   assert(complexAfterPrimary.answerRevealVisible, 'Complex Numbers answer reveal must become available after a submitted attempt.');
-  assert(complexAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
+  assert(!complexAfterPrimary.nextOpen, 'Primary-only answer must keep navigation locked while the similar check remains required.');
 
   await submitAnswer(complexSimilar, '-3-4i');
   await page.waitForFunction(() => {

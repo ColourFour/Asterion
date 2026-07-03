@@ -365,13 +365,16 @@ try {
         pathCards: document.querySelectorAll('.path-unit-card').length,
         hasDashboard: text.includes('Pure Mathematics 3') && text.includes('Unsure? Take diagnostic') && text.includes('All topic routes'),
         hasNextStepPanel: Boolean(document.querySelector('[data-p3-next-step-panel]')),
+        hasSummerHomeworkMinimum: text.includes('Summer homework minimum')
+          && text.includes('Complete Checked Practice for each P3 unit.')
+          && text.includes('Progress is saved only in this browser on this device.'),
         hasProgressLabels: Boolean(document.querySelector('[data-progress-field-guide]'))
           && Boolean(document.querySelector('[data-progress-skill]'))
           && Boolean(document.querySelector('[data-progress-exam]')),
         hasCourseGrid: Boolean(document.querySelector('.course-topic-button-grid')),
       };
     });
-    if (!courseResult.hasDashboard || !courseResult.hasNextStepPanel || !courseResult.hasProgressLabels || courseResult.pathCards < 9) {
+    if (!courseResult.hasDashboard || !courseResult.hasNextStepPanel || !courseResult.hasSummerHomeworkMinimum || !courseResult.hasProgressLabels || courseResult.pathCards < 9) {
       fail(`${coursePage} must render the P3 dashboard with unit evidence cards.`);
     }
     if (courseResult.hasCourseGrid) {
@@ -422,8 +425,8 @@ try {
   if (!p3LearnResult.explanationHidden || !p3LearnResult.similarHidden || !p3LearnResult.transferHidden || !p3LearnResult.answerRevealHidden) {
     fail('P3 Algebra Learn Mode must hide explanation, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!p3LearnResult.nextOpen) {
-    fail('P3 Algebra Learn Mode must keep next step available before completion.');
+  if (p3LearnResult.nextOpen) {
+    fail('P3 Algebra Learn Mode must keep next step locked before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/logarithmic-and-exponential-functions/learn/index.html');
@@ -457,8 +460,8 @@ try {
   if (!logExpLearnResult.explanationHidden || !logExpLearnResult.principleHidden || !logExpLearnResult.similarHidden || !logExpLearnResult.transferHidden || !logExpLearnResult.answerRevealHidden) {
     fail('P3 Log/Exp Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!logExpLearnResult.nextOpen) {
-    fail('P3 Log/Exp Learn Mode must keep next step available before completion.');
+  if (logExpLearnResult.nextOpen) {
+    fail('P3 Log/Exp Learn Mode must keep next step locked before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/trigonometry/learn/index.html');
@@ -525,8 +528,8 @@ try {
   if (!diffLearnResult.explanationHidden || !diffLearnResult.similarHidden || !diffLearnResult.transferHidden || !diffLearnResult.answerRevealHidden) {
     fail('P3 Differentiation Learn Mode must hide explanation, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!diffLearnResult.nextOpen) {
-    fail('P3 Differentiation Learn Mode must keep next step available before completion.');
+  if (diffLearnResult.nextOpen) {
+    fail('P3 Differentiation Learn Mode must keep next step locked before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/integration/learn/index.html');
@@ -569,8 +572,8 @@ try {
   if (!integrationLearnResult.explanationHidden || !integrationLearnResult.principleHidden || !integrationLearnResult.similarHidden || !integrationLearnResult.transferHidden || !integrationLearnResult.answerRevealHidden) {
     fail('P3 Integration Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!integrationLearnResult.nextOpen) {
-    fail('P3 Integration Learn Mode must keep next step available before completion.');
+  if (integrationLearnResult.nextOpen) {
+    fail('P3 Integration Learn Mode must keep next step locked before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/numerical-solution-of-equations/learn/index.html');
@@ -613,8 +616,8 @@ try {
   if (!iterationLearnResult.explanationHidden || !iterationLearnResult.principleHidden || !iterationLearnResult.similarHidden || !iterationLearnResult.transferHidden || !iterationLearnResult.answerRevealHidden) {
     fail('P3 Numerical Solution of Equations Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!iterationLearnResult.nextOpen) {
-    fail('P3 Numerical Solution of Equations Learn Mode must keep next step available before completion.');
+  if (iterationLearnResult.nextOpen) {
+    fail('P3 Numerical Solution of Equations Learn Mode must keep next step locked before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/differential-equations/learn/index.html');
@@ -657,8 +660,8 @@ try {
   if (!deLearnResult.explanationHidden || !deLearnResult.principleHidden || !deLearnResult.similarHidden || !deLearnResult.transferHidden || !deLearnResult.answerRevealHidden) {
     fail('P3 Differential Equations Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!deLearnResult.nextOpen) {
-    fail('P3 Differential Equations Learn Mode must keep next step available before completion.');
+  if (deLearnResult.nextOpen) {
+    fail('P3 Differential Equations Learn Mode must keep next step locked before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/complex-numbers/learn/index.html');
@@ -701,8 +704,8 @@ try {
   if (!complexLearnResult.explanationHidden || !complexLearnResult.principleHidden || !complexLearnResult.similarHidden || !complexLearnResult.transferHidden || !complexLearnResult.answerRevealHidden) {
     fail('P3 Complex Numbers Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!complexLearnResult.nextOpen) {
-    fail('P3 Complex Numbers Learn Mode must keep next step available before completion.');
+  if (complexLearnResult.nextOpen) {
+    fail('P3 Complex Numbers Learn Mode must keep next step locked before completion.');
   }
 
   await assertLearnVisualBasics(browser);

@@ -761,8 +761,11 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
         <span data-progress-skill="${escapeAttr(region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillCheckIds))}" data-label="Checked">Checked: 0/${requiredSkillCheckIds.length} passed</span>
         <span data-progress-exam="${escapeAttr(region.id)}" data-label="Exam">Exam: 0 self-marked</span>
       </div>
-      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, skillCheckPagePath(topic))}" data-path-unit-primary-action>
-        Start Checked Practice
+      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, learnPagePath(topic))}" data-path-unit-primary-action>
+        Start ${escapeHtml(topic.name)} Learn
+      </a>
+      <a class="path-unit-fast-lane-link text-link" href="${hrefToPage(fromPagePath, skillCheckPagePath(topic))}" data-path-unit-fast-lane-action>
+        Already confident? Try Checked Practice
       </a>
       <details class="path-unit-direct-routes">
         <summary>Direct routes</summary>
@@ -782,10 +785,31 @@ function renderP3NextStepPanel(pagePath: string): string {
     <section class="p3-next-step-panel" data-p3-next-step-panel data-review-href="${escapeAttr(p3ReviewExportHref(pagePath))}" aria-labelledby="p3-next-step-panel-title">
       <div>
         <p class="eyebrow">Continue</p>
-        <h2 id="p3-next-step-panel-title" data-p3-next-step-title>Start Unit 1: Algebra</h2>
-        <p data-p3-next-step-copy>Use this as local practice guidance. It does not grade or certify your progress.</p>
+        <h2 id="p3-next-step-panel-title" data-p3-next-step-title>Start Algebra Learn</h2>
+        <p data-p3-next-step-copy>Default path: Diagnostic → Learn → Checked Practice → Exam Training.</p>
       </div>
-      <a class="button primary-button" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}" data-p3-next-step-link>Continue</a>
+      <a class="button primary-button" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}" data-p3-next-step-link>Start Algebra Learn</a>
+      <a class="p3-fast-lane-link text-link" href="${hrefToPage(pagePath, skillCheckPagePath(STUDY_TOPICS[0]))}" data-p3-fast-lane-link>Already confident? Try Checked Practice</a>
+    </section>
+  `;
+}
+
+function renderP3SummerHomeworkPanel(pagePath: string): string {
+  return `
+    <section class="p3-summer-homework-panel" aria-labelledby="p3-summer-homework-title">
+      <div>
+        <p class="eyebrow">Completion contract</p>
+        <h2 id="p3-summer-homework-title">Summer homework minimum</h2>
+      </div>
+      <ul class="p3-summer-homework-checklist">
+        <li>Complete the P3 Diagnostic if your teacher assigned it or if you are unsure where to begin.</li>
+        <li>Default path: Diagnostic → Learn → Checked Practice → Exam Training.</li>
+        <li>Complete Checked Practice for each P3 unit.</li>
+        <li>Use Learn pages when you need help before Checked Practice.</li>
+        <li>Exam Training is extra self-marked practice unless your teacher assigns it.</li>
+        <li>Export your local progress CSV and send it to your teacher.</li>
+      </ul>
+      <p class="p3-summer-homework-note">Progress is saved only in this browser on this device. If you change devices or clear browser data, your local record may not appear.</p>
     </section>
   `;
 }
@@ -1108,6 +1132,7 @@ function renderP3DashboardPage(
         <h1>${escapeHtml(course.displayName)}</h1>
         <p>Start with the next useful study action. Asterion uses local browser progress to decide whether you should begin learning, continue your current unit, or review saved mistakes.</p>
       </div>
+      ${renderP3SummerHomeworkPanel(pagePath)}
       <div class="p3-dashboard-action-panel">
         ${renderP3NextStepPanel(pagePath)}
         <nav class="p3-dashboard-secondary-links" aria-label="Other P3 routes">
@@ -1695,6 +1720,7 @@ function renderCourseSelectorPage(): string {
         <p class="home-p3-eyebrow">Master CAIE 9709</p>
         <h1 id="home-p3-title">Pure Mathematics 3</h1>
         <p class="home-p3-subtitle">Learn what matters. Practice with purpose.<br />Prepare for the exam with confidence.</p>
+        <p class="home-p3-path-line">Default path: Diagnostic → Learn → Checked Practice → Exam Training.</p>
         ${renderHomepageActionCards(pagePath)}
         <div class="home-p3-cta-group">
           <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Start with Learn</a>

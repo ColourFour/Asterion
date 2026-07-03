@@ -1770,10 +1770,26 @@
   }
 
   function actionForUnitStatus(status) {
+    if (status.passCount > 0 && !status.checkedComplete) {
+      return {
+        title: 'Continue ' + status.name + ' Checked Practice',
+        copy: 'You have already started Checked Practice for this unit. Learn remains available if you need support.',
+        href: status.skillHref,
+        label: 'Continue Checked Practice'
+      };
+    }
+    if (status.guideCount < status.fieldTotal) {
+      return {
+        title: (status.guideCount > 0 ? 'Continue ' : 'Start ') + status.name + ' Learn',
+        copy: 'Default path: Diagnostic \u2192 Learn \u2192 Checked Practice \u2192 Exam Training. Confident students can still try Checked Practice now.',
+        href: status.learnHref,
+        label: (status.guideCount > 0 ? 'Continue ' : 'Start ') + status.name + ' Learn'
+      };
+    }
     if (!status.checkedComplete) {
       return {
         title: (status.started ? 'Continue ' : 'Start ') + status.name + ' Checked Practice',
-        copy: 'Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '. Learn is optional support and does not block this route.',
+        copy: 'Learn is complete for this unit. Checked passes are ' + status.passCount + '/' + status.requiredCheckCount + '.',
         href: status.skillHref,
         label: status.started ? 'Continue Checked Practice' : 'Start Checked Practice'
       };
@@ -1803,6 +1819,7 @@
     statuses.forEach(function (status) {
       var cardAction = actionForUnitStatus(status);
       var cardLink = status.card.querySelector('[data-path-unit-primary-action]');
+      var fastLaneLink = status.card.querySelector('[data-path-unit-fast-lane-action]');
       status.card.classList.toggle('is-current-local-step', Boolean(selected && status.card === selected.card));
       status.card.classList.toggle('is-complete', status.reviewReady);
       status.card.classList.toggle('has-exam-evidence', status.examCount > 0);
@@ -1811,12 +1828,16 @@
         cardLink.setAttribute('href', cardAction.href);
         cardLink.setAttribute('aria-label', cardAction.title);
       }
+      if (fastLaneLink) {
+        fastLaneLink.setAttribute('href', status.skillHref);
+      }
     });
 
     panels.forEach(function (panel) {
       var title = panel.querySelector('[data-p3-next-step-title]');
       var copy = panel.querySelector('[data-p3-next-step-copy]');
       var link = panel.querySelector('[data-p3-next-step-link]');
+      var fastLaneLink = panel.querySelector('[data-p3-fast-lane-link]');
       if (allReviewReady) {
         var reviewHref = panel.getAttribute('data-review-href') || '#';
         if (title) title.textContent = 'Export progress';
@@ -1825,6 +1846,7 @@
           link.textContent = 'Export Progress';
           link.setAttribute('href', reviewHref);
         }
+        if (fastLaneLink) fastLaneLink.hidden = true;
         return;
       }
       if (!action) return;
@@ -1833,6 +1855,10 @@
       if (link) {
         link.textContent = action.label || 'Continue current topic';
         link.setAttribute('href', action.href);
+      }
+      if (fastLaneLink && selected) {
+        fastLaneLink.hidden = false;
+        fastLaneLink.setAttribute('href', selected.skillHref);
       }
     });
   }
@@ -4641,6 +4667,10 @@
       flow.before(controls);
 
       function advanceLearnStep(shouldScroll) {
+        if (!currentCardComplete()) {
+          render();
+          return;
+        }
         if (index >= cards.length - 1) {
           if (finalHref) window.location.href = finalHref;
           else next.textContent = 'Completed lesson sequence';
@@ -4655,13 +4685,20 @@
         }
       }
 
+      function currentCardComplete() {
+        var currentCard = cards[index];
+        return currentCard instanceof HTMLElement && learnCardCompleted(loadProgress(), currentCard);
+      }
+
       function render() {
         cards.forEach(function (card, cardIndex) {
           card.hidden = cardIndex !== index;
         });
+        var complete = currentCardComplete();
         label.textContent = 'Step ' + (index + 1) + ' of ' + cards.length;
         previous.disabled = index === 0;
-        next.disabled = false;
+        next.disabled = !complete;
+        next.setAttribute('aria-disabled', complete ? 'false' : 'true');
         next.textContent = index === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
         updateLearnModeFlowState();
         cards.forEach(function (card, cardIndex) {
@@ -4670,7 +4707,8 @@
           if (footer instanceof HTMLElement) footer.hidden = cardIndex !== index;
           if (inlineNext instanceof HTMLButtonElement) {
             inlineNext.hidden = cardIndex !== index;
-            inlineNext.disabled = cardIndex !== index;
+            inlineNext.disabled = cardIndex !== index || !complete;
+            inlineNext.setAttribute('aria-disabled', cardIndex !== index || !complete ? 'true' : 'false');
             inlineNext.textContent = cardIndex === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
           }
         });

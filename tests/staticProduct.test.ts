@@ -1,3 +1,5 @@
+// @vitest-environment node
+
 import { describe, expect, it } from 'vitest';
 import { existsSync, readFileSync } from 'node:fs';
 import { JSDOM } from 'jsdom';
@@ -43,6 +45,19 @@ function normalizeRoute(pagePath: string, href: string): string {
 
 function visibleText(element: Element): string {
   return (element.textContent ?? '').replace(/\s+/g, ' ').trim();
+}
+
+function withDocument<T>(html: string, run: (document: Document) => T): T {
+  const dom = new JSDOM(html);
+  try {
+    return run(dom.window.document);
+  } finally {
+    dom.window.close();
+  }
+}
+
+function withStaticDocument<T>(path: string, run: (document: Document) => T): T {
+  return withDocument(readFileSync(path, 'utf8'), run);
 }
 
 function primaryLearningAreaCount(document: Document): number {
@@ -121,7 +136,9 @@ describe('static P3 product contract', () => {
 
     expect(generatorSource).toContain('CAIE 9709 Paper 3');
     expect(generatorSource).toContain('path-unit-grid');
-    expect(generatorSource).toContain('Start Unit 1: Algebra');
+    expect(generatorSource).toContain('Start Algebra Learn');
+    expect(generatorSource).toContain('Default path: Diagnostic → Learn → Checked Practice → Exam Training.');
+    expect(generatorSource).toContain('Already confident? Try Checked Practice');
     expect(generatorSource).toContain("htmlByPath.set('index.html', renderCourseSelectorPage())");
     expect(generatorSource).toContain('renderP3DashboardPage(data, course)');
     expect(generatorSource).toContain('data-p3-exam-review-gate');
@@ -133,7 +150,6 @@ describe('static P3 product contract', () => {
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
-      const homeDocument = new JSDOM(generatedHome).window.document;
 
       expect(generatedHome).toContain('home-p3-landing');
       expect(generatedHome).toContain('home-starfield');
@@ -143,18 +159,21 @@ describe('static P3 product contract', () => {
       expect(generatedHome).toContain('Prepare for the exam with confidence.');
       expect(generatedHome).toContain('Start with Learn');
       expect(generatedHome).toContain('Diagnostic: Where to focus');
+      expect(generatedHome).toContain('Diagnostic → Learn → Checked Practice → Exam Training');
       expect(generatedHome).toContain('Build understanding');
       expect(generatedHome).toContain('Check your skills');
       expect(generatedHome).toContain('Exam questions');
-      expect(homeDocument.querySelectorAll('.home-p3-action-card')).toHaveLength(3);
-      expect(homeDocument.querySelectorAll('.home-p3-topic-tile')).toHaveLength(9);
-      expect(homeDocument.querySelector('[data-theme-toggle]')).toBeNull();
+      withDocument(generatedHome, (homeDocument) => {
+        expect(homeDocument.querySelectorAll('.home-p3-action-card')).toHaveLength(3);
+        expect(homeDocument.querySelectorAll('.home-p3-topic-tile')).toHaveLength(9);
+        expect(homeDocument.querySelector('[data-theme-toggle]')).toBeNull();
+        expect(homeDocument.querySelector('a.home-p3-primary-cta')?.getAttribute('href')).toContain('p3/topics/algebra/learn/');
+        expect(homeDocument.querySelector('.home-p3-diagnostic-link')?.getAttribute('href')).toBe('p3/diagnostic/');
+      });
       expect(generatedHome).toContain("document.documentElement.dataset.theme='dark'");
       for (const topicLabel of ['Algebra', 'Log/Exp', 'Complex', 'Trigonometry', 'Vectors', 'Differentiation', 'Integration', 'Diff Eq', 'Iteration']) {
         expect(generatedHome).toContain(topicLabel);
       }
-      expect(homeDocument.querySelector('a.home-p3-primary-cta')?.getAttribute('href')).toContain('p3/topics/algebra/learn/');
-      expect(homeDocument.querySelector('.home-p3-diagnostic-link')?.getAttribute('href')).toBe('p3/diagnostic/');
       expect(generatedHome).not.toContain('Start P3 with Algebra.');
       expect(generatedHome).not.toContain('path-unit-grid');
       expect(generatedHome).not.toContain('homepage-course-panel');
@@ -176,8 +195,13 @@ describe('static P3 product contract', () => {
       const generatedP3 = readFileSync(generatedP3Path, 'utf8');
       expect(generatedP3).toContain('Pure Mathematics 3');
       expect(generatedP3).toContain('Unsure? Take diagnostic');
-      expect(generatedP3).toContain('Start Unit 1: Algebra');
+      expect(generatedP3).toContain('Start Algebra Learn');
       expect(generatedP3).toContain('All topic routes');
+      expect(generatedP3).toContain('Summer homework minimum');
+      expect(generatedP3).toContain('Default path: Diagnostic → Learn → Checked Practice → Exam Training.');
+      expect(generatedP3).toContain('Already confident? Try Checked Practice');
+      expect(generatedP3).toContain('Complete Checked Practice for each P3 unit.');
+      expect(generatedP3).toContain('Progress is saved only in this browser on this device.');
       expect(generatedP3).toContain('data-p3-next-step-panel');
       expect(generatedP3).toContain('path-unit-grid');
       expect(generatedP3).toContain('data-progress-field-guide');
@@ -187,7 +211,16 @@ describe('static P3 product contract', () => {
       expect(generatedP3).toContain('review/#export-progress');
       expect(generatedP3.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
       expect(generatedP3.match(/data-path-unit-primary-action/g)?.length).toBe(9);
+      expect(generatedP3.match(/data-path-unit-fast-lane-action/g)?.length).toBe(9);
       expect(generatedP3.match(/class="path-unit-direct-routes"/g)?.length).toBe(9);
+      withDocument(generatedP3, (p3Document) => {
+        const algebraPrimaryAction = p3Document.querySelector('[data-path-unit="algebra"] [data-path-unit-primary-action]');
+        const algebraFastLaneAction = p3Document.querySelector('[data-path-unit="algebra"] [data-path-unit-fast-lane-action]');
+        expect(visibleText(algebraPrimaryAction as Element)).toBe('Start Algebra Learn');
+        expect(algebraPrimaryAction?.getAttribute('href')).toBe('topics/algebra/learn/');
+        expect(visibleText(algebraFastLaneAction as Element)).toBe('Already confident? Try Checked Practice');
+        expect(algebraFastLaneAction?.getAttribute('href')).toBe('topics/algebra/skill-check/');
+      });
       expect(generatedP3).not.toContain('course-topic-button-grid');
     }
 
@@ -198,6 +231,7 @@ describe('static P3 product contract', () => {
       expect(generatedP3Topics).toContain('path-unit-grid');
       expect(generatedP3Topics.match(/class="path-unit-card path-unit-tile"/g)?.length).toBe(9);
       expect(generatedP3Topics.match(/data-path-unit-primary-action/g)?.length).toBe(9);
+      expect(generatedP3Topics.match(/data-path-unit-fast-lane-action/g)?.length).toBe(9);
       expect(generatedP3Topics).toContain('Direct routes');
     }
   });
@@ -226,15 +260,25 @@ describe('static P3 product contract', () => {
     }
   });
 
-  it('keeps Learn Mode step navigation open before local completion', () => {
+  it('locks Learn Mode step navigation until the current step is completed', () => {
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
+    const generatedStaticClientSource = readFileSync('docs/assets/static-study.js', 'utf8');
+    const learnFlowSourceStart = staticClientSource.indexOf('function setupLearnModeFlow()');
+    const learnFlowSourceEnd = staticClientSource.indexOf('function setupWorksheetFlow()', learnFlowSourceStart);
+    const learnFlowSource = staticClientSource.slice(learnFlowSourceStart, learnFlowSourceEnd);
+    const generatedLearnFlowSourceStart = generatedStaticClientSource.indexOf('function setupLearnModeFlow()');
+    const generatedLearnFlowSourceEnd = generatedStaticClientSource.indexOf('function setupWorksheetFlow()', generatedLearnFlowSourceStart);
+    const generatedLearnFlowSource = generatedStaticClientSource.slice(generatedLearnFlowSourceStart, generatedLearnFlowSourceEnd);
 
     expect(staticClientSource).toContain('function setupLearnModeFlow()');
-    expect(staticClientSource).toContain('next.disabled = false;');
-    expect(staticClientSource).toContain('inlineNext.disabled = cardIndex !== index;');
-    expect(staticClientSource).not.toContain('if (!currentCardComplete()) return;');
-    expect(staticClientSource).not.toContain('next.disabled = !complete;');
-    expect(staticClientSource).not.toContain('inlineNext.hidden = cardIndex !== index || !complete;');
+    expect(learnFlowSource).toContain('function currentCardComplete()');
+    expect(learnFlowSource).toContain('if (!currentCardComplete()) {');
+    expect(learnFlowSource).toContain('var complete = currentCardComplete();');
+    expect(learnFlowSource).toContain('next.disabled = !complete;');
+    expect(learnFlowSource).toContain('inlineNext.disabled = cardIndex !== index || !complete;');
+    expect(learnFlowSource).toContain("next.setAttribute('aria-disabled', complete ? 'false' : 'true');");
+    expect(generatedLearnFlowSource).toContain('next.disabled = !complete;');
+    expect(learnFlowSource).not.toContain('next.disabled = false;');
   });
 
   it('ships an accessible correct-answer celebration modal without changing evidence semantics', () => {
@@ -320,15 +364,16 @@ describe('static P3 product contract', () => {
     const generatedP1ReviewPath = 'docs/p3/repair-lane/index.html';
     if (existsSync(generatedP1ReviewPath)) {
       const generatedP1Review = readFileSync(generatedP1ReviewPath, 'utf8');
-      const document = new JSDOM(generatedP1Review).window.document;
-      const navLabels = Array.from(document.querySelectorAll('.site-nav a')).map(visibleText);
+      withDocument(generatedP1Review, (document) => {
+        const navLabels = Array.from(document.querySelectorAll('.site-nav a')).map(visibleText);
 
-      expect(navLabels).toEqual(['Home', 'P1 Review', 'P3 Units', 'Exam Training']);
-      expect(document.querySelector('[data-theme-toggle]')).not.toBeNull();
-      expect(document.querySelectorAll('[data-p1-repair-module-tab]')).toHaveLength(5);
-      expect(document.querySelectorAll('[data-p1-repair-module]')).toHaveLength(5);
-      expect(document.querySelectorAll('[data-p1-repair-module][hidden]')).toHaveLength(4);
-      expect(document.querySelectorAll('[data-p1-repair-mini-check-panel][hidden]')).toHaveLength(5);
+        expect(navLabels).toEqual(['Home', 'P1 Review', 'P3 Units', 'Exam Training']);
+        expect(document.querySelector('[data-theme-toggle]')).not.toBeNull();
+        expect(document.querySelectorAll('[data-p1-repair-module-tab]')).toHaveLength(5);
+        expect(document.querySelectorAll('[data-p1-repair-module]')).toHaveLength(5);
+        expect(document.querySelectorAll('[data-p1-repair-module][hidden]')).toHaveLength(4);
+        expect(document.querySelectorAll('[data-p1-repair-mini-check-panel][hidden]')).toHaveLength(5);
+      });
       expect(generatedP1Review).toContain('Submit Fast Check');
       expect(generatedP1Review).toContain('Submit Mini-Check');
       expect(generatedP1Review).toContain('Next module');
@@ -359,55 +404,61 @@ describe('static P3 product contract', () => {
     }
 
     if (existsSync('docs/p3/topics/vectors/learn/index.html')) {
-      const document = new JSDOM(readFileSync('docs/p3/topics/vectors/learn/index.html', 'utf8')).window.document;
-      const notationStep = document.querySelector('[data-learn-step-id="learn-vectors-2d-3d-notation"]');
-      expect(notationStep).not.toBeNull();
-      if (notationStep) {
-        expect(visibleText(notationStep)).toContain('Answer format: column-vector components as (a,b,c), with commas.');
-        expect(notationStep.querySelector('input[name="submittedAnswer"]')?.getAttribute('placeholder')).toBe('(a,b,c)');
-      }
+      withStaticDocument('docs/p3/topics/vectors/learn/index.html', (document) => {
+        const notationStep = document.querySelector('[data-learn-step-id="learn-vectors-2d-3d-notation"]');
+        expect(notationStep).not.toBeNull();
+        if (notationStep) {
+          expect(visibleText(notationStep)).toContain('Answer format: column-vector components as (a,b,c), with commas.');
+          expect(notationStep.querySelector('input[name="submittedAnswer"]')?.getAttribute('placeholder')).toBe('(a,b,c)');
+        }
+      });
     }
 
     if (existsSync('docs/p3/topics/trigonometry/learn/index.html')) {
-      const document = new JSDOM(readFileSync('docs/p3/topics/trigonometry/learn/index.html', 'utf8')).window.document;
-      expect(visibleText(document.body)).toContain('Answer format: separate values with commas, e.g. a, b.');
-      expect(document.querySelector('input[name="submittedAnswer"][placeholder="a, b"]')).not.toBeNull();
+      withStaticDocument('docs/p3/topics/trigonometry/learn/index.html', (document) => {
+        expect(visibleText(document.body)).toContain('Answer format: separate values with commas, e.g. a, b.');
+        expect(document.querySelector('input[name="submittedAnswer"][placeholder="a, b"]')).not.toBeNull();
+      });
     }
 
     if (existsSync('docs/p3/topics/algebra/learn/index.html')) {
-      const document = new JSDOM(readFileSync('docs/p3/topics/algebra/learn/index.html', 'utf8')).window.document;
-      expect(visibleText(document.body)).toContain('Answer format: number, fraction, radical, or pi form.');
-      expect(document.querySelector('input[name="submittedAnswer"][placeholder="3/2"]')).not.toBeNull();
+      withStaticDocument('docs/p3/topics/algebra/learn/index.html', (document) => {
+        expect(visibleText(document.body)).toContain('Answer format: number, fraction, radical, or pi form.');
+        expect(document.querySelector('input[name="submittedAnswer"][placeholder="3/2"]')).not.toBeNull();
+      });
     }
 
     if (existsSync('docs/p3/topics/algebra/skill-check/index.html')) {
-      const document = new JSDOM(readFileSync('docs/p3/topics/algebra/skill-check/index.html', 'utf8')).window.document;
-      const twoValueForm = document.querySelector('[data-check-id="sc-alg-polynomial-division-core-001"]');
-      expect(twoValueForm).not.toBeNull();
-      if (twoValueForm) {
-        expect(visibleText(twoValueForm)).toContain('Answer format: type a compact expression using ^ for powers.');
-        expect(visibleText(twoValueForm)).toContain('Answer format: number, fraction, radical, or pi form.');
-        expect(twoValueForm.querySelector('input[aria-label="quotient"]')?.getAttribute('placeholder')).toBe('x^2-x-6');
-        expect(twoValueForm.querySelector('input[aria-label="remainder"]')?.getAttribute('placeholder')).toBe('3/2');
-      }
+      withStaticDocument('docs/p3/topics/algebra/skill-check/index.html', (document) => {
+        const twoValueForm = document.querySelector('[data-check-id="sc-alg-polynomial-division-core-001"]');
+        expect(twoValueForm).not.toBeNull();
+        if (twoValueForm) {
+          expect(visibleText(twoValueForm)).toContain('Answer format: type a compact expression using ^ for powers.');
+          expect(visibleText(twoValueForm)).toContain('Answer format: number, fraction, radical, or pi form.');
+          expect(twoValueForm.querySelector('input[aria-label="quotient"]')?.getAttribute('placeholder')).toBe('x^2-x-6');
+          expect(twoValueForm.querySelector('input[aria-label="remainder"]')?.getAttribute('placeholder')).toBe('3/2');
+        }
+      });
     }
 
     if (existsSync('docs/p3/diagnostic/index.html')) {
-      const document = new JSDOM(readFileSync('docs/p3/diagnostic/index.html', 'utf8')).window.document;
-      const diagnosticInput = document.querySelector('[data-diagnostic-mark-point]');
-      expect(diagnosticInput).not.toBeNull();
-      expect(diagnosticInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
-      expect(diagnosticInput?.getAttribute('placeholder')).toBeTruthy();
-      expect(visibleText(document.body)).toContain('Answer format:');
+      withStaticDocument('docs/p3/diagnostic/index.html', (document) => {
+        const diagnosticInput = document.querySelector('[data-diagnostic-mark-point]');
+        expect(diagnosticInput).not.toBeNull();
+        expect(diagnosticInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
+        expect(diagnosticInput?.getAttribute('placeholder')).toBeTruthy();
+        expect(visibleText(document.body)).toContain('Answer format:');
+      });
     }
 
     if (existsSync('docs/p3/repair-lane/index.html')) {
-      const document = new JSDOM(readFileSync('docs/p3/repair-lane/index.html', 'utf8')).window.document;
-      const repairInput = document.querySelector('[data-p1-repair-fast-question]');
-      expect(repairInput).not.toBeNull();
-      expect(repairInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
-      expect(repairInput?.getAttribute('placeholder')).toBeTruthy();
-      expect(visibleText(document.body)).toContain('Answer format:');
+      withStaticDocument('docs/p3/repair-lane/index.html', (document) => {
+        const repairInput = document.querySelector('[data-p1-repair-fast-question]');
+        expect(repairInput).not.toBeNull();
+        expect(repairInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
+        expect(repairInput?.getAttribute('placeholder')).toBeTruthy();
+        expect(visibleText(document.body)).toContain('Answer format:');
+      });
     }
   });
 
@@ -426,17 +477,18 @@ describe('static P3 product contract', () => {
     for (const topic of STUDY_TOPICS) {
       const generatedPath = `docs/p3/topics/${topic.slug}/learn/index.html`;
       if (!existsSync(generatedPath)) continue;
-      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
 
-      for (const step of Array.from(document.querySelectorAll('[data-learn-step-card]'))) {
-        const visualTopicIds = Array.from(
-          step.querySelectorAll('[data-field-guide-visual]'),
-          (element) => element.getAttribute('data-field-guide-visual') ?? '',
-        );
-        const duplicateIds = visualTopicIds.filter((id, index) => visualTopicIds.indexOf(id) !== index);
+      withStaticDocument(generatedPath, (document) => {
+        for (const step of Array.from(document.querySelectorAll('[data-learn-step-card]'))) {
+          const visualTopicIds = Array.from(
+            step.querySelectorAll('[data-field-guide-visual]'),
+            (element) => element.getAttribute('data-field-guide-visual') ?? '',
+          );
+          const duplicateIds = visualTopicIds.filter((id, index) => visualTopicIds.indexOf(id) !== index);
 
-        expect(duplicateIds, `${generatedPath} ${step.getAttribute('data-learn-step-id') ?? ''}`).toEqual([]);
-      }
+          expect(duplicateIds, `${generatedPath} ${step.getAttribute('data-learn-step-id') ?? ''}`).toEqual([]);
+        }
+      });
     }
   });
 
@@ -454,15 +506,16 @@ describe('static P3 product contract', () => {
   it('renders Vectors Learn visuals only inside relevant step cards', () => {
     const generatedPath = 'docs/p3/topics/vectors/learn/index.html';
     if (!existsSync(generatedPath)) return;
-    const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
-    const notationStep = document.querySelector('[data-learn-step-id="learn-vectors-2d-3d-notation"]');
-    const lineIntersectionStep = document.querySelector('[data-learn-step-id="learn-vectors-line-intersection"]');
-    const footStep = document.querySelector('[data-learn-step-id="learn-vectors-foot-of-perpendicular"]');
+    withStaticDocument(generatedPath, (document) => {
+      const notationStep = document.querySelector('[data-learn-step-id="learn-vectors-2d-3d-notation"]');
+      const lineIntersectionStep = document.querySelector('[data-learn-step-id="learn-vectors-line-intersection"]');
+      const footStep = document.querySelector('[data-learn-step-id="learn-vectors-foot-of-perpendicular"]');
 
-    expect(notationStep?.querySelector('[data-field-guide-visual="vectors_intersect_parallel_skew"]')).toBeNull();
-    expect(notationStep?.querySelector('[data-field-guide-visual="vectors_point_to_line_distance"]')).toBeNull();
-    expect(lineIntersectionStep?.querySelector('[data-field-guide-visual="vectors_intersect_parallel_skew"]')).not.toBeNull();
-    expect(footStep?.querySelector('[data-field-guide-visual="vectors_point_to_line_distance"]')).not.toBeNull();
+      expect(notationStep?.querySelector('[data-field-guide-visual="vectors_intersect_parallel_skew"]')).toBeNull();
+      expect(notationStep?.querySelector('[data-field-guide-visual="vectors_point_to_line_distance"]')).toBeNull();
+      expect(lineIntersectionStep?.querySelector('[data-field-guide-visual="vectors_intersect_parallel_skew"]')).not.toBeNull();
+      expect(footStep?.querySelector('[data-field-guide-visual="vectors_point_to_line_distance"]')).not.toBeNull();
+    });
   });
 
   it('renders key Learn visual teaching labels in generated HTML metadata', () => {
@@ -475,18 +528,19 @@ describe('static P3 product contract', () => {
     for (const [pagePath, expectedLabels] of expectedLabelsByRoute) {
       const generatedPath = `docs/${pagePath}`;
       if (!existsSync(generatedPath)) continue;
-      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
-      const visualText = Array.from(document.querySelectorAll('[data-field-guide-visual]'))
-        .map((element) => [
-          element.getAttribute('data-visual-title') ?? '',
-          element.getAttribute('data-instructional-labels') ?? '',
-          visibleText(element),
-        ].join(' '))
-        .join(' ');
+      withStaticDocument(generatedPath, (document) => {
+        const visualText = Array.from(document.querySelectorAll('[data-field-guide-visual]'))
+          .map((element) => [
+            element.getAttribute('data-visual-title') ?? '',
+            element.getAttribute('data-instructional-labels') ?? '',
+            visibleText(element),
+          ].join(' '))
+          .join(' ');
 
-      for (const expectedLabel of expectedLabels) {
-        expect(visualText, pagePath).toContain(expectedLabel);
-      }
+        for (const expectedLabel of expectedLabels) {
+          expect(visualText, pagePath).toContain(expectedLabel);
+        }
+      });
     }
   });
 
@@ -499,22 +553,23 @@ describe('static P3 product contract', () => {
       const generatedPath = `docs/${pagePath}`;
       if (!existsSync(generatedPath)) continue;
 
-      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
-      const overloadedPageType = KNOWN_OVERLOADED_STUDENT_PAGE_TYPES.find((pageType) => pageType.routePattern.test(pagePath));
+      withStaticDocument(generatedPath, (document) => {
+        const overloadedPageType = KNOWN_OVERLOADED_STUDENT_PAGE_TYPES.find((pageType) => pageType.routePattern.test(pagePath));
 
-      if (overloadedPageType) {
-        const overloadedElements = document.querySelectorAll(overloadedPageType.selector);
+        if (overloadedPageType) {
+          const overloadedElements = document.querySelectorAll(overloadedPageType.selector);
+          expect(
+            overloadedElements.length,
+            `${generatedPath} is classified as ${overloadedPageType.label}; keep it out of the primary learning flow or split it before promoting.`,
+          ).toBeGreaterThan(MAX_PRIMARY_LEARNING_AREA_ELEMENTS);
+          return;
+        }
+
         expect(
-          overloadedElements.length,
-          `${generatedPath} is classified as ${overloadedPageType.label}; keep it out of the primary learning flow or split it before promoting.`,
-        ).toBeGreaterThan(MAX_PRIMARY_LEARNING_AREA_ELEMENTS);
-        continue;
-      }
-
-      expect(
-        primaryLearningAreaCount(document),
-        `${generatedPath} exposes too many primary learning areas; split the page or classify the overload intentionally.`,
-      ).toBeLessThanOrEqual(MAX_PRIMARY_LEARNING_AREA_ELEMENTS);
+          primaryLearningAreaCount(document),
+          `${generatedPath} exposes too many primary learning areas; split the page or classify the overload intentionally.`,
+        ).toBeLessThanOrEqual(MAX_PRIMARY_LEARNING_AREA_ELEMENTS);
+      });
     }
   });
 
@@ -536,44 +591,48 @@ describe('static P3 product contract', () => {
     for (const generatedPath of generatedPages) {
       if (!existsSync(generatedPath)) continue;
       const pagePath = generatedPath.replace(/^docs\//, '');
-      const document = new JSDOM(readFileSync(generatedPath, 'utf8')).window.document;
-      const prominentLinks = Array.from(document.querySelectorAll([
-        '.hero-actions a[href]',
-        '.home-hero-actions a[href]',
-        '.p3-dashboard-secondary-links a[href]',
-        '.section-heading a.button[href]',
-        '.path-unit-primary-action[href]',
-        '.path-unit-progress a[href]',
-        '.course-card[href]',
-        '.next-step-card a[href]',
-        '.learn-mode-hero-actions a[href]',
-      ].join(',')));
-      const routes = prominentLinks
-        .map((link) => ({
-          label: visibleText(link),
-          route: normalizeRoute(pagePath, link.getAttribute('href') ?? ''),
-        }))
-        .filter((link) => link.route && !link.route.includes('#'));
-      const duplicates = routes.filter((link, index) => routes.findIndex((candidate) => candidate.route === link.route) !== index);
+      withStaticDocument(generatedPath, (document) => {
+        const prominentLinks = Array.from(document.querySelectorAll([
+          '.hero-actions a[href]',
+          '.home-hero-actions a[href]',
+          '.p3-dashboard-secondary-links a[href]',
+          '.section-heading a.button[href]',
+          '.path-unit-primary-action[href]',
+          '.path-unit-progress a[href]',
+          '.course-card[href]',
+          '.next-step-card a[href]',
+          '.learn-mode-hero-actions a[href]',
+        ].join(',')));
+        const routes = prominentLinks
+          .map((link) => ({
+            label: visibleText(link),
+            route: normalizeRoute(pagePath, link.getAttribute('href') ?? ''),
+          }))
+          .filter((link) => link.route && !link.route.includes('#'));
+        const duplicates = routes.filter((link, index) => routes.findIndex((candidate) => candidate.route === link.route) !== index);
 
-      expect(duplicates, generatedPath).toEqual([]);
+        expect(duplicates, generatedPath).toEqual([]);
+      });
     }
 
     if (existsSync('docs/p3/index.html')) {
-      const document = new JSDOM(readFileSync('docs/p3/index.html', 'utf8')).window.document;
-      expect(visibleText(document.querySelector('h1') as Element)).toBe('Pure Mathematics 3');
+      withStaticDocument('docs/p3/index.html', (document) => {
+        expect(visibleText(document.querySelector('h1') as Element)).toBe('Pure Mathematics 3');
+      });
     }
 
     for (const topic of STUDY_TOPICS) {
       const learnPath = `docs/p3/topics/${topic.slug}/learn/index.html`;
       const examPath = `docs/p3/topics/${topic.slug}/exam-training/index.html`;
       if (existsSync(learnPath)) {
-        const document = new JSDOM(readFileSync(learnPath, 'utf8')).window.document;
-        expect(visibleText(document.querySelector('h1') as Element)).toBe(`${topic.name} — Learn`);
+        withStaticDocument(learnPath, (document) => {
+          expect(visibleText(document.querySelector('h1') as Element)).toBe(`${topic.name} — Learn`);
+        });
       }
       if (existsSync(examPath)) {
-        const document = new JSDOM(readFileSync(examPath, 'utf8')).window.document;
-        expect(visibleText(document.querySelector('h1') as Element)).toBe(`${topic.name} — Exam Training`);
+        withStaticDocument(examPath, (document) => {
+          expect(visibleText(document.querySelector('h1') as Element)).toBe(`${topic.name} — Exam Training`);
+        });
       }
     }
   });

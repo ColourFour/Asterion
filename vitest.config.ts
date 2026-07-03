@@ -6,6 +6,11 @@ export default defineConfig({
     exclude: [...configDefaults.exclude],
     globals: true,
     pool: 'forks',
+    poolOptions: {
+      forks: {
+        execArgv: ['--max-old-space-size=4096'],
+      },
+    },
     minWorkers: 1,
     maxWorkers: 2,
     testTimeout: 10_000,
