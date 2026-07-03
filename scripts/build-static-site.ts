@@ -672,7 +672,7 @@ function progressList(regionId: string, fieldGuideTotal: number, requiredSkillCh
     <ul class="progress-list" aria-label="Local progress">
       <li><span data-progress-field-guide="${escapeAttr(regionId)}" data-total="${fieldGuideTotal}" data-label="Learn">Learn: 0/${fieldGuideTotal}</span></li>
       <li><span data-progress-skill="${escapeAttr(regionId)}" data-required-checks="${escapeAttr(JSON.stringify(requiredSkillChecks))}" data-label="Checked questions">Checked questions: 0/${requiredSkillChecks.length} passed</span></li>
-      <li><span data-progress-exam="${escapeAttr(regionId)}" data-label="Exam practice evidence">Exam practice evidence: 0 saved</span></li>
+      <li><span data-progress-exam="${escapeAttr(regionId)}" data-label="Exam practice">Exam practice: 0 self-marked</span></li>
     </ul>
   `;
 }
@@ -1384,8 +1384,8 @@ const homepageLearningSteps = [
   ['Try the problem', 'You attempt first. Your attempt is the center.'],
   ['Compare your first move', 'Asterion compares your move, not just your final answer.'],
   ['Learn the method', 'Explanation appears after your first attempt.'],
-  ['Complete Checked Practice', 'Deterministic checks record small-skill evidence before you proceed.'],
-  ['Train on real exam questions', 'Compare with the mark-scheme image and self-mark honestly.'],
+  ['Complete Checked Practice', 'A clean Checked Practice pass is the strongest local evidence.'],
+  ['Train on real exam questions', 'Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.'],
   ['Review and repair', 'Mistakes are expected, repaired, and tracked.'],
 ] as const;
 
@@ -1401,7 +1401,7 @@ const homepageLearningIcons = [
 const homepageTrustCards = [
   ['Try first, then learn.', 'The page asks for work before revealing the explanation.'],
   ['Mistakes are repaired.', 'Wrong attempts get targeted feedback and another try.'],
-  ['Self-marking is labelled honestly.', 'Exam practice is useful, but self-marked work is labelled separately from checked evidence.'],
+  ['Self-marking is labelled honestly.', 'Exam Training is self-marked practice. Checked Practice stays separate.'],
   ['P3 is the trusted path.', 'P1, M1, and S1 stay locked until their course content is checked.'],
 ] as const;
 
@@ -1528,13 +1528,13 @@ function renderHomepageTrustContract(): string {
       </div>
       <div class="homepage-evidence-banner">
         <div>
-          <strong>Asterion labels self-marked exam practice separately.</strong>
-          <p>Self-marked questions are useful, but weaker evidence. We label it honestly.</p>
+          <strong>A clean Checked Practice pass is the strongest local evidence.</strong>
+          <p>Hints, revealed answers, repair, and Exam Training help you learn, but they do not replace clean Checked Practice evidence.</p>
         </div>
         <ul aria-label="Progress evidence labels">
-          <li>Attempted</li>
-          <li>Self-Marked</li>
-          <li>Checked</li>
+          <li>Clean pass</li>
+          <li>Learning support</li>
+          <li>Self-marked</li>
           <li>Exam Training</li>
         </ul>
       </div>
@@ -1770,7 +1770,7 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
       <section class="summary-card" aria-labelledby="p3-review-title">
         <p class="eyebrow">Export</p>
         <h2 id="p3-review-title">Send progress from this browser.</h2>
-        <p>Export local progress by email, then use the same page to review mistakes.</p>
+        <p>Your teacher should treat clean Checked Practice passes as the strongest evidence. Self-marked exam attempts are practice records only.</p>
         ${p3ReviewExportLink(pagePath, 'Export Progress', 'button secondary-button')}
       </section>
     `
@@ -2006,8 +2006,27 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
       <div>
         <p class="eyebrow">Email export</p>
         <h2 id="export-progress-title">Send local progress CSV</h2>
-        <p>The CSV only includes attempts and progress stored in this browser. It does not sync accounts, classes, or cloud data.</p>
+        <p>The CSV only includes attempts and progress stored in this browser. Your teacher should treat clean Checked Practice passes as the strongest evidence. Self-marked exam attempts are practice records only.</p>
       </div>
+      <section class="teacher-progress-summary" aria-labelledby="teacher-progress-summary-title">
+        <div>
+          <p class="eyebrow">Before you export</p>
+          <h2 id="teacher-progress-summary-title">Progress summary for teacher</h2>
+          <p class="teacher-progress-warning">This record is saved only in this browser on this device. It is local evidence, not a server-verified account record.</p>
+        </div>
+        <div data-export-teacher-summary>
+          <dl class="teacher-progress-summary-list">
+            <div><dt>P3 units with clean Checked Practice pass</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>P3 units still incomplete</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Total clean Checked Practice passes</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Hint-used attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Revealed-answer attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Repair attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Self-marked Exam Training attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Browser/device warning</dt><dd>This record is saved only in this browser on this device. It is local evidence, not a server-verified account record.</dd></div>
+          </dl>
+        </div>
+      </section>
       <form class="export-progress-form" data-export-local-progress-form>
         <label class="single-answer-field">
           <span>Student name</span>
@@ -2056,7 +2075,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
           <div class="section-heading">
             <div>
               <h2>Mixed Paper 3 questions</h2>
-              <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Saved exam marks are self-marked exam practice, not checked evidence.</p>
+              <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
             </div>
           </div>
           <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam review question">
@@ -2070,7 +2089,7 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
       <div>
         <p class="eyebrow">Local exam evidence</p>
         <h2>Saved attempts</h2>
-        <p>Use these totals to plan review, not as a grade.</p>
+        <p>Use these totals to plan review, not as a grade. Self-marked exam attempts are practice records only.</p>
       </div>
       <div class="exam-stats">
         <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>
@@ -2733,14 +2752,14 @@ function renderLearnCheckForm(
       <div class="learn-after-attempt" data-learn-after-attempt hidden>
         <p><strong>${isPrimary ? 'Explanation' : 'Similar route'}:</strong> ${renderMathText(explanationText)}</p>
         ${isPrimary && step.principle ? `<p><strong>${renderMathText(step.principle.replace(/^Principle:\s*/i, 'Principle: '))}</strong></p>` : ''}
-        ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar support question below, then use Checked Practice when you want pass evidence.</p>' : ''}
-        ${!isPrimary ? '<p class="question-instruction">This is Learn support. It records lesson progress only; use Checked Practice for pass evidence.</p>' : ''}
+        ${isPrimary && step.similarCheck ? '<p class="question-instruction">Now try the similar support question below. A clean Checked Practice pass is the strongest local evidence.</p>' : ''}
+        ${!isPrimary ? '<p class="question-instruction">This is Learn support. It records lesson progress only; use Checked Practice for clean pass evidence.</p>' : ''}
       </div>
       <details class="skill-check-answer-details" data-learn-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>${renderExpectedAnswerSummary(item)}</div>
         <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
-        <p class="question-instruction">Revealed answers are saved as Learn practice only. Use Checked Practice for pass evidence.</p>
+        <p class="question-instruction">Hints and revealed answers help you learn, but they do not count as a clean pass.</p>
       </details>
     </form>
   `;
@@ -2813,7 +2832,7 @@ function renderLearnPage(
         <p class="eyebrow">Unit ${index + 1} Learn</p>
         <h1>${escapeHtml(`${topic.name} — Learn`)}</h1>
         <p>Use Learn when you want support. Each step asks you to try first, then unlocks help, explanation, a similar question, and exam transfer.</p>
-        <p>Learn is optional support only. Go directly to Checked Practice when you want pass evidence.</p>
+        <p>Hints and revealed answers help you learn, but they do not count as a clean pass. Go directly to Checked Practice when you want pass evidence.</p>
       </div>
       <div class="learn-mode-hero-actions">
         ${previousTopic ? routeLink(pagePath, learnPagePath(previousTopic), `Back: Unit ${index}`, 'button secondary-button') : routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}
@@ -2835,7 +2854,7 @@ function renderLearnPage(
     <section class="next-step-card">
       <h2>After this lesson</h2>
       <p>Learn is optional. When you are ready for checked evidence, move to the separate Checked Practice page.</p>
-      <p>Checked Practice passes are the required local evidence before final review.</p>
+      <p>A clean Checked Practice pass is the strongest local evidence.</p>
       ${routeLink(pagePath, skillCheckPagePath(topic), 'Checked Practice', 'button primary-button')}
       ${routeLink(pagePath, topicExamTrainingPagePath(topic), 'Exam Training', 'button secondary-button')}
     </section>
@@ -2978,13 +2997,13 @@ function renderCheckableSkillCheckForm(
       <details class="skill-check-repair-details" data-skill-repair hidden>
         <summary>Show repair step</summary>
         <p>${renderMathText(item.repairStep ?? item.hints.firstStep ?? item.hints.nudge)}</p>
-        <p class="question-instruction">Using this repair marks the attempt as repaired, not passed.</p>
+        <p class="question-instruction">Hints and repair help you learn, but they do not count as a clean pass.</p>
       </details>
       <details class="skill-check-answer-details" data-skill-answer-reveal hidden>
         <summary>Reveal Answer</summary>
         <div>${renderExpectedAnswerSummary(item)}</div>
         <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
-        <p class="question-instruction">Revealed answers are saved as repaired practice and do not count as passed.</p>
+        <p class="question-instruction">Hints and revealed answers help you learn, but they do not count as a clean pass.</p>
       </details>
       ${routeLink(pagePath, fieldGuidePath, 'Learn support', 'button secondary-button')}
     </form>
@@ -3016,7 +3035,7 @@ function renderAuthoredPractice(group: SkillChecklistTopicGroup, pagePath: strin
                 ${item.hints.methodCue ? `<p>${renderMathText(item.hints.methodCue)}</p>` : ''}
                 <ol>${item.workedRoute.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
               </details>
-              <p class="empty-state">This check is not machine-checkable yet. Use it for practice, not pass credit.</p>
+              <p class="empty-state">This check is not machine-checkable yet. Use it for practice, not clean pass credit.</p>
             `}
           </article>
         `).join('')}
@@ -3044,7 +3063,7 @@ function renderQuickChecks(group: SkillChecklistTopicGroup): string {
                 <p><strong>Answer:</strong> ${renderMathText(check.answer)}</p>
                 <p>${renderMathText(check.explanation)}</p>
               </details>
-              <p class="empty-state">Review only. This does not count toward deterministic Skill Check pass state.</p>
+              <p class="empty-state">Review only. This does not count as a clean Checked Practice pass.</p>
             </article>
           `;
         }).join('')}
@@ -3064,7 +3083,7 @@ function renderGeneratedPracticeItem(item: GeneratedPracticeItem): string {
         <p><strong>Answer:</strong> ${renderMathText(item.answer)}</p>
         <ol>${item.workedSolution.map((line) => `<li>${renderMathText(line)}</li>`).join('')}</ol>
       </details>
-      <p class="empty-state">Guided practice is review only. It does not create Skill Check pass credit.</p>
+      <p class="empty-state">Guided practice is review only. It does not create clean Checked Practice pass credit.</p>
     </article>
   `;
 }
@@ -3091,7 +3110,7 @@ function renderSkillPracticeGroup(group: SkillChecklistTopicGroup, pagePath: str
           <p class="eyebrow">Subtopic check · ${defaultItems || totalItems} item${(defaultItems || totalItems) === 1 ? '' : 's'}</p>
           <h2>${escapeHtml(group.topic.title)}</h2>
           <p>${escapeHtml(group.topic.purpose)}</p>
-          <p class="practice-instruction">Pass the visible machine-checkable item to continue. Hints and revealed answers repair the attempt, but they do not count as passed.</p>
+          <p class="practice-instruction">Pass the visible machine-checkable item to continue. A clean Checked Practice pass is the strongest local evidence. Hints and revealed answers help you learn, but they do not count as a clean pass.</p>
         </div>
       </header>
       ${renderAuthoredPractice(group, pagePath, fieldGuidePath)}
@@ -3263,7 +3282,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
           <p class="eyebrow">${escapeHtml(questionTitle(question))}</p>
           <h3>${escapeHtml(displayTopic)}</h3>
           ${displaySubtopic ? `<p>${escapeHtml(displaySubtopic)}</p>` : ''}
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
           ${options.reviewNote ? `<p class="question-instruction">${escapeHtml(options.reviewNote)}</p>` : ''}
         </div>
         <span class="marks-pill">${totalMarks} mark${totalMarks === 1 ? '' : 's'}</span>
@@ -3289,7 +3308,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
       ${allowAttemptSave ? `<form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-parts="${escapeRawAttr(JSON.stringify(selfMarkParts))}" data-coarse-self-marking="${usesCoarseSelfMarking ? 'true' : 'false'}" data-has-mark-points="${hasTickableMarkPoints ? 'true' : 'false'}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
         ${usesCoarseSelfMarking ? '<p class="coarse-marking-note">Coarse self-marking: this source record does not expose reviewed tickable mark points, so save honest self-awarded marks using the mark-scheme image.</p>' : ''}
         <div class="exam-part-list">
@@ -3324,7 +3343,7 @@ function renderPracticePage(
   const body = `
     ${renderHero(
       `Unit ${index + 1}: ${topic.name} Checked Practice`,
-      'Pass each visible check before moving on. If you need support first, Learn is available but optional.',
+      'Pass each visible check before moving on. A clean Checked Practice pass is the strongest local evidence.',
       topic.headerFormula,
       `<a class="button primary-button" href="#${escapeAttr(firstPracticeId)}">Start</a>
       ${routeLink(pagePath, fieldGuidePath, 'Learn', 'button secondary-button')}`,
@@ -3344,7 +3363,7 @@ function renderPracticePage(
     </section>
     <section class="next-step-card">
       <h2>Finish the checks first</h2>
-      <p>The guided controls move to ${escapeHtml(finalLabel)} after the final subtopic check. Use the Learn link when a check exposes a gap.</p>
+      <p>The guided controls move to ${escapeHtml(finalLabel)} after the final subtopic check. Use the Learn link when a check exposes a gap; hints and repair help you learn but do not count as a clean pass.</p>
     </section>
   `;
   return renderPage({
@@ -3410,7 +3429,7 @@ function renderTopicExamTrainingPage(
   const body = `
     ${renderHero(
       `${topic.name} — Exam Training`,
-      'Try one Paper 3 question at a time. Self-mark honestly and keep Checked Practice evidence separate.',
+      'Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.',
       topic.headerFormula,
       `${questions.length ? '<a class="button primary-button" href="#topic-exam-questions">Start</a>' : ''}
       ${routeLink(pagePath, learnPagePath(topic), 'Learn', 'button secondary-button')}
@@ -3421,7 +3440,7 @@ function renderTopicExamTrainingPage(
       <div class="section-heading">
         <div>
           <h2>Exam questions</h2>
-          <p>Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p>Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
         </div>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="${escapeAttr(topic.name)} exam question">
@@ -3467,7 +3486,7 @@ function renderExamTrainingPage(
   const body = `
     ${renderHero(
       'Exam Training',
-      'Use this after topic practice, or for revision when you want one mixed Paper 3 question. Exam attempts are self-marked evidence.',
+      'Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.',
       '\\frac{dy}{dx}, \\quad \\int_a^b f(x)\\,dx, \\quad \\arg z',
       `<a class="button primary-button" href="#mixed-questions">Start mixed questions</a>
       ${routeLink(pagePath, topicsIndexPath, 'Back to topics', 'button secondary-button')}`,
@@ -3476,7 +3495,7 @@ function renderExamTrainingPage(
       <div class="section-heading">
         <div>
           <h2>Mixed Paper 3 questions</h2>
-          <p>Self-marked exam work is useful practice evidence, but it is weaker than checked practice evidence.</p>
+          <p>Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
         </div>
       </div>
       <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam question">
@@ -3489,7 +3508,7 @@ function renderExamTrainingPage(
       <div>
         <p class="eyebrow">Local progress</p>
         <h2>Saved attempts</h2>
-        <p>Use the totals as practice evidence, not a grade or checked-evidence decision.</p>
+        <p>Use the totals as practice records, not a grade or checked-evidence decision.</p>
       </div>
       <div class="exam-stats">
         <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>

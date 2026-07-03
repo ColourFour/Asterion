@@ -307,7 +307,7 @@ try {
   await submitAnswer(page.locator('.practice-card:not([hidden]) [data-check-skill-answer]').first(), 'both-roots', { closeCelebration: false });
   const checkedCelebration = await correctCelebrationState(page);
   assert(checkedCelebration.open, 'Correct Checked Practice answer must open the correct-answer celebration modal.');
-  assert(checkedCelebration.message.includes('deterministic Checked Practice evidence'), 'Checked Practice celebration must preserve checked-evidence wording.');
+  assert(checkedCelebration.message.includes('A clean Checked Practice pass is the strongest local evidence.'), 'Checked Practice celebration must preserve clean-pass evidence wording.');
   assert(checkedCelebration.primaryLabel.length > 0, 'Checked Practice celebration must expose a primary continuation action.');
   await closeCorrectCelebration(page);
   await page.waitForFunction(() => {

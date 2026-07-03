@@ -59,8 +59,27 @@
       <div>
         <p class="eyebrow">Email export</p>
         <h2 id="export-progress-title">Send local progress CSV</h2>
-        <p>The CSV only includes attempts and progress stored in this browser. It does not sync accounts, classes, or cloud data.</p>
+        <p>The CSV only includes attempts and progress stored in this browser. Your teacher should treat clean Checked Practice passes as the strongest evidence. Self-marked exam attempts are practice records only.</p>
       </div>
+      <section class="teacher-progress-summary" aria-labelledby="teacher-progress-summary-title">
+        <div>
+          <p class="eyebrow">Before you export</p>
+          <h2 id="teacher-progress-summary-title">Progress summary for teacher</h2>
+          <p class="teacher-progress-warning">This record is saved only in this browser on this device. It is local evidence, not a server-verified account record.</p>
+        </div>
+        <div data-export-teacher-summary>
+          <dl class="teacher-progress-summary-list">
+            <div><dt>P3 units with clean Checked Practice pass</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>P3 units still incomplete</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Total clean Checked Practice passes</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Hint-used attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Revealed-answer attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Repair attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Self-marked Exam Training attempts</dt><dd>Not recorded in this browser</dd></div>
+            <div><dt>Browser/device warning</dt><dd>This record is saved only in this browser on this device. It is local evidence, not a server-verified account record.</dd></div>
+          </dl>
+        </div>
+      </section>
       <form class="export-progress-form" data-export-local-progress-form>
         <label class="single-answer-field">
           <span>Student name</span>
@@ -149,7 +168,7 @@
           <div class="section-heading">
             <div>
               <h2>Mixed Paper 3 questions</h2>
-              <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Saved exam marks are self-marked exam practice, not checked evidence.</p>
+              <p>Attempt the question on paper, reveal the mark scheme, then self-mark honestly. Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
             </div>
           </div>
           <div class="exam-question-grid" data-exam-flow data-flow-label="Paper 3 exam review question">
@@ -160,7 +179,7 @@
           <p class="eyebrow">Paper 31autumn21 Q4</p>
           <h3>Integration</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">6 marks</span>
@@ -186,7 +205,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn21_q04" data-paper-family="p3" data-paper="31autumn21" data-question-number="4" data-topic="Integration" data-subtopic="" data-marks-available="6" data-parts="[{&quot;subpartId&quot;:&quot;31autumn21_q04_whole&quot;,&quot;label&quot;:&quot;(whole)&quot;,&quot;marksAvailable&quot;:6,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn21_q04_whole_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;State the correct derivative for the substitution u=sqrt(x).&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q04_whole_mp02&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Substitute throughout for x and dx.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q04_whole_mp03&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the correct transformed integral.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q04_whole_mp04&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Integrate to an arctan form.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q04_whole_mp05&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Use the transformed limits correctly.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q04_whole_mp06&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the exact final value.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="integration" data-display-region-id="integration">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -260,7 +279,7 @@
           <p class="eyebrow">Paper 31autumn21 Q7</p>
           <h3>Differential Equations</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">9 marks</span>
@@ -286,7 +305,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn21_q07" data-paper-family="p3" data-paper="31autumn21" data-question-number="7" data-topic="Differential Equations" data-subtopic="" data-marks-available="9" data-parts="[{&quot;subpartId&quot;:&quot;31autumn21_q07_a&quot;,&quot;label&quot;:&quot;(a)&quot;,&quot;marksAvailable&quot;:1},{&quot;subpartId&quot;:&quot;31autumn21_q07_b&quot;,&quot;label&quot;:&quot;(b)&quot;,&quot;marksAvailable&quot;:7,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn21_q07_b_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Separate the variables correctly.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q07_b_mp02&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Obtain the ln(ln x) term.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q07_b_mp03&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Obtain the -ln t term.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q07_b_mp04&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Evaluate the constant, or use x=e and t=2 as limits, in a logarithmic solution.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q07_b_mp05&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the correct solution in any form.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q07_b_mp06&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Use logarithm laws to remove logarithms.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn21_q07_b_mp07&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain x=e^(2/t), or a simplified equivalent.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]},{&quot;subpartId&quot;:&quot;31autumn21_q07_c&quot;,&quot;label&quot;:&quot;(c)&quot;,&quot;marksAvailable&quot;:1,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn21_q07_c_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;State that x tends to 1.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="differential-equations" data-display-region-id="differential-equations">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -411,7 +430,7 @@
           <p class="eyebrow">Paper 31autumn23 Q1</p>
           <h3>Differentiation</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">5 marks</span>
@@ -437,7 +456,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q01" data-paper-family="p3" data-paper="31autumn23" data-question-number="1" data-topic="Differentiation" data-subtopic="" data-marks-available="5" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q01_whole&quot;,&quot;label&quot;:&quot;(whole)&quot;,&quot;marksAvailable&quot;:5,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn23_q01_whole_mp01&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Use the quotient rule or product rule correctly.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q01_whole_mp02&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the correct derivative in any form.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q01_whole_mp03&quot;,&quot;markCode&quot;:&quot;DM1&quot;,&quot;label&quot;:&quot;Equate the derivative to zero and form a solvable equation.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q01_whole_mp04&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the correct stationary x-value or values.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q01_whole_mp05&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the required stationary point result.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="differentiation" data-display-region-id="differentiation">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -506,7 +525,7 @@
           <p class="eyebrow">Paper 31autumn23 Q2</p>
           <h3>Complex Numbers</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">4 marks</span>
@@ -532,7 +551,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q02" data-paper-family="p3" data-paper="31autumn23" data-question-number="2" data-topic="Complex Numbers" data-subtopic="" data-marks-available="4" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q02_whole&quot;,&quot;label&quot;:&quot;(whole)&quot;,&quot;marksAvailable&quot;:4,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn23_q02_whole_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Show the points representing 2i and -2+i.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q02_whole_mp02&quot;,&quot;markCode&quot;:&quot;B1FT&quot;,&quot;label&quot;:&quot;Show the perpendicular bisector of their two plotted points.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q02_whole_mp03&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Show the correct half-line of gradient 1 from (-1, 0).&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q02_whole_mp04&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Show the correct loci and shade the correct region.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="complex-numbers" data-display-region-id="complex-numbers">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -596,7 +615,7 @@
           <p class="eyebrow">Paper 31autumn23 Q3</p>
           <h3>Logarithmic and Exponential Functions</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">4 marks</span>
@@ -622,7 +641,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q03" data-paper-family="p3" data-paper="31autumn23" data-question-number="3" data-topic="Logarithmic and Exponential Functions" data-subtopic="" data-marks-available="4" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q03_whole&quot;,&quot;label&quot;:&quot;(whole)&quot;,&quot;marksAvailable&quot;:4,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn23_q03_whole_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;State or imply ln y = ln a + x ln b.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q03_whole_mp02&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Carry out a complete method for finding ln a or ln b.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q03_whole_mp03&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain a = 4.06 to 3 significant figures.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q03_whole_mp04&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain b = 9.97 to 3 significant figures.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="logarithmic-and-exponential-functions" data-display-region-id="logarithmic-and-exponential-functions">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -686,7 +705,7 @@
           <p class="eyebrow">Paper 31autumn23 Q4</p>
           <h3>Complex Numbers</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">5 marks</span>
@@ -712,7 +731,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q04" data-paper-family="p3" data-paper="31autumn23" data-question-number="4" data-topic="Complex Numbers" data-subtopic="" data-marks-available="5" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q04_a&quot;,&quot;label&quot;:&quot;(a)&quot;,&quot;marksAvailable&quot;:3,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn23_q04_a_mp01&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Multiply numerator and denominator by the conjugate a+5i, or use an equivalent real-imaginary comparison.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q04_a_mp02&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Use i^2=-1 correctly, or compare real and imaginary parts correctly.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q04_a_mp03&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the correct expression for u in terms of a.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]},{&quot;subpartId&quot;:&quot;31autumn23_q04_b&quot;,&quot;label&quot;:&quot;(b)&quot;,&quot;marksAvailable&quot;:2}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="complex-numbers" data-display-region-id="complex-numbers">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -785,7 +804,7 @@
           <p class="eyebrow">Paper 31autumn23 Q5</p>
           <h3>Trigonometry</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">6 marks</span>
@@ -811,7 +830,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q05" data-paper-family="p3" data-paper="31autumn23" data-question-number="5" data-topic="Trigonometry" data-subtopic="" data-marks-available="6" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q05_a&quot;,&quot;label&quot;:&quot;(a)&quot;,&quot;marksAvailable&quot;:4},{&quot;subpartId&quot;:&quot;31autumn23_q05_b&quot;,&quot;label&quot;:&quot;(b)&quot;,&quot;marksAvailable&quot;:2,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn23_q05_b_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Obtain one correct value of x in the required interval.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q05_b_mp02&quot;,&quot;markCode&quot;:&quot;B1FT&quot;,&quot;label&quot;:&quot;Obtain the second correct value of x in the interval, following through the first value where allowed.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="trigonometry" data-display-region-id="trigonometry">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -879,7 +898,7 @@
           <p class="eyebrow">Paper 31autumn23 Q6</p>
           <h3>Differentiation</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">6 marks</span>
@@ -905,7 +924,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q06" data-paper-family="p3" data-paper="31autumn23" data-question-number="6" data-topic="Differentiation" data-subtopic="" data-marks-available="6" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q06_a&quot;,&quot;label&quot;:&quot;(a)&quot;,&quot;marksAvailable&quot;:3},{&quot;subpartId&quot;:&quot;31autumn23_q06_b&quot;,&quot;label&quot;:&quot;(b)&quot;,&quot;marksAvailable&quot;:3}]" data-coarse-self-marking="true" data-has-mark-points="false" data-validated-region-id="differentiation" data-display-region-id="differentiation">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
         <p class="coarse-marking-note">Coarse self-marking: this source record does not expose reviewed tickable mark points, so save honest self-awarded marks using the mark-scheme image.</p>
         <div class="exam-part-list">
@@ -950,7 +969,7 @@
           <p class="eyebrow">Paper 31autumn23 Q7</p>
           <h3>Differential Equations</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">7 marks</span>
@@ -976,7 +995,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q07" data-paper-family="p3" data-paper="31autumn23" data-question-number="7" data-topic="Differential Equations" data-subtopic="" data-marks-available="7" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q07_whole&quot;,&quot;label&quot;:&quot;(whole)&quot;,&quot;marksAvailable&quot;:7}]" data-coarse-self-marking="true" data-has-mark-points="false" data-validated-region-id="differential-equations" data-display-region-id="differential-equations">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
         <p class="coarse-marking-note">Coarse self-marking: this source record does not expose reviewed tickable mark points, so save honest self-awarded marks using the mark-scheme image.</p>
         <div class="exam-part-list">
@@ -1007,7 +1026,7 @@
           <p class="eyebrow">Paper 31autumn23 Q8</p>
           <h3>Numerical Solution of Equations</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">8 marks</span>
@@ -1033,7 +1052,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q08" data-paper-family="p3" data-paper="31autumn23" data-question-number="8" data-topic="Numerical Solution of Equations" data-subtopic="" data-marks-available="8" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q08_a&quot;,&quot;label&quot;:&quot;(a)&quot;,&quot;marksAvailable&quot;:2,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn23_q08_a_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Sketch a relevant graph such as y=e^x-3 with the correct shape and intercept.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q08_a_mp02&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;Sketch a second relevant graph such as y=x and justify the single intersection.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]},{&quot;subpartId&quot;:&quot;31autumn23_q08_b&quot;,&quot;label&quot;:&quot;(b)&quot;,&quot;marksAvailable&quot;:2},{&quot;subpartId&quot;:&quot;31autumn23_q08_c&quot;,&quot;label&quot;:&quot;(c)&quot;,&quot;marksAvailable&quot;:1},{&quot;subpartId&quot;:&quot;31autumn23_q08_d&quot;,&quot;label&quot;:&quot;(d)&quot;,&quot;marksAvailable&quot;:3}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="numerical-solution-of-equations" data-display-region-id="numerical-solution-of-equations">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -1129,7 +1148,7 @@
           <p class="eyebrow">Paper 31autumn23 Q9</p>
           <h3>Integration</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">9 marks</span>
@@ -1152,7 +1171,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31autumn23_q09" data-paper-family="p3" data-paper="31autumn23" data-question-number="9" data-topic="Integration" data-subtopic="" data-marks-available="9" data-parts="[{&quot;subpartId&quot;:&quot;31autumn23_q09_a&quot;,&quot;label&quot;:&quot;(a)&quot;,&quot;marksAvailable&quot;:4},{&quot;subpartId&quot;:&quot;31autumn23_q09_b&quot;,&quot;label&quot;:&quot;(b)&quot;,&quot;marksAvailable&quot;:5,&quot;markPoints&quot;:[{&quot;id&quot;:&quot;31autumn23_q09_b_mp01&quot;,&quot;markCode&quot;:&quot;B1&quot;,&quot;label&quot;:&quot;State or imply the correct expression for dx in terms of du.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q09_b_mp02&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Substitute for x and dx.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q09_b_mp03&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the correct transformed integral.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q09_b_mp04&quot;,&quot;markCode&quot;:&quot;M1&quot;,&quot;label&quot;:&quot;Use the correct limits in the transformed integral.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;},{&quot;id&quot;:&quot;31autumn23_q09_b_mp05&quot;,&quot;markCode&quot;:&quot;A1&quot;,&quot;label&quot;:&quot;Obtain the final exact answer.&quot;,&quot;source&quot;:&quot;mark_scheme_text&quot;,&quot;confidence&quot;:1,&quot;reviewStatus&quot;:&quot;reviewed&quot;}]}]" data-coarse-self-marking="false" data-has-mark-points="true" data-validated-region-id="" data-display-region-id="integration">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
 
         <div class="exam-part-list">
@@ -1235,7 +1254,7 @@
           <p class="eyebrow">Paper 31summer22 Q4</p>
           <h3>Differential Equations</h3>
 
-          <p class="question-instruction">Self-marked exam work is useful practice evidence, but it is weaker than Checked Practice evidence.</p>
+          <p class="question-instruction">Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.</p>
 
         </div>
         <span class="marks-pill">7 marks</span>
@@ -1261,7 +1280,7 @@
       <form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="31summer22_q04" data-paper-family="p3" data-paper="31summer22" data-question-number="4" data-topic="Differential Equations" data-subtopic="" data-marks-available="7" data-parts="[{&quot;subpartId&quot;:&quot;31summer22_q04_whole&quot;,&quot;label&quot;:&quot;(whole)&quot;,&quot;marksAvailable&quot;:7}]" data-coarse-self-marking="true" data-has-mark-points="false" data-validated-region-id="differential-equations" data-display-region-id="differential-equations">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
-          <span>Self-marked exam practice. Needs checked evidence before it can support the route.</span>
+          <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
         </div>
         <p class="coarse-marking-note">Coarse self-marking: this source record does not expose reviewed tickable mark points, so save honest self-awarded marks using the mark-scheme image.</p>
         <div class="exam-part-list">
@@ -1295,7 +1314,7 @@
       <div>
         <p class="eyebrow">Local exam evidence</p>
         <h2>Saved attempts</h2>
-        <p>Use these totals to plan review, not as a grade.</p>
+        <p>Use these totals to plan review, not as a grade. Self-marked exam attempts are practice records only.</p>
       </div>
       <div class="exam-stats">
         <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>

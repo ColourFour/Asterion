@@ -6595,6 +6595,46 @@ body.skill-check-page .exam-question-section {
   align-items: stretch;
 }
 
+.teacher-progress-summary {
+  display: grid;
+  gap: 12px;
+}
+
+.teacher-progress-summary h2 {
+  font-size: 1.45rem;
+}
+
+.teacher-progress-warning {
+  margin-bottom: 0;
+  color: #8a5b16;
+  font-weight: 900;
+}
+
+.teacher-progress-summary-list {
+  display: grid;
+  margin: 0;
+  border-top: 1px solid var(--border);
+}
+
+.teacher-progress-summary-list div {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(0, 1.1fr);
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.teacher-progress-summary-list dt {
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.teacher-progress-summary-list dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 900;
+}
+
 .export-progress-form {
   display: grid;
   grid-template-columns: repeat(2, minmax(180px, 1fr));
@@ -8357,6 +8397,11 @@ body.skill-check-page .exam-question-section {
 
   .homepage-audience-band article {
     grid-template-columns: 1fr;
+  }
+
+  .teacher-progress-summary-list div {
+    grid-template-columns: 1fr;
+    gap: 4px;
   }
 
   .export-progress-form {

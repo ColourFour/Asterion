@@ -1191,7 +1191,7 @@
     var examAttempts = safeArray(progress.attempts);
     return {
       checkedPracticeAttempts: skillAttempts.length,
-      checkedPracticePasses: skillAttempts.filter(isPassingSkillCheckAttempt).length,
+      checkedPracticePasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
       reviewCandidates: reviewCandidates,
       selfMarkedExamAttempts: examAttempts.filter(function (attempt) { return attempt.selfMarked === true; }).length,
       learningActivityAttempts: safeArray(progress.learningActivityAttempts).length,
@@ -1214,6 +1214,75 @@
     ].join('; ');
   }
 
+  function localProgressTeacherSummary(progress, requirements) {
+    var skillAttempts = normalizeSkillCheckAttempts(progress.skillCheckAttempts);
+    var learningAttempts = safeArray(progress.learningActivityAttempts);
+    var examAttempts = safeArray(progress.attempts);
+    var validRequirements = safeArray(requirements).filter(function (requirement) {
+      return requirement
+        && typeof requirement.regionId === 'string'
+        && typeof requirement.name === 'string'
+        && Array.isArray(requirement.requiredCheckIds);
+    });
+    var unitStatuses = validRequirements.map(function (requirement) {
+      return Object.assign({ requirement: requirement }, teacherExamReviewRequirementStatus(progress, requirement));
+    });
+    var completeUnits = unitStatuses.filter(function (status) { return status.complete; }).map(function (status) {
+      return status.requirement.name;
+    });
+    var incompleteUnits = unitStatuses.filter(function (status) { return !status.complete; }).map(function (status) {
+      return status.requirement.name;
+    });
+    return {
+      completeUnits: validRequirements.length ? completeUnits : undefined,
+      incompleteUnits: validRequirements.length ? incompleteUnits : undefined,
+      totalCleanPasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
+      hintUsedAttempts: skillAttempts.filter(function (attempt) { return attempt.usedHint; }).length
+        + learningAttempts.filter(function (attempt) { return attempt && attempt.usedHint === true; }).length,
+      revealedAnswerAttempts: skillAttempts.filter(function (attempt) { return attempt.revealedAnswer; }).length
+        + learningAttempts.filter(function (attempt) { return attempt && attempt.revealedAnswer === true; }).length
+        + examAttempts.filter(function (attempt) { return attempt && attempt.answerRevealedBeforeMarking === true; }).length,
+      repairAttempts: skillAttempts.filter(function (attempt) { return attempt.revealedRepairStep; }).length,
+      selfMarkedExamAttempts: examAttempts.filter(function (attempt) { return attempt && attempt.selfMarked === true; }).length,
+      browserDeviceWarning: 'This record is saved only in this browser on this device. It is local evidence, not a server-verified account record.'
+    };
+  }
+
+  function teacherSummaryListValue(items, emptyText) {
+    if (items === undefined) return 'Not recorded in this browser';
+    if (!items.length) return emptyText;
+    return items.join(', ');
+  }
+
+  function teacherSummaryCountValue(count) {
+    return typeof count === 'number' && Number.isFinite(count) ? String(count) : 'Not recorded in this browser';
+  }
+
+  function renderLocalProgressTeacherSummary(panel, progress) {
+    var summaryNode = panel?.querySelector('[data-export-teacher-summary]');
+    if (!(summaryNode instanceof HTMLElement)) return;
+    var gate = document.querySelector('[data-p3-exam-review-gate]');
+    var requirements = gate ? parseExamReviewRequirements(gate) : [];
+    var summary = localProgressTeacherSummary(progress, requirements);
+    summaryNode.innerHTML = '<dl class="teacher-progress-summary-list">'
+      + '<div><dt>P3 units with clean Checked Practice pass</dt><dd>' + escapeText(teacherSummaryListValue(summary.completeUnits, 'None recorded yet')) + '</dd></div>'
+      + '<div><dt>P3 units still incomplete</dt><dd>' + escapeText(teacherSummaryListValue(summary.incompleteUnits, 'None')) + '</dd></div>'
+      + '<div><dt>Total clean Checked Practice passes</dt><dd>' + escapeText(teacherSummaryCountValue(summary.totalCleanPasses)) + '</dd></div>'
+      + '<div><dt>Hint-used attempts</dt><dd>' + escapeText(teacherSummaryCountValue(summary.hintUsedAttempts)) + '</dd></div>'
+      + '<div><dt>Revealed-answer attempts</dt><dd>' + escapeText(teacherSummaryCountValue(summary.revealedAnswerAttempts)) + '</dd></div>'
+      + '<div><dt>Repair attempts</dt><dd>' + escapeText(teacherSummaryCountValue(summary.repairAttempts)) + '</dd></div>'
+      + '<div><dt>Self-marked Exam Training attempts</dt><dd>' + escapeText(teacherSummaryCountValue(summary.selfMarkedExamAttempts)) + '</dd></div>'
+      + '<div><dt>Browser/device warning</dt><dd>' + escapeText(summary.browserDeviceWarning) + '</dd></div>'
+      + '</dl>';
+  }
+
+  function updateLocalProgressTeacherSummaries(progress) {
+    var currentProgress = progress || loadProgress();
+    document.querySelectorAll('[data-export-panel]').forEach(function (panel) {
+      renderLocalProgressTeacherSummary(panel, currentProgress);
+    });
+  }
+
   function submissionSummaryCsvRow(progress, exportTimestamp, metadata) {
     return csvRowWithExportMetadata(Object.assign(blankCsvRow(exportTimestamp), {
       topic: 'All P3 local progress',
@@ -1229,7 +1298,7 @@
   }
 
   function skillCheckCsvRow(attempt, exportTimestamp) {
-    var passed = isPassingSkillCheckAttempt(attempt);
+    var passed = isCleanCheckedPracticeAttempt(attempt);
     return Object.assign(blankCsvRow(exportTimestamp), {
       topic: attempt.topic || '',
       route_page_type: 'skill-check',
@@ -1238,7 +1307,7 @@
       attempt_timestamp: attempt.timestamp || '',
       answer_result_summary: attempt.submittedAnswer || '',
       deterministic_pass_fail: passed ? 'pass' : 'fail',
-      evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
+      evidence_label: passed ? 'Clean Checked Practice pass - strongest local evidence' : 'Checked Practice attempt - not a clean pass',
       evidence_status_label: passed ? 'checked_practice_passed' : 'not_passed'
     });
   }
@@ -1258,7 +1327,7 @@
       attempt_timestamp: attempt.timestamp || '',
       answer_result_summary: state,
       deterministic_pass_fail: 'not_available',
-      evidence_label: 'Review candidate from local checked practice attempt',
+      evidence_label: 'Review candidate from local Checked Practice attempt - not a clean pass',
       evidence_status_label: 'needs_checked_evidence',
       suspicion_flags: tags.join('|')
     });
@@ -1433,7 +1502,7 @@
       '',
       'Notes:',
       'This export is generated from progress saved in this browser only.',
-      'Checked Practice rows are deterministic local checks. Exam Training rows are self-marked practice, not checked evidence.'
+      'Your teacher should treat clean Checked Practice passes as the strongest evidence. Self-marked exam attempts are practice records only.'
     ];
     if (includeCsv) {
       lines = lines.concat([
@@ -1511,6 +1580,7 @@
         ? 'Email message prepared with ' + rowCount + ' CSV row' + (rowCount === 1 ? '' : 's') + ' in the message body.'
         : 'Email message prepared. The CSV is too large for a reliable email body, so copy the CSV shown below into the email.'
     );
+    updateLocalProgressTeacherSummaries(progress);
     window.location.href = mailto.href;
   }
 
@@ -1530,6 +1600,7 @@
         reportingPeriod.value = profile.reportingPeriod || defaultReportingPeriod();
       }
     });
+    updateLocalProgressTeacherSummaries();
   }
 
   function completionsFor(progress, regionId) {
@@ -1564,6 +1635,10 @@
     return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep);
   }
 
+  function isCleanCheckedPracticeAttempt(attempt) {
+    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.usedHint && !attempt.revealedAnswer && !attempt.revealedRepairStep);
+  }
+
   function parseRequiredCheckIds(node) {
     try {
       var parsed = JSON.parse(node.getAttribute('data-required-checks') || '[]');
@@ -1577,6 +1652,14 @@
     return requiredCheckIds.filter(function (checkId) {
       return progress.skillCheckAttempts.some(function (attempt) {
         return attempt.regionId === regionId && attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt);
+      });
+    });
+  }
+
+  function cleanPassedCheckIds(progress, requiredCheckIds, regionId) {
+    return requiredCheckIds.filter(function (checkId) {
+      return progress.skillCheckAttempts.some(function (attempt) {
+        return attempt.regionId === regionId && attempt.checkId === checkId && isCleanCheckedPracticeAttempt(attempt);
       });
     });
   }
@@ -1657,9 +1740,9 @@
 
   function examTrustLabel(flags) {
     if (flags.includes('answer_revealed_before_marking') || flags.includes('repeated_perfect_self_marking')) {
-      return 'Low-trust self-marked evidence';
+      return 'Self-marked exam practice - review with your teacher';
     }
-    return flags.length ? 'Low-trust self-marked evidence' : 'Exam practice evidence';
+    return flags.length ? 'Self-marked exam practice - review with your teacher' : 'Self-marked exam practice';
   }
 
   function skillCheckGatePassed(progress, regionId) {
@@ -1691,6 +1774,20 @@
     var guideCount = fieldGuideCompletedCount(progress, requirement.regionId, fieldGuideTotal);
     var requiredCheckIds = requirement.requiredCheckIds.filter(function (id) { return typeof id === 'string' && id; });
     var passCount = passedCheckIds(progress, requiredCheckIds, requirement.regionId).length;
+    return {
+      guideCount: guideCount,
+      fieldGuideTotal: fieldGuideTotal,
+      passCount: passCount,
+      requiredCheckCount: requiredCheckIds.length,
+      complete: requiredCheckIds.length > 0 && passCount >= requiredCheckIds.length
+    };
+  }
+
+  function teacherExamReviewRequirementStatus(progress, requirement) {
+    var fieldGuideTotal = Math.max(1, Number(requirement.fieldGuideTotal || 1));
+    var guideCount = fieldGuideCompletedCount(progress, requirement.regionId, fieldGuideTotal);
+    var requiredCheckIds = requirement.requiredCheckIds.filter(function (id) { return typeof id === 'string' && id; });
+    var passCount = cleanPassedCheckIds(progress, requiredCheckIds, requirement.regionId).length;
     return {
       guideCount: guideCount,
       fieldGuideTotal: fieldGuideTotal,
@@ -1796,7 +1893,7 @@
     }
     return {
       title: 'Try ' + status.name + ' Exam Training',
-      copy: 'Learn and Checked Practice evidence is recorded in this browser. Exam Training is useful but remains weaker self-marked practice evidence.',
+      copy: 'A clean Checked Practice pass is the strongest local evidence. Exam Training is self-marked practice.',
       href: status.examHref,
       label: status.examCount > 0 ? 'Continue Exam Training' : 'Start Exam Training'
     };
@@ -1841,7 +1938,7 @@
       if (allReviewReady) {
         var reviewHref = panel.getAttribute('data-review-href') || '#';
         if (title) title.textContent = 'Export progress';
-        if (copy) copy.textContent = 'All unit Learn and Checked Practice evidence is recorded in this browser. Send your CSV to your teacher, then use mixed review as local practice guidance.';
+        if (copy) copy.textContent = 'All unit Learn and Checked Practice progress is recorded in this browser. Clean Checked Practice passes are the strongest local evidence.';
         if (link) {
           link.textContent = 'Export Progress';
           link.setAttribute('href', reviewHref);
@@ -1889,7 +1986,7 @@
 
     document.querySelectorAll('[data-progress-exam]').forEach(function (node) {
       var regionId = node.getAttribute('data-progress-exam') || '';
-      var label = node.getAttribute('data-label') || 'Exam practice evidence';
+      var label = node.getAttribute('data-label') || 'Exam practice';
       var count = attemptsForRegion(progress, regionId).length;
       node.textContent = label + ': ' + count + ' self-marked';
       node.classList.remove('is-complete');
@@ -1917,7 +2014,7 @@
       var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
       var practiceCount = passingSkillAttemptsForRegion(progress, regionId).length;
       var examCount = attemptsForRegion(progress, regionId).length;
-      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Learn steps, ' + practiceCount + ' checked question passes, ' + examCount + ' self-marked exam evidence.';
+      node.textContent = 'Local progress: ' + guideCount + '/' + fieldTotal + ' Learn steps, ' + practiceCount + ' clean Checked Practice passes, ' + examCount + ' self-marked exam practice records.';
     });
 
     document.querySelectorAll('[data-progress-summary]').forEach(function (node) {
@@ -1946,6 +2043,7 @@
     updateExamReviewGate(progress);
     updateP3NextStepPanels(progress);
     updateP1RepairLaneStatus(progress);
+    updateLocalProgressTeacherSummaries(progress);
     applyP1RepairP3Locks(progress);
   }
 
@@ -3690,8 +3788,8 @@
       reason: revealKind === 'answer' ? 'Answer revealed.' : 'Repair step revealed.'
     });
     setSkillFeedback(form, revealKind === 'answer'
-      ? 'Answer revealed. This is saved as repaired practice, not passed.'
-      : 'Repair step revealed. This is saved as repaired practice, not passed.', 'repaired');
+      ? 'Answer revealed. This helps you learn, but it does not count as a clean pass.'
+      : 'Repair step revealed. This helps you learn, but it does not count as a clean pass.', 'repaired');
   }
 
   function checkSkillAnswer(form) {
@@ -3704,7 +3802,7 @@
     var answerReveal = form.querySelector('[data-skill-answer-reveal]');
     var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
     if (checkResult.isCorrect && form.getAttribute('data-revealed-answer') !== 'true' && form.getAttribute('data-revealed-repair-step') !== 'true') {
-      setSkillFeedback(form, 'Correct. Saved as a deterministic pass.', 'correct');
+      setSkillFeedback(form, 'Correct. Saved as a clean Checked Practice pass.', 'correct');
       form.classList.add('is-passed');
       if (nextButton) nextButton.hidden = false;
       if (submitButton) {
@@ -3713,18 +3811,18 @@
       }
       showCorrectCelebration({
         title: 'Correct',
-        message: 'Saved as deterministic Checked Practice evidence in this browser.',
+        message: 'A clean Checked Practice pass is the strongest local evidence.',
         primaryLabel: celebrationButtonLabel(nextButton, 'Continue'),
         onPrimary: celebrationButtonAction(nextButton)
       });
       return;
     }
     if (checkResult.isCorrect) {
-      setSkillFeedback(form, 'Correct, but this was already revealed or repaired, so it is not marked passed.', 'repaired');
+      setSkillFeedback(form, 'Correct, but this was already revealed or repaired, so it is not a clean pass.', 'repaired');
       if (nextButton) nextButton.hidden = false;
       showCorrectCelebration({
         title: 'Correct',
-        message: 'This answer is correct, but revealed or repaired work is saved as practice support, not a checked pass.',
+        message: 'Hints, revealed answers, and repair help you learn, but they do not count as a clean pass.',
         primaryLabel: celebrationButtonLabel(nextButton, 'Continue'),
         onPrimary: celebrationButtonAction(nextButton)
       });
@@ -3771,7 +3869,7 @@
     if (similarCta && isPrimary && similar) similarCta.hidden = false;
 
     if (checkResult.isCorrect) {
-      setSkillFeedback(form, 'Correct. Saved as Learn progress only; use Checked Practice for pass evidence.', 'correct');
+      setSkillFeedback(form, 'Correct. Saved as Learn progress only; use Checked Practice for clean pass evidence.', 'correct');
       form.classList.add('is-passed');
       if (submitButton) {
         submitButton.textContent = 'Check Answer';
@@ -3791,7 +3889,7 @@
         title: 'Correct',
         message: isPrimary && requiresSimilar
           ? 'Primary check is correct. Complete the similar question before this lesson step is finished.'
-          : 'Saved as Learn progress only. Use Checked Practice when you want pass evidence.',
+          : 'Saved as Learn progress only. A clean Checked Practice pass is the strongest local evidence.',
         primaryLabel: celebrationButtonLabel(primaryTarget, isPrimary && requiresSimilar ? 'Try a similar question' : 'Next step'),
         onPrimary: celebrationButtonAction(primaryTarget)
       });
@@ -4036,8 +4134,8 @@
     saveProgress(progress);
     if (status) {
       var gateText = attempt.masteryGate === 'skill_check_passed'
-        ? 'Checked Practice passed; self-marked exam practice recorded.'
-        : 'Needs checked evidence before exam practice can support this route.';
+        ? 'Clean Checked Practice evidence exists; self-marked exam practice recorded.'
+        : 'Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.';
       status.textContent = attempt.trustLabel + '. Self-marked attempt saved. ' + gateText;
       status.setAttribute('data-state', attempt.suspicionFlags.length ? 'warning' : 'saved');
     }

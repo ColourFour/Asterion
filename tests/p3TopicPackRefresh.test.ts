@@ -288,7 +288,7 @@ describe('P3 topic-pack exam-training refresh', () => {
       const article = renderedArticleHtml(topicSlug, id);
       expect(article, id).toContain('Hint');
       expect(article, id).toContain('Reveal Answer');
-      expect(article, id).toContain('Self-marked exam work is useful practice evidence');
+      expect(article, id).toContain('Exam Training is self-marked practice. It helps you prepare, but it does not replace Checked Practice evidence unless your teacher says so.');
 
       for (const term of internalTerms) {
         expect(article.toLowerCase(), `${id} leaked ${term}`).not.toContain(term.toLowerCase());

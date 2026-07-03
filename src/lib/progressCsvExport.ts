@@ -128,13 +128,17 @@ function summaryText(summary: LocalProgressSubmissionSummary): string {
   ].join('; ');
 }
 
+function isCleanCheckedPracticeAttempt(attempt: SkillCheckAttemptRecord): boolean {
+  return isPassingSkillCheckAttempt(attempt) && attempt.usedHint !== true;
+}
+
 export function localProgressSubmissionSummary(progress: Partial<StoredProgress>): LocalProgressSubmissionSummary {
   const skillAttempts = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts);
   const reviewCandidates = skillAttempts.filter((attempt) => rowForReviewCandidate(attempt, '')).length;
   const examAttempts = Array.isArray(progress.attempts) ? progress.attempts : [];
   return {
     checkedPracticeAttempts: skillAttempts.length,
-    checkedPracticePasses: skillAttempts.filter(isPassingSkillCheckAttempt).length,
+    checkedPracticePasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
     reviewCandidates,
     selfMarkedExamAttempts: examAttempts.filter((attempt) => attempt.selfMarked === true).length,
     learningActivityAttempts: Array.isArray(progress.learningActivityAttempts) ? progress.learningActivityAttempts.length : 0,
@@ -178,7 +182,7 @@ function examEvidenceStatusLabel(attempt: Attempt): string {
 }
 
 function rowForSkillCheckAttempt(attempt: SkillCheckAttemptRecord, exportTimestamp: string): LocalProgressCsvRow {
-  const passed = isPassingSkillCheckAttempt(attempt);
+  const passed = isCleanCheckedPracticeAttempt(attempt);
   return {
     ...blankRow(exportTimestamp),
     topic: attempt.topic,

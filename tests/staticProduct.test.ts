@@ -255,6 +255,8 @@ describe('static P3 product contract', () => {
       expect(generatedReview).toContain('Mixed Paper 3 questions');
       expect(generatedReview).toContain('Locked until the path is complete');
       expect(generatedReview).toContain('data-review-skill-routes');
+      expect(generatedReview).toContain('Progress summary for teacher');
+      expect(generatedReview).toContain('This record is saved only in this browser on this device. It is local evidence, not a server-verified account record.');
       expect(generatedReview).toContain('p3_alg_partial_fraction_form');
       expect(generatedReview).toContain('../topics/algebra/skill-check/#practice-algebra_partial_fractions');
     }
@@ -288,8 +290,8 @@ describe('static P3 product contract', () => {
     expect(staticClientSource).toContain('function showCorrectCelebration(options)');
     expect(staticClientSource).toContain("dialog.setAttribute('role', 'dialog')");
     expect(staticClientSource).toContain("dialog.setAttribute('aria-modal', 'true')");
-    expect(staticClientSource).toContain('Saved as deterministic Checked Practice evidence in this browser.');
-    expect(staticClientSource).toContain('Saved as Learn progress only. Use Checked Practice when you want pass evidence.');
+    expect(staticClientSource).toContain('A clean Checked Practice pass is the strongest local evidence.');
+    expect(staticClientSource).toContain('Saved as Learn progress only. A clean Checked Practice pass is the strongest local evidence.');
     expect(staticClientSource).toContain('Mini-check passed within the retry window for this repair module.');
     expect(staticClientSource).toContain('Every diagnostic mark was correct. This is strong starting evidence for the P3 path.');
     expect(staticCssSource).toContain('.correct-celebration-dialog');
@@ -321,8 +323,14 @@ describe('static P3 product contract', () => {
 
     expect(generatorSource).toContain('Export Progress');
     expect(generatorSource).toContain('Send local progress CSV');
+    expect(generatorSource).toContain('Progress summary for teacher');
+    expect(generatorSource).toContain('P3 units with clean Checked Practice pass');
+    expect(generatorSource).toContain('Browser/device warning');
     expect(generatorSource).toContain('data-export-local-progress-form');
     expect(staticClientSource).toContain('data-export-local-progress-form');
+    expect(staticClientSource).toContain('localProgressTeacherSummary');
+    expect(staticClientSource).toContain('data-export-teacher-summary');
+    expect(staticClientSource).toContain('Not recorded in this browser');
     expect(staticClientSource).toContain('mailto:');
     expect(staticClientSource).toContain('data-copy-export-csv');
     expect(generatorSource).toContain('Print / Save PDF');

@@ -220,4 +220,36 @@ describe('local progress CSV export', () => {
     expect(csv).toContain('"bad, answer"');
     expect(csv).toContain('micro_reteach');
   });
+
+  it('does not count hinted Checked Practice as clean export evidence', () => {
+    const progress: Partial<StoredProgress> = {
+      skillCheckAttempts: [
+        skillAttempt({ attemptId: 'hinted_correct', usedHint: true }),
+      ],
+      attempts: [],
+      learningActivityAttempts: [],
+    };
+    const metadata = {
+      submissionId: 'progress_export_hinted',
+      studentName: 'Ada Lovelace',
+      classGroup: 'Summer P3',
+      reportingPeriod: 'Week of 2026-06-08',
+      submissionTimestamp: '2026-06-12T03:00:00.000Z',
+    };
+
+    expect(localProgressSubmissionSummary(progress).checkedPracticePasses).toBe(0);
+
+    const rows = localProgressCsvRows(progress, metadata);
+    expect(rows).toEqual([
+      expect.objectContaining({
+        activity_type: 'Submission Summary',
+        answer_result_summary: expect.stringContaining('checked_practice_passes=0'),
+      }),
+      expect.objectContaining({
+        activity_type: 'Checked Practice',
+        deterministic_pass_fail: 'fail',
+        evidence_status_label: 'not_passed',
+      }),
+    ]);
+  });
 });
