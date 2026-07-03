@@ -54,7 +54,35 @@ async function resetPageProgress(page) {
   await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
 }
 
-async function submitAnswer(form, answer) {
+async function closeCorrectCelebration(page) {
+  await page.evaluate(() => {
+    const root = document.querySelector('[data-correct-celebration]');
+    if (!(root instanceof HTMLElement) || root.hidden) return;
+    const close = root.querySelector('.correct-celebration-actions [data-correct-celebration-close]');
+    if (close instanceof HTMLElement) close.click();
+  });
+}
+
+async function correctCelebrationState(page) {
+  return page.evaluate(() => {
+    const root = document.querySelector('[data-correct-celebration]');
+    const open = root instanceof HTMLElement && !root.hidden;
+    return {
+      open,
+      title: open ? document.getElementById('correct-celebration-title')?.textContent?.trim() ?? '' : '',
+      message: open ? document.getElementById('correct-celebration-message')?.textContent?.trim() ?? '' : '',
+      primaryLabel: open ? root.querySelector('[data-correct-celebration-primary]')?.textContent?.trim() ?? '' : '',
+    };
+  });
+}
+
+async function submitAnswer(form, answer, options = {}) {
+  await form.evaluate(() => {
+    const root = document.querySelector('[data-correct-celebration]');
+    if (!(root instanceof HTMLElement) || root.hidden) return;
+    const close = root.querySelector('.correct-celebration-actions [data-correct-celebration-close]');
+    if (close instanceof HTMLElement) close.click();
+  });
   const textInput = form.locator('input[name="submittedAnswer"][type="text"]');
   if (await textInput.count()) {
     await textInput.fill(answer);
@@ -69,6 +97,14 @@ async function submitAnswer(form, answer) {
     }
   }
   await form.locator('button[type="submit"]').click();
+  if (options.closeCelebration !== false) {
+    await form.evaluate(() => {
+      const root = document.querySelector('[data-correct-celebration]');
+      if (!(root instanceof HTMLElement) || root.hidden) return;
+      const close = root.querySelector('.correct-celebration-actions [data-correct-celebration-close]');
+      if (close instanceof HTMLElement) close.click();
+    });
+  }
 }
 
 async function progressSnapshot(page) {
@@ -164,7 +200,7 @@ try {
       return Boolean(rect && rect.top < window.innerHeight * 0.72 && rect.bottom > 0);
     })(),
     answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer] [data-learn-answer-reveal]')?.hidden),
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(algebraInitialShape.learnSteps === 17, `Algebra Learn Mode must render 17 authored lesson steps; saw ${algebraInitialShape.learnSteps}.`);
   assert(algebraInitialShape.visibleSteps === 1, `Learn Mode must show one step at a time; saw ${algebraInitialShape.visibleSteps}.`);
@@ -172,7 +208,7 @@ try {
   assert(algebraInitialShape.oldSkillForms === 0, 'Learn Mode must not render legacy Skill Check forms.');
   assert(algebraInitialShape.activeProblemInFirstViewport, 'First viewport must show the active Algebra problem.');
   assert(algebraInitialShape.answerRevealHidden, 'Answer reveal must be unavailable before a submitted Learn attempt.');
-  assert(algebraInitialShape.nextLocked, 'Learn Mode next button must be locked before the step is completed.');
+  assert(algebraInitialShape.nextOpen, 'Learn Mode next button must remain available before the step is completed.');
 
   const algebraCard = page.locator('[data-learn-step-card]:not([hidden])').first();
   const algebraPrimary = algebraCard.locator('[data-check-learn-answer][data-learn-variant="primary"]');
@@ -194,7 +230,8 @@ try {
     retryCtaFocused: document.activeElement === document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-retry-learn-primary]'),
     learnMistakePanelMissing: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-mistake-tag-panel]'),
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
-    nextStillLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextStillOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
+    celebrationOpen: Boolean(document.querySelector('[data-correct-celebration]:not([hidden])')),
   }));
   const algebraWrongProgress = await progressSnapshot(page);
   assert(algebraWrongProgress.learningCount === 1, 'Wrong Learn attempt must be saved as learning activity.');
@@ -209,7 +246,8 @@ try {
   assert(algebraWrongState.retryCtaFocused, 'Wrong Learn attempt must focus the retry-first action before the similar action.');
   assert(algebraWrongState.learnMistakePanelMissing, 'Learn Mode must not ask students to choose what went wrong after a miss.');
   assert(algebraWrongState.transferHidden, 'Exam transfer must stay hidden until the similar checked question is attempted.');
-  assert(algebraWrongState.nextStillLocked, 'Wrong primary attempt must not complete the step.');
+  assert(algebraWrongState.nextStillOpen, 'Wrong primary attempt must leave navigation available without completing the step.');
+  assert(!algebraWrongState.celebrationOpen, 'Wrong Learn attempt must not open the correct-answer celebration modal.');
 
   await algebraPrimary.locator('[data-retry-learn-primary]').click();
   const algebraRetryState = await page.evaluate(() => {
@@ -224,7 +262,13 @@ try {
   assert(algebraRetryState.inputFocused, 'Retrying the first Learn setup must focus the original answer input.');
   assert(algebraRetryState.explanationStillVisible, 'Retrying the first Learn setup must keep the explanation available.');
 
-  await submitAnswer(algebraPrimary, '2');
+  await submitAnswer(algebraPrimary, '2', { closeCelebration: false });
+  const learnCelebration = await correctCelebrationState(page);
+  assert(learnCelebration.open, 'Correct Learn answer must open the correct-answer celebration modal.');
+  assert(learnCelebration.title === 'Correct', 'Correct Learn celebration must use a direct success title.');
+  assert(learnCelebration.message.includes('similar question'), 'Primary Learn celebration must direct the student to the similar question when required.');
+  assert(learnCelebration.primaryLabel === 'Try a similar question', 'Primary Learn celebration must expose the similar-question action.');
+  await closeCorrectCelebration(page);
   await submitAnswer(algebraSimilar, '-3');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
@@ -260,7 +304,12 @@ try {
   assert(checkedPracticeShape.skillForms > 0, 'Checked Practice must render deterministic Skill Check forms.');
   assert(checkedPracticeShape.learnForms === 0, 'Checked Practice must not render Learn forms.');
   assert(checkedPracticeShape.visibleSkillForm, 'A fresh student must see a Checked Practice question without Learn progress.');
-  await submitAnswer(page.locator('.practice-card:not([hidden]) [data-check-skill-answer]').first(), 'both-roots');
+  await submitAnswer(page.locator('.practice-card:not([hidden]) [data-check-skill-answer]').first(), 'both-roots', { closeCelebration: false });
+  const checkedCelebration = await correctCelebrationState(page);
+  assert(checkedCelebration.open, 'Correct Checked Practice answer must open the correct-answer celebration modal.');
+  assert(checkedCelebration.message.includes('deterministic Checked Practice evidence'), 'Checked Practice celebration must preserve checked-evidence wording.');
+  assert(checkedCelebration.primaryLabel.length > 0, 'Checked Practice celebration must expose a primary continuation action.');
+  await closeCorrectCelebration(page);
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.skillCheckAttempts?.length ?? 0) === 1;
@@ -287,7 +336,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   assert(logExpInitialShape.hasLogExpTitle, 'Log/Exp Learn page must render.');
@@ -300,7 +349,7 @@ try {
   assert(logExpInitialShape.similarHidden, 'Log/Exp similar question must be hidden before primary attempt.');
   assert(logExpInitialShape.transferHidden, 'Log/Exp exam transfer must be hidden before primary attempt.');
   assert(logExpInitialShape.answerRevealHidden, 'Log/Exp answer reveal must be unavailable before first submitted attempt.');
-  assert(logExpInitialShape.nextLocked, 'Log/Exp next button must be locked before the step is completed.');
+  assert(logExpInitialShape.nextOpen, 'Log/Exp next button must remain available before the step is completed.');
 
   const logExpOptionForm = page.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"]').first();
   await logExpOptionForm.locator('.learn-option-bank label').first().click();
@@ -331,13 +380,13 @@ try {
     principleVisible: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-after-attempt]')?.textContent?.includes('Principle')),
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(logExpAfterPrimary.explanationVisible, 'Log/Exp explanation must reveal after primary attempt.');
   assert(logExpAfterPrimary.principleVisible, 'Log/Exp principle must reveal after primary attempt.');
   assert(logExpAfterPrimary.similarVisible, 'Log/Exp similar checked question must reveal after primary attempt.');
   assert(logExpAfterPrimary.transferHidden, 'Log/Exp exam transfer must stay hidden until similar attempt.');
-  assert(logExpAfterPrimary.nextLocked, 'Primary-only Log/Exp answer must not complete a step with a similar check.');
+  assert(logExpAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
 
   await submitAnswer(logExpSimilar, 'log_5(25)=2');
   await page.waitForFunction(() => {
@@ -420,13 +469,13 @@ try {
     principleVisible: document.body.innerText.includes('Principle: choose the identity whose terms already match the expression.'),
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(trigAfterPrimary.explanationVisible, 'Explanation must reveal after primary attempt.');
   assert(trigAfterPrimary.principleVisible, 'Principle must reveal after primary attempt.');
   assert(trigAfterPrimary.similarVisible, 'Similar checked question must reveal after primary attempt.');
   assert(trigAfterPrimary.transferHidden, 'Exam transfer must stay hidden until similar attempt.');
-  assert(trigAfterPrimary.nextLocked, 'Primary-only Trig answer must not complete a step with a similar check.');
+  assert(trigAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
 
   await trigSimilar.locator('[data-show-learn-hint]').click();
   await submitAnswer(trigSimilar, '1+tan^2x=sec^2x');
@@ -502,7 +551,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
       passiveLearningCount: progress.learningActivityAttempts?.length ?? 0,
       passiveSkillCount: progress.skillCheckAttempts?.length ?? 0,
     };
@@ -521,7 +570,7 @@ try {
   assert(diffInitialShape.similarHidden, 'Differentiation similar question must be hidden before primary attempt.');
   assert(diffInitialShape.transferHidden, 'Differentiation exam transfer must be hidden before primary/similar attempt.');
   assert(diffInitialShape.answerRevealHidden, 'Differentiation answer reveal must be unavailable before first submitted attempt.');
-  assert(diffInitialShape.nextLocked, 'Differentiation next button must be locked before the step is completed.');
+  assert(diffInitialShape.nextOpen, 'Differentiation next button must remain available before the step is completed.');
   assert(diffInitialShape.passiveLearningCount === 0 && diffInitialShape.passiveSkillCount === 0, 'Passive Differentiation page view must not create evidence.');
 
   const diffCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -529,7 +578,7 @@ try {
   const diffSimilar = diffCard.locator('[data-check-learn-answer][data-learn-variant="similar"]');
   await diffPrimary.locator('input[name="submittedAnswer"][value="correct"]').check();
   assert(await diffPrimary.locator('input[name="submittedAnswer"][value="correct"]').isChecked(), 'Differentiation radio options must be clickable.');
-  await diffPrimary.locator('button[type="submit"]').click();
+  await submitAnswer(diffPrimary, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 1;
@@ -540,14 +589,14 @@ try {
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
     answerRevealVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden,
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(diffAfterPrimary.explanationVisible, 'Differentiation explanation must reveal after primary attempt.');
   assert(diffAfterPrimary.principleVisible, 'Differentiation principle must reveal after primary attempt.');
   assert(diffAfterPrimary.similarVisible, 'Differentiation similar checked question must reveal after primary attempt.');
   assert(diffAfterPrimary.transferHidden, 'Differentiation exam transfer must stay hidden until similar attempt.');
   assert(diffAfterPrimary.answerRevealVisible, 'Differentiation answer reveal must become available after a submitted attempt.');
-  assert(diffAfterPrimary.nextLocked, 'Primary-only Differentiation answer must not complete a step with a similar check.');
+  assert(diffAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
 
   await submitAnswer(diffSimilar, 'correct');
   await page.waitForFunction(() => {
@@ -644,7 +693,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
       passiveLearningCount: progress.learningActivityAttempts?.length ?? 0,
       passiveSkillCount: progress.skillCheckAttempts?.length ?? 0,
     };
@@ -663,7 +712,7 @@ try {
   assert(integrationInitialShape.similarHidden, 'Integration similar question must be hidden before primary attempt.');
   assert(integrationInitialShape.transferHidden, 'Integration exam transfer must be hidden before primary/similar attempt.');
   assert(integrationInitialShape.answerRevealHidden, 'Integration answer reveal must be unavailable before first submitted attempt.');
-  assert(integrationInitialShape.nextLocked, 'Integration next button must be locked before the step is completed.');
+  assert(integrationInitialShape.nextOpen, 'Integration next button must remain available before the step is completed.');
   assert(integrationInitialShape.passiveLearningCount === 0 && integrationInitialShape.passiveSkillCount === 0, 'Passive Integration page view must not create evidence.');
 
   const integrationCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -671,7 +720,7 @@ try {
   const integrationSimilar = integrationCard.locator('[data-check-learn-answer][data-learn-variant="similar"]');
   await integrationPrimary.locator('input[name="submittedAnswer"][value="correct"]').check();
   assert(await integrationPrimary.locator('input[name="submittedAnswer"][value="correct"]').isChecked(), 'Integration radio options must be clickable.');
-  await integrationPrimary.locator('button[type="submit"]').click();
+  await submitAnswer(integrationPrimary, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 1;
@@ -682,14 +731,14 @@ try {
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
     answerRevealVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden,
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(integrationAfterPrimary.explanationVisible, 'Integration explanation must reveal after primary attempt.');
   assert(integrationAfterPrimary.principleVisible, 'Integration principle must reveal after primary attempt.');
   assert(integrationAfterPrimary.similarVisible, 'Integration similar checked question must reveal after primary attempt.');
   assert(integrationAfterPrimary.transferHidden, 'Integration exam transfer must stay hidden until similar attempt.');
   assert(integrationAfterPrimary.answerRevealVisible, 'Integration answer reveal must become available after a submitted attempt.');
-  assert(integrationAfterPrimary.nextLocked, 'Primary-only Integration answer must not complete a step with a similar check.');
+  assert(integrationAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
 
   await submitAnswer(integrationSimilar, 'correct');
   await page.waitForFunction(() => {
@@ -786,7 +835,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
       passiveLearningCount: progress.learningActivityAttempts?.length ?? 0,
       passiveSkillCount: progress.skillCheckAttempts?.length ?? 0,
     };
@@ -805,7 +854,7 @@ try {
   assert(iterationInitialShape.similarHidden, 'Iteration similar question must be hidden before primary attempt.');
   assert(iterationInitialShape.transferHidden, 'Iteration exam transfer must be hidden before primary/similar attempt.');
   assert(iterationInitialShape.answerRevealHidden, 'Iteration answer reveal must be unavailable before first submitted attempt.');
-  assert(iterationInitialShape.nextLocked, 'Iteration next button must be locked before the step is completed.');
+  assert(iterationInitialShape.nextOpen, 'Iteration next button must remain available before the step is completed.');
   assert(iterationInitialShape.passiveLearningCount === 0 && iterationInitialShape.passiveSkillCount === 0, 'Passive Iteration page view must not create evidence.');
 
   const iterationCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -813,7 +862,7 @@ try {
   const iterationSimilar = iterationCard.locator('[data-check-learn-answer][data-learn-variant="similar"]');
   await iterationPrimary.locator('input[name="submittedAnswer"][value="correct"]').check();
   assert(await iterationPrimary.locator('input[name="submittedAnswer"][value="correct"]').isChecked(), 'Iteration radio options must be clickable.');
-  await iterationPrimary.locator('button[type="submit"]').click();
+  await submitAnswer(iterationPrimary, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 1;
@@ -824,14 +873,14 @@ try {
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
     answerRevealVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden,
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(iterationAfterPrimary.explanationVisible, 'Iteration explanation must reveal after primary attempt.');
   assert(iterationAfterPrimary.principleVisible, 'Iteration principle must reveal after primary attempt.');
   assert(iterationAfterPrimary.similarVisible, 'Iteration similar checked question must reveal after primary attempt.');
   assert(iterationAfterPrimary.transferHidden, 'Iteration exam transfer must stay hidden until similar attempt.');
   assert(iterationAfterPrimary.answerRevealVisible, 'Iteration answer reveal must become available after a submitted attempt.');
-  assert(iterationAfterPrimary.nextLocked, 'Primary-only Iteration answer must not complete a step with a similar check.');
+  assert(iterationAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
 
   await submitAnswer(iterationSimilar, 'intersection');
   await page.waitForFunction(() => {
@@ -928,7 +977,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
       passiveLearningCount: progress.learningActivityAttempts?.length ?? 0,
       passiveSkillCount: progress.skillCheckAttempts?.length ?? 0,
     };
@@ -947,7 +996,7 @@ try {
   assert(deInitialShape.similarHidden, 'Differential Equations similar question must be hidden before primary attempt.');
   assert(deInitialShape.transferHidden, 'Differential Equations exam transfer must be hidden before primary/similar attempt.');
   assert(deInitialShape.answerRevealHidden, 'Differential Equations answer reveal must be unavailable before first submitted attempt.');
-  assert(deInitialShape.nextLocked, 'Differential Equations next button must be locked before the step is completed.');
+  assert(deInitialShape.nextOpen, 'Differential Equations next button must remain available before the step is completed.');
   assert(deInitialShape.passiveLearningCount === 0 && deInitialShape.passiveSkillCount === 0, 'Passive Differential Equations page view must not create evidence.');
 
   const deCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -955,7 +1004,7 @@ try {
   const deSimilar = deCard.locator('[data-check-learn-answer][data-learn-variant="similar"]');
   await dePrimary.locator('input[name="submittedAnswer"][value="correct"]').check();
   assert(await dePrimary.locator('input[name="submittedAnswer"][value="correct"]').isChecked(), 'Differential Equations radio options must be clickable.');
-  await dePrimary.locator('button[type="submit"]').click();
+  await submitAnswer(dePrimary, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 1;
@@ -966,14 +1015,14 @@ try {
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
     answerRevealVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden,
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(deAfterPrimary.explanationVisible, 'Differential Equations explanation must reveal after primary attempt.');
   assert(deAfterPrimary.principleVisible, 'Differential Equations principle must reveal after primary attempt.');
   assert(deAfterPrimary.similarVisible, 'Differential Equations similar checked question must reveal after primary attempt.');
   assert(deAfterPrimary.transferHidden, 'Differential Equations exam transfer must stay hidden until similar attempt.');
   assert(deAfterPrimary.answerRevealVisible, 'Differential Equations answer reveal must become available after a submitted attempt.');
-  assert(deAfterPrimary.nextLocked, 'Primary-only Differential Equations answer must not complete a step with a similar check.');
+  assert(deAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
 
   await submitAnswer(deSimilar, 'correct');
   await page.waitForFunction(() => {
@@ -1070,7 +1119,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
       passiveLearningCount: progress.learningActivityAttempts?.length ?? 0,
       passiveSkillCount: progress.skillCheckAttempts?.length ?? 0,
     };
@@ -1089,7 +1138,7 @@ try {
   assert(complexInitialShape.similarHidden, 'Complex Numbers similar question must be hidden before primary attempt.');
   assert(complexInitialShape.transferHidden, 'Complex Numbers exam transfer must be hidden before primary/similar attempt.');
   assert(complexInitialShape.answerRevealHidden, 'Complex Numbers answer reveal must be unavailable before first submitted attempt.');
-  assert(complexInitialShape.nextLocked, 'Complex Numbers next button must be locked before the step is completed.');
+  assert(complexInitialShape.nextOpen, 'Complex Numbers next button must remain available before the step is completed.');
   assert(complexInitialShape.passiveLearningCount === 0 && complexInitialShape.passiveSkillCount === 0, 'Passive Complex Numbers page view must not create evidence.');
 
   const complexCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -1097,7 +1146,7 @@ try {
   const complexSimilar = complexCard.locator('[data-check-learn-answer][data-learn-variant="similar"]');
   await complexPrimary.locator('input[name="submittedAnswer"][value="correct"]').check();
   assert(await complexPrimary.locator('input[name="submittedAnswer"][value="correct"]').isChecked(), 'Complex Numbers radio options must be clickable.');
-  await complexPrimary.locator('button[type="submit"]').click();
+  await submitAnswer(complexPrimary, 'correct');
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 1;
@@ -1108,14 +1157,14 @@ try {
     similarVisible: !document.querySelector('[data-learn-similar-panel]')?.hidden,
     transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
     answerRevealVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden,
-    nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+    nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
   }));
   assert(complexAfterPrimary.explanationVisible, 'Complex Numbers explanation must reveal after primary attempt.');
   assert(complexAfterPrimary.principleVisible, 'Complex Numbers principle must reveal after primary attempt.');
   assert(complexAfterPrimary.similarVisible, 'Complex Numbers similar checked question must reveal after primary attempt.');
   assert(complexAfterPrimary.transferHidden, 'Complex Numbers exam transfer must stay hidden until similar attempt.');
   assert(complexAfterPrimary.answerRevealVisible, 'Complex Numbers answer reveal must become available after a submitted attempt.');
-  assert(complexAfterPrimary.nextLocked, 'Primary-only Complex Numbers answer must not complete a step with a similar check.');
+  assert(complexAfterPrimary.nextOpen, 'Primary-only answer must keep navigation available while the similar check remains required.');
 
   await submitAnswer(complexSimilar, '-3-4i');
   await page.waitForFunction(() => {

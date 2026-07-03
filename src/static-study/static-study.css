@@ -81,6 +81,135 @@ img {
   outline-offset: 3px;
 }
 
+.correct-celebration-open {
+  overflow: hidden;
+}
+
+.correct-celebration-shell {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 18px;
+}
+
+.correct-celebration-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: rgba(8, 20, 44, 0.52);
+}
+
+.correct-celebration-dialog {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: min(100%, 500px);
+  padding: 30px 24px 24px;
+  border: 1px solid rgba(47, 107, 79, 0.28);
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: #ffffff;
+  box-shadow: 0 26px 70px rgba(8, 20, 44, 0.24);
+  text-align: center;
+}
+
+.correct-celebration-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgba(82, 97, 122, 0.22);
+  border-radius: 999px;
+  color: var(--muted-strong);
+  background: #ffffff;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.correct-celebration-icon {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border: 2px solid rgba(47, 107, 79, 0.28);
+  border-radius: 999px;
+  color: #ffffff;
+  background: var(--success);
+  box-shadow: 0 18px 36px rgba(47, 107, 79, 0.24);
+  font-size: 4.5rem;
+  font-weight: 950;
+  line-height: 1;
+  opacity: 0;
+  transform: scale(1.45);
+  animation: correct-celebration-icon-in 150ms linear 100ms forwards;
+}
+
+@keyframes correct-celebration-icon-in {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.correct-celebration-dialog h2,
+.correct-celebration-dialog p {
+  margin: 0;
+}
+
+.correct-celebration-dialog h2 {
+  color: var(--ink-warm);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.7rem;
+  line-height: 1.08;
+}
+
+.correct-celebration-dialog p {
+  max-width: 38ch;
+  color: var(--muted-strong);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.correct-celebration-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.correct-celebration-actions .button {
+  width: 100%;
+  min-height: 46px;
+}
+
+@media (max-width: 640px) {
+  .correct-celebration-dialog {
+    padding: 28px 16px 18px;
+  }
+
+  .correct-celebration-icon {
+    width: 108px;
+    height: 108px;
+    font-size: 3.55rem;
+  }
+
+  .correct-celebration-actions {
+    grid-template-columns: 1fr;
+  }
+}
+
 .skip-link {
   position: fixed;
   left: 16px;
@@ -7200,6 +7329,12 @@ body.skill-check-page .exam-question-section {
     opacity: 0.45;
     transform: none;
   }
+
+  .correct-celebration-icon {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
@@ -7590,6 +7725,54 @@ body.skill-check-page .exam-question-section {
   background:
     radial-gradient(circle at 18% 0%, rgba(126, 167, 217, 0.14), transparent 28%),
     linear-gradient(180deg, #071225 0%, #0a1628 48%, #050d1b 100%);
+}
+
+:root[data-theme="dark"] .correct-celebration-backdrop {
+  background: rgba(3, 8, 22, 0.72);
+}
+
+:root[data-theme="dark"] .correct-celebration-dialog {
+  border-color: rgba(136, 201, 162, 0.32);
+  color: var(--ink);
+  background: #101d31;
+  box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5);
+}
+
+:root[data-theme="dark"] .correct-celebration-close {
+  border-color: rgba(173, 190, 214, 0.28);
+  color: var(--ink);
+  background: rgba(22, 36, 58, 0.96);
+}
+
+:root[data-theme="dark"] .correct-celebration-icon {
+  color: #071225;
+  border-color: rgba(136, 201, 162, 0.36);
+  background: var(--success);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .correct-celebration-backdrop {
+    background: rgba(3, 8, 22, 0.72);
+  }
+
+  :root:not([data-theme="light"]) .correct-celebration-dialog {
+    border-color: rgba(136, 201, 162, 0.32);
+    color: var(--ink);
+    background: #101d31;
+    box-shadow: 0 26px 70px rgba(0, 0, 0, 0.5);
+  }
+
+  :root:not([data-theme="light"]) .correct-celebration-close {
+    border-color: rgba(173, 190, 214, 0.28);
+    color: var(--ink);
+    background: rgba(22, 36, 58, 0.96);
+  }
+
+  :root:not([data-theme="light"]) .correct-celebration-icon {
+    color: #071225;
+    border-color: rgba(136, 201, 162, 0.36);
+    background: var(--success);
+  }
 }
 
 :root[data-theme="light"] body.home-page {

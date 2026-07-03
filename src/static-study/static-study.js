@@ -6,6 +6,9 @@
   var REDO_DELAY_MS = 48 * 60 * 60 * 1000;
   var REDO_COMPLETION_WEIGHT = 1.5;
   var DAY_MS = 24 * 60 * 60 * 1000;
+  var correctCelebrationModal = null;
+  var correctCelebrationLastFocus = null;
+  var correctCelebrationPrimaryAction = null;
   var SKILL_REPAIR_INTERVALS = [
     { days: 2, label: '2-day repair' },
     { days: 7, label: 'next-week repair' }
@@ -125,6 +128,169 @@
 
   function createId(prefix) {
     return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 9);
+  }
+
+  function focusableCelebrationElements(dialog) {
+    return Array.from(dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'))
+      .filter(function (node) {
+        return node instanceof HTMLElement
+          && !node.hasAttribute('disabled')
+          && node.getAttribute('aria-hidden') !== 'true'
+          && node.offsetParent !== null;
+      });
+  }
+
+  function closeCorrectCelebration() {
+    if (!correctCelebrationModal) return;
+    correctCelebrationModal.root.hidden = true;
+    correctCelebrationModal.root.setAttribute('data-state', 'closed');
+    document.body.classList.remove('correct-celebration-open');
+    correctCelebrationPrimaryAction = null;
+    if (correctCelebrationLastFocus instanceof HTMLElement && document.contains(correctCelebrationLastFocus)) {
+      correctCelebrationLastFocus.focus({ preventScroll: true });
+    }
+    correctCelebrationLastFocus = null;
+  }
+
+  function ensureCorrectCelebrationModal() {
+    if (correctCelebrationModal) return correctCelebrationModal;
+    if (!document.body) return null;
+
+    var root = document.createElement('div');
+    root.className = 'correct-celebration-shell';
+    root.setAttribute('data-correct-celebration', '');
+    root.setAttribute('data-state', 'closed');
+    root.hidden = true;
+
+    var backdrop = document.createElement('button');
+    backdrop.className = 'correct-celebration-backdrop';
+    backdrop.type = 'button';
+    backdrop.setAttribute('data-correct-celebration-close', '');
+    backdrop.setAttribute('aria-label', 'Close success message');
+
+    var dialog = document.createElement('section');
+    dialog.className = 'correct-celebration-dialog';
+    dialog.setAttribute('role', 'dialog');
+    dialog.setAttribute('aria-modal', 'true');
+    dialog.setAttribute('aria-labelledby', 'correct-celebration-title');
+    dialog.setAttribute('aria-describedby', 'correct-celebration-message');
+    dialog.tabIndex = -1;
+
+    var closeButton = document.createElement('button');
+    closeButton.className = 'correct-celebration-close';
+    closeButton.type = 'button';
+    closeButton.setAttribute('data-correct-celebration-close', '');
+    closeButton.setAttribute('aria-label', 'Close success message');
+    closeButton.textContent = '×';
+
+    var icon = document.createElement('div');
+    icon.className = 'correct-celebration-icon';
+    icon.setAttribute('aria-hidden', 'true');
+    icon.textContent = '✓';
+
+    var title = document.createElement('h2');
+    title.id = 'correct-celebration-title';
+    title.textContent = 'Correct';
+
+    var message = document.createElement('p');
+    message.id = 'correct-celebration-message';
+    message.textContent = 'That answer is correct.';
+
+    var actions = document.createElement('div');
+    actions.className = 'correct-celebration-actions';
+
+    var primaryButton = document.createElement('button');
+    primaryButton.className = 'button primary-button';
+    primaryButton.type = 'button';
+    primaryButton.setAttribute('data-correct-celebration-primary', '');
+    primaryButton.textContent = 'Continue';
+
+    var stayButton = document.createElement('button');
+    stayButton.className = 'button secondary-button';
+    stayButton.type = 'button';
+    stayButton.setAttribute('data-correct-celebration-close', '');
+    stayButton.textContent = 'Stay here';
+
+    actions.append(primaryButton, stayButton);
+    dialog.append(closeButton, icon, title, message, actions);
+    root.append(backdrop, dialog);
+    document.body.append(root);
+
+    root.addEventListener('click', function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest('[data-correct-celebration-close]')) {
+        closeCorrectCelebration();
+      }
+    });
+
+    primaryButton.addEventListener('click', function () {
+      var action = correctCelebrationPrimaryAction;
+      closeCorrectCelebration();
+      if (typeof action === 'function') action();
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (!correctCelebrationModal || correctCelebrationModal.root.hidden) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeCorrectCelebration();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      var focusable = focusableCelebrationElements(correctCelebrationModal.dialog);
+      if (!focusable.length) {
+        event.preventDefault();
+        correctCelebrationModal.dialog.focus();
+        return;
+      }
+      var first = focusable[0];
+      var last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    correctCelebrationModal = {
+      root: root,
+      dialog: dialog,
+      title: title,
+      message: message,
+      primaryButton: primaryButton
+    };
+    return correctCelebrationModal;
+  }
+
+  function showCorrectCelebration(options) {
+    var modal = ensureCorrectCelebrationModal();
+    if (!modal) return;
+    correctCelebrationLastFocus = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    correctCelebrationPrimaryAction = typeof options?.onPrimary === 'function' ? options.onPrimary : null;
+    modal.title.textContent = options?.title || 'Correct';
+    modal.message.textContent = options?.message || 'That answer is correct.';
+    modal.primaryButton.textContent = options?.primaryLabel || 'Continue';
+    modal.root.hidden = false;
+    modal.root.setAttribute('data-state', 'open');
+    document.body.classList.add('correct-celebration-open');
+    window.setTimeout(function () {
+      modal.primaryButton.focus({ preventScroll: true });
+    }, 0);
+  }
+
+  function celebrationButtonLabel(button, fallback) {
+    return button instanceof HTMLElement && button.textContent?.trim()
+      ? button.textContent.trim()
+      : fallback;
+  }
+
+  function celebrationButtonAction(button) {
+    return button instanceof HTMLButtonElement && !button.hidden && !button.disabled
+      ? function () { button.click(); }
+      : undefined;
   }
 
   function emptyProgress() {
@@ -2770,6 +2936,15 @@
       panel.hidden = false;
       panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    if (evaluation.marksAvailable > 0 && evaluation.marksEarned === evaluation.marksAvailable) {
+      var nextLink = panel?.querySelector('a.button');
+      showCorrectCelebration({
+        title: 'Diagnostic complete',
+        message: 'Every diagnostic mark was correct. This is strong starting evidence for the P3 path.',
+        primaryLabel: celebrationButtonLabel(nextLink, 'Continue'),
+        onPrimary: nextLink instanceof HTMLElement ? function () { nextLink.click(); } : undefined
+      });
+    }
   }
 
   function p1RepairModuleIdsFromPage() {
@@ -3035,10 +3210,14 @@
 
     var miniInput = form.querySelector('[data-p1-repair-mini-check]');
     var miniPassed = existing.mini_check_passed === true;
+    var miniResultForCelebration = null;
+    var miniAttemptNumberForCelebration = 0;
     if (submitPhase === 'mini' && miniInput instanceof HTMLInputElement) {
       var miniQuestionId = miniInput.getAttribute('data-question-id') || miniInput.name || '';
       var miniResult = checkSubmittedSkillAnswer(p1RepairSpecFromInput(miniInput), miniInput.value);
       var miniAttemptNumber = p1RepairAttemptNumber(previousHistory, miniQuestionId, 'MINI_CHECK');
+      miniResultForCelebration = miniResult;
+      miniAttemptNumberForCelebration = miniAttemptNumber;
       showP1RepairFeedback(miniInput, miniResult);
       newHistory.push({
         question_id: miniQuestionId,
@@ -3067,6 +3246,31 @@
     if (submitPhase === 'fast') {
       var miniPanel = form.querySelector('[data-p1-repair-mini-check-panel]');
       if (miniPanel) miniPanel.hidden = false;
+      if (correctFast > 0) {
+        showCorrectCelebration({
+          title: correctFast === fastInputs.length ? 'Fast check correct' : 'Good repair',
+          message: correctFast + ' of ' + fastInputs.length + ' fast repair answer' + (fastInputs.length === 1 ? '' : 's') + ' correct.',
+          primaryLabel: correctFast === fastInputs.length ? 'Continue to mini-check' : 'Keep repairing',
+          onPrimary: miniPanel instanceof HTMLElement
+            ? function () {
+              miniPanel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              var miniField = miniPanel.querySelector('input, button');
+              if (miniField instanceof HTMLElement) miniField.focus({ preventScroll: true });
+            }
+            : undefined
+        });
+      }
+    }
+    if (submitPhase === 'mini' && miniResultForCelebration?.isCorrect) {
+      var nextModule = form.querySelector('[data-p1-repair-next]');
+      showCorrectCelebration({
+        title: 'Mini-check correct',
+        message: miniAttemptNumberForCelebration <= 2
+          ? 'Mini-check passed within the retry window for this repair module.'
+          : 'Mini-check answer is correct, but the module pass window has already been used.',
+        primaryLabel: celebrationButtonLabel(nextModule, 'Next module'),
+        onPrimary: celebrationButtonAction(nextModule)
+      });
     }
   }
 
@@ -3481,11 +3685,23 @@
         submitButton.textContent = 'Check Answer';
         submitButton.className = 'button secondary-button';
       }
+      showCorrectCelebration({
+        title: 'Correct',
+        message: 'Saved as deterministic Checked Practice evidence in this browser.',
+        primaryLabel: celebrationButtonLabel(nextButton, 'Continue'),
+        onPrimary: celebrationButtonAction(nextButton)
+      });
       return;
     }
     if (checkResult.isCorrect) {
       setSkillFeedback(form, 'Correct, but this was already revealed or repaired, so it is not marked passed.', 'repaired');
       if (nextButton) nextButton.hidden = false;
+      showCorrectCelebration({
+        title: 'Correct',
+        message: 'This answer is correct, but revealed or repaired work is saved as practice support, not a checked pass.',
+        primaryLabel: celebrationButtonLabel(nextButton, 'Continue'),
+        onPrimary: celebrationButtonAction(nextButton)
+      });
       return;
     }
     setSkillFeedback(form, 'Not yet. Saved as an incorrect attempt. Try Again or open the repair step.', 'incorrect');
@@ -3541,6 +3757,18 @@
       }
       window.dispatchEvent(new CustomEvent('asterion:learn-progress'));
       updateLearnModeFlowState();
+      var inlineNext = stepCard?.querySelector('[data-learn-inline-next]');
+      var primaryTarget = isPrimary && requiresSimilar && similarCta instanceof HTMLButtonElement
+        ? similarCta
+        : inlineNext;
+      showCorrectCelebration({
+        title: 'Correct',
+        message: isPrimary && requiresSimilar
+          ? 'Primary check is correct. Complete the similar question before this lesson step is finished.'
+          : 'Saved as Learn progress only. Use Checked Practice when you want pass evidence.',
+        primaryLabel: celebrationButtonLabel(primaryTarget, isPrimary && requiresSimilar ? 'Try a similar question' : 'Next step'),
+        onPrimary: celebrationButtonAction(primaryTarget)
+      });
       return;
     }
 
@@ -4412,14 +4640,7 @@
       controls.append(previous, label, next);
       flow.before(controls);
 
-      function currentCardComplete() {
-        var progress = loadProgress();
-        var card = cards[index];
-        return learnCardCompleted(progress, card);
-      }
-
       function advanceLearnStep(shouldScroll) {
-        if (!currentCardComplete()) return;
         if (index >= cards.length - 1) {
           if (finalHref) window.location.href = finalHref;
           else next.textContent = 'Completed lesson sequence';
@@ -4440,17 +4661,16 @@
         });
         label.textContent = 'Step ' + (index + 1) + ' of ' + cards.length;
         previous.disabled = index === 0;
-        var complete = currentCardComplete();
-        next.disabled = !complete;
+        next.disabled = false;
         next.textContent = index === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
         updateLearnModeFlowState();
         cards.forEach(function (card, cardIndex) {
           var footer = card.querySelector('[data-learn-step-footer]');
           var inlineNext = card.querySelector('[data-learn-inline-next]');
-          if (footer instanceof HTMLElement) footer.hidden = cardIndex !== index || !complete;
+          if (footer instanceof HTMLElement) footer.hidden = cardIndex !== index;
           if (inlineNext instanceof HTMLButtonElement) {
-            inlineNext.hidden = cardIndex !== index || !complete;
-            inlineNext.disabled = cardIndex !== index || !complete;
+            inlineNext.hidden = cardIndex !== index;
+            inlineNext.disabled = cardIndex !== index;
             inlineNext.textContent = cardIndex === cards.length - 1 ? 'Finish lesson sequence' : 'Next step';
           }
         });
@@ -4833,6 +5053,17 @@
         } else if (complete) {
           complete.textContent = 'Demo complete. The final answer is checked only after the preceding work is correct.';
         }
+        showCorrectCelebration({
+          title: nextStep ? 'Correct' : 'Demo complete',
+          message: result.message,
+          primaryLabel: nextStep ? 'Next step' : 'Close',
+          onPrimary: nextStep
+            ? function () {
+              var targetTextarea = nextStep.querySelector('textarea');
+              if (targetTextarea instanceof HTMLElement) targetTextarea.focus({ preventScroll: true });
+            }
+            : undefined
+        });
       });
     });
   }

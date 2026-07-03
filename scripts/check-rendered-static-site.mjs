@@ -407,7 +407,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   if (p3LearnResult.learnFlow !== 1) {
@@ -422,8 +422,8 @@ try {
   if (!p3LearnResult.explanationHidden || !p3LearnResult.similarHidden || !p3LearnResult.transferHidden || !p3LearnResult.answerRevealHidden) {
     fail('P3 Algebra Learn Mode must hide explanation, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!p3LearnResult.nextLocked) {
-    fail('P3 Algebra Learn Mode must lock next step until the current step is completed.');
+  if (!p3LearnResult.nextOpen) {
+    fail('P3 Algebra Learn Mode must keep next step available before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/logarithmic-and-exponential-functions/learn/index.html');
@@ -442,7 +442,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   if (logExpLearnResult.learnFlow !== 1) {
@@ -457,8 +457,8 @@ try {
   if (!logExpLearnResult.explanationHidden || !logExpLearnResult.principleHidden || !logExpLearnResult.similarHidden || !logExpLearnResult.transferHidden || !logExpLearnResult.answerRevealHidden) {
     fail('P3 Log/Exp Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!logExpLearnResult.nextLocked) {
-    fail('P3 Log/Exp Learn Mode must lock next step until the current step is completed.');
+  if (!logExpLearnResult.nextOpen) {
+    fail('P3 Log/Exp Learn Mode must keep next step available before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/trigonometry/learn/index.html');
@@ -510,7 +510,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   if (diffLearnResult.learnFlow !== 1 || diffLearnResult.learnSteps !== 15 || diffLearnResult.checkForms < 30) {
@@ -525,8 +525,8 @@ try {
   if (!diffLearnResult.explanationHidden || !diffLearnResult.similarHidden || !diffLearnResult.transferHidden || !diffLearnResult.answerRevealHidden) {
     fail('P3 Differentiation Learn Mode must hide explanation, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!diffLearnResult.nextLocked) {
-    fail('P3 Differentiation Learn Mode must lock next step until the current step is completed.');
+  if (!diffLearnResult.nextOpen) {
+    fail('P3 Differentiation Learn Mode must keep next step available before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/integration/learn/index.html');
@@ -554,7 +554,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   if (integrationLearnResult.learnFlow !== 1 || integrationLearnResult.learnSteps !== 14 || integrationLearnResult.checkForms < 28) {
@@ -569,8 +569,8 @@ try {
   if (!integrationLearnResult.explanationHidden || !integrationLearnResult.principleHidden || !integrationLearnResult.similarHidden || !integrationLearnResult.transferHidden || !integrationLearnResult.answerRevealHidden) {
     fail('P3 Integration Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!integrationLearnResult.nextLocked) {
-    fail('P3 Integration Learn Mode must lock next step until the current step is completed.');
+  if (!integrationLearnResult.nextOpen) {
+    fail('P3 Integration Learn Mode must keep next step available before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/numerical-solution-of-equations/learn/index.html');
@@ -598,7 +598,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   if (iterationLearnResult.learnFlow !== 1 || iterationLearnResult.learnSteps !== 12 || iterationLearnResult.checkForms < 24) {
@@ -613,8 +613,8 @@ try {
   if (!iterationLearnResult.explanationHidden || !iterationLearnResult.principleHidden || !iterationLearnResult.similarHidden || !iterationLearnResult.transferHidden || !iterationLearnResult.answerRevealHidden) {
     fail('P3 Numerical Solution of Equations Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!iterationLearnResult.nextLocked) {
-    fail('P3 Numerical Solution of Equations Learn Mode must lock next step until the current step is completed.');
+  if (!iterationLearnResult.nextOpen) {
+    fail('P3 Numerical Solution of Equations Learn Mode must keep next step available before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/differential-equations/learn/index.html');
@@ -642,7 +642,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   if (deLearnResult.learnFlow !== 1 || deLearnResult.learnSteps !== 12 || deLearnResult.checkForms < 24) {
@@ -657,8 +657,8 @@ try {
   if (!deLearnResult.explanationHidden || !deLearnResult.principleHidden || !deLearnResult.similarHidden || !deLearnResult.transferHidden || !deLearnResult.answerRevealHidden) {
     fail('P3 Differential Equations Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!deLearnResult.nextLocked) {
-    fail('P3 Differential Equations Learn Mode must lock next step until the current step is completed.');
+  if (!deLearnResult.nextOpen) {
+    fail('P3 Differential Equations Learn Mode must keep next step available before completion.');
   }
 
   await waitForStaticEnhancement(page, 'p3/topics/complex-numbers/learn/index.html');
@@ -686,7 +686,7 @@ try {
       similarHidden: Boolean(document.querySelector('[data-learn-similar-panel]')?.hidden),
       transferHidden: Boolean(document.querySelector('[data-learn-exam-transfer]')?.hidden),
       answerRevealHidden: Boolean(document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-answer-reveal]')?.hidden),
-      nextLocked: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && button.disabled),
+      nextOpen: Array.from(document.querySelectorAll('.learn-controls button')).some((button) => /Next step/i.test(button.textContent || '') && !button.disabled),
     };
   });
   if (complexLearnResult.learnFlow !== 1 || complexLearnResult.learnSteps !== 17 || complexLearnResult.checkForms < 34) {
@@ -701,8 +701,8 @@ try {
   if (!complexLearnResult.explanationHidden || !complexLearnResult.principleHidden || !complexLearnResult.similarHidden || !complexLearnResult.transferHidden || !complexLearnResult.answerRevealHidden) {
     fail('P3 Complex Numbers Learn Mode must hide explanation, principle, similar question, exam transfer, and answer reveal before attempt.');
   }
-  if (!complexLearnResult.nextLocked) {
-    fail('P3 Complex Numbers Learn Mode must lock next step until the current step is completed.');
+  if (!complexLearnResult.nextOpen) {
+    fail('P3 Complex Numbers Learn Mode must keep next step available before completion.');
   }
 
   await assertLearnVisualBasics(browser);

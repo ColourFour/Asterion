@@ -226,6 +226,34 @@ describe('static P3 product contract', () => {
     }
   });
 
+  it('keeps Learn Mode step navigation open before local completion', () => {
+    const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
+
+    expect(staticClientSource).toContain('function setupLearnModeFlow()');
+    expect(staticClientSource).toContain('next.disabled = false;');
+    expect(staticClientSource).toContain('inlineNext.disabled = cardIndex !== index;');
+    expect(staticClientSource).not.toContain('if (!currentCardComplete()) return;');
+    expect(staticClientSource).not.toContain('next.disabled = !complete;');
+    expect(staticClientSource).not.toContain('inlineNext.hidden = cardIndex !== index || !complete;');
+  });
+
+  it('ships an accessible correct-answer celebration modal without changing evidence semantics', () => {
+    const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
+    const staticCssSource = readFileSync('src/static-study/static-study.css', 'utf8');
+
+    expect(staticClientSource).toContain('function showCorrectCelebration(options)');
+    expect(staticClientSource).toContain("dialog.setAttribute('role', 'dialog')");
+    expect(staticClientSource).toContain("dialog.setAttribute('aria-modal', 'true')");
+    expect(staticClientSource).toContain('Saved as deterministic Checked Practice evidence in this browser.');
+    expect(staticClientSource).toContain('Saved as Learn progress only. Use Checked Practice when you want pass evidence.');
+    expect(staticClientSource).toContain('Mini-check passed within the retry window for this repair module.');
+    expect(staticClientSource).toContain('Every diagnostic mark was correct. This is strong starting evidence for the P3 path.');
+    expect(staticCssSource).toContain('.correct-celebration-dialog');
+    expect(staticCssSource).toContain('@keyframes correct-celebration-icon-in');
+    expect(staticCssSource).toContain('@media (prefers-reduced-motion: reduce)');
+    expect(staticCssSource).toContain('.correct-celebration-icon');
+  });
+
   it('does not expose legacy self-reported Checked Practice completion controls', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
