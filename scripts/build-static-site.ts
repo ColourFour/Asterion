@@ -1919,7 +1919,7 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
       <div class="section-heading need-to-know-heading">
         <div>
           <h2 id="need-to-know-checklist-title">Checklist</h2>
-          <p>${totalSkills} skills are grouped into ${P3_NEED_TO_KNOW_CHECKLIST_BANDS.length} topic bands. Open a band only when you want the skill details.</p>
+          <p>${totalSkills} skills are grouped into ${P3_NEED_TO_KNOW_CHECKLIST_BANDS.length} topic bands. Use each open band as a revision checklist; teacher/details panels hold route and availability detail.</p>
         </div>
       </div>
       ${P3_NEED_TO_KNOW_CHECKLIST_BANDS.map((band) => {
@@ -1937,7 +1937,7 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
               ${renderAvailabilitySummary(bandRows)}
             </summary>
             <div class="contract-band-detail">
-              <p class="question-instruction">Availability shows which Asterion content exists for this skill. Progress decisions stay inside Learn, Checked Practice, and Exam Training, not this list.</p>
+              <p class="question-instruction">Tick these skills off as you revise. Progress decisions stay inside Learn, Checked Practice, and Exam Training.</p>
               ${bandGroups.map((group) => `
                 <section class="contract-topic-section" aria-labelledby="${escapeRawAttr(contractTopicAnchor(group.topic))}">
                   <details class="contract-official-topic-details">
@@ -1954,17 +1954,15 @@ function renderP3NeedToKnowPage(data: StaticSiteData, pagePath = p3NeedToKnowPag
                               <h3>${escapeRawHtml(row.skill.title)}</h3>
                             </div>
                           </header>
+                          <ul class="contract-checklist">
+                            ${row.skill.needToKnow.map((item) => `<li>${escapeRawHtml(item)}</li>`).join('')}
+                          </ul>
                           <details class="contract-skill-detail">
-                            <summary>Skill details</summary>
-                            <ul class="contract-checklist">
-                              ${row.skill.needToKnow.map((item) => `<li>${escapeRawHtml(item)}</li>`).join('')}
-                            </ul>
+                            <summary>Teacher/details</summary>
                             ${renderExamTriggerList(row.skill)}
-                          </details>
-                          <div>
                             <p class="contract-availability-label">Content availability</p>
                             ${renderContractAvailabilityLinks(pagePath, row)}
-                          </div>
+                          </details>
                         </article>
                       `).join('')}
                     </div>
