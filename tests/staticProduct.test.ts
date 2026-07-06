@@ -107,7 +107,7 @@ describe('static P3 product contract', () => {
   it('declares only canonical P3 topic task routes', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/need-to-know/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/review/index.html');
-    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/content-qa/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p3/content-qa/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/exam-training/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p1/need-to-know/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('m1/content-qa/index.html');
@@ -136,7 +136,7 @@ describe('static P3 product contract', () => {
 
     expect(generatorSource).toContain('CAIE 9709 Paper 3');
     expect(generatorSource).toContain('path-unit-grid');
-    expect(generatorSource).toContain('Start Algebra Learn');
+    expect(generatorSource).toContain('Start diagnostic');
     expect(generatorSource).toContain('Default path: Diagnostic → Learn → Checked Practice → Exam Training.');
     expect(generatorSource).toContain('Already confident? Try Checked Practice');
     expect(generatorSource).toContain("htmlByPath.set('index.html', renderCourseSelectorPage())");
@@ -146,7 +146,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('Check Answer');
     expect(generatorSource).toContain('home-p3-landing');
     expect(generatorSource).toContain('Master CAIE 9709');
-    expect(generatorSource).toContain('Start with Learn');
+    expect(generatorSource).toContain('Already completed it? Start Algebra Learn');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
@@ -157,18 +157,19 @@ describe('static P3 product contract', () => {
       expect(generatedHome).toContain('Pure Mathematics 3');
       expect(generatedHome).toContain('Learn what matters. Practice with purpose.');
       expect(generatedHome).toContain('Prepare for the exam with confidence.');
-      expect(generatedHome).toContain('Start with Learn');
-      expect(generatedHome).toContain('Diagnostic: Where to focus');
+      expect(generatedHome).toContain('Start diagnostic');
+      expect(generatedHome).toContain('Already completed it? Start Algebra Learn');
       expect(generatedHome).toContain('Diagnostic → Learn → Checked Practice → Exam Training');
+      expect(generatedHome).toContain('Find your start');
       expect(generatedHome).toContain('Build understanding');
       expect(generatedHome).toContain('Check your skills');
       expect(generatedHome).toContain('Exam questions');
       withDocument(generatedHome, (homeDocument) => {
-        expect(homeDocument.querySelectorAll('.home-p3-action-card')).toHaveLength(3);
+        expect(homeDocument.querySelectorAll('.home-p3-action-card')).toHaveLength(4);
         expect(homeDocument.querySelectorAll('.home-p3-topic-tile')).toHaveLength(9);
         expect(homeDocument.querySelector('[data-theme-toggle]')).toBeNull();
-        expect(homeDocument.querySelector('a.home-p3-primary-cta')?.getAttribute('href')).toContain('p3/topics/algebra/learn/');
-        expect(homeDocument.querySelector('.home-p3-diagnostic-link')?.getAttribute('href')).toBe('p3/diagnostic/');
+        expect(homeDocument.querySelector('a.home-p3-primary-cta')?.getAttribute('href')).toBe('p3/diagnostic/');
+        expect(homeDocument.querySelector('.home-p3-diagnostic-link')?.getAttribute('href')).toContain('p3/topics/algebra/learn/');
       });
       expect(generatedHome).toContain("document.documentElement.dataset.theme='dark'");
       for (const topicLabel of ['Algebra', 'Log/Exp', 'Complex', 'Trigonometry', 'Vectors', 'Differentiation', 'Integration', 'Diff Eq', 'Iteration']) {
@@ -194,13 +195,16 @@ describe('static P3 product contract', () => {
     if (existsSync(generatedP3Path)) {
       const generatedP3 = readFileSync(generatedP3Path, 'utf8');
       expect(generatedP3).toContain('Pure Mathematics 3');
-      expect(generatedP3).toContain('Unsure? Take diagnostic');
-      expect(generatedP3).toContain('Start Algebra Learn');
+      expect(generatedP3).toContain('Diagnostic');
+      expect(generatedP3).toContain('Need to Know');
+      expect(generatedP3).toContain('Start diagnostic');
       expect(generatedP3).toContain('All topic routes');
       expect(generatedP3).toContain('Summer homework minimum');
       expect(generatedP3).toContain('Default path: Diagnostic → Learn → Checked Practice → Exam Training.');
       expect(generatedP3).toContain('Already confident? Try Checked Practice');
+      expect(generatedP3).toContain('Complete the P3 Diagnostic first.');
       expect(generatedP3).toContain('Complete Checked Practice for each P3 unit.');
+      expect(generatedP3).toContain('Export your local progress CSV after each session');
       expect(generatedP3).toContain('Progress is saved only in this browser on this device.');
       expect(generatedP3).toContain('data-p3-next-step-panel');
       expect(generatedP3).toContain('path-unit-grid');
@@ -327,7 +331,9 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('P3 units with clean Checked Practice pass');
     expect(generatorSource).toContain('Browser/device warning');
     expect(generatorSource).toContain('data-export-local-progress-form');
+    expect(generatorSource).toContain('data-download-export-csv');
     expect(staticClientSource).toContain('data-export-local-progress-form');
+    expect(staticClientSource).toContain('exportLocalProgressDownload');
     expect(staticClientSource).toContain('localProgressTeacherSummary');
     expect(staticClientSource).toContain('data-export-teacher-summary');
     expect(staticClientSource).toContain('Not recorded in this browser');
@@ -343,6 +349,12 @@ describe('static P3 product contract', () => {
       expect(worksheetSource).toContain('Print / Save PDF');
     }
 
+    const integrationWorksheetPath = 'docs/p3/topics/integration/worksheet/index.html';
+    if (existsSync(integrationWorksheetPath)) {
+      const worksheetSource = readFileSync(integrationWorksheetPath, 'utf8');
+      expect(worksheetSource).not.toContain('No printable Checked Practice items are available for this group yet.');
+    }
+
     expect(generatorSource).toContain('Check Answer');
     expect(generatorSource).toContain('Hint');
     expect(generatorSource).toContain('Review mistakes from saved Checked Practice');
@@ -353,7 +365,7 @@ describe('static P3 product contract', () => {
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
 
     expect(generatorSource).toContain("{ key: 'courses', label: 'Home'");
-    expect(generatorSource).toContain("{ key: 'p1-repair', label: 'P1 Review'");
+    expect(generatorSource).toContain("{ key: 'p3-diagnostic', label: 'Diagnostic'");
     expect(generatorSource).toContain("{ key: 'p3-topics', label: 'P3 Units'");
     expect(generatorSource).toContain("{ key: 'p3-exam-training', label: 'Exam Training'");
     expect(generatorSource).toContain('data-p1-repair-module-tab');
@@ -375,7 +387,7 @@ describe('static P3 product contract', () => {
       withDocument(generatedP1Review, (document) => {
         const navLabels = Array.from(document.querySelectorAll('.site-nav a')).map(visibleText);
 
-        expect(navLabels).toEqual(['Home', 'P1 Review', 'P3 Units', 'Exam Training']);
+        expect(navLabels).toEqual(['Home', 'Diagnostic', 'P3 Units', 'Exam Training']);
         expect(document.querySelector('[data-theme-toggle]')).not.toBeNull();
         expect(document.querySelectorAll('[data-p1-repair-module-tab]')).toHaveLength(5);
         expect(document.querySelectorAll('[data-p1-repair-module]')).toHaveLength(5);
@@ -554,8 +566,7 @@ describe('static P3 product contract', () => {
 
   it('keeps student-facing primary learning areas below the cognitive-load guardrail unless explicitly classified', () => {
     const generatedStudentPages = REQUIRED_STATIC_STUDY_PAGE_PATHS
-      .filter((pagePath) => pagePath.startsWith('p3/'))
-      .filter((pagePath) => pagePath !== 'p3/content-qa/index.html');
+      .filter((pagePath) => pagePath.startsWith('p3/'));
 
     for (const pagePath of generatedStudentPages) {
       const generatedPath = `docs/${pagePath}`;

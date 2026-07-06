@@ -601,7 +601,7 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
   const items = [
     { key: 'courses', label: 'Home', path: 'index.html' },
-    { key: 'p1-repair', label: 'P1 Review', path: p1RepairLanePagePath() },
+    { key: 'p3-diagnostic', label: 'Diagnostic', path: p3DiagnosticPagePath() },
     { key: 'p3-topics', label: 'P3 Units', path: p3TopicsIndexPagePath() },
     { key: 'p3-exam-training', label: 'Exam Training', path: p3ExamTrainingPagePath() },
   ];
@@ -782,14 +782,14 @@ function renderP3PathUnitCard(fromPagePath: string, context: TopicContext, index
 
 function renderP3NextStepPanel(pagePath: string): string {
   return `
-    <section class="p3-next-step-panel" data-p3-next-step-panel data-review-href="${escapeAttr(p3ReviewExportHref(pagePath))}" aria-labelledby="p3-next-step-panel-title">
+    <section class="p3-next-step-panel" data-p3-next-step-panel data-review-href="${escapeAttr(p3ReviewExportHref(pagePath))}" data-diagnostic-href="${escapeAttr(hrefToPage(pagePath, p3DiagnosticPagePath()))}" aria-labelledby="p3-next-step-panel-title">
       <div>
-        <p class="eyebrow">Continue</p>
-        <h2 id="p3-next-step-panel-title" data-p3-next-step-title>Start Algebra Learn</h2>
-        <p data-p3-next-step-copy>Default path: Diagnostic → Learn → Checked Practice → Exam Training.</p>
+        <p class="eyebrow">First action</p>
+        <h2 id="p3-next-step-panel-title" data-p3-next-step-title>Start diagnostic</h2>
+        <p data-p3-next-step-copy>The summer homework path starts with the diagnostic, then Learn → Checked Practice → Exam Training.</p>
       </div>
-      <a class="button primary-button" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}" data-p3-next-step-link>Start Algebra Learn</a>
-      <a class="p3-fast-lane-link text-link" href="${hrefToPage(pagePath, skillCheckPagePath(STUDY_TOPICS[0]))}" data-p3-fast-lane-link>Already confident? Try Checked Practice</a>
+      <a class="button primary-button" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}" data-p3-next-step-link>Start diagnostic</a>
+      <a class="p3-fast-lane-link text-link" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}" data-p3-fast-lane-link>Already completed it? Start Algebra Learn</a>
     </section>
   `;
 }
@@ -802,12 +802,12 @@ function renderP3SummerHomeworkPanel(pagePath: string): string {
         <h2 id="p3-summer-homework-title">Summer homework minimum</h2>
       </div>
       <ul class="p3-summer-homework-checklist">
-        <li>Complete the P3 Diagnostic if your teacher assigned it or if you are unsure where to begin.</li>
+        <li>Complete the P3 Diagnostic first.</li>
         <li>Default path: Diagnostic → Learn → Checked Practice → Exam Training.</li>
         <li>Complete Checked Practice for each P3 unit.</li>
         <li>Use Learn pages when you need help before Checked Practice.</li>
         <li>Exam Training is extra self-marked practice unless your teacher assigns it.</li>
-        <li>Export your local progress CSV and send it to your teacher.</li>
+        <li>Export your local progress CSV after each session and send it to your teacher.</li>
       </ul>
       <p class="p3-summer-homework-note">Progress is saved only in this browser on this device. If you change devices or clear browser data, your local record may not appear.</p>
     </section>
@@ -1136,7 +1136,8 @@ function renderP3DashboardPage(
       <div class="p3-dashboard-action-panel">
         ${renderP3NextStepPanel(pagePath)}
         <nav class="p3-dashboard-secondary-links" aria-label="Other P3 routes">
-          ${routeLink(pagePath, p3DiagnosticPagePath(), 'Unsure? Take diagnostic', 'text-link')}
+          ${routeLink(pagePath, p3DiagnosticPagePath(), 'Diagnostic', 'text-link')}
+          ${routeLink(pagePath, p3NeedToKnowPagePath(), 'Need to Know', 'text-link')}
           ${p3ReviewExportLink(pagePath, 'Export progress', 'text-link')}
           ${routeLink(pagePath, p3TopicsIndexPagePath(), 'All topic routes', 'text-link')}
         </nav>
@@ -1596,6 +1597,12 @@ const homepageContactEmail = 'brooker@rdfzcygj.cn';
 
 const homepageActionCards = [
   {
+    title: 'Diagnostic',
+    subtitle: 'Find your start',
+    icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="M16 4v5"/><path d="M16 23v5"/><path d="M4 16h5"/><path d="M23 16h5"/><circle cx="16" cy="16" r="8"/><circle cx="16" cy="16" r="3"/></svg>',
+    path: p3DiagnosticPagePath(),
+  },
+  {
     title: 'Learn',
     subtitle: 'Build understanding',
     icon: '<svg viewBox="0 0 32 32" focusable="false" aria-hidden="true"><path d="M5 8c4.5 0 7.5 1 11 4v15c-3.5-3-6.5-4-11-4V8Z"/><path d="M27 8c-4.5 0-7.5 1-11 4v15c3.5-3 6.5-4 11-4V8Z"/></svg>',
@@ -1723,8 +1730,8 @@ function renderCourseSelectorPage(): string {
         <p class="home-p3-path-line">Default path: Diagnostic → Learn → Checked Practice → Exam Training.</p>
         ${renderHomepageActionCards(pagePath)}
         <div class="home-p3-cta-group">
-          <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Start with Learn</a>
-          <a class="home-p3-diagnostic-link" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">Diagnostic: Where to focus</a>
+          <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">Start diagnostic</a>
+          <a class="home-p3-diagnostic-link" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Already completed it? Start Algebra Learn</a>
         </div>
       </div>
       ${renderHomepageTopicStrip(pagePath)}
@@ -1995,9 +2002,10 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
   const body = `
     ${renderHero(
       'Export Progress',
-      'Send your local Asterion progress to your teacher, then use mixed Paper 3 questions and mistake repair for review.',
+      'Download or send your local Asterion progress CSV after each session, then use mixed Paper 3 questions and mistake repair for review.',
       '\\Delta, \\quad \\log_a x, \\quad z=x+iy',
-      `${routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}`,
+      `${routeLink(pagePath, p3CoursePagePath(), 'Back to P3', 'button secondary-button')}
+      ${routeLink(pagePath, p3NeedToKnowPagePath(), 'Need to Know', 'button secondary-button')}`,
       'Summer homework',
     )}
     <section class="support-panel" id="export-progress" data-export-panel aria-labelledby="export-progress-title">
@@ -2042,10 +2050,13 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
           <span>Reporting period</span>
           <input name="reportingPeriod" type="text" />
         </label>
-        <button class="button primary-button" type="submit">Open Email</button>
+        <div class="export-progress-actions">
+          <button class="button primary-button" type="button" data-download-export-csv>Download CSV</button>
+          <button class="button secondary-button" type="submit">Open Email</button>
+        </div>
       </form>
       <div class="export-csv-fallback" data-export-fallback hidden>
-        <p class="save-status">The CSV is too large for a reliable prefilled email body. Copy this CSV and paste it into the email message.</p>
+        <p class="save-status">If email does not open, download the CSV or copy it and attach/paste it in your own message.</p>
         <textarea class="export-csv-output" data-export-csv-output readonly rows="8" aria-label="Generated progress CSV"></textarea>
         <button class="button secondary-button" type="button" data-copy-export-csv>Copy CSV</button>
       </div>
@@ -3380,8 +3391,9 @@ function renderWorksheetPage(
 ): string {
   const { topic, groups } = context;
   const items = groups.flatMap((group) => group.authoredItems);
+  const printableGroups = groups.filter((group) => group.authoredItems.length > 0);
   let questionStartIndex = 0;
-  const worksheetGroups = groups.map((group, groupIndex) => {
+  const worksheetGroups = printableGroups.map((group, groupIndex) => {
     const rendered = renderWorksheetGroup(group, groupIndex, questionStartIndex);
     questionStartIndex += group.authoredItems.length;
     return rendered;
@@ -3663,7 +3675,6 @@ async function generate(): Promise<void> {
   htmlByPath.set(p3ExamTrainingPagePath(), renderExamTrainingPage(data));
   htmlByPath.set(p3NeedToKnowPagePath(), renderP3NeedToKnowPage(data));
   htmlByPath.set(p3ReviewPagePath(), renderP3ReviewPage(data));
-  htmlByPath.set(p3ContentQaPagePath(), renderP3ContentQaPage(data));
 
   for (const topic of STUDY_TOPICS) {
     const context = topicContext(topic, data);

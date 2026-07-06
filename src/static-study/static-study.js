@@ -1547,7 +1547,7 @@
     if (csvOutput instanceof HTMLTextAreaElement) csvOutput.value = shouldShow ? csv : '';
   }
 
-  function exportLocalProgressEmail(form) {
+  function exportLocalProgressData(form) {
     var progress = loadProgress();
     var timestamp = new Date().toISOString();
     var data = new FormData(form);
@@ -1570,17 +1570,51 @@
     saveProgress(progress);
     var csv = buildLocalProgressCsv(progress, timestamp, metadata);
     var summary = localProgressSubmissionSummary(progress);
+    return {
+      progress: progress,
+      timestamp: timestamp,
+      metadata: metadata,
+      csv: csv,
+      summary: summary,
+      panel: form.closest('[data-export-panel]'),
+      rowCount: Math.max(0, csv.split('\n').length - 1)
+    };
+  }
+
+  function exportCsvFilename(metadata) {
+    var student = String(metadata.studentName || 'student').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'student';
+    var date = String(metadata.submissionTimestamp || new Date().toISOString()).slice(0, 10);
+    return 'asterion-progress-' + student + '-' + date + '.csv';
+  }
+
+  function exportLocalProgressDownload(form) {
+    if (!form.reportValidity()) return;
+    var exportData = exportLocalProgressData(form);
+    showExportCsvFallback(exportData.panel, exportData.csv, true);
+    downloadTextFile(exportCsvFilename(exportData.metadata), exportData.csv, 'text/csv;charset=utf-8');
+    setExportStatus(
+      exportData.panel,
+      'Downloaded ' + exportData.rowCount + ' CSV row' + (exportData.rowCount === 1 ? '' : 's') + '. Attach the CSV to your own email or upload it where your teacher asked.'
+    );
+    updateLocalProgressTeacherSummaries(exportData.progress);
+  }
+
+  function exportLocalProgressEmail(form) {
+    var exportData = exportLocalProgressData(form);
+    var csv = exportData.csv;
+    var summary = exportData.summary;
+    var metadata = exportData.metadata;
     var mailto = progressMailtoHref(metadata, summary, csv);
-    var panel = form.closest('[data-export-panel]');
-    var rowCount = Math.max(0, csv.split('\n').length - 1);
+    var panel = exportData.panel;
+    var rowCount = exportData.rowCount;
     showExportCsvFallback(panel, csv, !mailto.includesCsv);
     setExportStatus(
       panel,
       mailto.includesCsv
         ? 'Email message prepared with ' + rowCount + ' CSV row' + (rowCount === 1 ? '' : 's') + ' in the message body.'
-        : 'Email message prepared. The CSV is too large for a reliable email body, so copy the CSV shown below into the email.'
+        : 'Email message prepared. The CSV is too large for a reliable email body, so download or copy the CSV shown below.'
     );
-    updateLocalProgressTeacherSummaries(progress);
+    updateLocalProgressTeacherSummaries(exportData.progress);
     window.location.href = mailto.href;
   }
 
@@ -1907,6 +1941,8 @@
     });
     if (!statuses.length) return;
     var allReviewReady = statuses.every(function (status) { return status.reviewReady; });
+    var hasDiagnosticReport = safeArray(progress.diagnosticReports).length > 0;
+    var hasAnyStartedUnit = statuses.some(function (status) { return status.started; });
     var startedIncomplete = statuses.find(function (status) { return status.started && !status.reviewReady; });
     var checkedReadyForExam = statuses.find(function (status) { return status.reviewReady && status.examCount === 0; });
     var firstIncomplete = statuses.find(function (status) { return !status.reviewReady; });
@@ -1935,6 +1971,21 @@
       var copy = panel.querySelector('[data-p3-next-step-copy]');
       var link = panel.querySelector('[data-p3-next-step-link]');
       var fastLaneLink = panel.querySelector('[data-p3-fast-lane-link]');
+      if (!hasDiagnosticReport && !hasAnyStartedUnit) {
+        var diagnosticHref = panel.getAttribute('data-diagnostic-href') || '#';
+        if (title) title.textContent = 'Start diagnostic';
+        if (copy) copy.textContent = 'The summer homework path starts with the diagnostic, then Learn \u2192 Checked Practice \u2192 Exam Training.';
+        if (link) {
+          link.textContent = 'Start diagnostic';
+          link.setAttribute('href', diagnosticHref);
+        }
+        if (fastLaneLink && selected) {
+          fastLaneLink.hidden = false;
+          fastLaneLink.textContent = 'Already completed it? Start ' + selected.name + ' Learn';
+          fastLaneLink.setAttribute('href', selected.learnHref);
+        }
+        return;
+      }
       if (allReviewReady) {
         var reviewHref = panel.getAttribute('data-review-href') || '#';
         if (title) title.textContent = 'Export progress';
@@ -1955,6 +2006,7 @@
       }
       if (fastLaneLink && selected) {
         fastLaneLink.hidden = false;
+        fastLaneLink.textContent = 'Already confident? Try Checked Practice';
         fastLaneLink.setAttribute('href', selected.skillHref);
       }
     });
@@ -5291,6 +5343,13 @@
             setExportStatus(panel, 'CSV selected. Copy it, then paste it into the email message before sending.');
           }
         }
+        return;
+      }
+
+      var downloadExportButton = target.closest('[data-download-export-csv]');
+      if (downloadExportButton) {
+        var exportForm = downloadExportButton.closest('[data-export-local-progress-form]');
+        if (exportForm instanceof HTMLFormElement) exportLocalProgressDownload(exportForm);
         return;
       }
 

@@ -19,7 +19,6 @@ export const STATIC_STUDY_PAGE_ROUTES: StaticStudyPageRoute[] = [
   { path: `${P3_COURSE_ID}/exam-training/index.html`, label: 'P3 Exam Training' },
   { path: `${P3_COURSE_ID}/need-to-know/index.html`, label: 'P3 Need to Know checklist' },
   { path: `${P3_COURSE_ID}/review/index.html`, label: 'P3 final exam review' },
-  { path: `${P3_COURSE_ID}/content-qa/index.html`, label: 'Internal P3 Content QA table' },
   ...STUDY_TOPICS.flatMap((topic) => [
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/learn/index.html`, label: `P3 ${topic.name} Learn` },
     { path: `${P3_COURSE_ID}/topics/${topic.slug}/field-guide/index.html`, label: `P3 ${topic.name} Learn bridge` },

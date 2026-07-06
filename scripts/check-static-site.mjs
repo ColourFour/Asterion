@@ -18,7 +18,6 @@ const fallbackRequiredPages = [
   'p3/topics/index.html',
   'p3/need-to-know/index.html',
   'p3/review/index.html',
-  'p3/content-qa/index.html',
   'p3/topics/algebra/field-guide/index.html',
   'p3/topics/algebra/skill-check/index.html',
   'p3/topics/algebra/exam-training/index.html',
@@ -75,7 +74,6 @@ const forbiddenVisibleStudentTerms = [
 
 const p3ContractPages = [
   'p3/need-to-know/index.html',
-  'p3/content-qa/index.html',
 ];
 
 const forbiddenContractPageTerms = [
@@ -406,53 +404,9 @@ for (const { href, canonicalPath } of contractLinks) {
   }
 }
 
-const contentQaText = visibleBodyText(readFileSync(path.join(siteRoot, 'p3/content-qa/index.html'), 'utf8'));
-if (/\b(?:P1|M1|S1)\b/.test(contentQaText) && !contentQaText.includes('P1, M1, and S1 are not part of this contract.')) {
-  console.error('P3 Content QA must not promote P1, M1, or S1 as ready contract courses.');
+if (existsSync(path.join(siteRoot, 'p3/content-qa/index.html')) || requiredPages.includes('p3/content-qa/index.html')) {
+  console.error('Internal P3 Content QA must not be generated into the public student static output.');
   process.exit(1);
-}
-const contentQaHtml = readFileSync(path.join(siteRoot, 'p3/content-qa/index.html'), 'utf8');
-if (!contentQaText.includes('Internal Content QA') || !contentQaText.includes('This page is for maintaining the course, not for student study.')) {
-  console.error('P3 Content QA must be clearly labeled as internal.');
-  process.exit(1);
-}
-if (!contentQaText.includes('Missing')) {
-  console.error('P3 Content QA must keep missing coverage visible.');
-  process.exit(1);
-}
-if (!pageAnchors(contentQaHtml).some((href) => resolveHtmlHref('p3/content-qa/index.html', href) === 'p3/need-to-know/index.html')) {
-  console.error('P3 Content QA page does not link to the canonical Need to Know route.');
-  process.exit(1);
-}
-for (const ladderLevel of ['easy', 'standard', 'hard', 'mixed']) {
-  if (!contentQaHtml.includes(`data-ladder-level="${ladderLevel}"`)) {
-    console.error(`P3 Content QA does not surface the ${ladderLevel} ladder bucket.`);
-    process.exit(1);
-  }
-}
-for (const skillId of contractIds) {
-  const rowMatch = contentQaHtml.match(new RegExp(`<tr data-skill-id="${skillId}">([\\s\\S]*?)<\\/tr>`));
-  if (!rowMatch) {
-    console.error(`P3 Content QA is missing ladder row for ${skillId}`);
-    process.exit(1);
-  }
-  const rowHtml = rowMatch[1];
-  for (const ladderLevel of ['easy', 'standard', 'hard']) {
-    if (!new RegExp(`data-ladder-level="${ladderLevel}"[\\s\\S]*?>Missing<`).test(rowHtml)) {
-      console.error(`P3 Content QA must show missing ${ladderLevel} ladder coverage for ${skillId}.`);
-      process.exit(1);
-    }
-  }
-  const expectedMixedCount = mappedExamCounts.get(skillId);
-  if (typeof expectedMixedCount === 'number') {
-    const mixedPattern = expectedMixedCount > 0
-      ? `data-ladder-level="mixed"[\\s\\S]*?>Mapped questions \\(${expectedMixedCount}\\)<`
-      : 'data-ladder-level="mixed"[\\s\\S]*?>Missing<';
-    if (!new RegExp(mixedPattern).test(rowHtml)) {
-      console.error(`P3 Content QA mixed ladder count for ${skillId} does not match reviewed mapped exam data.`);
-      process.exit(1);
-    }
-  }
 }
 
 const p3LearnPages = requiredPages.filter((page) => /^p3\/topics\/[^/]+\/learn\/index\.html$/.test(page));

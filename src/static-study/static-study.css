@@ -2112,9 +2112,9 @@ body.home-page main {
 
 .home-p3-action-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: clamp(14px, 3vw, 42px);
-  width: min(900px, 100%);
+  width: min(1040px, 100%);
   margin-top: clamp(10px, 2vh, 24px);
 }
 
@@ -6642,6 +6642,12 @@ body.skill-check-page .exam-question-section {
   align-items: end;
 }
 
+.export-progress-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .export-progress-form label {
   display: grid;
   gap: 6px;
@@ -7008,43 +7014,68 @@ body.skill-check-page .exam-question-section {
 
   .site-header {
     position: static;
-    margin-top: 10px;
-  }
-
-  body.learn-mode-page .site-header {
-    flex-direction: column;
-    align-items: stretch;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: 8px;
-    margin-block: 8px 10px;
+    margin-top: 8px;
+    margin-bottom: 10px;
     padding: 8px 10px;
   }
 
-  body.learn-mode-page .brand-link {
+  .brand-link,
+  body.learn-mode-page .brand-link,
+  body.skill-check-page .brand-link {
     gap: 8px;
   }
 
-  body.learn-mode-page .brand-link small {
+  .brand-link small,
+  body.learn-mode-page .brand-link small,
+  body.skill-check-page .brand-link small {
     display: none;
   }
 
-  body.learn-mode-page .brand-mark {
+  .brand-mark,
+  body.learn-mode-page .brand-mark,
+  body.skill-check-page .brand-mark {
     width: 34px;
     height: 34px;
   }
 
-  body.learn-mode-page .site-nav {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    flex: 1 1 auto;
-    gap: 6px;
-    width: 100%;
+  .theme-toggle {
+    width: auto;
+    min-height: 34px;
+    padding: 7px 10px;
   }
 
-  body.learn-mode-page .site-nav a {
+  .site-nav,
+  body.learn-mode-page .site-nav,
+  body.skill-check-page .site-nav {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    gap: 6px;
     width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .site-nav::-webkit-scrollbar,
+  body.learn-mode-page .site-nav::-webkit-scrollbar,
+  body.skill-check-page .site-nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .site-nav a,
+  body.learn-mode-page .site-nav a,
+  body.skill-check-page .site-nav a {
+    flex: 0 0 auto;
+    width: auto;
     min-width: 0;
     min-height: 34px;
-    padding: 7px 6px;
+    padding: 7px 9px;
     font-size: 0.78rem;
   }
 
@@ -7316,6 +7347,21 @@ body.skill-check-page .exam-question-section {
   .button,
   .site-nav a {
     width: 100%;
+  }
+
+  .site-nav a,
+  body.home-page .site-nav a,
+  body.learn-mode-page .site-nav a,
+  body.skill-check-page .site-nav a {
+    width: auto;
+  }
+
+  .brand-mark,
+  body.home-page .brand-mark,
+  body.learn-mode-page .brand-mark,
+  body.skill-check-page .brand-mark {
+    width: 34px;
+    height: 34px;
   }
 
   .lesson-card,
@@ -8133,6 +8179,7 @@ body.skill-check-page .exam-question-section {
   }
 
   .home-p3-action-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 14px;
   }
 
@@ -8164,28 +8211,31 @@ body.skill-check-page .exam-question-section {
 
 @media (max-width: 720px) {
   body.home-page .site-header {
-    align-items: stretch;
-    padding: 12px 16px;
+    align-items: center;
+    padding: 8px 10px;
   }
 
   body.home-page .brand-link {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   body.home-page .site-nav {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    overflow-x: auto;
   }
 
   body.home-page .site-nav a,
   body.home-page .site-nav span {
+    flex: 0 0 auto;
     justify-content: center;
-    min-height: 36px;
-    padding: 8px;
+    width: auto;
+    min-height: 34px;
+    padding: 7px 9px;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 6px;
-    font-size: 0.82rem;
+    font-size: 0.78rem;
   }
 
   body.home-page .site-nav .nav-start-button {

@@ -28,7 +28,7 @@
 
         <a href="../../">Home</a>
 
-        <a href="../repair-lane/">P1 Review</a>
+        <a href="../diagnostic/">Diagnostic</a>
 
         <a href="../topics/">P3 Units</a>
 
@@ -49,8 +49,9 @@
       <div>
         <p class="eyebrow">Summer homework</p>
         <h1>Export Progress</h1>
-        <p>Send your local Asterion progress to your teacher, then use mixed Paper 3 questions and mistake repair for review.</p>
-        <div class="hero-actions"><a class="button secondary-button" href="../">Back to P3</a></div>
+        <p>Download or send your local Asterion progress CSV after each session, then use mixed Paper 3 questions and mistake repair for review.</p>
+        <div class="hero-actions"><a class="button secondary-button" href="../">Back to P3</a>
+      <a class="button secondary-button" href="../need-to-know/">Need to Know</a></div>
       </div>
       <div class="formula-panel" aria-hidden="true"><span class="math-text"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi><mo separator="true">,</mo><mspace width="1em"/><msub><mrow><mi>log</mi><mo>⁡</mo></mrow><mi>a</mi></msub><mi>x</mi><mo separator="true">,</mo><mspace width="1em"/><mi>z</mi><mo>=</mo><mi>x</mi><mo>+</mo><mi>i</mi><mi>y</mi></mrow><annotation encoding="application/x-tex">\Delta, \quad \log_a x, \quad z=x+iy</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9386em;vertical-align:-0.2441em;"></span><span class="mord">Δ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop"><span class="mop">lo<span style="margin-right:0.0139em;">g</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.0573em;"><span style="top:-2.4559em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">a</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2441em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">x</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.044em;">z</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.854em;vertical-align:-0.1944em;"></span><span class="mord mathnormal">i</span><span class="mord mathnormal" style="margin-right:0.0359em;">y</span></span></span></span></span></div>
     </section>
@@ -97,10 +98,13 @@
           <span>Reporting period</span>
           <input name="reportingPeriod" type="text" />
         </label>
-        <button class="button primary-button" type="submit">Open Email</button>
+        <div class="export-progress-actions">
+          <button class="button primary-button" type="button" data-download-export-csv>Download CSV</button>
+          <button class="button secondary-button" type="submit">Open Email</button>
+        </div>
       </form>
       <div class="export-csv-fallback" data-export-fallback hidden>
-        <p class="save-status">The CSV is too large for a reliable prefilled email body. Copy this CSV and paste it into the email message.</p>
+        <p class="save-status">If email does not open, download the CSV or copy it and attach/paste it in your own message.</p>
         <textarea class="export-csv-output" data-export-csv-output readonly rows="8" aria-label="Generated progress CSV"></textarea>
         <button class="button secondary-button" type="button" data-copy-export-csv>Copy CSV</button>
       </div>

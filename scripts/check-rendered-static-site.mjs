@@ -43,7 +43,6 @@ const requiredRenderedPages = Array.from(new Set([
   'p3/index.html',
   'm1/index.html',
   's1/index.html',
-  'p3/content-qa/index.html',
   ...p3LearnVisualPages,
   ...p3ExamTrainingPages,
   ...p3SkillSelectorPages,
@@ -265,40 +264,6 @@ async function assertMobileSkillSelectorLabels(browser) {
   }
 }
 
-async function assertContentQaMobileCards(browser) {
-  const visualPage = await browser.newPage({ viewport: { width: 390, height: 844 } });
-
-  try {
-    await waitForStaticEnhancement(visualPage, 'p3/content-qa/index.html');
-    const result = await visualPage.evaluate(() => {
-      const isVisible = (element) => {
-        if (!element || element.hidden) return false;
-        const style = getComputedStyle(element);
-        const rect = element.getBoundingClientRect();
-        return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
-      };
-      return {
-        horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
-        cardListVisible: isVisible(document.querySelector('.contract-qa-card-list')),
-        cardCount: Array.from(document.querySelectorAll('.contract-qa-mobile-card')).filter(isVisible).length,
-        tableVisible: isVisible(document.querySelector('.contract-table-scroll')),
-      };
-    });
-
-    if (result.horizontalOverflow) {
-      fail('Internal Content QA has horizontal overflow at 390x844.');
-    }
-    if (!result.cardListVisible || result.cardCount === 0) {
-      fail('Internal Content QA must render readable mobile QA cards at 390x844.');
-    }
-    if (result.tableVisible) {
-      fail('Internal Content QA should hide the wide QA table on narrow mobile screens.');
-    }
-  } finally {
-    await visualPage.close();
-  }
-}
-
 for (const pagePath of requiredRenderedPages) {
   if (!existsSync(path.join(siteRoot, pagePath))) {
     fail(`Rendered check page is missing: ${pagePath}`);
@@ -319,8 +284,8 @@ try {
       hasStarfield: Boolean(document.querySelector('.home-starfield')),
       actionCards: document.querySelectorAll('.home-p3-action-card').length,
       topicTiles: document.querySelectorAll('.home-p3-topic-tile').length,
-      hasP3Start: Array.from(document.querySelectorAll('a')).some((link) => /Start with Learn/.test(link.textContent || '')),
-      hasDiagnostic: Array.from(document.querySelectorAll('a')).some((link) => /Diagnostic: Where to focus/.test(link.textContent || '')),
+      hasP3Start: Array.from(document.querySelectorAll('a')).some((link) => /Start diagnostic/.test(link.textContent || '')),
+      hasDiagnostic: Array.from(document.querySelectorAll('a')).some((link) => /Already completed it\? Start Algebra Learn/.test(link.textContent || '')),
       hasPathGrid: Boolean(document.querySelector('.path-unit-grid')),
       hasOldHeroCopy: text.includes('CAIE 9709 practice that starts with the')
         || text.includes('Teacher ready')
@@ -335,8 +300,8 @@ try {
   if (!homepageResult.hasHero || !homepageResult.hasStarfield || !homepageResult.hasP3Start || !homepageResult.hasDiagnostic) {
     fail('Root page must render the P3 starfield landing page.');
   }
-  if (homepageResult.actionCards !== 3) {
-    fail(`Root P3 landing page must show 3 action cards; saw ${homepageResult.actionCards}.`);
+  if (homepageResult.actionCards !== 4) {
+    fail(`Root P3 landing page must show 4 action cards; saw ${homepageResult.actionCards}.`);
   }
   if (homepageResult.topicTiles !== 9) {
     fail(`Root P3 landing page must show 9 topic tiles; saw ${homepageResult.topicTiles}.`);
@@ -363,7 +328,7 @@ try {
       const text = document.body.textContent || '';
       return {
         pathCards: document.querySelectorAll('.path-unit-card').length,
-        hasDashboard: text.includes('Pure Mathematics 3') && text.includes('Unsure? Take diagnostic') && text.includes('All topic routes'),
+        hasDashboard: text.includes('Pure Mathematics 3') && text.includes('Diagnostic') && text.includes('Need to Know') && text.includes('All topic routes'),
         hasNextStepPanel: Boolean(document.querySelector('[data-p3-next-step-panel]')),
         hasSummerHomeworkMinimum: text.includes('Summer homework minimum')
           && text.includes('Complete Checked Practice for each P3 unit.')
@@ -711,7 +676,6 @@ try {
   await assertLearnVisualBasics(browser);
   await assertExamTrainingMobileVisuals(browser);
   await assertMobileSkillSelectorLabels(browser);
-  await assertContentQaMobileCards(browser);
 
   for (const [oldAlgebraPath, bridgeTitle, buttonLabel] of [
     ['p3/topics/algebra/field-guide/index.html', 'Algebra — Learn', 'Learn'],
