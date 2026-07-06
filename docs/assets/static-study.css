@@ -8285,6 +8285,7 @@ body.skill-check-page .exam-question-section {
 
   .home-p3-action-grid {
     grid-template-columns: 1fr;
+    order: 2;
     width: 100%;
   }
 
@@ -8296,6 +8297,10 @@ body.skill-check-page .exam-question-section {
 
   .home-p3-primary-cta {
     width: 100%;
+  }
+
+  .home-p3-cta-group {
+    order: 1;
   }
 
   .home-p3-topic-strip {
@@ -8379,6 +8384,18 @@ body.skill-check-page .exam-question-section {
   .p3-dashboard-hero .p3-summer-homework-panel {
     grid-column: auto;
     grid-row: auto;
+  }
+
+  .p3-dashboard-copy {
+    order: 1;
+  }
+
+  .p3-dashboard-action-panel {
+    order: 2;
+  }
+
+  .p3-dashboard-hero .p3-summer-homework-panel {
+    order: 3;
   }
 
   .p3-next-step-panel {
