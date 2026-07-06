@@ -2,7 +2,7 @@
 
 Content Lab is an internal, local-first pipeline for turning exam-bank evidence into reviewed teaching support. It is not part of the browser runtime and must not mutate `public/assets/exam-bank-data/question_bank.json`.
 
-The public site is now a static CAIE 9709 study hub with P1, P3, M1, and S1 course pages. P1, M1, and S1 have rapid draft seed study pages in `src/data/courseSeedContent.ts`, but those pages are static audit scaffolds only. Content Lab remains P3-first because only the reviewed P3 skill map exists today. P1, M1, and S1 content should not be generated or published from this pipeline until reviewed syllabus/topic maps are added for those courses.
+The public site is now a static CAIE 9709 Paper 3 study hub. P1, M1, and S1 are coming-soon course entries only; there are no P1/M1/S1 topic seed pages in the current static route set. Content Lab remains P3-first because only the reviewed P3 skill map exists today. P1, M1, and S1 content should not be generated or published from this pipeline until reviewed syllabus/topic maps are added for those courses.
 
 ## Boundary
 
@@ -12,10 +12,10 @@ The public site is now a static CAIE 9709 study hub with P1, P3, M1, and S1 cour
 - Topic-routing sidecar: `public/assets/exam-bank-data/question_bank.topic_routing.v1.json`
 - Candidate inventory: `public/assets/exam-bank-data/asterion_content_lab_candidates_v1.json`
 - Internal outputs: `tools/content_lab/outputs/`
-- Review reports: `tools/content_lab/reports/`
+- On-demand review reports: `tools/content_lab/reports/` (created by reporting scripts when those scripts are run)
 - Runtime-reviewed content: `public/data/teaching_snippets.json` and `public/data/generated_practice_bank.json`
 - Static P3 pages: consume only reviewed static JSON from `public/data/`
-- Static P1/M1/S1 seed pages: consume only `src/data/courseSeedContent.ts` and must stay marked as draft starter content
+- Static P1/M1/S1 pages: coming-soon course pages only; no topic content or Content Lab publishing
 - No LLM calls, hosted review UI, generated exam clones, auth, remote storage, or browser-side mining
 
 The reviewed P3 skill map at `tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` is the curriculum authority. OCR/raw text, AI labels, legacy DeepSeek labels, local labels, and fallback labels are review/display metadata only. Topic-routing records can validate placement only when clean/reviewed. Content Lab candidates remain blocked until reviewed source-skill evidence exists.
@@ -26,13 +26,19 @@ The active release is **Content Lab Worked Examples v1 / Question-to-Lesson Pass
 
 ## Canonical Verification
 
-The all-up Phase 0 verification command is:
+There is no `content-lab:*`, `validate:p3-skill-map`, `inventory:p3-content`, `coverage:p3-matrix`, or `queue:p3-region-correction` npm script in the current `package.json`. Use the explicit scripts below when a Content Lab task requires them, then run the project gates from `README.md`.
 
 ```bash
-npm run content-lab:verify
+npm test
+npm run build
+npm run static:check
 ```
 
-It runs the P3 skill-map validation, inventory, coverage matrix, region-correction queue, Content Lab output verifier, full Vitest suite, Vite/TypeScript build, and `git diff --check`. See `docs/content-lab-verification.md` for the report-scope and pass/fail contract.
+For output-only Content Lab verification:
+
+```bash
+python3 tools/content_lab/scripts/verify_content_lab_outputs.py
+```
 
 ## Current Commands
 
@@ -58,25 +64,25 @@ python3 tools/content_lab/scripts/build_generated_practice.py \
 Build the reviewed P3 skill-map coverage dashboard:
 
 ```bash
-npm run validate:p3-skill-map
+python3 tools/content_lab/scripts/build_p3_skill_coverage.py
 ```
 
 Build the deterministic P3 content inventory:
 
 ```bash
-npm run inventory:p3-content
+python3 tools/content_lab/scripts/build_p3_content_inventory.py
 ```
 
 Build the teacher-facing P3 coverage matrix:
 
 ```bash
-npm run coverage:p3-matrix
+python3 tools/content_lab/scripts/build_p3_coverage_matrix.py
 ```
 
 Build the deterministic future region-correction queue:
 
 ```bash
-npm run queue:p3-region-correction
+python3 tools/content_lab/scripts/build_p3_region_correction_queue.py
 ```
 
 Run the focused matrix validation:
@@ -134,15 +140,15 @@ Fallback-display-only placements, ambiguous routes, review-required routes, hard
 
 `generated_practice_bank.json` contains original deterministic warm-up items, not exam clones. Runtime items must have `review_status` set to `teacher_reviewed` or `published` and `verification.status` set to `pass`.
 
-`tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. Its `curriculum_targets` block locks the active primary target to CAIE 9709 Pure Mathematics 3 for 2026-2027, with CAIE 9709 Pure Mathematics 1 recorded only as prerequisite support. `npm run validate:p3-skill-map` writes the deterministic, reviewable report to `tools/content_lab/reports/p3_skill_coverage_report.json`, summarizing snippet, Quick Check, generated warm-up, canonical-question, curriculum-role, prerequisite-reference, and high-evidence weak-support gaps for Content Lab readiness. The report is intentionally kept in version control as a stable review artifact.
+`tools/content_lab/skill_maps/caie_9709_p3_skill_map.json` contains the reviewed internal P3 micro-skill map. Its `curriculum_targets` block locks the active primary target to CAIE 9709 Pure Mathematics 3 for 2026-2027, with CAIE 9709 Pure Mathematics 1 recorded only as prerequisite support. `tools/content_lab/scripts/build_p3_skill_coverage.py` writes the deterministic, reviewable report to `tools/content_lab/outputs/p3_skill_coverage_report.json`, summarizing snippet, Quick Check, generated warm-up, canonical-question, curriculum-role, prerequisite-reference, and high-evidence weak-support gaps for Content Lab readiness.
 
-`npm run inventory:p3-content` writes `tools/content_lab/reports/p3_content_inventory_report.json`. This report inventories the current P3 learning loop by region and by reviewed skill: Field Guides, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, mastery candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
+`tools/content_lab/scripts/build_p3_content_inventory.py` writes the P3 content inventory report when run for that task. This report inventories the current P3 learning loop by region and by reviewed skill: Learn/Field Guide support, snippets, worked examples, Quick Checks, generated warm-ups, canonical P3 question evidence, mastery candidates, teacher/export curriculum tags, structural reference warnings, and next-step gaps. It differs from the P3 skill-map coverage report by answering "what exists and where does it connect?" rather than only "does each reviewed skill have minimum coverage categories?"
 
 The inventory also reads `tools/content_lab/reviews/p3_app_region_routing_audit.json` when classifying app-region routing mismatches. Corrected audit entries are reported as resolved; image-reviewed route placements can be accepted with `validated_skill_map_route`, `clean_mastery_evidence`, `mastery_evidence_allowed: true`, `practice_allowed: true`, and `export_allowed: true`; active mismatches with no audit entry remain structural warnings. If audited ambiguous entries exist, they must remain visible as a deferred teacher-review backlog. Deferred entries use `teacher_review_deferred` and `ambiguous_part_level_evidence`, with `mastery_evidence_allowed: false`, `practice_allowed: true`, and `export_allowed: false`. When the deferred backlog is empty, the aggregate deferred policy fields remain `null` and all deferred counts remain `0`. App labels and DeepSeek labels are metadata signals only, and do not override the reviewed P3 skill-map region for mastery evidence.
 
 `asterion_content_lab_candidates_v1.json` is a candidate inventory, not a publishing source. Candidate records can move toward generation only after reviewed `source_skill_ids`/source-skill evidence ties them to the reviewed P3 skill map and canonical question/mark-scheme image evidence. Label confidence, OCR text, raw text, or difficulty metadata is not enough.
 
-`npm run coverage:p3-matrix` writes:
+`tools/content_lab/scripts/build_p3_coverage_matrix.py` writes:
 
 - `tools/content_lab/reports/p3_coverage_matrix.json`
 - `tools/content_lab/reports/p3_coverage_matrix.md`
@@ -171,7 +177,7 @@ Correction priority labels guide the next region-by-region correction pass:
 
 Deferred ambiguous evidence remains visible in the matrix and Markdown report when it exists. It is counted separately from clean mastery evidence, remains practice-allowed where structurally valid, and remains blocked from mastery and export claims. The current reviewed matrix has no active deferred evidence cases.
 
-`npm run queue:p3-region-correction` writes:
+`tools/content_lab/scripts/build_p3_region_correction_queue.py` writes:
 
 - `tools/content_lab/reports/p3_region_correction_queue.json`
 - `tools/content_lab/reports/p3_region_correction_queue.md`
@@ -181,7 +187,7 @@ The region-correction queue is the planning artifact for future content correcti
 Matrix validation is intentionally strict about curriculum-contract failures and intentionally tolerant of ordinary support gaps:
 
 - Unknown reviewed skill refs, duplicate or missing skill rows, unknown region IDs, invalid curriculum roles, invalid official syllabus sections, invalid status/priority labels, negative counts, malformed deferred-policy fields, unsafe mastery evidence, P1 prerequisite evidence counted as P3 mastery evidence, and mismatched summaries fail loudly.
-- Missing snippets, worked examples, Quick Checks, and warm-ups are reported as support gaps and affect `coverage_status` / `correction_priority` deterministically. They do not make `npm run coverage:p3-matrix` fail unless they also violate the curriculum contract.
+- Missing snippets, worked examples, Quick Checks, and warm-ups are reported as support gaps and affect `coverage_status` / `correction_priority` deterministically. They do not make the coverage matrix fail unless they also violate the curriculum contract.
 - Deferred ambiguous cases must stay represented both in per-skill rows and in the deferred backlog when they exist. They can appear as `practice_allowed_deferred_count`, but cannot become clean mastery evidence or export-allowed evidence. With no deferred cases, the deferred summary policy fields must be `null`.
 - P1 prerequisite refs are allowed only as prerequisite metadata. They cannot create P3 matrix rows or count as canonical P3 question evidence.
 
@@ -222,12 +228,13 @@ Coverage counts are generated by the verifier output, not maintained by hand:
 python3 tools/content_lab/scripts/verify_content_lab_outputs.py
 ```
 
-As of 2026-05-21:
+As of this documentation refresh:
 
-- 39 reviewed teaching snippets
-- 39 Quick Checks
-- 84 reviewed generated warm-ups
-- 38 generator families
+- 41 reviewed teaching snippets
+- 41 Quick Checks
+- 78 worked examples
+- 193 reviewed generated warm-ups
+- 50 generator families
 - all 40 reviewed P3 skills have Field Guide, snippet, worked-example, Quick Check, and warm-up support
 - all active P3 regions have reviewed snippet, Quick Check, and generated warm-up coverage
 

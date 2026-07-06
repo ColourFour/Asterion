@@ -2,6 +2,12 @@
 
 Date: 2026-06-11
 
+## Current Status Note
+
+This is a historical handoff pack, not the current implementation contract. The current branch has completed the deterministic Skill Check migration: tests now expect 171 authored P3 Skill Check items, 171 deterministically checkable items, and 0 not-yet-checkable or unsupported-answer-form items.
+
+Current static routes also include topic `/learn/` pages, Field Guide bridge pages, Checked Practice pages, Exam Training pages, and printable worksheet pages. Use `README.md`, `AGENTS.md`, `src/lib/staticStudyRoutes.ts`, and `docs/static-pages.json` for the current static-page contract.
+
 ## Status
 
 Repo write access was not available in this session: the GitHub connector returned no installed accounts or repositories, and `/mnt/data` has no cloned repo. This pack is therefore a handoff implementation plan, not a committed patch.

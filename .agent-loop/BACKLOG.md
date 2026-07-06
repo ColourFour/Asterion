@@ -22,4 +22,4 @@ The Planner may select from this backlog, but it may also propose a better Aster
 - Cosmetic churn.
 - Generic repo improvement that does not affect exam performance, syllabus correctness, deterministic checks, static reliability, or repo hygiene.
 - Audit-only work unless explicitly requested.
-- P1, M1, or S1 expansion that hides their draft starter status or treats unaudited content as final syllabus-contract content.
+- P1, M1, or S1 expansion that bypasses their current coming-soon status or treats unaudited content as final syllabus-contract content.

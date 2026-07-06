@@ -15,7 +15,7 @@ The loop must leave the repo cleaner and more trustworthy than it found it. Aste
 - Do not add product source, topic content, routes, package files, tests, or generated site output unless the selected iteration explicitly owns those files.
 - Treat generated `docs/` changes as build output that must be intentional, reproducible, and relevant to the selected slice.
 - Remove stale SPA/auth/dashboard/server/Supabase/deprecated remnants only when repo evidence shows they are unused and the cleanup is bounded.
-- Keep P3-first improvements focused on existing static Field Guide, Skill Check, Practice Questions, Exam Training, review, and asset-resolution flows.
+- Keep P3-first improvements focused on existing static Learn, Field Guide bridge, Checked Practice, worksheet, Exam Training, review/export, and asset-resolution flows.
 
 ## Bloat budget
 

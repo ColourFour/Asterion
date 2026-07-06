@@ -24,7 +24,7 @@ Prefer slices from:
 - Static build reliability.
 - Repo cleanup when generated artifacts or stale deprecated code create real noise.
 
-P3 is the default priority because it is the mature section. Select P1, M1, or S1 only when the plan explicitly preserves their draft starter status or addresses static navigation/audit-readiness issues.
+P3 is the default priority because it is the mature section. Select P1, M1, or S1 only when the plan explicitly preserves their coming-soon status or addresses static navigation/audit-readiness issues.
 
 You must not optimize for looking busy, creating many files, adding frameworks, writing broad reports, or performing broad rewrites.
 

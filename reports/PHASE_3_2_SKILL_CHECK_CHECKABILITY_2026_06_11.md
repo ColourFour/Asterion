@@ -2,6 +2,12 @@
 
 Date: 2026-06-11
 
+## Current Status Note
+
+This report is historical. The current branch has completed the deterministic Skill Check migration: tests now expect 171 authored P3 Skill Check items, 171 deterministically checkable items, and 0 not-yet-checkable or unsupported-answer-form items.
+
+Use `tests/skillCheckData.test.ts` and `src/data/skillCheckItems.ts` for the current checkability contract.
+
 ## Summary
 
 Phase 3.2 adds optional machine-checkable answer metadata to the P3 Skill Check data model. This is a partial migration only. Existing local saves are not upgraded, reinterpreted, or marked as passed.

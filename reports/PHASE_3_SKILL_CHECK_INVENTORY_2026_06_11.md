@@ -2,6 +2,12 @@
 
 Date: 2026-06-11
 
+## Current Status Note
+
+This report is historical. The self-reported `I tried this` / `data-save-skill-check` path described below no longer faces the static pages. Current static tests assert those controls are absent, and current Skill Check data tests expect 171 authored P3 Skill Check items with 171 deterministically checkable items.
+
+Use `README.md`, `AGENTS.md`, `tests/staticProduct.test.ts`, `tests/skillCheckData.test.ts`, and `docs/static-pages.json` for the current static-page and Skill Check contracts.
+
 ## Scope
 
 This audit maps the current P3 Skill Check implementation before behavior changes. No answer checking or product behavior changes are included in this report.

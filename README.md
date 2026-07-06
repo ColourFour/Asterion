@@ -2,7 +2,7 @@
 
 Asterion is a static CAIE 9709 Paper 3 study hub for GitHub Pages.
 
-P3 is the product path. P1, M1, and S1 are visible only as support-only course entries and do not expose topic pages, Skill Checks, exam mappings, attempt storage, or progression systems on this branch.
+P3 is the product path. The root page is a P3-first landing page, and `docs/` currently contains 58 generated static pages. P1, M1, and S1 are visible only as coming-soon course entries; they do not expose topic pages, Skill Checks, exam mappings, attempt storage, or progression systems on this branch.
 
 For P3, the question image and mark-scheme image are the student-facing source of truth. Text extraction, labels, and route metadata support display and selection only.
 
@@ -68,9 +68,28 @@ The site does not require a backend, authentication, Supabase, class codes, teac
 
 ## Routes
 
+Static top-level routes:
+
+```text
+/
+/about/
+/p1/
+/p3/
+/m1/
+/s1/
+/p3/diagnostic/
+/p3/repair-lane/
+/p3/topics/
+/p3/exam-training/
+/p3/need-to-know/
+/p3/review/
+/p3/content-qa/
+```
+
 Canonical P3 topic task routes:
 
 ```text
+/p3/topics/<topic>/learn/
 /p3/topics/<topic>/field-guide/
 /p3/topics/<topic>/skill-check/
 /p3/topics/<topic>/exam-training/
@@ -83,6 +102,8 @@ Static support route:
 ```
 
 Worksheet pages are print/PDF views of topic Skill Check items. They do not replace the interactive Skill Check route and do not create pass state.
+
+`/p3/topics/<topic>/field-guide/` is a compatibility bridge to the current Learn experience. New student-facing navigation should prefer `/learn/`.
 
 The supported P3 topic slugs are:
 
@@ -98,7 +119,9 @@ differential-equations
 complex-numbers
 ```
 
-The build does not generate legacy unprefixed topic pages, `/regions/`, `/p3/regions/`, course-level `/p3/exam-training/`, topic hub pages, or `/practice/` compatibility pages.
+The build does not generate legacy unprefixed topic pages, `/regions/`, `/p3/regions/`, topic hub pages, or `/practice/` compatibility pages.
+
+`docs/static-pages.json` is the generated manifest for the current static page contract. As of this update it reports 72 student-runtime questions and 1301 catalog records.
 
 ## Static Teacher Support
 
@@ -121,6 +144,22 @@ public/data/teaching_snippets.json
 `public/assets/exam-bank-data/` is large runtime data and remains ignored in git. `npm run assets:sync` verifies the local folder or restores it from the asset manifest.
 
 Application source belongs in `src/`, build scripts belong in `scripts/`, and generated Pages output belongs in `docs/`.
+
+Current static-facing source is generated from `scripts/build-static-site.ts`, `src/static-study/static-study.js`, `src/static-study/static-study.css`, and the data/utilities imported by the generator. Static browser progress is stored locally under `asterion.progress.v1`.
+
+## Cleanup Inventory
+
+These pieces are in the repo but do not directly face the generated static pages today. Treat them as cleanup/audit candidates, not deletion instructions:
+
+- `.agent-loop/`, `.agent-runs/`, and `agentic-loop-template/`: agent workflow infrastructure and historical run artifacts.
+- `.agents/skills/supabase*`: local agent skills only; not product code and not a Supabase runtime dependency.
+- `reports/` and `audit-artifacts/`: dated audits, screenshots, and generated review artifacts. They are historical evidence unless a current task explicitly refreshes them.
+- `tools/content_lab/`: internal, local-first content pipeline. Runtime pages consume reviewed JSON outputs in `public/data/`, not the tool scripts or reports directly.
+- `content-model/`: source/reference PDFs. They are not copied into the static page route set.
+- `src/lib/localExamAttempts.ts`, `src/lib/progressCsvExport.ts`, `src/lib/p3ProgressionPaths.ts`, `src/lib/quickCheckAnswer.ts`, `src/skill-checks/reviewSessions.ts`, and related tests: useful contracts/parity coverage, but the emitted static browser behavior is currently implemented in `src/static-study/static-study.js`.
+- `src/data/unitImprovementAgents.ts` and `src/data/unitImprovementReports.ts`: improvement-loop/report data, not student route data.
+
+Before removing any of these, prove the static generator, tests, and `docs/` output no longer depend on them.
 
 ## Static Product Boundaries
 
