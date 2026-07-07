@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,10 +103,14 @@
       data-field-guide-topic-id="derivatives_product_rule"
       data-skill-id="p3_diff_method_selection"
       data-check-id="learn-diff-rule-choice-primary"
+      data-question-title="Before differentiating $y=x^2e^x$, choose the rule needed first."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Product rule&quot;,&quot;distractor-1&quot;:&quot;Power rule only&quot;,&quot;distractor-2&quot;:&quot;Quotient rule&quot;,&quot;distractor-3&quot;:&quot;Implicit differentiation&quot;}"
+      data-correct-answer-label="Product rule"
+      data-explanation="x^2e^x is u\times v with two x-dependent factors. So the first rule is the product rule. The derivative will need uv\prime+vu\prime."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -195,10 +206,14 @@
       data-field-guide-topic-id="derivatives_product_rule"
       data-skill-id="p3_diff_method_selection"
       data-check-id="learn-diff-rule-choice-similar"
+      data-question-title="For $y=\frac{x^2+1}{x-3}$, choose the rule needed first."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Quotient rule&quot;,&quot;distractor-1&quot;:&quot;Chain rule&quot;,&quot;distractor-2&quot;:&quot;Power rule only&quot;,&quot;distractor-3&quot;:&quot;Logarithmic differentiation&quot;}"
+      data-correct-answer-label="Quotient rule"
+      data-explanation="The expression is a quotient of two x-dependent expressions. So the first rule is the quotient rule. Set u=x^2+1 and v=x-3 before differentiating."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -315,19 +330,40 @@
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-power-negative-fractional-primary"
+      data-question-title="Differentiate $x^{-2}$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;-2x^-3&quot;,&quot;-2x^{-3}&quot;,&quot;-2/x^3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-2x^-3"
+      data-explanation="The old power is -2. Bring -2 down as the coefficient. Reduce the power to -3, giving -2x^{-3}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-power-negative-fractional-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-power-negative-fractional-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-power-negative-fractional-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -371,19 +407,40 @@
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-power-negative-fractional-similar"
+      data-question-title="Differentiate $x^{1/2}$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;1/2x^-1/2&quot;,&quot;(1/2)x^-1/2&quot;,&quot;1/(2sqrtx)&quot;,&quot;1/(2sqrt(x))&quot;,&quot;1/(2x^(1/2))&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1/2x^-1/2"
+      data-explanation="Rewrite \sqrt{x} as x^{1/2}. Bring down 1/2 and reduce the power to -1/2. So the derivative is \frac12x^{-1/2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-power-negative-fractional-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-power-negative-fractional-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-power-negative-fractional-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -481,19 +538,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_exponential_logarithmic"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-chain-inside-function-primary"
+      data-question-title="For $(3x-2)^5$, type the inside function."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;3x-2&quot;,&quot;(3x-2)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3x-2"
+      data-explanation="The outside function is u^5. The inside function is u=3x-2. The derivative will include u\prime=3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-chain-inside-function-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-chain-inside-function-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-chain-inside-function-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -537,19 +615,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_exponential_logarithmic"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-chain-inside-function-similar"
+      data-question-title="Differentiate $(2x+1)^6$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;12(2x+1)^5&quot;,&quot;12*(2x+1)^5&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="12(2x+1)^5"
+      data-explanation="Let u=2x+1. The outside derivative is 6u^5. Multiply by u\prime=2, giving 12(2x+1)^5."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-chain-inside-function-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-chain-inside-function-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-chain-inside-function-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -614,10 +713,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_product_rule"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-product-structure-primary"
+      data-question-title="Choose the derivative of $x^2\sin x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;x^2\\cos x+2x\\sin x&quot;,&quot;distractor-1&quot;:&quot;2x\\cos x&quot;,&quot;distractor-2&quot;:&quot;x^2\\cos x&quot;,&quot;distractor-3&quot;:&quot;2x\\sin x&quot;}"
+      data-correct-answer-label="x^2\cos x+2x\sin x"
+      data-explanation="Let u=x^2 and v=\sin x. Then u\prime=2x and v\prime=\cos x. Use uv\prime+vu\prime=x^2\cos x+2x\sin x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -713,19 +816,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_product_rule"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-product-structure-similar"
+      data-question-title="Differentiate $xe^x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;e^x(x+1)&quot;,&quot;e^(x)(x+1)&quot;,&quot;xe^x+e^x&quot;,&quot;x e^x+e^x&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="e^x(x+1)"
+      data-explanation="Let u=x and v=e^x. Then u\prime=1 and v\prime=e^x. So \frac{d}{dx}(xe^x)=xe^x+e^x=e^x(x+1)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-product-structure-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-product-structure-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-product-structure-similar-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -790,10 +914,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_quotient_rule"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-quotient-order-primary"
+      data-question-title="For $u=x^2+1$ and $v=x-1$, choose the correct numerator."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;(x-1)(2x)-(x^2+1)(1)&quot;,&quot;distractor-1&quot;:&quot;(x^2+1)(1)-(x-1)(2x)&quot;,&quot;distractor-2&quot;:&quot;(x-1)(x^2+1)-(2x)(1)&quot;}"
+      data-correct-answer-label="(x-1)(2x)-(x^2+1)(1)"
+      data-explanation="For u/v, the numerator is vu\prime-uv\prime. Substitute v=x-1, u\prime=2x, u=x^2+1, and v\prime=1. The numerator is (x-1)(2x)-(x^2+1)(1)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -879,10 +1007,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_quotient_rule"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-quotient-order-similar"
+      data-question-title="Choose the derivative setup for $y=\frac{x+2}{x^2+1}$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\frac{(x^2+1)(1)-(x+2)(2x)}{(x^2+1)^2}&quot;,&quot;distractor-1&quot;:&quot;\\frac{(x+2)(2x)-(x^2+1)(1)}{(x^2+1)^2}&quot;,&quot;distractor-2&quot;:&quot;\\frac{1-2x}{x^2+1}&quot;}"
+      data-correct-answer-label="\frac{(x^2+1)(1)-(x+2)(2x)}{(x^2+1)^2}"
+      data-explanation="Use \frac{vu\prime-uv\prime}{v^2}. That gives \frac{(x^2+1)(1)-(x+2)(2x)}{(x^2+1)^2}. Simplify only after the order is correct."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -989,19 +1121,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_trig_functions"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-trig-derivative-primary"
+      data-question-title="Differentiate $\sin(3x)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;3cos(3x)&quot;,&quot;3 cos(3x)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3cos(3x)"
+      data-explanation="Let u=3x. \frac{d}{dx}\sin u=u\prime\cos u. So the derivative is 3\cos(3x)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-trig-derivative-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-trig-derivative-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-trig-derivative-primary-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1045,19 +1198,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_trig_functions"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-trig-derivative-similar"
+      data-question-title="Differentiate $\cos(2x)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;-2sin(2x)&quot;,&quot;-2 sin(2x)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-2sin(2x)"
+      data-explanation="Let u=2x. \frac{d}{dx}\cos u=-u\prime\sin u. So the derivative is -2\sin(2x)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-trig-derivative-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-trig-derivative-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-trig-derivative-similar-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1122,19 +1296,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_inverse_tangent_support"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-arctan-derivative-primary"
+      data-question-title="Differentiate $\tan^{-1}x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;1/(1+x^2)&quot;,&quot;1/(x^2+1)&quot;,&quot;(1+x^2)^-1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1/(1+x^2)"
+      data-explanation="\tan^{-1}x is inverse tangent. Use the standard rule. The derivative is \frac1{1+x^2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-arctan-derivative-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-arctan-derivative-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-arctan-derivative-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1178,19 +1373,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_inverse_tangent_support"
       data-skill-id="p3_diff_chain_product_quotient"
       data-check-id="learn-diff-arctan-derivative-similar"
+      data-question-title="Differentiate $\tan^{-1}(2x-1)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;2/(1+(2x-1)^2)&quot;,&quot;2/(1+(2x-1)^{2})&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2/(1+(2x-1)^2)"
+      data-explanation="Let u=2x-1. Then u\prime=2. The derivative is \frac{2}{1+(2x-1)^2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-arctan-derivative-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-arctan-derivative-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-arctan-derivative-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1255,19 +1471,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_exponential_logarithmic"
       data-skill-id="p3_diff_implicit_log_exp"
       data-check-id="learn-diff-exp-log-derivative-primary"
+      data-question-title="Differentiate $e^{2x}+\ln(3x-1)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;2e^(2x)+3/(3x-1)&quot;,&quot;2e^2x+3/(3x-1)&quot;,&quot;2e^{2x}+3/(3x-1)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2e^(2x)+3/(3x-1)"
+      data-explanation="e^{2x} differentiates to 2e^{2x}. \ln(3x-1) differentiates to \frac{3}{3x-1}. Add the derivative terms."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-exp-log-derivative-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-exp-log-derivative-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-exp-log-derivative-primary-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1311,19 +1548,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_exponential_logarithmic"
       data-skill-id="p3_diff_implicit_log_exp"
       data-check-id="learn-diff-exp-log-derivative-similar"
+      data-question-title="Differentiate $5^x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;5^xln5&quot;,&quot;5^x ln5&quot;,&quot;5^xln(5)&quot;,&quot;5^x ln(5)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="5^xln5"
+      data-explanation="Use \frac{d}{dx}a^x=a^x\ln a. Here the base is 5. So the derivative is 5^x\ln5."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-exp-log-derivative-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-exp-log-derivative-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-exp-log-derivative-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1388,19 +1646,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_implicit"
       data-skill-id="p3_diff_implicit_log_exp"
       data-check-id="learn-diff-implicit-dydx-primary"
+      data-question-title="Differentiate $y^3$ with respect to $x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;3y^2dy/dx&quot;,&quot;3y^2(dy/dx)&quot;,&quot;3y^2y\\prime&quot;,&quot;3y^2yprime&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3y^2dy/dx"
+      data-explanation="Differentiate y^3 as a power of y. This gives 3y^2. Because the differentiation is with respect to x, multiply by dy/dx."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-implicit-dydx-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-implicit-dydx-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-implicit-dydx-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1444,19 +1723,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="derivatives_implicit"
       data-skill-id="p3_diff_implicit_log_exp"
       data-check-id="learn-diff-implicit-dydx-similar"
+      data-question-title="Differentiate $xy$ with respect to $x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;y+xdy/dx&quot;,&quot;y+x(dy/dx)&quot;,&quot;xdy/dx+y&quot;,&quot;x(dy/dx)+y&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="y+xdy/dx"
+      data-explanation="Use product rule with u=x and v=y. The derivative is x\frac{dy}{dx}+y\cdot1. So \frac{d}{dx}(xy)=y+x\frac{dy}{dx}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-implicit-dydx-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-implicit-dydx-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-implicit-dydx-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1539,19 +1839,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-tangent-gradient-primary"
+      data-question-title="For $y=x^3-2x$, find the tangent gradient at $x=2$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;10&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="10"
+      data-explanation="\frac{dy}{dx}=3x^2-2. Substitute x=2. The gradient is 3(2)^2-2=10."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-tangent-gradient-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-tangent-gradient-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-tangent-gradient-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1595,19 +1916,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-tangent-gradient-similar"
+      data-question-title="For $y=e^{2x}$, find the tangent gradient at $x=0$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2"
+      data-explanation="\frac{dy}{dx}=2e^{2x}. At x=0, this is 2e^0. The gradient is 2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-tangent-gradient-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-tangent-gradient-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-tangent-gradient-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1690,19 +2032,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-normal-gradient-primary"
+      data-question-title="For $y=x^2+1$ at $x=2$, type the normal gradient."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-1/4&quot;,&quot;-0.25&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-1/4"
+      data-explanation="\frac{dy}{dx}=2x. At x=2, the tangent gradient is 4. The normal gradient is -\frac14."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-normal-gradient-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-normal-gradient-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-normal-gradient-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1746,10 +2109,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-normal-gradient-similar"
+      data-question-title="Choose the normal equation for $y=x^2+1$ at $x=2$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;y-5=-\\frac14(x-2)&quot;,&quot;distractor-1&quot;:&quot;y-5=4(x-2)&quot;,&quot;distractor-2&quot;:&quot;y-2=-\\frac14(x-5)&quot;}"
+      data-correct-answer-label="y-5=-\frac14(x-2)"
+      data-explanation="The point is (2,5). The normal gradient is -\frac14. So the normal is y-5=-\frac14(x-2)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
@@ -1874,19 +2241,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-stationary-condition-primary"
+      data-question-title="For $y=x^3-3x$, type the stationary-point equation."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;3x^2-3=0&quot;,&quot;3x^2=3&quot;,&quot;x^2-1=0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3x^2-3=0"
+      data-explanation="Differentiate y=x^3-3x to get 3x^2-3. Stationary points have gradient zero. So solve 3x^2-3=0."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="y=mx+c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-stationary-condition-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-stationary-condition-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-stationary-condition-primary-answer-guidance" placeholder="y=mx+c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1930,19 +2318,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-stationary-condition-similar"
+      data-question-title="Solve $3x^2-3=0$ for the candidate stationary $x$ values."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;-1, 1&quot;,&quot;1, -1&quot;,&quot;x=-1, x=1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-1, 1"
+      data-explanation="3x^2-3=0 gives x^2=1. So x=-1 or x=1. These are candidate stationary x values."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-stationary-condition-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-stationary-condition-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-stationary-condition-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2025,19 +2434,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-classify-stationary-primary"
+      data-question-title="For $y=x^3-3x$, classify the stationary point at $x=-1$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;maximum&quot;,&quot;max&quot;,&quot;local maximum&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="maximum"
+      data-explanation="d^2y/dx^2=6x. At x=-1, this is -6. A negative second derivative gives a local maximum."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;sign error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-classify-stationary-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-classify-stationary-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-classify-stationary-primary-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2081,19 +2511,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-classify-stationary-similar"
+      data-question-title="For $y=x^3-3x$, classify the stationary point at $x=1$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;minimum&quot;,&quot;min&quot;,&quot;local minimum&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="minimum"
+      data-explanation="d^2y/dx^2=6x. At x=1, this is 6. A positive second derivative gives a local minimum."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;sign error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-classify-stationary-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-classify-stationary-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-classify-stationary-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2158,19 +2609,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-increasing-decreasing-primary"
+      data-question-title="For $f\prime(x)=3x^2-3$, describe the behavior on $x&gt;1$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;increasing&quot;,&quot;increase&quot;,&quot;rising&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="increasing"
+      data-explanation="On x&gt;1, 3x^2-3 is positive. A positive derivative means the function is increasing. So the behavior is increasing."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;sign error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-increasing-decreasing-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-increasing-decreasing-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-increasing-decreasing-primary-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2214,19 +2686,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-increasing-decreasing-similar"
+      data-question-title="For $f\prime(x)=3x^2-3$, describe the behavior on $-1&lt;x&lt;1$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;decreasing&quot;,&quot;decrease&quot;,&quot;falling&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="decreasing"
+      data-explanation="On -1&lt;x&lt;1, 3x^2-3 is negative. A negative derivative means the function is decreasing. So the behavior is decreasing."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;sign error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-increasing-decreasing-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-increasing-decreasing-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-increasing-decreasing-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2291,19 +2784,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-mixed-optimization-transfer-primary"
+      data-question-title="For $A(x)=12x-x^2$, type the derivative equation for the maximum condition."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;12-2x=0&quot;,&quot;-2x+12=0&quot;,&quot;2x-12=0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="12-2x=0"
+      data-explanation="Differentiate A(x)=12x-x^2. This gives A\prime(x)=12-2x. For a maximum candidate, solve 12-2x=0."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="y=mx+c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-mixed-optimization-transfer-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-mixed-optimization-transfer-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-mixed-optimization-transfer-primary-answer-guidance" placeholder="y=mx+c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2347,19 +2861,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="p3_diff_stationary_tangent_normal"
       data-skill-id="p3_diff_stationary_tangent_normal"
       data-check-id="learn-diff-mixed-optimization-transfer-similar"
+      data-question-title="Solve $12-2x=0$ for the candidate value of $x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;6&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="6"
+      data-explanation="12-2x=0 gives 12=2x. So x=6. A second derivative or sign check would confirm this is a maximum in context."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-diff-mixed-optimization-transfer-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-diff-mixed-optimization-transfer-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-diff-mixed-optimization-transfer-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">

@@ -1,4 +1,4 @@
-import type { SkillCheckAttemptRecord } from '../types';
+import type { SkillCheckAttemptRecord, StudentAttemptHistory, StudentAttemptHistoryRecord } from '../types';
 import {
   assessmentFromSkillCheckAttempt,
   updateErrorClassificationFromTags,
@@ -14,6 +14,7 @@ export interface SkillCheckAttemptStorageLike {
 
 export interface SkillCheckProgressShape {
   skillCheckAttempts?: SkillCheckLocalAttempt[];
+  attemptHistory?: StudentAttemptHistory;
   [key: string]: unknown;
 }
 
@@ -46,6 +47,51 @@ export function isSkillCheckLocalAttemptRecord(value: unknown): value is SkillCh
 
 export function normalizeSkillCheckLocalAttempts(records: unknown): SkillCheckLocalAttempt[] {
   return Array.isArray(records) ? records.filter(isSkillCheckLocalAttemptRecord) : [];
+}
+
+export function isStudentAttemptHistoryRecord(value: unknown): value is StudentAttemptHistoryRecord {
+  if (!value || typeof value !== 'object') return false;
+  const record = value as Partial<StudentAttemptHistoryRecord>;
+  return typeof record.id === 'string'
+    && (record.source === 'checked_practice' || record.source === 'learn_mode')
+    && record.course === 'p3'
+    && typeof record.questionId === 'string'
+    && typeof record.response === 'string'
+    && typeof record.correct === 'boolean'
+    && typeof record.timestamp === 'string'
+    && typeof record.attemptNumber === 'number'
+    && Number.isFinite(record.attemptNumber)
+    && record.attemptNumber >= 1;
+}
+
+export function normalizeStudentAttemptHistory(value: unknown): StudentAttemptHistory {
+  if (!value || typeof value !== 'object') return { schemaVersion: 1, records: [] };
+  const history = value as Partial<StudentAttemptHistory>;
+  return {
+    schemaVersion: 1,
+    records: Array.isArray(history.records) ? history.records.filter(isStudentAttemptHistoryRecord) : [],
+  };
+}
+
+export function nextStudentAttemptNumber(history: StudentAttemptHistory, questionId: string): number {
+  const matchingAttempts = normalizeStudentAttemptHistory(history).records
+    .filter((record) => record.questionId === questionId)
+    .map((record) => record.attemptNumber);
+  return matchingAttempts.length ? Math.max(...matchingAttempts) + 1 : 1;
+}
+
+export function appendStudentAttemptHistoryRecord(
+  history: unknown,
+  record: Omit<StudentAttemptHistoryRecord, 'attemptNumber'> & { attemptNumber?: number },
+): StudentAttemptHistory {
+  const normalized = normalizeStudentAttemptHistory(history);
+  const attemptNumber = typeof record.attemptNumber === 'number' && Number.isFinite(record.attemptNumber) && record.attemptNumber >= 1
+    ? record.attemptNumber
+    : nextStudentAttemptNumber(normalized, record.questionId);
+  return {
+    schemaVersion: 1,
+    records: [...normalized.records, { ...record, attemptNumber }],
+  };
 }
 
 export function isPassingSkillCheckAttempt(attempt: SkillCheckLocalAttempt): boolean {
@@ -83,9 +129,25 @@ export function saveSkillCheckAttempt(
 
   const attempts = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts);
   const nextAttempts = [...attempts, attempt];
+  const nextHistory = appendStudentAttemptHistoryRecord(progress.attemptHistory, {
+    id: `${attempt.attemptId}:history`,
+    source: 'checked_practice',
+    course: attempt.course,
+    questionId: attempt.checkId,
+    questionTitle: attempt.topic,
+    topic: attempt.topic,
+    regionId: attempt.regionId,
+    skillId: attempt.skillId,
+    response: attempt.submittedAnswer,
+    responseDisplay: attempt.submittedAnswer,
+    correct: attempt.isCorrect,
+    timestamp: attempt.timestamp,
+    relatedAttemptId: attempt.attemptId,
+  });
   const nextProgress = updateStudentPerformanceState({
     ...progress,
     skillCheckAttempts: nextAttempts,
+    attemptHistory: nextHistory,
   }, assessmentFromSkillCheckAttempt(attempt));
   storage.setItem(key, JSON.stringify(nextProgress));
   return nextAttempts;

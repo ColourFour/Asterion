@@ -332,8 +332,16 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('Browser/device warning');
     expect(generatorSource).toContain('data-export-local-progress-form');
     expect(generatorSource).toContain('data-download-export-csv');
+    expect(generatorSource).toContain('data-progress-transfer-controls');
+    expect(generatorSource).toContain('data-export-progress-json');
+    expect(generatorSource).toContain('data-import-progress-json');
     expect(staticClientSource).toContain('data-export-local-progress-form');
     expect(staticClientSource).toContain('exportLocalProgressDownload');
+    expect(staticClientSource).toContain("PROGRESS_EXPORT_KIND = 'asterion-progress-export'");
+    expect(staticClientSource).toContain("storageKeys: [STORAGE_KEY, THEME_STORAGE_KEY]");
+    expect(staticClientSource).toContain('validateProgressImportPayload');
+    expect(staticClientSource).toContain('Importing replaces progress saved in this browser.');
+    expect(staticClientSource).toContain('downloadTextFile(progressJsonFilename(payload.exportedAt), json,');
     expect(staticClientSource).toContain('localProgressTeacherSummary');
     expect(staticClientSource).toContain('data-export-teacher-summary');
     expect(staticClientSource).toContain('Not recorded in this browser');
@@ -347,6 +355,8 @@ describe('static P3 product contract', () => {
       expect(worksheetSource).toContain('Algebra Checked Practice Worksheet');
       expect(worksheetSource).toContain('Student name:');
       expect(worksheetSource).toContain('Print / Save PDF');
+      expect(worksheetSource).toContain('data-export-progress-json');
+      expect(worksheetSource).toContain('data-import-progress-json');
     }
 
     const integrationWorksheetPath = 'docs/p3/topics/integration/worksheet/index.html';
@@ -407,8 +417,9 @@ describe('static P3 product contract', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
 
     expect(generatorSource).toContain('answerFormatGuidance');
-    expect(generatorSource).toContain('renderAnswerFormatLine');
+    expect(generatorSource).toContain('renderMathAnswerInput');
     expect(generatorSource).toContain('data-answer-format');
+    expect(generatorSource).toContain('math-answer-input');
     expect(generatorSource).not.toContain(oldGenericInstruction);
 
     for (const generatedPath of [
@@ -420,7 +431,10 @@ describe('static P3 product contract', () => {
       'docs/p3/repair-lane/index.html',
     ]) {
       if (!existsSync(generatedPath)) continue;
-      expect(readFileSync(generatedPath, 'utf8'), generatedPath).not.toContain(oldGenericInstruction);
+      const html = readFileSync(generatedPath, 'utf8');
+      expect(html, generatedPath).not.toContain(oldGenericInstruction);
+      expect(html, generatedPath).toContain('math-answer-input');
+      expect(html, generatedPath).toContain('aria-describedby');
     }
 
     if (existsSync('docs/p3/topics/vectors/learn/index.html')) {
@@ -429,6 +443,8 @@ describe('static P3 product contract', () => {
         expect(notationStep).not.toBeNull();
         if (notationStep) {
           expect(visibleText(notationStep)).toContain('Answer format: column-vector components as (a,b,c), with commas.');
+          expect(Array.from(notationStep.querySelectorAll('.math-answer-symbols code'), (element) => visibleText(element))).toEqual(expect.arrayContaining(['commas', '( )', '< >']));
+          expect(notationStep.querySelector('.math-answer-input[data-answer-kind="coordinate-vector"]')).not.toBeNull();
           expect(notationStep.querySelector('input[name="submittedAnswer"]')?.getAttribute('placeholder')).toBe('(a,b,c)');
         }
       });
@@ -437,6 +453,8 @@ describe('static P3 product contract', () => {
     if (existsSync('docs/p3/topics/trigonometry/learn/index.html')) {
       withStaticDocument('docs/p3/topics/trigonometry/learn/index.html', (document) => {
         expect(visibleText(document.body)).toContain('Answer format: separate values with commas, e.g. a, b.');
+        expect(Array.from(document.querySelectorAll('.math-answer-input[data-answer-kind="multi-value"] .math-answer-examples code'), (element) => visibleText(element))).toEqual(expect.arrayContaining(['a, b', 'x=1, x=2']));
+        expect(document.querySelector('.math-answer-input[data-answer-kind="multi-value"]')).not.toBeNull();
         expect(document.querySelector('input[name="submittedAnswer"][placeholder="a, b"]')).not.toBeNull();
       });
     }
@@ -444,6 +462,8 @@ describe('static P3 product contract', () => {
     if (existsSync('docs/p3/topics/algebra/learn/index.html')) {
       withStaticDocument('docs/p3/topics/algebra/learn/index.html', (document) => {
         expect(visibleText(document.body)).toContain('Answer format: number, fraction, radical, or pi form.');
+        expect(Array.from(document.querySelectorAll('.math-answer-input[data-answer-kind="numeric"] .math-answer-symbols code'), (element) => visibleText(element))).toEqual(expect.arrayContaining(['/', 'sqrt()', 'pi']));
+        expect(document.querySelector('.math-answer-input[data-answer-kind="numeric"]')).not.toBeNull();
         expect(document.querySelector('input[name="submittedAnswer"][placeholder="3/2"]')).not.toBeNull();
       });
     }
@@ -455,8 +475,13 @@ describe('static P3 product contract', () => {
         if (twoValueForm) {
           expect(visibleText(twoValueForm)).toContain('Answer format: type a compact expression using ^ for powers.');
           expect(visibleText(twoValueForm)).toContain('Answer format: number, fraction, radical, or pi form.');
+          expect(twoValueForm.querySelectorAll('.math-answer-input')).toHaveLength(2);
           expect(twoValueForm.querySelector('input[aria-label="quotient"]')?.getAttribute('placeholder')).toBe('x^2-x-6');
           expect(twoValueForm.querySelector('input[aria-label="remainder"]')?.getAttribute('placeholder')).toBe('3/2');
+          const quotientInput = twoValueForm.querySelector('input[aria-label="quotient"]');
+          const describedBy = quotientInput?.getAttribute('aria-describedby');
+          expect(describedBy).toBeTruthy();
+          expect(describedBy ? twoValueForm.querySelector(`#${describedBy}`) : null).not.toBeNull();
         }
       });
     }
@@ -467,6 +492,7 @@ describe('static P3 product contract', () => {
         expect(diagnosticInput).not.toBeNull();
         expect(diagnosticInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
         expect(diagnosticInput?.getAttribute('placeholder')).toBeTruthy();
+        expect(diagnosticInput?.closest('.math-answer-input')).not.toBeNull();
         expect(visibleText(document.body)).toContain('Answer format:');
       });
     }
@@ -477,6 +503,7 @@ describe('static P3 product contract', () => {
         expect(repairInput).not.toBeNull();
         expect(repairInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
         expect(repairInput?.getAttribute('placeholder')).toBeTruthy();
+        expect(repairInput?.closest('.math-answer-input')).not.toBeNull();
         expect(visibleText(document.body)).toContain('Answer format:');
       });
     }

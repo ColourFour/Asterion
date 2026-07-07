@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,10 +103,14 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-recognize-separable-primary"
+      data-question-title="For $\frac{dy}{dx}=xy$, look for an x-factor times a y-factor, then decide whether it is separable."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Yes, it can be separated&quot;,&quot;distractor-1&quot;:&quot;No, because it contains both x and y&quot;,&quot;distractor-2&quot;:&quot;No, because it has dy/dx&quot;,&quot;distractor-3&quot;:&quot;Only after differentiating again&quot;}"
+      data-correct-answer-label="Yes, it can be separated"
+      data-explanation="xy is a product of an x factor and a y factor. That lets the y factor move to the left with dy. So \frac{dy}{dx}=xy is separable."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -195,10 +206,14 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-recognize-separable-similar"
+      data-question-title="For $\frac{dy}{dx}=x+y$, decide whether it separates directly."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;No, it does not separate directly&quot;,&quot;distractor-1&quot;:&quot;Yes, use \\frac1y\\,dy=x\\,dx&quot;,&quot;distractor-2&quot;:&quot;Yes, integrate x+y with respect to x&quot;,&quot;distractor-3&quot;:&quot;Yes, divide by x only&quot;}"
+      data-correct-answer-label="No, it does not separate directly"
+      data-explanation="x+y mixes the variables in a sum. It cannot be rearranged directly into one side with dy and one side with dx by simple division. So it is not directly separable in this form."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -315,19 +330,40 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-separate-variables-primary"
+      data-question-title="Separate $\frac{dy}{dx}=xy$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;(1/y)dy=xdx&quot;,&quot;1/y dy=x dx&quot;,&quot;dy/y=x dx&quot;,&quot;(1/y) dy = x dx&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(1/y)dy=xdx"
+      data-explanation="Start with \frac{dy}{dx}=xy. Divide by y. Multiply by dx to get \frac1y\,dy=x\,dx."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;missing differential&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="y=mx+c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-separate-variables-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-separate-variables-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-separate-variables-primary-answer-guidance" placeholder="y=mx+c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -371,19 +407,40 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-separate-variables-similar"
+      data-question-title="Separate $\frac{dy}{dx}=x(1+y)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;(1/(1+y))dy=xdx&quot;,&quot;dy/(1+y)=x dx&quot;,&quot;1/(1+y) dy=x dx&quot;,&quot;(1/(1+y)) dy = x dx&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(1/(1+y))dy=xdx"
+      data-explanation="The y factor is 1+y. Divide by 1+y and multiply by dx. The separated form is \frac1{1+y}\,dy=x\,dx."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;missing differential&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="y=mx+c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-separate-variables-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-separate-variables-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-separate-variables-similar-answer-guidance" placeholder="y=mx+c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -448,19 +505,40 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-integrate-both-sides-primary"
+      data-question-title="Integrate $\frac1y\,dy=x\,dx$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln|y|=x^2/2+C&quot;,&quot;ln(y)=x^2/2+C&quot;,&quot;lny=x^2/2+C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln|y|=x^2/2+C"
+      data-explanation="Integrate the left side to get \ln|y|. Integrate the right side to get x^2/2. Add one arbitrary constant, giving \ln|y|=x^2/2+C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-integrate-both-sides-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-integrate-both-sides-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-integrate-both-sides-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -504,19 +582,40 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-integrate-both-sides-similar"
+      data-question-title="Integrate $\frac1{1+y}\,dy=x\,dx$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln|1+y|=x^2/2+C&quot;,&quot;ln(1+y)=x^2/2+C&quot;,&quot;ln|y+1|=x^2/2+C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln|1+y|=x^2/2+C"
+      data-explanation="Integrate 1/(1+y) with respect to y. Integrate x with respect to x. The result is \ln|1+y|=x^2/2+C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-integrate-both-sides-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-integrate-both-sides-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-integrate-both-sides-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -581,19 +680,40 @@
       data-field-guide-topic-id="differential_particular_solutions"
       data-skill-id="p3_de_initial_condition"
       data-check-id="learn-de-initial-condition-constant-primary"
+      data-question-title="For $\ln|y|=x^2/2+C$ and $y=2$ when $x=0$, find $C$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln2&quot;,&quot;ln(2)&quot;,&quot;ln|2|&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln2"
+      data-explanation="Substitute the condition into the integrated equation. \ln|2|=0^2/2+C. So C=\ln2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-initial-condition-constant-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-initial-condition-constant-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-initial-condition-constant-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -637,19 +757,40 @@
       data-field-guide-topic-id="differential_particular_solutions"
       data-skill-id="p3_de_initial_condition"
       data-check-id="learn-de-initial-condition-constant-similar"
+      data-question-title="For $y=Ae^{2x}$ passing through $(0,3)$, find $A$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3"
+      data-explanation="Use the point (0,3). 3=Ae^0. Since e^0=1, A=3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-initial-condition-constant-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-initial-condition-constant-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-initial-condition-constant-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -714,19 +855,40 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-solve-explicitly-primary"
+      data-question-title="Rewrite $\ln y=x^2/2+C$ as $y=$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;y=Ae^(x^2/2)&quot;,&quot;y=Ce^(x^2/2)&quot;,&quot;y=Ae^{x^2/2}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="y=Ae^(x^2/2)"
+      data-explanation="Exponentiate both sides. This gives y=e^{x^2/2+C}. Absorb e^C into a multiplier A, giving y=Ae^{x^2/2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-solve-explicitly-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-solve-explicitly-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-solve-explicitly-primary-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -770,19 +932,40 @@
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-solve-explicitly-similar"
+      data-question-title="Rewrite $\ln(1+y)=x^2/2+C$ as $y=$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;y=Ae^(x^2/2)-1&quot;,&quot;y=Ce^(x^2/2)-1&quot;,&quot;y=Ae^{x^2/2}-1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="y=Ae^(x^2/2)-1"
+      data-explanation="Exponentiate to get 1+y=Ae^{x^2/2}. Subtract 1 from both sides. So y=Ae^{x^2/2}-1."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-solve-explicitly-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-solve-explicitly-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-solve-explicitly-similar-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -847,19 +1030,40 @@
       data-field-guide-topic-id="differential_first_order_model"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-exponential-growth-decay-primary"
+      data-question-title="Solve $\frac{dy}{dx}=ky$ in general form."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;y=Ae^(kx)&quot;,&quot;y=Ce^(kx)&quot;,&quot;y=Ae^{kx}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="y=Ae^(kx)"
+      data-explanation="Separate to get \frac1y\,dy=k\,dx. Integrate to get \ln|y|=kx+C. Exponentiate to get y=Ae^{kx}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-exponential-growth-decay-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-exponential-growth-decay-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-exponential-growth-decay-primary-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -903,19 +1107,40 @@
       data-field-guide-topic-id="differential_first_order_model"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-exponential-growth-decay-similar"
+      data-question-title="Solve $\frac{dy}{dx}=-3y$ in general form."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;y=Ae^(-3x)&quot;,&quot;y=Ce^(-3x)&quot;,&quot;y=Ae^{-3x}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="y=Ae^(-3x)"
+      data-explanation="Separate to get \frac1y\,dy=-3\,dx. Integrate to get \ln|y|=-3x+C. So y=Ae^{-3x}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-exponential-growth-decay-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-exponential-growth-decay-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-exponential-growth-decay-similar-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -980,10 +1205,14 @@
       data-field-guide-topic-id="differential_first_order_model"
       data-skill-id="p3_de_forming_context_model"
       data-check-id="learn-de-direct-rate-statement-primary"
+      data-question-title="A population $P$ grows at a rate proportional to $P$. Choose the model."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\frac{dP}{dt}=kP&quot;,&quot;distractor-1&quot;:&quot;P=kt&quot;,&quot;distractor-2&quot;:&quot;\\frac{dt}{dP}=kP&quot;,&quot;distractor-3&quot;:&quot;\\frac{dP}{dt}=k+P&quot;}"
+      data-correct-answer-label="\frac{dP}{dt}=kP"
+      data-explanation="The changing quantity is P. Rate of change with respect to time is dP/dt. Proportional to P gives kP."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
@@ -1079,10 +1308,14 @@
       data-field-guide-topic-id="differential_first_order_model"
       data-skill-id="p3_de_forming_context_model"
       data-check-id="learn-de-direct-rate-statement-similar"
+      data-question-title="A temperature difference $T$ decreases at a rate proportional to $T$. Choose the model for $k&gt;0$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\frac{dT}{dt}=-kT&quot;,&quot;distractor-1&quot;:&quot;\\frac{dT}{dt}=kT&quot;,&quot;distractor-2&quot;:&quot;T=-kt&quot;,&quot;distractor-3&quot;:&quot;\\frac{dt}{dT}=-kT&quot;}"
+      data-correct-answer-label="\frac{dT}{dt}=-kT"
+      data-explanation="The rate of change is dT/dt. Proportional to T gives kT. Because it decreases, use -kT."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
@@ -1199,10 +1432,14 @@
       data-field-guide-topic-id="differential_modeling"
       data-skill-id="p3_de_forming_context_model"
       data-check-id="learn-de-combined-rate-statement-primary"
+      data-question-title="Water raises depth $h$ at $4$ cm/min and leaks out at a rate proportional to $\sqrt h$. Choose the model."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\frac{dh}{dt}=4-k\\sqrt h&quot;,&quot;distractor-1&quot;:&quot;\\frac{dh}{dt}=4+k\\sqrt h&quot;,&quot;distractor-2&quot;:&quot;h=4t-k\\sqrt h&quot;,&quot;distractor-3&quot;:&quot;\\frac{dt}{dh}=4-k\\sqrt h&quot;}"
+      data-correct-answer-label="\frac{dh}{dt}=4-k\sqrt h"
+      data-explanation="The depth changes with time, so use dh/dt. The inflow contributes +4. The leak contributes -k\sqrt h, so the model is dh/dt=4-k\sqrt h."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -1430,10 +1667,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_modeling"
       data-skill-id="p3_de_forming_context_model"
       data-check-id="learn-de-combined-rate-statement-similar"
+      data-question-title="An amount $P$ forms toward a maximum of $50$ at a rate proportional to the amount not yet formed. Choose the model."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\frac{dP}{dt}=k(50-P)&quot;,&quot;distractor-1&quot;:&quot;\\frac{dP}{dt}=kP&quot;,&quot;distractor-2&quot;:&quot;P=k(50-P)&quot;,&quot;distractor-3&quot;:&quot;\\frac{dP}{dt}=50-k-P&quot;}"
+      data-correct-answer-label="\frac{dP}{dt}=k(50-P)"
+      data-explanation="The rate of change is dP/dt. The remaining amount is 50-P. Proportional to that amount gives dP/dt=k(50-P)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
@@ -1550,19 +1791,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_particular_solutions"
       data-skill-id="p3_de_initial_condition"
       data-check-id="learn-de-boundary-condition-after-integration-primary"
+      data-question-title="For $y=A(x^2+3)^2$ and $y=2$ when $x=0$, find $A$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;2/9&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2/9"
+      data-explanation="Start from the general solution. Substitute the condition: 2=A(0^2+3)^2. This gives 2=9A, so A=2/9."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-boundary-condition-after-integration-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-boundary-condition-after-integration-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-boundary-condition-after-integration-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1606,19 +1868,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_particular_solutions"
       data-skill-id="p3_de_initial_condition"
       data-check-id="learn-de-boundary-condition-after-integration-similar"
+      data-question-title="For $T=20+Ae^{-kt}$ and $T=80$ when $t=0$, find $A$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;60&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="60"
+      data-explanation="Substitute t=0 and T=80. 80=20+Ae^0=20+A. So A=60."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-boundary-condition-after-integration-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-boundary-condition-after-integration-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-boundary-condition-after-integration-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1683,19 +1966,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-verify-proposed-solution-primary"
+      data-question-title="For $y=3e^{2x}$, type $dy/dx$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;6e^(2x)&quot;,&quot;6e^{2x}&quot;,&quot;6 e^(2x)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="6e^(2x)"
+      data-explanation="Differentiate 3e^{2x}. The derivative of e^{2x} is 2e^{2x}. So dy/dx=6e^{2x}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-verify-proposed-solution-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-verify-proposed-solution-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-verify-proposed-solution-primary-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1739,10 +2043,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_separation_setup"
       data-check-id="learn-de-verify-proposed-solution-similar"
+      data-question-title="Does $y=e^{-x}$ satisfy $\frac{dy}{dx}=-y$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Yes&quot;,&quot;distractor-1&quot;:&quot;No, the sign is wrong&quot;,&quot;distractor-2&quot;:&quot;No, only if x=0&quot;,&quot;distractor-3&quot;:&quot;No, because it has no constant&quot;}"
+      data-correct-answer-label="Yes"
+      data-explanation="Differentiate y=e^{-x} to get dy/dx=-e^{-x}. The right side -y is also -e^{-x}. So the proposed solution satisfies the equation."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;incomplete reasoning&quot;]"
@@ -1859,19 +2167,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_modeling"
       data-skill-id="p3_de_forming_context_model"
       data-check-id="learn-de-interpret-behavior-primary"
+      data-question-title="For $T=20+60e^{-kt}$ with $k&gt;0$, what value does $T$ approach?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;20&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="20"
+      data-explanation="Because k&gt;0, e^{-kt} decays to 0. The variable part 60e^{-kt} disappears in the limit. So T approaches 20."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-interpret-behavior-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-interpret-behavior-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-interpret-behavior-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1915,19 +2244,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_modeling"
       data-skill-id="p3_de_forming_context_model"
       data-check-id="learn-de-interpret-behavior-similar"
+      data-question-title="For $P=50-50e^{-2t}$, what value does $P$ approach as $t$ increases?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;50&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="50"
+      data-explanation="The exponential term e^{-2t} tends to 0. The subtraction term tends to 0. So P approaches 50."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-interpret-behavior-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-interpret-behavior-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-interpret-behavior-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1992,19 +2342,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_initial_condition"
       data-check-id="learn-de-mixed-exam-transfer-primary"
+      data-question-title="Solve $\frac{dy}{dx}=2xy$ with $y=1$ when $x=0$. Type the particular solution."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;y=e^(x^2)&quot;,&quot;y=e^{x^2}&quot;,&quot;e^(x^2)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="y=e^(x^2)"
+      data-explanation="Separate to get \frac1y\,dy=2x\,dx. Integrate to get \ln y=x^2+C. Use y=1 at x=0 to get C=0, so y=e^{x^2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-mixed-exam-transfer-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-mixed-exam-transfer-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-mixed-exam-transfer-primary-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2048,19 +2419,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="differential_separable_variables"
       data-skill-id="p3_de_initial_condition"
       data-check-id="learn-de-mixed-exam-transfer-similar"
+      data-question-title="Solve $\frac{dy}{dx}=3y$ with $y=2$ when $x=0$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;y=2e^(3x)&quot;,&quot;2e^(3x)&quot;,&quot;y=2e^{3x}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="y=2e^(3x)"
+      data-explanation="Solve dy/dx=3y to get y=Ae^{3x}. Use y=2 when x=0. This gives A=2, so y=2e^{3x}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="Ae^(kx)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-de-mixed-exam-transfer-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-de-mixed-exam-transfer-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-de-mixed-exam-transfer-similar-answer-guidance" placeholder="Ae^(kx)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">

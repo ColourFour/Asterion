@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,10 +103,14 @@
       data-field-guide-topic-id="iteration_graph_root_proof"
       data-skill-id="p3_num_sign_change_graph_evidence"
       data-check-id="learn-iteration-need-numerical-solution-primary"
+      data-question-title="For $f(x)=x^3-x-1$, choose the target graph feature that represents a root."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;x-axis crossing&quot;,&quot;distractor-1&quot;:&quot;y-intercept&quot;,&quot;distractor-2&quot;:&quot;turning point&quot;,&quot;distractor-3&quot;:&quot;gradient at x=0&quot;}"
+      data-correct-answer-label="x-axis crossing"
+      data-explanation="A root satisfies f(x)=0. On the graph y=f(x), that means y=0. So the root is represented by an x-axis crossing or contact point."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -195,19 +206,40 @@
       data-field-guide-topic-id="iteration_graph_root_proof"
       data-skill-id="p3_num_sign_change_graph_evidence"
       data-check-id="learn-iteration-need-numerical-solution-similar"
+      data-question-title="For $x^3=2x+1$, what part of the graphs $y=x^3$ and $y=2x+1$ gives a solution?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;intersection&quot;,&quot;intersections&quot;,&quot;x-coordinate of intersection&quot;,&quot;x coordinate of intersection&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="intersection"
+      data-explanation="The equation has left side x^3 and right side 2x+1. Where the graphs intersect, the two sides are equal. The solution is the x-coordinate of an intersection."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-need-numerical-solution-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-need-numerical-solution-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-need-numerical-solution-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -272,19 +304,40 @@
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-rearrange-fixed-point-primary"
+      data-question-title="For $x^3-x-1=0$, type the fixed-point form using cuberoot notation."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;x=cuberoot(x+1)&quot;,&quot;x=(x+1)^(1/3)&quot;,&quot;cuberoot(x+1)&quot;,&quot;(x+1)^(1/3)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x=cuberoot(x+1)"
+      data-explanation="Start from x^3-x-1=0. Rearrange to x^3=x+1. So a fixed-point form is x=\sqrt[3]{x+1}, typed as x=cuberoot(x+1)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="y=mx+c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-rearrange-fixed-point-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-rearrange-fixed-point-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-rearrange-fixed-point-primary-answer-guidance" placeholder="y=mx+c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -361,10 +414,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-rearrange-fixed-point-similar"
+      data-question-title="For $x^2-2x-3=0$, choose a fixed-point form for the positive root."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;x=\\sqrt{2x+3}&quot;,&quot;distractor-1&quot;:&quot;x^2=2x+3&quot;,&quot;distractor-2&quot;:&quot;x^2-2x=3&quot;,&quot;distractor-3&quot;:&quot;x=2x+3&quot;}"
+      data-correct-answer-label="x=\sqrt{2x+3}"
+      data-explanation="Rearrange to x^2=2x+3. For the positive root, take the positive square root. So x=\sqrt{2x+3} is ready for iteration."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
@@ -536,19 +593,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-starting-value-first-iterate-primary"
+      data-question-title="Use $x_{n+1}=\sqrt{2x_n+3}$ with $x_0=1$. Find $x_1$ to 3 d.p."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;2.236&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2.236"
+      data-explanation="x_1=\sqrt{2(1)+3}. This is \sqrt5=2.236067.... So x_1=2.236 to 3 d.p."
       data-tolerance="0.0005"
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-starting-value-first-iterate-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-starting-value-first-iterate-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-starting-value-first-iterate-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -666,19 +744,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-starting-value-first-iterate-similar"
+      data-question-title="Use $x_{n+1}=\sqrt{2x_n+3}$ with $x_0=2$. Find $x_1$ to 3 d.p."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;2.646&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2.646"
+      data-explanation="x_1=\sqrt{2(2)+3}=\sqrt7. \sqrt7=2.64575.... So x_1=2.646 to 3 d.p."
       data-tolerance="0.0005"
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-starting-value-first-iterate-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-starting-value-first-iterate-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-starting-value-first-iterate-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -828,19 +927,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-table-continuation-primary"
+      data-question-title="For $x_{n+1}=\frac12(x_n+6/x_n)$ with $x_0=2$, type $x_1,x_2,x_3$ to 3 d.p. where needed."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;2.5, 2.45, 2.449&quot;,&quot;2.500, 2.450, 2.449&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2.5, 2.45, 2.449"
+      data-explanation="x_1=\frac12(2+3)=2.5. x_2=\frac12(2.5+6/2.5)=2.45. x_3=\frac12(2.45+6/2.45)=2.449489..., so 2.449 to 3 d.p."
       data-tolerance="0.001"
       data-order-matters="true"
       data-mistake-tags="[&quot;calculator&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-table-continuation-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-table-continuation-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-table-continuation-primary-answer-guidance" placeholder="a, b, c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -884,19 +1004,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-table-continuation-similar"
+      data-question-title="Using the same formula with $x_0=3$, type $x_1,x_2$ to 3 d.p. where needed."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;2.5, 2.45&quot;,&quot;2.500, 2.450&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2.5, 2.45"
+      data-explanation="x_1=\frac12(3+2)=2.5. x_2=\frac12(2.5+6/2.5)=2.45. So the next two values are 2.5,2.45."
       data-tolerance="0.001"
       data-order-matters="true"
       data-mistake-tags="[&quot;calculator&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-table-continuation-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-table-continuation-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-table-continuation-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -961,19 +1102,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-rounding-accuracy-primary"
+      data-question-title="If $x_4=1.7321$ and $x_5=1.7320$, give the root to 3 d.p."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;1.732&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1.732"
+      data-explanation="The iterates agree to three decimal places. 1.7320 to three decimal places is 1.732. So the root estimate is 1.732."
       data-tolerance="0.0005"
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-rounding-accuracy-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-rounding-accuracy-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-rounding-accuracy-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1017,19 +1179,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-rounding-accuracy-similar"
+      data-question-title="If a stable iterate is $2.6458$, give it to 3 d.p."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;2.646&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2.646"
+      data-explanation="2.6458 has fourth decimal digit 8. So the third decimal digit rounds up. The value is 2.646 to 3 d.p."
       data-tolerance="0.0005"
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-rounding-accuracy-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-rounding-accuracy-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-rounding-accuracy-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1112,10 +1295,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_change_of_sign"
       data-skill-id="p3_num_sign_change_graph_evidence"
       data-check-id="learn-iteration-sign-change-bracket-primary"
+      data-question-title="Choose the endpoint sign pattern that proves a root in $(1,2)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;f(1)&lt;0 and f(2)&gt;0&quot;,&quot;distractor-1&quot;:&quot;f(1)&gt;0 and f(2)&gt;0&quot;,&quot;distractor-2&quot;:&quot;f(1)&lt;0 and f(2)&lt;0&quot;,&quot;distractor-3&quot;:&quot;f(1) and f(2) have the same sign&quot;}"
+      data-correct-answer-label="f(1)&lt;0 and f(2)&gt;0"
+      data-explanation="f(1)&lt;0 and f(2)&gt;0 are opposite signs. For a continuous function, the graph crosses the x-axis between the endpoints. So the interval contains a root."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -1211,19 +1398,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_change_of_sign"
       data-skill-id="p3_num_sign_change_graph_evidence"
       data-check-id="learn-iteration-sign-change-bracket-similar"
+      data-question-title="If $f(1)=-2$ and $f(2)=4$, type the sign pattern as signs separated by a comma."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;-,+&quot;,&quot;-, +&quot;,&quot;negative, positive&quot;,&quot;negative,positive&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-,+"
+      data-explanation="f(1)=-2 is negative. f(2)=4 is positive. The sign pattern is -,+."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-sign-change-bracket-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b)</code><code>&lt;a,b&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-sign-change-bracket-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-sign-change-bracket-similar-answer-guidance" placeholder="(a,b)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1306,10 +1514,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_graph_root_proof"
       data-skill-id="p3_num_sign_change_graph_evidence"
       data-check-id="learn-iteration-graph-link-primary"
+      data-question-title="For $x^3=2x+1$, choose the graph pair whose intersections give the roots."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;y=x^3 and y=2x+1&quot;,&quot;distractor-1&quot;:&quot;y=x^3-2x+1 and the y-axis&quot;,&quot;distractor-2&quot;:&quot;y=x^2 and y=2x+1&quot;,&quot;distractor-3&quot;:&quot;y=x^3+2x+1 and y=0&quot;}"
+      data-correct-answer-label="y=x^3 and y=2x+1"
+      data-explanation="The left side is x^3. The right side is 2x+1. So compare y=x^3 and y=2x+1."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -1405,19 +1617,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_graph_root_proof"
       data-skill-id="p3_num_sign_change_graph_evidence"
       data-check-id="learn-iteration-graph-link-similar"
+      data-question-title="For $x^2+2=1/x$, what part of the two graphs gives a solution?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;x-coordinate of intersection&quot;,&quot;x coordinate of intersection&quot;,&quot;intersection&quot;,&quot;intersections&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x-coordinate of intersection"
+      data-explanation="The equation compares two graph values. At an intersection, x^2+2 and 1/x are equal. The solution is the x-coordinate of the intersection."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-graph-link-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-graph-link-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-graph-link-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1482,10 +1715,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_convergence"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-convergence-check-primary"
+      data-question-title="Choose the safest description of $1.4,1.41,1.414,1.4142$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;The values appear to be converging&quot;,&quot;distractor-1&quot;:&quot;The values are diverging&quot;,&quot;distractor-2&quot;:&quot;The exact root has been proved&quot;,&quot;distractor-3&quot;:&quot;The iteration is undefined&quot;}"
+      data-correct-answer-label="The values appear to be converging"
+      data-explanation="The values move toward a stable number. The changes get smaller. So the sequence appears to be converging."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -1581,19 +1818,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_convergence"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-convergence-check-similar"
+      data-question-title="The values are $0.6,0.5488,0.5776,0.5612,0.5705$. Type the safest one-word description."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;converging&quot;,&quot;settling&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="converging"
+      data-explanation="The values alternate around a central value. The jumps are getting smaller. The safest description is converging or settling."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-convergence-check-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-convergence-check-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-convergence-check-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1658,10 +1916,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_convergence"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-bad-form-recognition-primary"
+      data-question-title="Choose the warning sign shown by $1,3,7,15$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Successive values move farther apart&quot;,&quot;distractor-1&quot;:&quot;Successive values agree to more decimal places&quot;,&quot;distractor-2&quot;:&quot;The formula has converged&quot;,&quot;distractor-3&quot;:&quot;The root is exactly 15&quot;}"
+      data-correct-answer-label="Successive values move farther apart"
+      data-explanation="The sequence goes 1,3,7,15. The values move away rather than settle. This is a divergence warning."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -1757,19 +2019,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_convergence"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-bad-form-recognition-similar"
+      data-question-title="The values are $1,2,1,2,1,2$. Type the safest description."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;cycling&quot;,&quot;cycle&quot;,&quot;oscillating&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="cycling"
+      data-explanation="The sequence repeats 1,2,1,2. It is not settling to one value. The safest description is cycling or oscillating."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-bad-form-recognition-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-bad-form-recognition-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-bad-form-recognition-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1834,10 +2117,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_convergence"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-compare-formulas-primary"
+      data-question-title="Formula A gives $0.600,0.549,0.578,0.561,0.571$. Formula B gives $0.600,0.511,0.671,0.399,0.920$. Which is safer?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Formula A&quot;,&quot;distractor-1&quot;:&quot;Formula B&quot;,&quot;distractor-2&quot;:&quot;Both are equally exact after one step&quot;,&quot;distractor-3&quot;:&quot;Neither can be compared from generated values&quot;}"
+      data-correct-answer-label="Formula A"
+      data-explanation="Formula A alternates with smaller changes. Formula B jumps more widely by the last shown value. Formula A is the safer iteration from this starting value."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -1933,19 +2220,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_convergence"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-compare-formulas-similar"
+      data-question-title="A gives $1.0,1.5,1.6,1.62$ and B gives $1.0,3.0,7.0,15.0$. Type A or B for the safer formula."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;a&quot;,&quot;formula a&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="A"
+      data-explanation="A appears to settle near 1.62. B grows away from the start. So A is safer."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-compare-formulas-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-compare-formulas-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-compare-formulas-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2010,19 +2318,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-final-root-estimate-primary"
+      data-question-title="Use $1.5208,1.5213,1.5214$ to state the root to 3 d.p."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;1.521&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1.521"
+      data-explanation="The values are settling near 1.5214. The fourth decimal digit is 4. So the root is 1.521 to 3 d.p."
       data-tolerance="0.0005"
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-final-root-estimate-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-final-root-estimate-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-final-root-estimate-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2066,19 +2395,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_fixed_point_roots"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-final-root-estimate-similar"
+      data-question-title="A stable final value is $0.5671$. State it to 3 d.p."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;0.567&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="0.567"
+      data-explanation="0.5671 has fourth decimal digit 1. So it rounds down at the third decimal place. The answer is 0.567 to 3 d.p."
       data-tolerance="0.0005"
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-final-root-estimate-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-final-root-estimate-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-final-root-estimate-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2154,19 +2504,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_change_of_sign"
       data-skill-id="p3_num_sign_change_graph_evidence"
       data-check-id="learn-iteration-mixed-exam-transfer-primary"
+      data-question-title="If $f(1)&lt;0$ and $f(2)&gt;0$, type the bracket interval."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="interval"
       data-accepted-answers="[&quot;(1,2)&quot;,&quot;1&lt;x&lt;2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(1,2)"
+      data-explanation="f(1) and f(2) have opposite signs. For a continuous function, a root lies between those endpoints. So the bracket is (1,2)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-mixed-exam-transfer-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b)</code><code>&lt;a,b&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-mixed-exam-transfer-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-mixed-exam-transfer-primary-answer-guidance" placeholder="(a,b)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2221,19 +2592,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="iteration_change_of_sign"
       data-skill-id="p3_num_iteration_formula"
       data-check-id="learn-iteration-mixed-exam-transfer-similar"
+      data-question-title="Now use $x_{n+1}=\sqrt{x_n+2}$ with $x_0=1$. Type $x_1,x_2$ to 3 d.p."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;1.732, 1.932&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1.732, 1.932"
+      data-explanation="x_1=\sqrt{1+2}=\sqrt3=1.732.... x_2=\sqrt{1.732...+2}=1.93185.... So x_1,x_2=1.732,1.932 to 3 d.p."
       data-tolerance="0.001"
       data-order-matters="true"
       data-mistake-tags="[&quot;calculator&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-iteration-mixed-exam-transfer-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-iteration-mixed-exam-transfer-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-iteration-mixed-exam-transfer-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">

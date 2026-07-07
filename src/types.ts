@@ -388,6 +388,33 @@ export interface SkillCheckAttemptRecord {
   regionId?: string;
 }
 
+export type StudentAttemptHistorySource = 'checked_practice' | 'learn_mode';
+
+export interface StudentAttemptHistoryRecord {
+  id: string;
+  source: StudentAttemptHistorySource;
+  course: 'p3';
+  questionId: string;
+  questionTitle?: string;
+  topic?: string;
+  regionId?: string;
+  skillId?: string;
+  response: string;
+  responseDisplay?: string;
+  correct: boolean;
+  correctAnswer?: string;
+  explanation?: string;
+  timestamp: string;
+  attemptNumber: number;
+  retryHref?: string;
+  relatedAttemptId?: string;
+}
+
+export interface StudentAttemptHistory {
+  schemaVersion: 1;
+  records: StudentAttemptHistoryRecord[];
+}
+
 export interface TopicCompletionRecord {
   topicId: string;
   subtopicId?: string;
@@ -741,6 +768,7 @@ export interface StoredProgress {
   attempts: Attempt[];
   learningActivityAttempts: LearningActivityAttempt[];
   skillCheckAttempts?: SkillCheckAttemptRecord[];
+  attemptHistory?: StudentAttemptHistory;
   exportProfile?: ProgressExportProfile;
   regionLearning?: Record<string, RegionLearningRecord>;
   error_log?: P3ErrorLogEntry[];

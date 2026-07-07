@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   ASTERION_PROGRESS_STORAGE_KEY,
+  appendStudentAttemptHistoryRecord,
   isSkillCheckLocalAttemptRecord,
   loadSkillCheckAttempts,
+  normalizeStudentAttemptHistory,
   normalizeSkillCheckLocalAttempts,
   saveSkillCheckAttempt,
   skillCheckPassState,
@@ -50,6 +52,19 @@ describe('local Skill Check attempts', () => {
     expect(loadSkillCheckAttempts(storage)).toEqual([
       expect.objectContaining({ attemptId: 'attempt_saved', submittedAnswer: '4' }),
     ]);
+    expect(progress.attemptHistory).toMatchObject({
+      schemaVersion: 1,
+      records: [
+        expect.objectContaining({
+          source: 'checked_practice',
+          questionId: 'sc-alg-binomial-foundation-001',
+          response: '4',
+          correct: false,
+          attemptNumber: 1,
+          relatedAttemptId: 'attempt_saved',
+        }),
+      ],
+    });
     expect(progress.error_log).toEqual([
       expect.objectContaining({
         question_id: 'sc-alg-binomial-foundation-001',
@@ -132,6 +147,81 @@ describe('local Skill Check attempts', () => {
       passedCheckIds: ['check-a'],
       attemptedCheckIds: ['check-a'],
     });
+  });
+
+  it('keeps response history append-only across retries', () => {
+    const storage = memoryStorage();
+    saveSkillCheckAttempt(storage, attempt({ attemptId: 'wrong', checkId: 'check-a', isCorrect: false, submittedAnswer: '5' }));
+    saveSkillCheckAttempt(storage, attempt({ attemptId: 'retry', checkId: 'check-a', isCorrect: true, submittedAnswer: '4' }));
+    const progress = JSON.parse(storage.getItem(ASTERION_PROGRESS_STORAGE_KEY) || '{}');
+
+    expect(progress.attemptHistory.records).toEqual([
+      expect.objectContaining({
+        questionId: 'check-a',
+        response: '5',
+        correct: false,
+        attemptNumber: 1,
+        relatedAttemptId: 'wrong',
+      }),
+      expect.objectContaining({
+        questionId: 'check-a',
+        response: '4',
+        correct: true,
+        attemptNumber: 2,
+        relatedAttemptId: 'retry',
+      }),
+    ]);
+  });
+
+  it('normalizes malformed response history without breaking old progress', () => {
+    expect(normalizeStudentAttemptHistory(undefined)).toEqual({ schemaVersion: 1, records: [] });
+    expect(normalizeStudentAttemptHistory({
+      schemaVersion: 1,
+      records: [
+        { id: 'bad', source: 'checked_practice', course: 'p3', questionId: 'q1' },
+        {
+          id: 'valid',
+          source: 'learn_mode',
+          course: 'p3',
+          questionId: 'q1',
+          response: 'x=2',
+          correct: true,
+          timestamp: '2026-07-07T00:00:00.000Z',
+          attemptNumber: 1,
+        },
+      ],
+    })).toEqual({
+      schemaVersion: 1,
+      records: [
+        expect.objectContaining({ id: 'valid', questionId: 'q1', correct: true }),
+      ],
+    });
+  });
+
+  it('can append a review record without editing previous attempts', () => {
+    const first = appendStudentAttemptHistoryRecord(undefined, {
+      id: 'h1',
+      source: 'checked_practice',
+      course: 'p3',
+      questionId: 'q1',
+      response: 'wrong',
+      correct: false,
+      timestamp: '2026-07-07T00:00:00.000Z',
+    });
+    const second = appendStudentAttemptHistoryRecord(first, {
+      id: 'h2',
+      source: 'checked_practice',
+      course: 'p3',
+      questionId: 'q1',
+      response: 'right',
+      correct: true,
+      timestamp: '2026-07-07T00:01:00.000Z',
+    });
+
+    expect(second.records.map((record) => [record.id, record.response, record.attemptNumber])).toEqual([
+      ['h1', 'wrong', 1],
+      ['h2', 'right', 2],
+    ]);
   });
 
   it('records hint use without blocking a correct unrevealed pass', () => {

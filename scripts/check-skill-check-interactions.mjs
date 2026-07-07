@@ -107,6 +107,31 @@ async function submitAnswer(form, answer, options = {}) {
   }
 }
 
+async function activeTypedInputDetails(page) {
+  return page.evaluate(() => {
+    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
+    const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.math-answer-input');
+    const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
+    const help = label?.querySelector('.answer-format-guidance');
+    const inputRect = input?.getBoundingClientRect();
+    const helpRect = help?.getBoundingClientRect();
+    const describedBy = input?.getAttribute('aria-describedby') || '';
+    const helpId = help?.id || '';
+    return {
+      stepId: activeCard?.getAttribute('data-learn-step-id'),
+      hasTextInput: Boolean(input),
+      hasMathAnswerInput: Boolean(label),
+      answerKind: label?.getAttribute('data-answer-kind') || '',
+      helpText: help?.textContent || '',
+      describedBy,
+      hasDescribedGuidance: Boolean(describedBy && helpId && describedBy.split(/\s+/).includes(helpId)),
+      symbolText: Array.from(label?.querySelectorAll('.math-answer-symbols code') ?? []).map((element) => element.textContent || '').join(' '),
+      exampleText: Array.from(label?.querySelectorAll('.math-answer-examples code') ?? []).map((element) => element.textContent || '').join(' '),
+      helpNearInput: Boolean(inputRect && helpRect && Math.abs(helpRect.bottom - inputRect.top) < 64),
+    };
+  });
+}
+
 async function progressSnapshot(page) {
   return page.evaluate((key) => {
     const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
@@ -616,22 +641,13 @@ try {
   assert(cleanDiffUi.nextUnlocked, 'Correct Differentiation similar question must unlock the next Learn step.');
 
   await page.locator('.learn-controls button', { hasText: 'Next step' }).click();
-  const diffTypedHelp = await page.evaluate(() => {
-    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
-    const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
-    const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
-    const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
-    return {
-      stepId: activeCard?.getAttribute('data-learn-step-id'),
-      hasTextInput: Boolean(input),
-      helpText: help,
-      helpNearInput: Boolean(inputRect && helpRect && Math.abs(helpRect.bottom - inputRect.top) < 36),
-    };
-  });
+  const diffTypedHelp = await activeTypedInputDetails(page);
   assert(diffTypedHelp.stepId === 'learn-diff-power-negative-fractional', 'Differentiation second step should expose a typed input.');
   assert(diffTypedHelp.hasTextInput, 'Differentiation typed steps must render a text answer input.');
+  assert(diffTypedHelp.hasMathAnswerInput, 'Differentiation typed steps must use the standardized math input wrapper.');
+  assert(diffTypedHelp.hasDescribedGuidance, 'Differentiation typed input must describe itself with the nearby guidance.');
+  assert(diffTypedHelp.answerKind === 'expression', `Differentiation typed input should be expression kind; saw "${diffTypedHelp.answerKind}".`);
+  assert(/\^/.test(diffTypedHelp.symbolText), `Differentiation typed input must expose power syntax symbols; saw "${diffTypedHelp.symbolText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(diffTypedHelp.helpText), `Differentiation typed input must show answer-format help; saw "${diffTypedHelp.helpText}".`);
   assert(diffTypedHelp.helpNearInput, 'Differentiation answer-format help must be placed near the typed input.');
 
@@ -758,22 +774,13 @@ try {
   assert(cleanIntegrationUi.nextUnlocked, 'Correct Integration similar question must unlock the next Learn step.');
 
   await page.locator('.learn-controls button', { hasText: 'Next step' }).click();
-  const integrationTypedHelp = await page.evaluate(() => {
-    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
-    const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
-    const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
-    const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
-    return {
-      stepId: activeCard?.getAttribute('data-learn-step-id'),
-      hasTextInput: Boolean(input),
-      helpText: help,
-      helpNearInput: Boolean(inputRect && helpRect && Math.abs(helpRect.bottom - inputRect.top) < 36),
-    };
-  });
+  const integrationTypedHelp = await activeTypedInputDetails(page);
   assert(integrationTypedHelp.stepId === 'learn-int-power-negative-fractional', 'Integration second step should expose a typed input.');
   assert(integrationTypedHelp.hasTextInput, 'Integration typed steps must render a text answer input.');
+  assert(integrationTypedHelp.hasMathAnswerInput, 'Integration typed steps must use the standardized math input wrapper.');
+  assert(integrationTypedHelp.hasDescribedGuidance, 'Integration typed input must describe itself with the nearby guidance.');
+  assert(integrationTypedHelp.answerKind === 'expression', `Integration typed input should be expression kind; saw "${integrationTypedHelp.answerKind}".`);
+  assert(/\^/.test(integrationTypedHelp.symbolText), `Integration typed input must expose power syntax symbols; saw "${integrationTypedHelp.symbolText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(integrationTypedHelp.helpText), `Integration typed input must show answer-format help; saw "${integrationTypedHelp.helpText}".`);
   assert(integrationTypedHelp.helpNearInput, 'Integration answer-format help must be placed near the typed input.');
 
@@ -900,22 +907,13 @@ try {
   assert(cleanIterationUi.nextUnlocked, 'Correct Iteration similar question must unlock the next Learn step.');
 
   await page.locator('.learn-controls button', { hasText: 'Next step' }).click();
-  const iterationTypedHelp = await page.evaluate(() => {
-    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
-    const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
-    const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
-    const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
-    return {
-      stepId: activeCard?.getAttribute('data-learn-step-id'),
-      hasTextInput: Boolean(input),
-      helpText: help,
-      helpNearInput: Boolean(inputRect && helpRect && Math.abs(helpRect.bottom - inputRect.top) < 36),
-    };
-  });
+  const iterationTypedHelp = await activeTypedInputDetails(page);
   assert(iterationTypedHelp.stepId === 'learn-iteration-rearrange-fixed-point', 'Iteration second step should expose a typed input.');
   assert(iterationTypedHelp.hasTextInput, 'Iteration typed steps must render a text answer input.');
+  assert(iterationTypedHelp.hasMathAnswerInput, 'Iteration typed steps must use the standardized math input wrapper.');
+  assert(iterationTypedHelp.hasDescribedGuidance, 'Iteration typed input must describe itself with the nearby guidance.');
+  assert(iterationTypedHelp.answerKind === 'expression', `Iteration typed input should be expression kind; saw "${iterationTypedHelp.answerKind}".`);
+  assert(/\^/.test(iterationTypedHelp.symbolText), `Iteration typed input must expose power syntax symbols; saw "${iterationTypedHelp.symbolText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(iterationTypedHelp.helpText), `Iteration typed input must show answer-format help; saw "${iterationTypedHelp.helpText}".`);
   assert(iterationTypedHelp.helpNearInput, 'Iteration answer-format help must be placed near the typed input.');
 
@@ -1042,22 +1040,13 @@ try {
   assert(cleanDeUi.nextUnlocked, 'Correct Differential Equations similar question must unlock the next Learn step.');
 
   await page.locator('.learn-controls button', { hasText: 'Next step' }).click();
-  const deTypedHelp = await page.evaluate(() => {
-    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
-    const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
-    const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
-    const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
-    return {
-      stepId: activeCard?.getAttribute('data-learn-step-id'),
-      hasTextInput: Boolean(input),
-      helpText: help,
-      helpNearInput: Boolean(inputRect && helpRect && Math.abs(helpRect.bottom - inputRect.top) < 36),
-    };
-  });
+  const deTypedHelp = await activeTypedInputDetails(page);
   assert(deTypedHelp.stepId === 'learn-de-separate-variables', 'Differential Equations second step should expose a typed input.');
   assert(deTypedHelp.hasTextInput, 'Differential Equations typed steps must render a text answer input.');
+  assert(deTypedHelp.hasMathAnswerInput, 'Differential Equations typed steps must use the standardized math input wrapper.');
+  assert(deTypedHelp.hasDescribedGuidance, 'Differential Equations typed input must describe itself with the nearby guidance.');
+  assert(deTypedHelp.answerKind === 'expression', `Differential Equations typed input should be expression kind; saw "${deTypedHelp.answerKind}".`);
+  assert(/\^/.test(deTypedHelp.symbolText), `Differential Equations typed input must expose power syntax symbols; saw "${deTypedHelp.symbolText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(deTypedHelp.helpText), `Differential Equations typed input must show answer-format help; saw "${deTypedHelp.helpText}".`);
   assert(deTypedHelp.helpNearInput, 'Differential Equations answer-format help must be placed near the typed input.');
 
@@ -1184,22 +1173,13 @@ try {
   assert(cleanComplexUi.nextUnlocked, 'Correct Complex Numbers similar question must unlock the next Learn step.');
 
   await page.locator('.learn-controls button', { hasText: 'Next step' }).click();
-  const complexTypedHelp = await page.evaluate(() => {
-    const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
-    const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.single-answer-field');
-    const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const help = label?.querySelector('.answer-format-guidance')?.textContent || '';
-    const inputRect = input?.getBoundingClientRect();
-    const helpRect = label?.querySelector('.answer-format-guidance')?.getBoundingClientRect();
-    return {
-      stepId: activeCard?.getAttribute('data-learn-step-id'),
-      hasTextInput: Boolean(input),
-      helpText: help,
-      helpNearInput: Boolean(inputRect && helpRect && Math.abs(helpRect.bottom - inputRect.top) < 36),
-    };
-  });
+  const complexTypedHelp = await activeTypedInputDetails(page);
   assert(complexTypedHelp.stepId === 'learn-complex-multiply-i-squared', 'Complex Numbers second step should expose a typed input.');
   assert(complexTypedHelp.hasTextInput, 'Complex Numbers typed steps must render a text answer input.');
+  assert(complexTypedHelp.hasMathAnswerInput, 'Complex Numbers typed steps must use the standardized math input wrapper.');
+  assert(complexTypedHelp.hasDescribedGuidance, 'Complex Numbers typed input must describe itself with the nearby guidance.');
+  assert(complexTypedHelp.answerKind === 'complex', `Complex Numbers typed input should be complex kind; saw "${complexTypedHelp.answerKind}".`);
+  assert(/\bi\b/.test(complexTypedHelp.symbolText), `Complex Numbers typed input must expose i notation; saw "${complexTypedHelp.symbolText}".`);
   assert(/Answer format: complex number in a\+bi form\./i.test(complexTypedHelp.helpText), `Complex Numbers typed input must show complex-number format help; saw "${complexTypedHelp.helpText}".`);
   assert(complexTypedHelp.helpNearInput, 'Complex Numbers answer-format help must be placed near the typed input.');
 

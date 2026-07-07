@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -1324,6 +1331,17 @@
         <span data-total-attempts data-paper-family="p3" data-paper-label="Paper 3">0 saved Paper 3 attempts</span>
         <span data-topic-tried-count data-paper-family="p3">0 topic areas tried</span>
       </div>
+    </section>
+    <section class="attempt-history-section" data-attempt-history-list data-attempt-history-limit="120" aria-labelledby="all-attempt-history-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Response history</p>
+          <h2 id="all-attempt-history-title">Review submitted answers</h2>
+          <p data-attempt-history-summary>No submitted responses saved in this browser yet.</p>
+        </div>
+      </div>
+      <p class="empty-state" data-attempt-history-empty>Complete a Learn or Checked Practice question to see correct and incorrect submissions here.</p>
+      <div class="attempt-history-list" data-attempt-history-items></div>
     </section>
     <details class="jump-details" data-mistake-review-details>
       <summary>Review mistakes from saved Checked Practice</summary>

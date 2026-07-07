@@ -616,6 +616,16 @@ function primaryNav(pagePath: string, active: RenderPageOptions['active']): stri
   `;
 }
 
+function progressTransferControls(): string {
+  return `
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+  `;
+}
+
 function renderPage(options: RenderPageOptions): string {
   const cssHref = hrefToPublicAsset(options.pagePath, 'assets/static-study.css');
   const katexHref = hrefToPublicAsset(options.pagePath, 'assets/katex.min.css');
@@ -656,6 +666,7 @@ function renderPage(options: RenderPageOptions): string {
         </span>
       </a>
       ${primaryNav(options.pagePath, options.active)}
+      ${progressTransferControls()}
       ${themeToggle}
     </header>
     <main id="main-content" tabindex="-1">
@@ -827,29 +838,26 @@ function renderDiagnosticInput(question: P3DiagnosticQuestion): string {
           answerFormatHint: markPoint.answerFormatHint,
           answerPlaceholder: markPoint.answerPlaceholder,
         });
-        return `
-        <label class="single-answer-field diagnostic-answer-field">
-          <span>${renderMathText(markPoint.label)}</span>
-          ${renderAnswerFormatLine(guidance)}
-          <input
-            name="${escapeAttr(`${question.id}::${markPoint.id}`)}"
-            type="text"
-            autocomplete="off"
-            ${placeholderAttr(guidance)}
-            data-diagnostic-mark-point
-            data-question-id="${escapeAttr(question.id)}"
-            data-mark-point-id="${escapeAttr(markPoint.id)}"
-            data-section-id="${escapeAttr(question.sectionId)}"
-            data-answer-format="${escapeAttr(guidance.instruction)}"
-            data-risk-flags="${escapeAttr(JSON.stringify(markPoint.riskFlags))}"
-            data-critical-foundation-skill="${escapeAttr(markPoint.criticalFoundationSkill ?? '')}"
-            data-answer-type="${escapeAttr(markPoint.answerType)}"
-            data-accepted-answers="${escapeAttr(JSON.stringify(markPoint.acceptedAnswers))}"
-            data-tolerance="${escapeAttr(markPoint.tolerance ?? '')}"
-            data-order-matters="${markPoint.orderMatters === true ? 'true' : 'false'}"
-          />
-        </label>
-      `;
+        return renderMathAnswerInput({
+          id: `${question.id}-${markPoint.id}`,
+          labelHtml: renderMathText(markPoint.label),
+          guidance,
+          name: `${question.id}::${markPoint.id}`,
+          classes: ['diagnostic-answer-field'],
+          attributes: [
+            ['data-diagnostic-mark-point', true],
+            ['data-question-id', question.id],
+            ['data-mark-point-id', markPoint.id],
+            ['data-section-id', question.sectionId],
+            ['data-answer-format', guidance.instruction],
+            ['data-risk-flags', JSON.stringify(markPoint.riskFlags)],
+            ['data-critical-foundation-skill', markPoint.criticalFoundationSkill ?? ''],
+            ['data-answer-type', markPoint.answerType],
+            ['data-accepted-answers', JSON.stringify(markPoint.acceptedAnswers)],
+            ['data-tolerance', markPoint.tolerance ?? ''],
+            ['data-order-matters', markPoint.orderMatters === true ? 'true' : 'false'],
+          ],
+        });
       }).join('')}
     </div>
   `;
@@ -959,27 +967,24 @@ function renderP1RepairQuestionInput(question: P1RepairQuestion, phase: 'fast' |
     answerFormatHint: question.answerFormatHint,
     answerPlaceholder: question.answerPlaceholder,
   });
-  return `
-    <label class="single-answer-field repair-answer-field">
-      <span>${renderMathText(question.prompt)}</span>
-      ${renderAnswerFormatLine(guidance)}
-      <input
-        name="${escapeAttr(question.id)}"
-        type="text"
-        autocomplete="off"
-        ${placeholderAttr(guidance)}
-        ${attrPrefix}
-        data-question-id="${escapeAttr(question.id)}"
-        data-answer-format="${escapeAttr(guidance.instruction)}"
-        data-answer-type="${escapeAttr(question.answerType)}"
-        data-accepted-answers="${escapeAttr(JSON.stringify(question.acceptedAnswers))}"
-        data-correction="${escapeAttr(question.correction)}"
-        data-tolerance="${escapeAttr(question.tolerance ?? '')}"
-        data-order-matters="${question.orderMatters === true ? 'true' : 'false'}"
-      />
-      <small class="repair-feedback" data-repair-feedback-for="${escapeAttr(question.id)}"></small>
-    </label>
-  `;
+  return renderMathAnswerInput({
+    id: `${question.id}-${phase}`,
+    labelHtml: renderMathText(question.prompt),
+    guidance,
+    name: question.id,
+    classes: ['repair-answer-field'],
+    afterInputHtml: `<small class="repair-feedback" data-repair-feedback-for="${escapeAttr(question.id)}"></small>`,
+    attributes: [
+      [attrPrefix, true],
+      ['data-question-id', question.id],
+      ['data-answer-format', guidance.instruction],
+      ['data-answer-type', question.answerType],
+      ['data-accepted-answers', JSON.stringify(question.acceptedAnswers)],
+      ['data-correction', question.correction],
+      ['data-tolerance', question.tolerance ?? ''],
+      ['data-order-matters', question.orderMatters === true ? 'true' : 'false'],
+    ],
+  });
 }
 
 function renderP1RepairModule(module: P1RepairModuleDefinition, index: number): string {
@@ -2105,6 +2110,17 @@ function renderP3ReviewPage(data: StaticSiteData, pagePath = p3ReviewPagePath())
         <span data-topic-tried-count data-paper-family="p3">0 topic areas tried</span>
       </div>
     </section>
+    <section class="attempt-history-section" data-attempt-history-list data-attempt-history-limit="120" aria-labelledby="all-attempt-history-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Response history</p>
+          <h2 id="all-attempt-history-title">Review submitted answers</h2>
+          <p data-attempt-history-summary>No submitted responses saved in this browser yet.</p>
+        </div>
+      </div>
+      <p class="empty-state" data-attempt-history-empty>Complete a Learn or Checked Practice question to see correct and incorrect submissions here.</p>
+      <div class="attempt-history-list" data-attempt-history-items></div>
+    </section>
     <details class="jump-details" data-mistake-review-details>
       <summary>Review mistakes from saved Checked Practice</summary>
       <section class="summary-card review-empty-state" data-review-empty>
@@ -2560,12 +2576,91 @@ function renderOptions(options: Array<{ id: string; label: string }> | undefined
   `;
 }
 
-function renderAnswerFormatLine(guidance: AnswerFormatGuidance): string {
-  return `<small class="answer-format-guidance">${escapeHtml(guidance.instruction)}</small>`;
+function mathAnswerId(value: string): string {
+  const cleaned = value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80);
+  return cleaned || 'math-answer';
 }
 
-function placeholderAttr(guidance: AnswerFormatGuidance): string {
-  return guidance.placeholder ? ` placeholder="${escapeAttr(guidance.placeholder)}"` : '';
+function renderMathAnswerTokenList(values: string[], className: string): string {
+  if (!values.length) return '';
+  return `<span class="${className}">${values.map((value) => `<code>${escapeHtml(value)}</code>`).join('')}</span>`;
+}
+
+function renderMathAnswerGuidance(guidance: AnswerFormatGuidance, id: string): string {
+  return `
+    <small class="answer-format-guidance math-answer-guidance" id="${escapeAttr(id)}">
+      <span class="math-answer-instruction">${escapeHtml(guidance.instruction)}</span>
+      ${guidance.symbols.length ? `
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          ${renderMathAnswerTokenList(guidance.symbols, 'math-answer-symbols')}
+        </span>
+      ` : ''}
+      ${guidance.examples.length ? `
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          ${renderMathAnswerTokenList(guidance.examples, 'math-answer-examples')}
+        </span>
+      ` : ''}
+    </small>
+  `;
+}
+
+type MathAnswerInputAttribute = [string, string | number | boolean | undefined];
+
+interface MathAnswerInputOptions {
+  id: string;
+  labelHtml: string;
+  guidance: AnswerFormatGuidance;
+  name?: string;
+  classes?: string[];
+  required?: boolean;
+  ariaLabel?: string;
+  afterInputHtml?: string;
+  attributes?: MathAnswerInputAttribute[];
+}
+
+function renderInputAttributes(attributes: MathAnswerInputAttribute[]): string {
+  return attributes
+    .flatMap(([name, value]) => {
+      if (value === undefined || value === false) return [];
+      if (value === true) return [` ${name}`];
+      return [` ${name}="${escapeAttr(value)}"`];
+    })
+    .join('');
+}
+
+function renderMathAnswerInput(options: MathAnswerInputOptions): string {
+  const inputId = mathAnswerId(options.id);
+  const guidanceId = `${inputId}-guidance`;
+  const classes = ['single-answer-field', 'math-answer-input', ...(options.classes ?? [])].join(' ');
+  const attributes: MathAnswerInputAttribute[] = [
+    ['id', inputId],
+    ['name', options.name],
+    ['type', 'text'],
+    ['autocomplete', 'off'],
+    ['inputmode', options.guidance.inputMode],
+    ['spellcheck', 'false'],
+    ['autocapitalize', 'off'],
+    ['autocorrect', 'off'],
+    ['aria-describedby', guidanceId],
+    ['aria-label', options.ariaLabel],
+    ['placeholder', options.guidance.placeholder],
+    ['required', options.required],
+    ...(options.attributes ?? []),
+  ];
+  return `
+    <label class="${escapeAttr(classes)}" data-answer-kind="${escapeAttr(options.guidance.kind)}" data-answer-symbols="${escapeAttr(options.guidance.symbols.join(','))}">
+      <span class="math-answer-label">${options.labelHtml}</span>
+      ${renderMathAnswerGuidance(options.guidance, guidanceId)}
+      <input${renderInputAttributes(attributes)} />
+      ${options.afterInputHtml ?? ''}
+    </label>
+  `;
 }
 
 function itemAnswerFormatGuidance(item: SkillCheckItem, acceptedAnswers?: string[]): AnswerFormatGuidance {
@@ -2600,13 +2695,12 @@ function fieldAnswerFormatGuidance(field: QuickCheckTwoValueField): AnswerFormat
 function renderSkillCheckAnswerInput(item: SkillCheckItem): string {
   if (item.inputType === 'numeric') {
     const guidance = itemAnswerFormatGuidance(item);
-    return `
-      <label class="single-answer-field">
-        Answer
-        ${renderAnswerFormatLine(guidance)}
-        <input type="text" aria-label="${escapeAttr(`${item.itemId} answer`)}"${placeholderAttr(guidance)} />
-      </label>
-    `;
+    return renderMathAnswerInput({
+      id: `${item.itemId}-answer`,
+      labelHtml: 'Answer',
+      guidance,
+      ariaLabel: `${item.itemId} answer`,
+    });
   }
 
   if (item.inputType === 'two_value' && item.fields?.length) {
@@ -2614,13 +2708,12 @@ function renderSkillCheckAnswerInput(item: SkillCheckItem): string {
       <div class="field-list">
         ${item.fields.map((field) => {
           const guidance = fieldAnswerFormatGuidance(field);
-          return `
-          <label>
-            <span>${escapeHtml(field.label)}</span>
-            ${renderAnswerFormatLine(guidance)}
-            <input type="text" aria-label="${escapeAttr(field.label)}"${placeholderAttr(guidance)} />
-          </label>
-        `;
+          return renderMathAnswerInput({
+            id: `${item.itemId}-${field.id}`,
+            labelHtml: escapeHtml(field.label),
+            guidance,
+            ariaLabel: field.label,
+          });
         }).join('')}
       </div>
     `;
@@ -2632,6 +2725,47 @@ function renderSkillCheckAnswerInput(item: SkillCheckItem): string {
 function answerValueLabel(value: string | string[] | undefined): string {
   if (Array.isArray(value)) return value[0] ?? '';
   return value ?? '';
+}
+
+function stripMathDelimiters(value: string): string {
+  return value
+    .replace(/\$\$/g, '')
+    .replace(/\$/g, '')
+    .replace(/\\\(/g, '')
+    .replace(/\\\)/g, '')
+    .trim();
+}
+
+function expectedAnswerPlainText(item: SkillCheckItem): string {
+  const contract = skillCheckContractForItem(item);
+  if (contract.answerType === 'single_value') {
+    return [
+      item.displayPrefix,
+      answerValueLabel(contract.expectedAnswer),
+      item.displaySuffix,
+    ].filter(Boolean).join(' ');
+  }
+  if (contract.answerType === 'two_value') {
+    return (contract.fields ?? [])
+      .map((field) => [
+        `${field.label}:`,
+        field.displayPrefix,
+        answerValueLabel(field.expectedAnswer),
+        field.displaySuffix,
+      ].filter(Boolean).join(' '))
+      .join('; ');
+  }
+  if (contract.answerType === 'ordered_cards') {
+    const cardById = new Map((contract.orderedCards ?? []).map((card) => [card.id, stripMathDelimiters(card.label)]));
+    return (contract.expectedOrder ?? []).map((id) => cardById.get(id) ?? id).join(' -> ');
+  }
+  const optionById = new Map((contract.options ?? []).map((option) => [option.id, stripMathDelimiters(option.label)]));
+  return (contract.expectedChoices ?? []).map((id) => optionById.get(id) ?? id).join(', ');
+}
+
+function answerLabelMap(item: SkillCheckItem): Record<string, string> {
+  const options = item.options ?? item.cards ?? [];
+  return Object.fromEntries(options.map((option) => [option.id, stripMathDelimiters(option.label)]));
 }
 
 function renderExpectedAnswerSummary(item: SkillCheckItem): string {
@@ -2690,25 +2824,26 @@ function renderLearnAnswerInput(item: SkillCheckItem, acceptedAnswers?: string[]
       <div class="field-list">
         ${item.fields.map((field) => {
           const guidance = fieldAnswerFormatGuidance(field);
-          return `
-          <label>
-            <span>${escapeHtml(field.label)}</span>
-            ${renderAnswerFormatLine(guidance)}
-            <input name="submittedAnswer" type="text" autocomplete="off" aria-label="${escapeAttr(field.label)}"${placeholderAttr(guidance)} required />
-          </label>
-        `;
+          return renderMathAnswerInput({
+            id: `${item.itemId}-${field.id}`,
+            labelHtml: escapeHtml(field.label),
+            guidance,
+            name: 'submittedAnswer',
+            required: true,
+            ariaLabel: field.label,
+          });
         }).join('')}
       </div>
     `;
   }
   const guidance = itemAnswerFormatGuidance(item, acceptedAnswers);
-  return `
-    <label class="single-answer-field">
-      <span>${escapeHtml(item.inputType === 'ordered_cards' ? 'Type the order or resulting expression.' : 'Answer')}</span>
-      ${renderAnswerFormatLine(guidance)}
-      <input name="submittedAnswer" type="text" autocomplete="off"${placeholderAttr(guidance)} required />
-    </label>
-  `;
+  return renderMathAnswerInput({
+    id: `${item.itemId}-answer`,
+    labelHtml: escapeHtml(item.inputType === 'ordered_cards' ? 'Type the order or resulting expression.' : 'Answer'),
+    guidance,
+    name: 'submittedAnswer',
+    required: true,
+  });
 }
 
 function renderLearnCheckForm(
@@ -2738,10 +2873,14 @@ function renderLearnCheckForm(
       data-field-guide-topic-id="${escapeAttr(step.fieldGuideTopic.id)}"
       data-skill-id="${escapeAttr(item.skillId)}"
       data-check-id="${escapeAttr(item.itemId)}"
+      data-question-title="${escapeAttr(item.prompt)}"
       data-learn-variant="${escapeAttr(variant)}"
       data-learn-saves-skill-pass="false"
       data-answer-type="${escapeAttr(spec.answerType)}"
       data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}"
+      data-answer-labels="${escapeAttr(JSON.stringify(answerLabelMap(item)))}"
+      data-correct-answer-label="${escapeAttr(expectedAnswerPlainText(item))}"
+      data-explanation="${escapeAttr(item.workedRoute.map(stripMathDelimiters).join(' '))}"
       data-tolerance="${escapeAttr(spec.tolerance)}"
       data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}"
       data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}"
@@ -2979,7 +3118,7 @@ function renderCheckableSkillCheckForm(
     ...SKILL_CHECK_MISTAKE_TAGS,
   ]));
   return `
-    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
+    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}" data-answer-labels="${escapeAttr(JSON.stringify(answerLabelMap(item)))}" data-correct-answer-label="${escapeAttr(expectedAnswerPlainText(item))}" data-explanation="${escapeAttr(item.workedRoute.map(stripMathDelimiters).join(' '))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
       ${renderLearnAnswerInput(item, acceptedAnswers)}
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
@@ -3369,6 +3508,17 @@ function renderPracticePage(
     </details>
     <section class="practice-stack" data-one-card-flow data-flow-label="Checked Practice" data-default-card-limit="3" data-flow-final-href="${escapeAttr(finalHref)}" data-flow-final-label="${escapeAttr(finalLabel)}">
       ${groups.map((group) => renderSkillPracticeGroup(group, pagePath, fieldGuidePath)).join('')}
+    </section>
+    <section class="attempt-history-section" data-attempt-history-list data-attempt-history-source="checked_practice" data-attempt-history-region="${escapeAttr(region.id)}" data-attempt-history-limit="40" aria-labelledby="attempt-history-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Review</p>
+          <h2 id="attempt-history-title">Submitted response review</h2>
+          <p data-attempt-history-summary>No submitted responses saved in this browser yet.</p>
+        </div>
+      </div>
+      <p class="empty-state" data-attempt-history-empty>Submit a checked answer to review what you wrote, the expected answer, and what to retry.</p>
+      <div class="attempt-history-list" data-attempt-history-items></div>
     </section>
     <section class="next-step-card">
       <h2>Finish the checks first</h2>

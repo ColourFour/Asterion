@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,10 +103,14 @@
       data-field-guide-topic-id="integrals_by_parts"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-method-choice-primary"
+      data-question-title="Before integrating $\int x e^x\,dx$, choose the method needed first."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Integration by parts&quot;,&quot;distractor-1&quot;:&quot;Partial fractions&quot;,&quot;distractor-2&quot;:&quot;Changed limits only&quot;,&quot;distractor-3&quot;:&quot;Arctangent form&quot;}"
+      data-correct-answer-label="Integration by parts"
+      data-explanation="x e^x is a product of two different types of factor. The algebraic factor x becomes simpler after differentiating. So the first method is integration by parts."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -195,10 +206,14 @@
       data-field-guide-topic-id="integrals_by_parts"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-method-choice-similar"
+      data-question-title="For $\int \frac{2x}{x^2+1}\,dx$, choose the method needed first."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Substitution&quot;,&quot;distractor-1&quot;:&quot;Integration by parts&quot;,&quot;distractor-2&quot;:&quot;Partial fractions&quot;,&quot;distractor-3&quot;:&quot;Trig identity rewrite&quot;}"
+      data-correct-answer-label="Substitution"
+      data-explanation="The denominator is x^2+1. Its derivative 2x appears in the numerator. So substitution, or reverse chain rule, is the natural method."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -315,19 +330,40 @@
       data-field-guide-topic-id="integrals_definite_area_bridge"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-power-negative-fractional-primary"
+      data-question-title="Integrate $x^{-2}$ with respect to $x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;-x^-1+C&quot;,&quot;-x^{-1}+C&quot;,&quot;-1/x+C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-x^-1+C"
+      data-explanation="The old power is -2. Increase it to -1. Divide by -1 and add C, giving -x^{-1}+C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-power-negative-fractional-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-power-negative-fractional-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-power-negative-fractional-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -371,19 +407,40 @@
       data-field-guide-topic-id="integrals_definite_area_bridge"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-power-negative-fractional-similar"
+      data-question-title="Integrate $x^{1/2}$ with respect to $x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;(2/3)x^(3/2)+C&quot;,&quot;2/3x^(3/2)+C&quot;,&quot;(2/3)x^{3/2}+C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(2/3)x^(3/2)+C"
+      data-explanation="Increase the power from 1/2 to 3/2. Dividing by 3/2 is the same as multiplying by 2/3. So the integral is \frac23x^{3/2}+C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-power-negative-fractional-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-power-negative-fractional-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-power-negative-fractional-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -459,19 +516,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-reverse-chain-inside-primary"
+      data-question-title="For $2x(x^2+3)^5$, type the inside function."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;x^2+3&quot;,&quot;(x^2+3)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x^2+3"
+      data-explanation="The outside function is a fifth power. The inside function is x^2+3. The remaining factor 2x is exactly the inside derivative."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-reverse-chain-inside-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-reverse-chain-inside-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-reverse-chain-inside-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -515,19 +593,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-reverse-chain-inside-similar"
+      data-question-title="Integrate $3(3x+1)^4$ with respect to $x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;(3x+1)^5/5+C&quot;,&quot;1/5(3x+1)^5+C&quot;,&quot;((3x+1)^5)/5+C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(3x+1)^5/5+C"
+      data-explanation="Use u=3x+1. Then du=3\,dx, so the integral becomes \int u^4\,du. This gives u^5/5+C=(3x+1)^5/5+C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-reverse-chain-inside-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-reverse-chain-inside-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-reverse-chain-inside-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -592,10 +691,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-substitution-setup-primary"
+      data-question-title="For $\int \frac{2x}{x^2+2}\,dx$, choose $u$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;u=x^2+2&quot;,&quot;distractor-1&quot;:&quot;u=2x&quot;,&quot;distractor-2&quot;:&quot;u=x^2 only&quot;,&quot;distractor-3&quot;:&quot;u=\\frac{2x}{x^2+2}&quot;}"
+      data-correct-answer-label="u=x^2+2"
+      data-explanation="The denominator is x^2+2. Its derivative is 2x, which appears in the numerator. So choose u=x^2+2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -691,19 +794,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-substitution-setup-similar"
+      data-question-title="Using $u=x^2+2$, what does $2x\,dx$ become?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;du&quot;,&quot;d u&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="du"
+      data-explanation="Differentiate both sides of u=x^2+2. This gives du=2x\,dx. So the matching factor becomes du."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-substitution-setup-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-substitution-setup-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-substitution-setup-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -768,19 +892,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-substitution-limits-primary"
+      data-question-title="For $u=x^2+1$, change the old limits $x=0$ to $x=1$. Type the two new limits."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;1, 2&quot;,&quot;u=1, u=2&quot;,&quot;u=1 to u=2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1, 2"
+      data-explanation="At the lower bound, x=0 gives u=1. At the upper bound, x=1 gives u=2. The changed limits are 1 to 2."
       data-tolerance=""
       data-order-matters="true"
       data-mistake-tags="[&quot;notation&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-substitution-limits-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-substitution-limits-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-substitution-limits-primary-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -824,19 +969,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-substitution-limits-similar"
+      data-question-title="For $u=2x-1$, change the old limits $x=1$ to $x=3$. Type the two new limits."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;1, 5&quot;,&quot;u=1, u=5&quot;,&quot;u=1 to u=5&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1, 5"
+      data-explanation="At x=1, u=2(1)-1=1. At x=3, u=2(3)-1=5. The new limits are 1 to 5."
       data-tolerance=""
       data-order-matters="true"
       data-mistake-tags="[&quot;notation&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-substitution-limits-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-substitution-limits-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-substitution-limits-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -901,19 +1067,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_arctan_forms"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-arctangent-form-primary"
+      data-question-title="Integrate $\frac{1}{x^2+9}$ with respect to $x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;1/3arctan(x/3)+C&quot;,&quot;(1/3)arctan(x/3)+C&quot;,&quot;1/3tan^-1(x/3)+C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1/3arctan(x/3)+C"
+      data-explanation="x^2+9=x^2+3^2. Use \frac1a\tan^{-1}(x/a)+C with a=3. The integral is \frac13\tan^{-1}(x/3)+C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),e^(),+ C">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-arctangent-form-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>e^()</code><code>+ C</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3x^2</code><code>e^(2x)</code><code>(1/2)x^2+C</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-arctangent-form-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-arctangent-form-primary-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -957,10 +1144,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_arctan_forms"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-arctangent-form-similar"
+      data-question-title="Which integral should use arctangent form, not a logarithm or partial fractions?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\int \\frac{1}{x^2+16}\\,dx&quot;,&quot;distractor-1&quot;:&quot;\\int \\frac{1}{x-4}\\,dx&quot;,&quot;distractor-2&quot;:&quot;\\int \\frac{1}{(x-1)(x+2)}\\,dx&quot;,&quot;distractor-3&quot;:&quot;\\int \\frac{2x}{x^2+16}\\,dx&quot;}"
+      data-correct-answer-label="\int \frac{1}{x^2+16}\,dx"
+      data-explanation="x^2+16 is x^2+4^2. That matches the arctangent form. The linear and factorised denominators lead to logarithm or partial-fraction work instead."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;wrong identity&quot;]"
@@ -1077,19 +1268,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_by_parts"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-by-parts-structure-primary"
+      data-question-title="For $\int x\ln x\,dx$, type the best choice for $u$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;ln x&quot;,&quot;lnx&quot;,&quot;u=ln x&quot;,&quot;u=lnx&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln x"
+      data-explanation="In by parts, choose u to differentiate. \ln x becomes 1/x, which is simpler. So choose u=\ln x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-by-parts-structure-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-by-parts-structure-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-by-parts-structure-primary-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1133,10 +1345,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_by_parts"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-by-parts-structure-similar"
+      data-question-title="For $\int x e^x\,dx$ with $u=x$ and $dv=e^x\,dx$, choose the correct next structure."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;xe^x-\\int e^x\\,dx&quot;,&quot;distractor-1&quot;:&quot;xe^x+\\int e^x\\,dx&quot;,&quot;distractor-2&quot;:&quot;x\\int e^x\\,dx&quot;,&quot;distractor-3&quot;:&quot;\\int e^x\\,dx- xe^x&quot;}"
+      data-correct-answer-label="xe^x-\int e^x\,dx"
+      data-explanation="Use \int u\,dv=uv-\int v\,du. With u=x and v=e^x, the boundary term is xe^x. The remaining part is -\int e^x\,dx."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -1253,10 +1469,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_partial_fractions"
       data-skill-id="p3_int_partial_fractions"
       data-check-id="learn-int-partial-fractions-log-primary"
+      data-question-title="Before integrating $\frac{5x+1}{(x-1)(x+2)}$, choose the safest first step."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Decompose into partial fractions&quot;,&quot;distractor-1&quot;:&quot;Integrate the numerator and denominator separately&quot;,&quot;distractor-2&quot;:&quot;Use integration by parts&quot;,&quot;distractor-3&quot;:&quot;Replace it directly with one logarithm&quot;}"
+      data-correct-answer-label="Decompose into partial fractions"
+      data-explanation="The denominator has distinct linear factors. Partial fractions split the integrand into simpler reciprocal terms. Those separate terms can then be integrated as logarithms."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;incomplete reasoning&quot;]"
@@ -1352,19 +1572,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_partial_fractions"
       data-skill-id="p3_int_partial_fractions"
       data-check-id="learn-int-partial-fractions-log-similar"
+      data-question-title="Given $\frac{1}{x(x+1)}=\frac1x-\frac1{x+1}$, integrate it."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln|x|-ln|x+1|+C&quot;,&quot;ln|x| - ln|x+1| + C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln|x|-ln|x+1|+C"
+      data-explanation="Use the given decomposition. \int 1/x\,dx=\ln|x|. \int 1/(x+1)\,dx=\ln|x+1|, so the result is \ln|x|-\ln|x+1|+C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-partial-fractions-log-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-partial-fractions-log-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-partial-fractions-log-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1429,10 +1670,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_trig_identities"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-trig-identity-rewrite-primary"
+      data-question-title="Choose the identity for $\sin^2x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\sin^2x=\\frac{1-\\cos2x}{2}&quot;,&quot;distractor-1&quot;:&quot;\\sin^2x=\\frac{1+\\cos2x}{2}&quot;,&quot;distractor-2&quot;:&quot;\\sin^2x=2\\sin x\\cos x&quot;,&quot;distractor-3&quot;:&quot;\\sin^2x=1+\\cos^2x&quot;}"
+      data-correct-answer-label="\sin^2x=\frac{1-\cos2x}{2}"
+      data-explanation="Use \cos2x=1-2\sin^2x. Rearrange to 2\sin^2x=1-\cos2x. So \sin^2x=(1-cos2x)/2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;]"
@@ -1528,19 +1773,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_trig_identities"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-trig-identity-rewrite-similar"
+      data-question-title="Integrate $\cos^2x$ using $\cos^2x=\frac{1+\cos2x}{2}$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;x/2+sin(2x)/4+C&quot;,&quot;x/2+1/4sin(2x)+C&quot;,&quot;x/2+(sin(2x))/4+C&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x/2+sin(2x)/4+C"
+      data-explanation="Rewrite \cos^2x as 1/2+(1/2)\cos2x. Integrate the constant term to get x/2. Integrate the cosine term to get \sin2x/4, then add C."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;forgot constant&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-trig-identity-rewrite-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-trig-identity-rewrite-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-trig-identity-rewrite-similar-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1623,19 +1889,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_definite_area_bridge"
       data-skill-id="p3_int_definite_improper_area"
       data-check-id="learn-int-definite-upper-minus-lower-primary"
+      data-question-title="Evaluate $\int_1^3(2x+1)\,dx$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;10&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="10"
+      data-explanation="An antiderivative is x^2+x. Use [x^2+x]_1^3. The value is (9+3)-(1+1)=10."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-definite-upper-minus-lower-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-definite-upper-minus-lower-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-definite-upper-minus-lower-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1679,19 +1966,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_definite_area_bridge"
       data-skill-id="p3_int_definite_improper_area"
       data-check-id="learn-int-definite-upper-minus-lower-similar"
+      data-question-title="Evaluate $\int_0^2 3x^2\,dx$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;8&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="8"
+      data-explanation="An antiderivative of 3x^2 is x^3. Use [x^3]_0^2. The value is 8-0=8."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-definite-upper-minus-lower-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-definite-upper-minus-lower-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-definite-upper-minus-lower-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1774,10 +2082,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_area_between_curves"
       data-skill-id="p3_int_definite_improper_area"
       data-check-id="learn-int-area-between-curves-primary"
+      data-question-title="Choose the area setup between $y=x+2$ and $y=x^2$ from $0$ to $2$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\int_0^2((x+2)-x^2)\\,dx&quot;,&quot;distractor-1&quot;:&quot;\\int_0^2(x^2-(x+2))\\,dx&quot;,&quot;distractor-2&quot;:&quot;\\int_0^2(x^2+x+2)\\,dx&quot;,&quot;distractor-3&quot;:&quot;\\int_2^0((x+2)-x^2)\\,dx&quot;}"
+      data-correct-answer-label="\int_0^2((x+2)-x^2)\,dx"
+      data-explanation="Identify the upper curve as x+2. Identify the lower curve as x^2. Use \int_0^2((x+2)-x^2)\,dx."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -1873,19 +2185,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_area_between_curves"
       data-skill-id="p3_int_definite_improper_area"
       data-check-id="learn-int-area-between-curves-similar"
+      data-question-title="On $0\le x\le1$, find the area between $y=2$ and $y=x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;3/2&quot;,&quot;1.5&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3/2"
+      data-explanation="The upper curve is 2 and the lower curve is x. Area is \int_0^1(2-x)\,dx. The value is [2x-x^2/2]_0^1=3/2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;sign error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-area-between-curves-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-area-between-curves-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-area-between-curves-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1950,10 +2283,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_improper_limit_check"
       data-skill-id="p3_int_definite_improper_area"
       data-check-id="learn-int-improper-limit-setup-primary"
+      data-question-title="Choose the correct first setup for $\int_0^\infty e^{-2x}\,dx$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\lim_{b\\to\\infty}\\int_0^b e^{-2x}\\,dx&quot;,&quot;distractor-1&quot;:&quot;\\int_0^0 e^{-2x}\\,dx&quot;,&quot;distractor-2&quot;:&quot;\\int_\\infty^0 e^{-2x}\\,dx&quot;,&quot;distractor-3&quot;:&quot;\\int_0^b e^{-2x}\\,dx with no limit&quot;}"
+      data-correct-answer-label="\lim_{b\to\infty}\int_0^b e^{-2x}\,dx"
+      data-explanation="An infinite bound is handled by a limit. Replace the upper bound with b. Then take \lim_{b\to\infty} after evaluating."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
@@ -2049,19 +2386,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_improper_limit_check"
       data-skill-id="p3_int_definite_improper_area"
       data-check-id="learn-int-improper-limit-setup-similar"
+      data-question-title="Evaluate $\int_0^\infty e^{-x}\,dx$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1"
+      data-explanation="Replace infinity by b first. An antiderivative is -e^{-x}. -e^{-b}+1 tends to 1."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-improper-limit-setup-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-improper-limit-setup-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-improper-limit-setup-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2126,19 +2484,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_definite_area_bridge"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-constant-from-point-primary"
+      data-question-title="For $dy/dx=6x$ and $y=5$ at $x=1$, find $C$ in $y=3x^2+C$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2"
+      data-explanation="Integrate to get y=3x^2+C. Use the point (1,5). 5=3+C, so C=2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-constant-from-point-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-constant-from-point-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-constant-from-point-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2182,19 +2561,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_definite_area_bridge"
       data-skill-id="p3_int_method_choice"
       data-check-id="learn-int-constant-from-point-similar"
+      data-question-title="If $dy/dx=4x$ and $y=7$ when $x=2$, what is $C$ in $y=2x^2+C$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-1"
+      data-explanation="Integrating 4x gives y=2x^2+C. Use (2,7) to get 7=8+C. So C=-1."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;forgot constant&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-constant-from-point-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-constant-from-point-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-constant-from-point-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2259,10 +2659,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-mixed-exam-transfer-primary"
+      data-question-title="Choose the transformed integral for $\int_0^1 2x(x^2+1)^3\,dx$ using $u=x^2+1$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\int_1^2 u^3\\,du&quot;,&quot;distractor-1&quot;:&quot;\\int_0^1 u^3\\,du&quot;,&quot;distractor-2&quot;:&quot;\\int_1^2 2xu^3\\,du&quot;,&quot;distractor-3&quot;:&quot;\\int_2^1 u^3\\,du&quot;}"
+      data-correct-answer-label="\int_1^2 u^3\,du"
+      data-explanation="Let u=x^2+1, so du=2x\,dx. The lower limit becomes 1 and the upper limit becomes 2. So evaluate \int_1^2u^3\,du."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
@@ -2358,19 +2762,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="integrals_substitution"
       data-skill-id="p3_int_parts_substitution"
       data-check-id="learn-int-mixed-exam-transfer-similar"
+      data-question-title="Now evaluate $\int_1^2 u^3\,du$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;15/4&quot;,&quot;3.75&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="15/4"
+      data-explanation="Integrate u^3 to get u^4/4. Substitute the limits 1 to 2. The exact value is (16-1)/4=15/4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-int-mixed-exam-transfer-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-int-mixed-exam-transfer-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-int-mixed-exam-transfer-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">

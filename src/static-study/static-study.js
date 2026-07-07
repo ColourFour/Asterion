@@ -1,6 +1,8 @@
 (function () {
   var STORAGE_KEY = 'asterion.progress.v1';
   var THEME_STORAGE_KEY = 'asterion.theme.v1';
+  var PROGRESS_EXPORT_KIND = 'asterion-progress-export';
+  var PROGRESS_EXPORT_SCHEMA_VERSION = 1;
   var PROFILE_ID = 'local-static-student';
   var MAILTO_PROGRESS_EXPORT_MAX_LENGTH = 1800;
   var REDO_DELAY_MS = 48 * 60 * 60 * 1000;
@@ -299,6 +301,7 @@
       attempts: [],
       learningActivityAttempts: [],
       skillCheckAttempts: [],
+      attemptHistory: { schemaVersion: 1, records: [] },
       exportProfile: {},
       diagnosticReports: [],
       p1RepairLaneModules: [],
@@ -1101,37 +1104,85 @@
     return safeArray(records).filter(isSkillCheckAttemptRecord);
   }
 
+  function isStudentAttemptHistoryRecord(value) {
+    return Boolean(value && typeof value === 'object'
+      && typeof value.id === 'string'
+      && (value.source === 'checked_practice' || value.source === 'learn_mode')
+      && value.course === 'p3'
+      && typeof value.questionId === 'string'
+      && typeof value.response === 'string'
+      && typeof value.correct === 'boolean'
+      && typeof value.timestamp === 'string'
+      && typeof value.attemptNumber === 'number'
+      && Number.isFinite(value.attemptNumber)
+      && value.attemptNumber >= 1);
+  }
+
+  function normalizeStudentAttemptHistory(history) {
+    return {
+      schemaVersion: 1,
+      records: history && typeof history === 'object' && Array.isArray(history.records)
+        ? history.records.filter(isStudentAttemptHistoryRecord)
+        : []
+    };
+  }
+
+  function nextStudentAttemptNumber(history, questionId) {
+    var numbers = normalizeStudentAttemptHistory(history).records
+      .filter(function (record) { return record.questionId === questionId; })
+      .map(function (record) { return record.attemptNumber; });
+    return numbers.length ? Math.max.apply(null, numbers) + 1 : 1;
+  }
+
+  function appendStudentAttemptHistoryRecord(progress, record) {
+    var history = normalizeStudentAttemptHistory(progress.attemptHistory);
+    var attemptNumber = typeof record.attemptNumber === 'number' && Number.isFinite(record.attemptNumber) && record.attemptNumber >= 1
+      ? record.attemptNumber
+      : nextStudentAttemptNumber(history, record.questionId);
+    progress.attemptHistory = {
+      schemaVersion: 1,
+      records: history.records.concat(Object.assign({}, record, { attemptNumber: attemptNumber }))
+    };
+    return progress;
+  }
+
   function loadProgress() {
     try {
       var parsed = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || 'null');
-      if (!parsed || typeof parsed !== 'object') return emptyProgress();
-      return normalizeAnalyticsProgress(Object.assign(emptyProgress(), parsed, {
-        attempts: safeArray(parsed.attempts),
-        learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
-        skillCheckAttempts: normalizeSkillCheckAttempts(parsed.skillCheckAttempts),
-        exportProfile: parsed.exportProfile && typeof parsed.exportProfile === 'object' ? parsed.exportProfile : {},
-        diagnosticReports: safeArray(parsed.diagnosticReports),
-        p1RepairLaneModules: safeArray(parsed.p1RepairLaneModules),
-        topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
-        issueReports: safeArray(parsed.issueReports),
-        regionLearning: parsed.regionLearning && typeof parsed.regionLearning === 'object' ? parsed.regionLearning : {},
-        error_log: safeArray(parsed.error_log),
-        topic_performance: parsed.topic_performance && typeof parsed.topic_performance === 'object' ? parsed.topic_performance : {},
-        weak_topics: safeArray(parsed.weak_topics),
-        redo_queue: safeArray(parsed.redo_queue),
-        error_distribution: parsed.error_distribution && typeof parsed.error_distribution === 'object' ? parsed.error_distribution : {},
-        priority_repair_topics: safeArray(parsed.priority_repair_topics),
-        topic_assessments: safeArray(parsed.topic_assessments),
-        knowledge_state_graph: parsed.knowledge_state_graph && typeof parsed.knowledge_state_graph === 'object' ? parsed.knowledge_state_graph : emptyKnowledgeGraph(0),
-        knowledge_state_updates: safeArray(parsed.knowledge_state_updates),
-        knowledge_errors: safeArray(parsed.knowledge_errors),
-        knowledge_interventions: safeArray(parsed.knowledge_interventions),
-        knowledge_schedules: safeArray(parsed.knowledge_schedules),
-        settings: parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : { activePaperFamily: 'p3' }
-      }));
+      return normalizeStoredProgress(parsed);
     } catch (_error) {
       return emptyProgress();
     }
+  }
+
+  function normalizeStoredProgress(parsed) {
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return emptyProgress();
+    return normalizeAnalyticsProgress(Object.assign(emptyProgress(), parsed, {
+      schemaVersion: typeof parsed.schemaVersion === 'number' ? parsed.schemaVersion : 1,
+      attempts: safeArray(parsed.attempts),
+      learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
+      skillCheckAttempts: normalizeSkillCheckAttempts(parsed.skillCheckAttempts),
+      attemptHistory: normalizeStudentAttemptHistory(parsed.attemptHistory),
+      exportProfile: parsed.exportProfile && typeof parsed.exportProfile === 'object' ? parsed.exportProfile : {},
+      diagnosticReports: safeArray(parsed.diagnosticReports),
+      p1RepairLaneModules: safeArray(parsed.p1RepairLaneModules),
+      topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
+      issueReports: safeArray(parsed.issueReports),
+      regionLearning: parsed.regionLearning && typeof parsed.regionLearning === 'object' ? parsed.regionLearning : {},
+      error_log: safeArray(parsed.error_log),
+      topic_performance: parsed.topic_performance && typeof parsed.topic_performance === 'object' ? parsed.topic_performance : {},
+      weak_topics: safeArray(parsed.weak_topics),
+      redo_queue: safeArray(parsed.redo_queue),
+      error_distribution: parsed.error_distribution && typeof parsed.error_distribution === 'object' ? parsed.error_distribution : {},
+      priority_repair_topics: safeArray(parsed.priority_repair_topics),
+      topic_assessments: safeArray(parsed.topic_assessments),
+      knowledge_state_graph: parsed.knowledge_state_graph && typeof parsed.knowledge_state_graph === 'object' ? parsed.knowledge_state_graph : emptyKnowledgeGraph(0),
+      knowledge_state_updates: safeArray(parsed.knowledge_state_updates),
+      knowledge_errors: safeArray(parsed.knowledge_errors),
+      knowledge_interventions: safeArray(parsed.knowledge_interventions),
+      knowledge_schedules: safeArray(parsed.knowledge_schedules),
+      settings: parsed.settings && typeof parsed.settings === 'object' ? parsed.settings : { activePaperFamily: 'p3' }
+    }));
   }
 
   function saveProgress(progress) {
@@ -1476,6 +1527,167 @@
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+  }
+
+  function progressJsonFilename(timestamp) {
+    return 'asterion-progress-' + String(timestamp || new Date().toISOString()).slice(0, 10) + '.json';
+  }
+
+  function exportThemePreference() {
+    var theme = safeStorageGet(THEME_STORAGE_KEY);
+    return theme === 'dark' || theme === 'light' ? theme : null;
+  }
+
+  function buildProgressJsonExport() {
+    var timestamp = new Date().toISOString();
+    return {
+      kind: PROGRESS_EXPORT_KIND,
+      schemaVersion: PROGRESS_EXPORT_SCHEMA_VERSION,
+      exportedAt: timestamp,
+      storageKeys: [STORAGE_KEY, THEME_STORAGE_KEY],
+      progressStorageKey: STORAGE_KEY,
+      progress: loadProgress(),
+      settings: {
+        theme: exportThemePreference()
+      }
+    };
+  }
+
+  function progressImportError(message) {
+    return { valid: false, message: message };
+  }
+
+  function validateProgressImportPayload(payload) {
+    if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
+      return progressImportError('This is not a valid Asterion progress file.');
+    }
+    if (payload.kind !== PROGRESS_EXPORT_KIND) {
+      return progressImportError('This JSON file was not exported by Asterion progress transfer.');
+    }
+    if (payload.schemaVersion !== PROGRESS_EXPORT_SCHEMA_VERSION) {
+      return progressImportError('This progress file uses an unsupported export schema version.');
+    }
+    var rawProgress = payload.progress;
+    if (!rawProgress || typeof rawProgress !== 'object' || Array.isArray(rawProgress)) {
+      return progressImportError('This progress file is missing the progress record.');
+    }
+    if (typeof rawProgress.schemaVersion !== 'number' || rawProgress.schemaVersion > 1) {
+      return progressImportError('This progress file uses an unsupported progress schema version.');
+    }
+    if (!Array.isArray(rawProgress.attempts)
+      || !Array.isArray(rawProgress.learningActivityAttempts)
+      || !Array.isArray(rawProgress.skillCheckAttempts)
+      || !isRecord(rawProgress.regionLearning)
+      || !isRecord(rawProgress.settings)) {
+      return progressImportError('This progress file is malformed or incomplete.');
+    }
+    var theme = payload.settings && typeof payload.settings === 'object' ? payload.settings.theme : null;
+    return {
+      valid: true,
+      progress: normalizeStoredProgress(rawProgress),
+      theme: theme === 'dark' || theme === 'light' ? theme : null,
+      exportedAt: typeof payload.exportedAt === 'string' ? payload.exportedAt : ''
+    };
+  }
+
+  function setProgressTransferStatus(message) {
+    document.querySelectorAll('[data-progress-transfer-status]').forEach(function (status) {
+      status.textContent = message;
+    });
+  }
+
+  function progressReplacementSummary(progress) {
+    var summary = localProgressSubmissionSummary(progress);
+    var lessonCount = Object.keys(progress.regionLearning || {}).reduce(function (total, regionId) {
+      return total + Object.keys((progress.regionLearning[regionId] || {}).fieldGuideTopicCompletions || {}).length;
+    }, 0);
+    return [
+      lessonCount + ' lesson completion' + (lessonCount === 1 ? '' : 's'),
+      summary.checkedPracticeAttempts + ' checked attempt' + (summary.checkedPracticeAttempts === 1 ? '' : 's'),
+      summary.selfMarkedExamAttempts + ' exam attempt' + (summary.selfMarkedExamAttempts === 1 ? '' : 's'),
+      summary.reviewCandidates + ' review item' + (summary.reviewCandidates === 1 ? '' : 's')
+    ].join(', ');
+  }
+
+  function exportProgressJsonDownload() {
+    try {
+      var payload = buildProgressJsonExport();
+      var json = JSON.stringify(payload, null, 2);
+      downloadTextFile(progressJsonFilename(payload.exportedAt), json, 'application/json;charset=utf-8');
+      setProgressTransferStatus('Progress JSON downloaded.');
+    } catch (_error) {
+      setProgressTransferStatus('Could not export progress from this browser.');
+    }
+  }
+
+  function applyImportedProgress(importData) {
+    var incomingSummary = progressReplacementSummary(importData.progress);
+    var currentSummary = progressReplacementSummary(loadProgress());
+    var exportedAt = importData.exportedAt ? ' Exported at: ' + importData.exportedAt + '.' : '';
+    var confirmed = window.confirm(
+      'Importing replaces progress saved in this browser.\n\n'
+      + 'Current: ' + currentSummary + '.\n'
+      + 'Import: ' + incomingSummary + '.' + exportedAt + '\n\n'
+      + 'Continue?'
+    );
+    if (!confirmed) {
+      setProgressTransferStatus('Import cancelled. Existing progress was kept.');
+      return;
+    }
+    try {
+      saveProgress(importData.progress);
+      if (importData.theme) {
+        safeStorageSet(THEME_STORAGE_KEY, importData.theme);
+        applyThemePreference(importData.theme);
+      }
+      updateProgressText();
+      renderReviewPage();
+      setupProgressExportForms();
+      setProgressTransferStatus('Progress imported.');
+    } catch (_error) {
+      setProgressTransferStatus('Could not save imported progress in this browser.');
+    }
+  }
+
+  function importProgressJsonFile(file) {
+    var reader = new FileReader();
+    reader.addEventListener('load', function () {
+      try {
+        var parsed = JSON.parse(String(reader.result || ''));
+        var validation = validateProgressImportPayload(parsed);
+        if (!validation.valid) {
+          setProgressTransferStatus(validation.message);
+          window.alert(validation.message);
+          return;
+        }
+        applyImportedProgress(validation);
+      } catch (_error) {
+        var message = 'This progress file is malformed JSON.';
+        setProgressTransferStatus(message);
+        window.alert(message);
+      }
+    });
+    reader.addEventListener('error', function () {
+      setProgressTransferStatus('Could not read the selected progress file.');
+    });
+    reader.readAsText(file);
+  }
+
+  function setupProgressTransferControls() {
+    var controls = document.querySelector('[data-progress-transfer-controls]');
+    if (!controls) return;
+    var input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json,.json';
+    input.hidden = true;
+    input.setAttribute('data-import-progress-file-input', '');
+    controls.append(input);
+    input.addEventListener('change', function () {
+      var file = input.files && input.files[0];
+      input.value = '';
+      if (!file) return;
+      importProgressJsonFile(file);
+    });
   }
 
   function defaultReportingPeriod(date) {
@@ -2092,6 +2304,7 @@
     });
 
     updateSkillCheckForms(progress);
+    renderAttemptHistorySections(progress);
     updateExamReviewGate(progress);
     updateP3NextStepPanels(progress);
     updateP1RepairLaneStatus(progress);
@@ -3684,6 +3897,109 @@
     }).join('');
   }
 
+  function attemptHistoryRecordsForSection(section, progress) {
+    var history = normalizeStudentAttemptHistory(progress.attemptHistory);
+    var source = section.getAttribute('data-attempt-history-source') || '';
+    var regionId = section.getAttribute('data-attempt-history-region') || '';
+    var limit = Number(section.getAttribute('data-attempt-history-limit') || 60);
+    return history.records
+      .filter(function (record) {
+        return (!source || record.source === source)
+          && (!regionId || record.regionId === regionId);
+      })
+      .sort(function (a, b) {
+        return String(b.timestamp).localeCompare(String(a.timestamp));
+      })
+      .slice(0, Number.isFinite(limit) && limit > 0 ? limit : 60);
+  }
+
+  function groupAttemptHistoryByQuestion(records) {
+    var groups = new Map();
+    records.forEach(function (record) {
+      var key = record.questionId || record.id;
+      var group = groups.get(key) || {
+        questionId: key,
+        title: record.questionTitle || record.questionId || 'Question',
+        topic: record.topic || '',
+        records: []
+      };
+      group.records.push(record);
+      groups.set(key, group);
+    });
+    return Array.from(groups.values()).map(function (group) {
+      return Object.assign({}, group, {
+        records: group.records.sort(function (a, b) { return a.attemptNumber - b.attemptNumber; }),
+        lastTimestamp: group.records.reduce(function (latest, record) {
+          return String(record.timestamp) > latest ? String(record.timestamp) : latest;
+        }, '')
+      });
+    }).sort(function (a, b) {
+      return String(b.lastTimestamp).localeCompare(String(a.lastTimestamp));
+    });
+  }
+
+  function attemptHistoryDateLabel(record) {
+    var ms = timestampMs(record.timestamp);
+    if (ms === undefined) return '';
+    return new Date(ms).toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  function renderAttemptHistoryRecord(record) {
+    var state = record.correct ? 'correct' : 'incorrect';
+    var statusLabel = record.correct ? 'Correct' : 'Incorrect';
+    var response = record.responseDisplay || record.response || 'No answer submitted';
+    var correctAnswer = record.correctAnswer || 'Check the revealed answer on the question.';
+    var explanation = record.explanation || '';
+    return '<article class="attempt-history-record is-' + state + '">'
+      + '<header>'
+      + '<span class="attempt-history-indicator">' + statusLabel + '</span>'
+      + '<span>Attempt ' + escapeText(record.attemptNumber) + (attemptHistoryDateLabel(record) ? ' · ' + escapeText(attemptHistoryDateLabel(record)) : '') + '</span>'
+      + '</header>'
+      + '<dl class="attempt-history-answer-list">'
+      + '<div><dt>Your answer</dt><dd>' + escapeText(response) + '</dd></div>'
+      + '<div><dt>Correct answer</dt><dd>' + escapeText(correctAnswer) + '</dd></div>'
+      + (explanation ? '<div><dt>Explanation</dt><dd>' + escapeText(explanation) + '</dd></div>' : '')
+      + '</dl>'
+      + (!record.correct && record.retryHref ? '<a class="button secondary-button attempt-history-retry" href="' + escapeText(record.retryHref) + '">Retry</a>' : '')
+      + '</article>';
+  }
+
+  function renderAttemptHistorySections(progress) {
+    document.querySelectorAll('[data-attempt-history-list]').forEach(function (section) {
+      var records = attemptHistoryRecordsForSection(section, progress || loadProgress());
+      var list = section.querySelector('[data-attempt-history-items]');
+      var empty = section.querySelector('[data-attempt-history-empty]');
+      var summary = section.querySelector('[data-attempt-history-summary]');
+      if (!list) return;
+      if (summary) {
+        var incorrectCount = records.filter(function (record) { return !record.correct; }).length;
+        summary.textContent = records.length
+          ? records.length + ' submitted response' + (records.length === 1 ? '' : 's') + ' saved. ' + incorrectCount + ' need' + (incorrectCount === 1 ? 's' : '') + ' review.'
+          : 'No submitted responses saved in this browser yet.';
+      }
+      if (!records.length) {
+        list.innerHTML = '';
+        if (empty) empty.hidden = false;
+        return;
+      }
+      if (empty) empty.hidden = true;
+      list.innerHTML = groupAttemptHistoryByQuestion(records).map(function (group, index) {
+        return '<article class="attempt-history-question-card">'
+          + '<header><div><p class="eyebrow">Question ' + (index + 1) + '</p><h3>' + escapeText(group.title) + '</h3>'
+          + (group.topic ? '<p>' + escapeText(group.topic) + '</p>' : '')
+          + '</div></header>'
+          + '<div class="attempt-history-record-stack">'
+          + group.records.map(renderAttemptHistoryRecord).join('')
+          + '</div></article>';
+      }).join('');
+    });
+  }
+
   function skillCheckSpecFromForm(form) {
     var toleranceText = form.getAttribute('data-tolerance') || '';
     var tolerance = toleranceText === '' ? NaN : Number(toleranceText);
@@ -3701,8 +4017,49 @@
     }).filter(Boolean).join(', ');
   }
 
+  function answerDisplayFromForm(form, submittedAnswer) {
+    var labelMap = parseJsonAttribute(form, 'data-answer-labels', {});
+    var labels = isRecord(labelMap) ? labelMap : {};
+    var selected = new FormData(form).getAll('submittedAnswer').map(function (value) {
+      return String(value).trim();
+    }).filter(Boolean);
+    if (!selected.length) return submittedAnswer;
+    return selected.map(function (value) {
+      return typeof labels[value] === 'string' ? labels[value] : value;
+    }).join(', ');
+  }
+
+  function currentPageRetryHref(form) {
+    var id = form.closest('[id]')?.getAttribute('id') || form.getAttribute('data-check-id') || '';
+    var base = window.location.pathname + window.location.search;
+    return id ? base + '#' + encodeURIComponent(id) : base;
+  }
+
+  function historyRecordFromForm(form, attemptId, source, submittedAnswer, isCorrect, timestamp) {
+    var questionId = form.getAttribute('data-check-id') || '';
+    return {
+      id: attemptId + ':history',
+      source: source,
+      course: 'p3',
+      questionId: questionId,
+      questionTitle: form.getAttribute('data-question-title') || form.getAttribute('data-topic') || questionId,
+      topic: form.getAttribute('data-topic') || '',
+      regionId: form.getAttribute('data-region-id') || '',
+      skillId: form.getAttribute('data-skill-id') || '',
+      response: submittedAnswer,
+      responseDisplay: answerDisplayFromForm(form, submittedAnswer),
+      correct: Boolean(isCorrect),
+      correctAnswer: form.getAttribute('data-correct-answer-label') || '',
+      explanation: form.getAttribute('data-explanation') || '',
+      timestamp: timestamp,
+      retryHref: currentPageRetryHref(form),
+      relatedAttemptId: attemptId
+    };
+  }
+
   function saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult) {
     var progress = loadProgress();
+    var now = new Date().toISOString();
     var attempt = {
       attemptId: createId('skill_attempt'),
       course: 'p3',
@@ -3716,9 +4073,13 @@
       revealedAnswer: form.getAttribute('data-revealed-answer') === 'true',
       revealedRepairStep: form.getAttribute('data-revealed-repair-step') === 'true',
       mistakeTags: selectedMistakeTags(form),
-      timestamp: new Date().toISOString()
+      timestamp: now
     };
     progress.skillCheckAttempts.push(attempt);
+    progress = appendStudentAttemptHistoryRecord(
+      progress,
+      historyRecordFromForm(form, attempt.attemptId, 'checked_practice', submittedAnswer, attempt.isCorrect, now)
+    );
     progress = updateStudentPerformanceState(progress, {
       kind: 'assessment',
       assessment_id: attempt.attemptId,
@@ -3795,6 +4156,10 @@
       completedAt: completesStep ? now : undefined
     };
     progress.learningActivityAttempts.push(attempt);
+    progress = appendStudentAttemptHistoryRecord(
+      progress,
+      historyRecordFromForm(form, attempt.id, 'learn_mode', submittedAnswer, attempt.isCorrect, now)
+    );
     if (completesStep) {
       progress = completeLearnStepInProgress(progress, regionId, stepId, form.getAttribute('data-step-title') || '', attempt.id);
     }
@@ -5260,6 +5625,7 @@
     document.documentElement.classList.add('static-enhanced');
     setupThemeToggle();
     setupHomepageDemo();
+    setupProgressTransferControls();
     setupProgressExportForms();
     setupP3DiagnosticFlow();
     setupPracticeStacks();
@@ -5276,6 +5642,19 @@
     document.addEventListener('click', function (event) {
       var target = event.target;
       if (!(target instanceof Element)) return;
+
+      var exportProgressButton = target.closest('[data-export-progress-json]');
+      if (exportProgressButton) {
+        exportProgressJsonDownload();
+        return;
+      }
+
+      var importProgressButton = target.closest('[data-import-progress-json]');
+      if (importProgressButton) {
+        var importInput = document.querySelector('[data-import-progress-file-input]');
+        if (importInput instanceof HTMLInputElement) importInput.click();
+        return;
+      }
 
       var topicButton = target.closest('[data-complete-field-guide-topic]');
       if (topicButton) {

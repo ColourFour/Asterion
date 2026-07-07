@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,10 +103,14 @@
       data-field-guide-topic-id="log_graph_inverse"
       data-skill-id="p3_log_convert_forms"
       data-check-id="learn-log-exp-form-conversion-primary"
+      data-question-title="Rewrite $3^4=81$ as a logarithmic statement."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\log_3 81=4&quot;,&quot;swapped&quot;:&quot;\\log_4 81=3&quot;,&quot;wrong-input&quot;:&quot;\\log_3 4=81&quot;}"
+      data-correct-answer-label="\log_3 81=4"
+      data-explanation="The base is 3. The result is 81. The exponent is 4, so \log_3 81=4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;method choice&quot;]"
@@ -185,10 +196,14 @@
       data-field-guide-topic-id="log_graph_inverse"
       data-skill-id="p3_log_convert_forms"
       data-check-id="learn-log-exp-form-conversion-similar"
+      data-question-title="Rewrite $5^2=25$ as a logarithmic statement."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\log_5 25=2&quot;,&quot;swapped&quot;:&quot;\\log_2 25=5&quot;,&quot;wrong-input&quot;:&quot;\\log_5 2=25&quot;}"
+      data-correct-answer-label="\log_5 25=2"
+      data-explanation="Keep base 5. Use 25 as the logarithm input. The value is the exponent 2, so \log_5 25=2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;method choice&quot;]"
@@ -295,19 +310,40 @@
       data-field-guide-topic-id="log_laws"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-product-law-primary"
+      data-question-title="Condense $\ln x+\ln5$ into one logarithm."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln(5x)&quot;,&quot;ln(x*5)&quot;,&quot;ln(5*x)&quot;,&quot;ln(x\\cdot5)&quot;,&quot;ln(5\\cdotx)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln(5x)"
+      data-explanation="Use \ln a+\ln b=\ln(ab). Here the inputs are x and 5. So \ln x+\ln5=\ln(5x)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-product-law-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-product-law-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-product-law-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -351,19 +387,40 @@
       data-field-guide-topic-id="log_laws"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-product-law-similar"
+      data-question-title="Condense $\ln2+\ln x$ into one logarithm."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln(2x)&quot;,&quot;ln(x*2)&quot;,&quot;ln(2*x)&quot;,&quot;ln(2\\cdotx)&quot;,&quot;ln(x\\cdot2)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln(2x)"
+      data-explanation="Use the product law. \ln2+\ln x=\ln(2x). Do not change this to \ln(2+x)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-product-law-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-product-law-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-product-law-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -428,19 +485,40 @@
       data-field-guide-topic-id="log_laws"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-quotient-law-primary"
+      data-question-title="Condense $\ln x-\ln3$ into one logarithm."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln(x/3)&quot;,&quot;ln\\left(x/3\\right)&quot;,&quot;ln(x\\div3)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln(x/3)"
+      data-explanation="Use \ln a-\ln b=\ln(a/b). Here a=x and b=3. So the result is \ln\left(\frac{x}{3}\right)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-quotient-law-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-quotient-law-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-quotient-law-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -484,19 +562,40 @@
       data-field-guide-topic-id="log_laws"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-quotient-law-similar"
+      data-question-title="Condense $\ln(2x)-\ln5$ into one logarithm."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln(2x/5)&quot;,&quot;ln((2x)/5)&quot;,&quot;ln(2*x/5)&quot;,&quot;ln\\left(2x/5\\right)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln(2x/5)"
+      data-explanation="The first input is 2x. The second input is 5. So \ln(2x)-\ln5=\ln\left(\frac{2x}{5}\right)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-quotient-law-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-quotient-law-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-quotient-law-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -561,19 +660,40 @@
       data-field-guide-topic-id="log_laws"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-power-law-primary"
+      data-question-title="Rewrite $3\ln x$ as one logarithm."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln(x^3)&quot;,&quot;lnx^3&quot;,&quot;\\ln(x^3)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln(x^3)"
+      data-explanation="Use n\ln a=\ln(a^n). Here n=3 and a=x. So 3\ln x=\ln(x^3)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-power-law-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-power-law-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-power-law-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -617,19 +737,40 @@
       data-field-guide-topic-id="log_laws"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-power-law-similar"
+      data-question-title="Rewrite $2\ln(x+1)$ as one logarithm."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln((x+1)^2)&quot;,&quot;ln((x+1)^{2})&quot;,&quot;\\ln((x+1)^2)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln((x+1)^2)"
+      data-explanation="The input is x+1. The coefficient 2 becomes a square. So 2\ln(x+1)=\ln((x+1)^2)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-power-law-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-power-law-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-power-law-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -694,19 +835,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-condense-to-solve-primary"
+      data-question-title="For $\ln(x-1)+\ln2=\ln10$, what input equation follows after condensing?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;2(x-1)=10&quot;,&quot;2*x-2=10&quot;,&quot;2x-2=10&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2(x-1)=10"
+      data-explanation="Use the product law on the left. \ln(x-1)+\ln2=\ln(2(x-1)). Therefore solve 2(x-1)=10."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="y=mx+c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-condense-to-solve-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-condense-to-solve-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-condense-to-solve-primary-answer-guidance" placeholder="y=mx+c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -750,19 +912,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-condense-to-solve-similar"
+      data-question-title="For $\ln x+\ln3=\ln12$, what input equation follows after condensing?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;3x=12&quot;,&quot;3*x=12&quot;,&quot;x*3=12&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3x=12"
+      data-explanation="Condense to \ln(3x)=\ln12. Compare positive inputs. The equation to solve is 3x=12."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="y=mx+c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-condense-to-solve-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-condense-to-solve-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-condense-to-solve-similar-answer-guidance" placeholder="y=mx+c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -827,19 +1010,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-full-equation-solve-primary"
+      data-question-title="Solve $\ln(x-1)+\ln2=\ln10$. Give $x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;6&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="6"
+      data-explanation="Condense to \ln(2(x-1))=\ln10. Solve 2(x-1)=10. This gives x=6, and the original log input is positive."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;domain/range issue&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-full-equation-solve-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-full-equation-solve-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-full-equation-solve-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -883,19 +1087,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_laws_equations"
       data-check-id="learn-log-full-equation-solve-similar"
+      data-question-title="Solve $\ln x+\ln3=\ln12$. Give $x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="4"
+      data-explanation="Condense to \ln(3x)=\ln12. Solve 3x=12. The valid solution is x=4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;domain/range issue&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-full-equation-solve-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-full-equation-solve-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-full-equation-solve-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -960,19 +1185,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-domain-rejection-primary"
+      data-question-title="Check $x-2&gt;0$ and $x+1&gt;0$. Which candidate is invalid?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-3"
+      data-explanation="The original domain is x&gt;2. 4 is allowed. -3 is not allowed, so reject -3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-domain-rejection-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-domain-rejection-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-domain-rejection-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1016,19 +1262,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-domain-rejection-similar"
+      data-question-title="For $\ln(x-2)+\ln x=\ln8$, candidates are $4$ and $-2$. Which candidate is invalid?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-2"
+      data-explanation="The original equation requires x&gt;2. 4 is allowed. -2 is outside the domain, so reject -2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-domain-rejection-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-domain-rejection-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-domain-rejection-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1093,19 +1360,40 @@
       data-field-guide-topic-id="exponential_equations_inequalities"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-exponential-equation-primary"
+      data-question-title="Solve $3^x=20$ exactly."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln20/ln3&quot;,&quot;ln(20)/ln(3)&quot;,&quot;(ln20)/(ln3)&quot;,&quot;log20/log3&quot;,&quot;log(20)/log(3)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln20/ln3"
+      data-explanation="Take natural logs of both sides. x\ln3=\ln20. Divide by \ln3 to get x=\frac{\ln20}{\ln3}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-exponential-equation-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-exponential-equation-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-exponential-equation-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1149,19 +1437,40 @@
       data-field-guide-topic-id="exponential_equations_inequalities"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-exponential-equation-similar"
+      data-question-title="Solve $5^x=42$ exactly."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln42/ln5&quot;,&quot;ln(42)/ln(5)&quot;,&quot;(ln42)/(ln5)&quot;,&quot;log42/log5&quot;,&quot;log(42)/log(5)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln42/ln5"
+      data-explanation="Take logs: x\ln5=\ln42. Divide by \ln5. So x=\frac{\ln42}{\ln5}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-exponential-equation-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-exponential-equation-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-exponential-equation-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1244,19 +1553,40 @@
       data-field-guide-topic-id="log_e_natural_logs"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-natural-e-inverse-primary"
+      data-question-title="Solve $e^{2x}=7$ exactly."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln7/2&quot;,&quot;ln(7)/2&quot;,&quot;(ln7)/2&quot;,&quot;1/2ln7&quot;,&quot;(1/2)ln7&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln7/2"
+      data-explanation="Take natural logs. 2x=\ln7. So x=\frac12\ln7."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-natural-e-inverse-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-natural-e-inverse-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-natural-e-inverse-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1300,19 +1630,40 @@
       data-field-guide-topic-id="log_e_natural_logs"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-natural-e-inverse-similar"
+      data-question-title="Solve $e^{x-1}=4$ exactly."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln4+1&quot;,&quot;ln(4)+1&quot;,&quot;1+ln4&quot;,&quot;1+ln(4)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln4+1"
+      data-explanation="Take natural logs to get x-1=\ln4. Add 1. So x=\ln4+1."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-natural-e-inverse-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-natural-e-inverse-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-natural-e-inverse-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1377,19 +1728,40 @@
       data-field-guide-topic-id="exponential_equations_inequalities"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-exponential-model-parameter-primary"
+      data-question-title="For $y=Ae^{kx}$ with $y(0)=6$ and $y(2)=24$, find $k$ exactly."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln4/2&quot;,&quot;ln(4)/2&quot;,&quot;(ln4)/2&quot;,&quot;1/2ln4&quot;,&quot;(1/2)ln4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln4/2"
+      data-explanation="A=6 from y(0)=6. 24=6e^{2k} gives e^{2k}=4. So k=\frac12\ln4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-exponential-model-parameter-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-exponential-model-parameter-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-exponential-model-parameter-primary-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1433,19 +1805,40 @@
       data-field-guide-topic-id="exponential_equations_inequalities"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-exponential-model-parameter-similar"
+      data-question-title="For $y=Ae^{kx}$ with $y(0)=5$ and $y(3)=40$, find $k$ exactly."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;ln8/3&quot;,&quot;ln(8)/3&quot;,&quot;(ln8)/3&quot;,&quot;1/3ln8&quot;,&quot;(1/3)ln8&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="ln8/3"
+      data-explanation="A=5. 40=5e^{3k}, so e^{3k}=8. Therefore k=\frac13\ln8."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="ln(5x)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-exponential-model-parameter-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-exponential-model-parameter-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-exponential-model-parameter-similar-answer-guidance" placeholder="ln(5x)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1510,19 +1903,40 @@
       data-field-guide-topic-id="log_linearisation"
       data-skill-id="p3_log_linearisation"
       data-check-id="learn-log-linearise-exponential-primary"
+      data-question-title="For $y=4e^{3x}$, what is the gradient of a graph of $\ln y$ against $x$?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3"
+      data-explanation="Take logs: \ln y=\ln4+3x. Compare with Y=c+mX. The gradient is 3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-linearise-exponential-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-linearise-exponential-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-linearise-exponential-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1566,19 +1980,40 @@
       data-field-guide-topic-id="log_linearisation"
       data-skill-id="p3_log_linearisation"
       data-check-id="learn-log-linearise-exponential-similar"
+      data-question-title="For $y=7e^{-2x}$, what is the gradient of a graph of $\ln y$ against $x$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-2"
+      data-explanation="Taking logs gives \ln y=\ln7-2x. The coefficient of x is -2. So the gradient is -2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-linearise-exponential-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-linearise-exponential-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-linearise-exponential-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1643,19 +2078,40 @@
       data-field-guide-topic-id="log_linearisation"
       data-skill-id="p3_log_linearisation"
       data-check-id="learn-log-linearise-power-law-primary"
+      data-question-title="For $y=5x^3$, what is the gradient of a graph of $\ln y$ against $\ln x$?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3"
+      data-explanation="Take logs: \ln y=\ln5+\ln(x^3). Use the power law: \ln y=\ln5+3\ln x. The gradient is 3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-linearise-power-law-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-linearise-power-law-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-linearise-power-law-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1699,19 +2155,40 @@
       data-field-guide-topic-id="log_linearisation"
       data-skill-id="p3_log_linearisation"
       data-check-id="learn-log-linearise-power-law-similar"
+      data-question-title="For $y=2x^{-4}$, what is the gradient of a graph of $\ln y$ against $\ln x$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-4"
+      data-explanation="Taking logs gives \ln y=\ln2+\ln(x^{-4}). So \ln y=\ln2-4\ln x. The gradient is -4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-linearise-power-law-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-linearise-power-law-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-linearise-power-law-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1776,10 +2253,14 @@
       data-field-guide-topic-id="log_linearisation"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-power-law-domain-primary"
+      data-question-title="For a graph of $\ln y$ against $\ln x$, what must be true about $x$?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;x&gt;0&quot;,&quot;nonzero&quot;:&quot;x\\ne0 only&quot;,&quot;all-real&quot;:&quot;all real x&quot;}"
+      data-correct-answer-label="x&gt;0"
+      data-explanation="The linearised graph uses \ln x. A logarithm input must be positive. So the data must have x&gt;0."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
@@ -1865,10 +2346,14 @@
       data-field-guide-topic-id="log_linearisation"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-power-law-domain-similar"
+      data-question-title="For $\ln y=\ln k+n\ln x$, which pair of restrictions is safest?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;x&gt;0 and y&gt;0&quot;,&quot;x-only&quot;:&quot;x&gt;0 only&quot;,&quot;nonzero&quot;:&quot;x\\ne0 and y\\ne0&quot;}"
+      data-correct-answer-label="x&gt;0 and y&gt;0"
+      data-explanation="\ln x requires x&gt;0. \ln y requires y&gt;0. Both restrictions are needed."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
@@ -1975,19 +2460,40 @@
       data-field-guide-topic-id="exponential_equations_inequalities"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-exponential-inequality-primary"
+      data-question-title="Solve $e^{2x}&gt;7$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="interval"
       data-accepted-answers="[&quot;x &gt; ln7/2&quot;,&quot;x&gt;ln7/2&quot;,&quot;x &gt; (ln7)/2&quot;,&quot;x&gt;1/2ln7&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x &gt; ln7/2"
+      data-explanation="Take natural logs of both sides. 2x&gt;\ln7. So x&gt;\frac12\ln7."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: interval or inequality.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="-1 &lt; x &lt; 4" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="interval" data-answer-symbols="&lt;,&lt;=,&gt;=,( ),[ ]">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-exponential-inequality-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: interval or inequality.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>&lt;</code><code>&lt;=</code><code>&gt;=</code><code>( )</code><code>[ ]</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>-1 &lt; x &lt; 4</code><code>x &gt;= 1 and x &lt; 4</code><code>(1, 4)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-exponential-inequality-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-exponential-inequality-primary-answer-guidance" placeholder="-1 &lt; x &lt; 4" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2031,19 +2537,40 @@
       data-field-guide-topic-id="exponential_equations_inequalities"
       data-skill-id="p3_log_exponential_equations"
       data-check-id="learn-log-exponential-inequality-similar"
+      data-question-title="Solve $3^x&lt;20$ exactly."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="interval"
       data-accepted-answers="[&quot;x &lt; ln20/ln3&quot;,&quot;x&lt;ln20/ln3&quot;,&quot;x &lt; ln(20)/ln(3)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x &lt; ln20/ln3"
+      data-explanation="Take logs to get x\ln3&lt;\ln20. \ln3 is positive. So x&lt;\frac{\ln20}{\ln3}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: interval or inequality.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="-1 &lt; x &lt; 4" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="interval" data-answer-symbols="&lt;,&lt;=,&gt;=,( ),[ ]">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-exponential-inequality-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: interval or inequality.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>&lt;</code><code>&lt;=</code><code>&gt;=</code><code>( )</code><code>[ ]</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>-1 &lt; x &lt; 4</code><code>x &gt;= 1 and x &lt; 4</code><code>(1, 4)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-exponential-inequality-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-exponential-inequality-similar-answer-guidance" placeholder="-1 &lt; x &lt; 4" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2108,19 +2635,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-logarithmic-inequality-primary"
+      data-question-title="Solve $\ln(x-1)&lt;\ln5$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="interval"
       data-accepted-answers="[&quot;1 &lt; x &lt; 6&quot;,&quot;1&lt;x&lt;6&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1 &lt; x &lt; 6"
+      data-explanation="The domain is x&gt;1. Compare inputs: x-1&lt;5, so x&lt;6. Together, 1&lt;x&lt;6."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: interval or inequality.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="-1 &lt; x &lt; 4" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="interval" data-answer-symbols="&lt;,&lt;=,&gt;=,( ),[ ]">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-logarithmic-inequality-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: interval or inequality.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>&lt;</code><code>&lt;=</code><code>&gt;=</code><code>( )</code><code>[ ]</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>-1 &lt; x &lt; 4</code><code>x &gt;= 1 and x &lt; 4</code><code>(1, 4)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-logarithmic-inequality-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-logarithmic-inequality-primary-answer-guidance" placeholder="-1 &lt; x &lt; 4" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2164,19 +2712,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-logarithmic-inequality-similar"
+      data-question-title="Solve $\ln(2x+1)\ge\ln3$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="interval"
       data-accepted-answers="[&quot;x &gt;= 1&quot;,&quot;x&gt;=1&quot;,&quot;x\\ge1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x &gt;= 1"
+      data-explanation="The domain is x&gt;-\frac12. Compare inputs: 2x+1\ge3. This gives x\ge1, which is inside the domain."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: interval or inequality.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="-1 &lt; x &lt; 4" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="interval" data-answer-symbols="&lt;,&lt;=,&gt;=,( ),[ ]">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-logarithmic-inequality-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: interval or inequality.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>&lt;</code><code>&lt;=</code><code>&gt;=</code><code>( )</code><code>[ ]</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>-1 &lt; x &lt; 4</code><code>x &gt;= 1 and x &lt; 4</code><code>(1, 4)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-logarithmic-inequality-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-logarithmic-inequality-similar-answer-guidance" placeholder="-1 &lt; x &lt; 4" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2241,19 +2810,40 @@
       data-field-guide-topic-id="log_graph_inverse"
       data-skill-id="p3_log_convert_forms"
       data-check-id="learn-log-graph-asymptote-domain-primary"
+      data-question-title="For $y=\ln(x-2)+1$, give the $x$-value of the vertical asymptote."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2"
+      data-explanation="The input is x-2. Set x-2=0. The asymptote is x=2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-graph-asymptote-domain-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-graph-asymptote-domain-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-graph-asymptote-domain-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2297,19 +2887,40 @@
       data-field-guide-topic-id="log_graph_inverse"
       data-skill-id="p3_log_convert_forms"
       data-check-id="learn-log-graph-asymptote-domain-similar"
+      data-question-title="For $y=\ln(x+3)-4$, give the $x$-value of the vertical asymptote."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-3"
+      data-explanation="The input is x+3. Set x+3=0. The asymptote is x=-3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-graph-asymptote-domain-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-graph-asymptote-domain-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-graph-asymptote-domain-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2374,19 +2985,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-mixed-exam-transfer-primary"
+      data-question-title="Solve $\ln(x-1)+\ln(x-3)=\ln3$. Give the valid value of $x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="4"
+      data-explanation="The original domain is x&gt;3. Condense to (x-1)(x-3)=3. The candidates are 0 and 4, so the valid solution is x=4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-mixed-exam-transfer-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-mixed-exam-transfer-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-mixed-exam-transfer-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2430,19 +3062,40 @@
       data-field-guide-topic-id="log_equations_inequalities"
       data-skill-id="p3_log_domain_validation"
       data-check-id="learn-log-mixed-exam-transfer-similar"
+      data-question-title="Solve $\ln(x-2)+\ln x=\ln8$. Give the valid value of $x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="4"
+      data-explanation="The original domain is x&gt;2. Condense to x(x-2)=8. The candidates are 4 and -2, so the valid solution is x=4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-log-mixed-exam-transfer-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-log-mixed-exam-transfer-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-log-mixed-exam-transfer-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">

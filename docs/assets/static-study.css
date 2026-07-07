@@ -319,6 +319,47 @@ img {
   box-shadow: 0 8px 18px rgba(0, 87, 217, 0.14);
 }
 
+.progress-transfer-controls {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.progress-transfer-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted-strong);
+  background: rgba(255, 255, 255, 0.78);
+  font: inherit;
+  font-weight: 800;
+  line-height: 1.15;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, border-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+}
+
+.progress-transfer-button:hover,
+.progress-transfer-button:focus-visible {
+  border-color: rgba(0, 87, 217, 0.5);
+  color: #ffffff;
+  background: var(--accent-dark);
+  box-shadow: 0 8px 18px rgba(0, 87, 217, 0.14);
+}
+
+.progress-transfer-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .theme-toggle {
   display: inline-flex;
   align-items: center;
@@ -1917,6 +1958,23 @@ body.home-page .site-nav .nav-start-button {
 body.home-page .site-nav .nav-start-button:hover {
   color: #ffffff;
   background: var(--home-blue-dark);
+}
+
+body.home-page .progress-transfer-button {
+  min-height: 38px;
+  padding: 8px 12px;
+  border-color: rgba(159, 198, 255, 0.32);
+  border-radius: 6px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+  font-size: 0.88rem;
+}
+
+body.home-page .progress-transfer-button:hover,
+body.home-page .progress-transfer-button:focus-visible {
+  border-color: rgba(159, 198, 255, 0.58);
+  background: rgba(47, 134, 255, 0.24);
 }
 
 body.home-page main {
@@ -5944,6 +6002,110 @@ body.learn-mode-page .learn-exam-transfer {
   gap: 6px;
 }
 
+.math-answer-input {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  min-width: 0;
+}
+
+.math-answer-label {
+  min-width: 0;
+  color: var(--ink);
+  font-weight: 900;
+  overflow-wrap: anywhere;
+}
+
+.math-answer-guidance {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  color: var(--muted-strong);
+  font-size: 0.82rem;
+  line-height: 1.28;
+  overflow-wrap: anywhere;
+}
+
+.math-answer-instruction {
+  display: block;
+}
+
+.math-answer-guidance-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  align-items: center;
+  min-width: 0;
+}
+
+.math-answer-guidance-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.math-answer-symbols,
+.math-answer-examples {
+  display: flex;
+  flex: 1 1 180px;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-width: 0;
+}
+
+.math-answer-symbols code,
+.math-answer-examples code {
+  display: inline-flex;
+  align-items: center;
+  min-height: 21px;
+  max-width: 100%;
+  padding: 1px 5px;
+  border: 1px solid rgba(82, 97, 122, 0.24);
+  border-radius: 6px;
+  color: #213049;
+  background: #f4f8ff;
+  font-family: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.math-answer-input input {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 11px;
+  border: 1px solid rgba(82, 97, 122, 0.34);
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: #ffffff;
+}
+
+@media (min-width: 760px) {
+  .math-answer-input {
+    grid-template-columns: minmax(0, 1fr) minmax(220px, 0.58fr);
+    column-gap: 10px;
+    align-items: end;
+  }
+
+  .math-answer-label,
+  .math-answer-guidance {
+    grid-column: 1;
+  }
+
+  .math-answer-input input {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .math-answer-input .repair-feedback {
+    grid-column: 1 / -1;
+  }
+}
+
 .option-list label {
   grid-template-columns: auto 1fr;
   align-items: start;
@@ -6573,6 +6735,112 @@ body.skill-check-page .exam-question-section {
   gap: 16px;
 }
 
+.attempt-history-section {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #ffffff;
+  box-shadow: var(--shadow-sm);
+}
+
+.attempt-history-list,
+.attempt-history-question-card,
+.attempt-history-record-stack {
+  display: grid;
+  gap: 12px;
+}
+
+.attempt-history-question-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #f7fbff;
+}
+
+.attempt-history-question-card header,
+.attempt-history-record header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.attempt-history-question-card h3,
+.attempt-history-question-card p,
+.attempt-history-record p {
+  margin: 0;
+}
+
+.attempt-history-record {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-left-width: 5px;
+  border-radius: var(--radius);
+  background: #ffffff;
+}
+
+.attempt-history-record.is-correct {
+  border-left-color: var(--success);
+}
+
+.attempt-history-record.is-incorrect {
+  border-left-color: var(--danger);
+}
+
+.attempt-history-indicator {
+  display: inline-grid;
+  place-items: center;
+  min-height: 28px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.attempt-history-record.is-correct .attempt-history-indicator {
+  background: var(--success);
+}
+
+.attempt-history-record.is-incorrect .attempt-history-indicator {
+  background: var(--danger);
+}
+
+.attempt-history-answer-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+}
+
+.attempt-history-answer-list div {
+  display: grid;
+  gap: 3px;
+}
+
+.attempt-history-answer-list dt {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.attempt-history-answer-list dd {
+  margin: 0;
+  color: var(--ink);
+  font-weight: 850;
+  overflow-wrap: anywhere;
+}
+
+.attempt-history-retry {
+  justify-self: start;
+}
+
 .support-panel {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -6918,6 +7186,15 @@ body.skill-check-page .exam-question-section {
     flex: 1 1 auto;
   }
 
+  .progress-transfer-controls {
+    justify-content: stretch;
+    width: 100%;
+  }
+
+  .progress-transfer-button {
+    flex: 1 1 auto;
+  }
+
   .theme-toggle {
     width: 100%;
   }
@@ -7046,6 +7323,28 @@ body.skill-check-page .exam-question-section {
     width: auto;
     min-height: 34px;
     padding: 7px 10px;
+  }
+
+  .progress-transfer-controls {
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+    gap: 6px;
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .progress-transfer-controls::-webkit-scrollbar {
+    display: none;
+  }
+
+  .progress-transfer-button,
+  body.home-page .progress-transfer-button {
+    flex: 0 0 auto;
+    min-height: 34px;
+    padding: 7px 9px;
+    font-size: 0.78rem;
   }
 
   .site-nav,
@@ -7997,6 +8296,7 @@ body.skill-check-page .exam-question-section {
 }
 
 :root[data-theme="light"] .site-nav a,
+:root[data-theme="light"] .progress-transfer-button,
 :root[data-theme="light"] .theme-toggle {
   color: var(--muted-strong);
   background: rgba(255, 255, 255, 0.78);
@@ -8008,6 +8308,7 @@ body.skill-check-page .exam-question-section {
 }
 
 :root[data-theme="dark"] .site-nav a,
+:root[data-theme="dark"] .progress-transfer-button,
 :root[data-theme="dark"] .theme-toggle {
   color: var(--muted-strong);
   background: rgba(15, 27, 47, 0.82);
@@ -8015,6 +8316,8 @@ body.skill-check-page .exam-question-section {
 
 :root[data-theme="dark"] .site-nav a:hover,
 :root[data-theme="dark"] .site-nav a[aria-current="page"],
+:root[data-theme="dark"] .progress-transfer-button:hover,
+:root[data-theme="dark"] .progress-transfer-button:focus-visible,
 :root[data-theme="dark"] .theme-toggle:hover {
   border-color: rgba(169, 200, 235, 0.46);
   color: #f8fbff;
@@ -8074,6 +8377,21 @@ body.skill-check-page .exam-question-section {
   border-color: rgba(173, 190, 214, 0.32);
   color: var(--ink);
   background: rgba(7, 18, 37, 0.88);
+}
+
+:root[data-theme="dark"] .math-answer-guidance {
+  color: var(--muted-strong);
+}
+
+:root[data-theme="dark"] .math-answer-guidance-label {
+  color: var(--muted);
+}
+
+:root[data-theme="dark"] .math-answer-symbols code,
+:root[data-theme="dark"] .math-answer-examples code {
+  border-color: rgba(173, 190, 214, 0.32);
+  color: #f3f6fb;
+  background: rgba(126, 167, 217, 0.14);
 }
 
 @media print {
@@ -8506,6 +8824,7 @@ body.skill-check-page .exam-question-section {
   }
 
   :root[data-theme="dark"] .site-nav a,
+  :root[data-theme="dark"] .progress-transfer-button,
   :root[data-theme="dark"] .theme-toggle,
   :root[data-theme="dark"] body.home-page .site-nav a,
   :root[data-theme="dark"] body.home-page .site-nav span {
@@ -8516,6 +8835,8 @@ body.skill-check-page .exam-question-section {
 
   :root[data-theme="dark"] .site-nav a:hover,
   :root[data-theme="dark"] .site-nav a[aria-current="page"],
+  :root[data-theme="dark"] .progress-transfer-button:hover,
+  :root[data-theme="dark"] .progress-transfer-button:focus-visible,
   :root[data-theme="dark"] .theme-toggle:hover,
   :root[data-theme="dark"] body.home-page .site-nav .nav-start-button,
   :root[data-theme="dark"] body.home-page .site-nav .nav-start-button:hover {
@@ -9075,6 +9396,7 @@ body.skill-check-page .exam-question-section {
   }
 
   :root:not([data-theme="dark"]) .site-nav a,
+  :root:not([data-theme="dark"]) .progress-transfer-button,
   :root:not([data-theme="dark"]) .theme-toggle,
   :root:not([data-theme="dark"]) body.home-page .site-nav a,
   :root:not([data-theme="dark"]) body.home-page .site-nav span {
@@ -9086,6 +9408,8 @@ body.skill-check-page .exam-question-section {
 
   :root:not([data-theme="dark"]) .site-nav a:hover,
   :root:not([data-theme="dark"]) .site-nav a[aria-current="page"],
+  :root:not([data-theme="dark"]) .progress-transfer-button:hover,
+  :root:not([data-theme="dark"]) .progress-transfer-button:focus-visible,
   :root:not([data-theme="dark"]) .theme-toggle:hover,
   :root:not([data-theme="dark"]) body.home-page .site-nav .nav-start-button,
   :root:not([data-theme="dark"]) body.home-page .site-nav .nav-start-button:hover {

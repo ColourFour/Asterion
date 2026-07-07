@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,19 +103,40 @@
       data-field-guide-topic-id="vectors_notation"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-2d-3d-notation-primary"
+      data-question-title="Type the column-vector components for $2\mathbf i-3\mathbf j+4\mathbf k$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;(2,-3,4)&quot;,&quot;2,-3,4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(2,-3,4)"
+      data-explanation="The \mathbf i coefficient is 2. The \mathbf j coefficient is -3. The \mathbf k coefficient is 4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: column-vector components as (a,b,c), with commas.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-2d-3d-notation-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: column-vector components as (a,b,c), with commas.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-2d-3d-notation-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-2d-3d-notation-primary-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -167,19 +195,40 @@ l0,-144c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       data-field-guide-topic-id="vectors_notation"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-2d-3d-notation-similar"
+      data-question-title="Write $\begin{pmatrix}-1\\5\end{pmatrix}$ in unit-vector form."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;-i+5j&quot;,&quot;-1i+5j&quot;,&quot;-\\mathbf i+5\\mathbf j&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-i+5j"
+      data-explanation="The first component is -1. The second component is 5. So the vector is -\mathbf i+5\mathbf j."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-2d-3d-notation-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-2d-3d-notation-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-2d-3d-notation-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -250,19 +299,40 @@ l0,-144c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       data-field-guide-topic-id="vectors_notation"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-direction-from-points-primary"
+      data-question-title="Use $B-A$ to find $\overrightarrow{AB}$ for $A(1,2,-1)$ and $B(4,0,5)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(3,-2,6)&quot;,&quot;3,-2,6&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(3,-2,6)"
+      data-explanation="Subtract A from B. The components are 3, -2, and 6. So \overrightarrow{AB}=(3,-2,6)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-direction-from-points-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-direction-from-points-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-direction-from-points-primary-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -324,19 +394,40 @@ l0,-144c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       data-field-guide-topic-id="vectors_notation"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-direction-from-points-similar"
+      data-question-title="Find $\overrightarrow{PQ}$ for $P(-2,3,1)$ and $Q(1,5,-4)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(3,2,-5)&quot;,&quot;3,2,-5&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(3,2,-5)"
+      data-explanation="Q-P=(1-(-2),5-3,-4-1). This gives (3,2,-5). That displacement is the direction vector from P to Q."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-direction-from-points-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-direction-from-points-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-direction-from-points-similar-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -401,19 +492,40 @@ l0,-144c-2,-159.3,-10,-310.7,-24,-454c-53.3,-528,-210,-949.7,
       data-field-guide-topic-id="vectors_magnitude_unit_parallel"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-magnitude-unit-direction-ratios-primary"
+      data-question-title="Find a unit vector in the direction of $(3,4,0)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(3/5,4/5,0)&quot;,&quot;3/5,4/5,0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(3/5,4/5,0)"
+      data-explanation="The magnitude is \sqrt{3^2+4^2+0^2}=5. Divide by 5. A unit vector is (3/5,4/5,0)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: column-vector components as (a,b,c), with commas.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-magnitude-unit-direction-ratios-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: column-vector components as (a,b,c), with commas.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-magnitude-unit-direction-ratios-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-magnitude-unit-direction-ratios-primary-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -468,10 +580,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_magnitude_unit_parallel"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-magnitude-unit-direction-ratios-similar"
+      data-question-title="Which direction ratios match vector $(6,-2,4)$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;3:-1:2&quot;,&quot;distractor-1&quot;:&quot;6:2:4&quot;,&quot;distractor-2&quot;:&quot;-3:1:-2 only&quot;}"
+      data-correct-answer-label="3:-1:2"
+      data-explanation="Use the components as ratios. Divide all three by 2. The simplified direction ratios are 3:-1:2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
@@ -578,19 +694,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_geometric_add_subtract"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-midpoint-and-proof-primary"
+      data-question-title="Find the midpoint of $A(2,-1,3)$ and $B(8,5,1)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(5,2,2)&quot;,&quot;5,2,2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(5,2,2)"
+      data-explanation="Average the x coordinates to get 5. Average the y coordinates to get 2. Average the z coordinates to get 2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-midpoint-and-proof-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-midpoint-and-proof-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-midpoint-and-proof-primary-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -646,10 +783,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_geometric_add_subtract"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-midpoint-and-proof-similar"
+      data-question-title="If $\overrightarrow{AB}=(2,4,6)$ and $\overrightarrow{AC}=(1,2,3)$, what geometric fact is shown?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;A, B, and C are collinear&quot;,&quot;distractor-1&quot;:&quot;AB is perpendicular to AC&quot;,&quot;distractor-2&quot;:&quot;B is the midpoint of AC&quot;}"
+      data-correct-answer-label="A, B, and C are collinear"
+      data-explanation="\overrightarrow{AB}=(2,4,6). \overrightarrow{AC}=(1,2,3). Since \overrightarrow{AB}=2\overrightarrow{AC}, the points are collinear."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
@@ -822,10 +963,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_line_equation"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-line-equation-primary"
+      data-question-title="Choose the line through $A(1,2,-1)$ with direction $(3,-2,6)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\mathbf r=(1,2,-1)+\\lambda(3,-2,6)&quot;,&quot;distractor-1&quot;:&quot;\\mathbf r=(3,-2,6)+\\lambda(1,2,-1)&quot;,&quot;distractor-2&quot;:&quot;\\mathbf r=(1,2,-1)+\\lambda(4,0,5)&quot;}"
+      data-correct-answer-label="\mathbf r=(1,2,-1)+\lambda(3,-2,6)"
+      data-explanation="Use A as the fixed point. Use \overrightarrow{AB}=(3,-2,6) as the direction. The line is \mathbf r=(1,2,-1)+\lambda(3,-2,6)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
@@ -917,10 +1062,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_line_equation"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-line-equation-similar"
+      data-question-title="Choose the line through $P(2,-1,0)$ with direction $(-1,4,3)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\mathbf r=(2,-1,0)+\\lambda(-1,4,3)&quot;,&quot;distractor-1&quot;:&quot;\\mathbf r=(-1,4,3)+\\lambda(2,-1,0)&quot;,&quot;distractor-2&quot;:&quot;\\mathbf r=(2,-1,0)+\\lambda(1,-4,-3)&quot;}"
+      data-correct-answer-label="\mathbf r=(2,-1,0)+\lambda(-1,4,3)"
+      data-explanation="The point vector is (2,-1,0). The direction vector is (-1,4,3). So \mathbf r=(2,-1,0)+\lambda(-1,4,3)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
@@ -1027,19 +1176,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_line_equation"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-point-on-line-primary"
+      data-question-title="Does $P(7,-2,11)$ lie on $\mathbf r=(1,2,-1)+\lambda(3,-2,6)$?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;yes&quot;,&quot;y&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="yes"
+      data-explanation="1+3\lambda=7 gives \lambda=2. The y coordinate gives 2-2(2)=-2. The z coordinate gives -1+6(2)=11, so yes."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-point-on-line-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-point-on-line-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-point-on-line-primary-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1083,19 +1253,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_line_equation"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-point-on-line-similar"
+      data-question-title="Does $Q(4,0,10)$ lie on $\mathbf r=(1,2,-1)+\lambda(3,-2,6)$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;no&quot;,&quot;n&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="no"
+      data-explanation="1+3\lambda=4 gives \lambda=1. The y coordinate works: 2-2(1)=0. The z coordinate gives 5, not 10, so no."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: short phrase.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="exact-text" data-answer-symbols="words">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-point-on-line-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: short phrase.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>words</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>short phrase</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-point-on-line-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-point-on-line-similar-answer-guidance" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1178,19 +1369,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_intersect_parallel_skew"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-line-intersection-primary"
+      data-question-title="Find the intersection point of $L_1:(1,0,2)+\lambda(1,2,-1)$ and $L_2:(3,4,0)+\mu(-1,0,1)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(3,4,0)&quot;,&quot;3,4,0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(3,4,0)"
+      data-explanation="From 2\lambda=4, get \lambda=2. Substitute into L_1: (1,0,2)+2(1,2,-1). The intersection point is (3,4,0)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-line-intersection-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-line-intersection-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-line-intersection-primary-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1234,19 +1446,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_intersect_parallel_skew"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-line-intersection-similar"
+      data-question-title="Find the intersection point of $L_1:(0,1,2)+\lambda(2,1,-1)$ and $L_2:(4,3,0)+\mu(0,1,2)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(4,3,0)&quot;,&quot;4,3,0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(4,3,0)"
+      data-explanation="2\lambda=4, so \lambda=2. Substitute into L_1 to get (4,3,0). This is also on L_2 when \mu=0."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-line-intersection-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-line-intersection-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-line-intersection-similar-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1329,10 +1562,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_intersect_parallel_skew"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-skew-check-primary"
+      data-question-title="Classify the two lines as intersecting, parallel, or skew."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Skew&quot;,&quot;distractor-1&quot;:&quot;Intersecting&quot;,&quot;distractor-2&quot;:&quot;Parallel&quot;}"
+      data-correct-answer-label="Skew"
+      data-explanation="The direction vectors are not scalar multiples. The z coordinates are inconsistent. The lines are skew."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
@@ -1418,10 +1655,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_intersect_parallel_skew"
       data-skill-id="p3_vec_line_equations_intersections"
       data-check-id="learn-vectors-skew-check-similar"
+      data-question-title="Classify $L_1:(1,0,0)+\lambda(1,1,0)$ and $L_2:(0,1,2)+\mu(1,-1,0)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Skew&quot;,&quot;distractor-1&quot;:&quot;Intersecting&quot;,&quot;distractor-2&quot;:&quot;Parallel&quot;}"
+      data-correct-answer-label="Skew"
+      data-explanation="The lines are not parallel. Their fixed z coordinates differ. So they are skew."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
@@ -1528,19 +1769,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_scalar_product"
       data-skill-id="p3_vec_scalar_product_angles"
       data-check-id="learn-vectors-scalar-product-perpendicular-primary"
+      data-question-title="Find $k$ if $(1,2,k)$ is perpendicular to $(4,-1,2)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;-1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-1"
+      data-explanation="Perpendicular vectors have dot product zero. 1(4)+2(-1)+k(2)=0. 2+2k=0, so k=-1."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-scalar-product-perpendicular-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-scalar-product-perpendicular-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-scalar-product-perpendicular-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1584,19 +1846,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_scalar_product"
       data-skill-id="p3_vec_scalar_product_angles"
       data-check-id="learn-vectors-scalar-product-perpendicular-similar"
+      data-question-title="Find $k$ if $(2,k,3)$ is perpendicular to $(1,4,-2)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;1&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1"
+      data-explanation="Set the scalar product to zero. 2+4k-6=0. So k=1."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-scalar-product-perpendicular-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-scalar-product-perpendicular-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-scalar-product-perpendicular-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1685,19 +1968,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_point_to_line_distance"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-foot-of-perpendicular-primary"
+      data-question-title="Find the foot point from $P(1,2,0)$ to $\mathbf r=\lambda(1,0,0)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(1,0,0)&quot;,&quot;1,0,0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(1,0,0)"
+      data-explanation="Let Q=(\lambda,0,0). \overrightarrow{PQ}=(\lambda-1,-2,0). Perpendicularity gives \lambda=1, so Q=(1,0,0)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-foot-of-perpendicular-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-foot-of-perpendicular-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-foot-of-perpendicular-primary-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1753,19 +2057,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_point_to_line_distance"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-foot-of-perpendicular-similar"
+      data-question-title="Find the foot point from $P(2,3,4)$ to $\mathbf r=(0,0,0)+\lambda(0,1,0)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(0,3,0)&quot;,&quot;0,3,0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(0,3,0)"
+      data-explanation="Let Q=(0,\lambda,0). Q-P=(-2,\lambda-3,-4). Dotting with (0,1,0) gives \lambda=3, so Q=(0,3,0)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-foot-of-perpendicular-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-foot-of-perpendicular-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-foot-of-perpendicular-similar-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1848,19 +2173,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_point_to_line_distance"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-reflection-in-line-primary"
+      data-question-title="Reflect $P=(1,2,0)$ in the line when the foot point is $Q=(1,0,0)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(1,-2,0)&quot;,&quot;1,-2,0&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(1,-2,0)"
+      data-explanation="The foot point is the midpoint. P\prime=2Q-P. P\prime=(2,0,0)-(1,2,0)=(1,-2,0)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-reflection-in-line-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-reflection-in-line-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-reflection-in-line-primary-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1904,19 +2250,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_point_to_line_distance"
       data-skill-id="p3_vec_3d_geometry_modelling"
       data-check-id="learn-vectors-reflection-in-line-similar"
+      data-question-title="Reflect $P=(2,3,4)$ in the line when the foot point is $Q=(0,3,0)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="coordinate"
       data-accepted-answers="[&quot;(-2,3,-4)&quot;,&quot;-2,3,-4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="(-2,3,-4)"
+      data-explanation="P\prime=2Q-P. 2Q=(0,6,0). So P\prime=(-2,3,-4)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: use commas, e.g. (a,b,c).</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="(a,b,c)" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="coordinate-vector" data-answer-symbols="commas,( ),&lt; &gt;">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-reflection-in-line-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: use commas, e.g. (a,b,c).</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>( )</code><code>&lt; &gt;</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>(a,b,c)</code><code>&lt;a,b,c&gt;</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-reflection-in-line-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-reflection-in-line-similar-answer-guidance" placeholder="(a,b,c)" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1981,19 +2348,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_angle_between_lines"
       data-skill-id="p3_vec_scalar_product_angles"
       data-check-id="learn-vectors-angle-between-lines-primary"
+      data-question-title="For direction vectors $(1,0,0)$ and $(1,1,0)$, find $\cos\theta$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;1/sqrt2&quot;,&quot;1/\\sqrt2&quot;,&quot;1/sqrt(2)&quot;,&quot;sqrt2/2&quot;,&quot;\\sqrt2/2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1/sqrt2"
+      data-explanation="The dot product is 1. The magnitudes are 1 and \sqrt2. So \cos\theta=\frac{1}{\sqrt2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-angle-between-lines-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-angle-between-lines-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-angle-between-lines-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2081,19 +2469,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="vectors_angle_between_lines"
       data-skill-id="p3_vec_scalar_product_angles"
       data-check-id="learn-vectors-angle-between-lines-similar"
+      data-question-title="For direction vectors $(0,1,0)$ and $(0,1,1)$, find $\cos\theta$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;1/sqrt2&quot;,&quot;1/\\sqrt2&quot;,&quot;1/sqrt(2)&quot;,&quot;sqrt2/2&quot;,&quot;\\sqrt2/2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1/sqrt2"
+      data-explanation="The dot product is 1. The magnitudes are 1 and \sqrt2. So \cos\theta=\frac{1}{\sqrt2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;,&quot;parameter error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-vectors-angle-between-lines-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-vectors-angle-between-lines-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-vectors-angle-between-lines-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">

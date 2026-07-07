@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,10 +103,14 @@
       data-field-guide-topic-id="trig_pythagorean_identities"
       data-skill-id="p3_trig_identity_selection"
       data-check-id="learn-trig-identity-form-choice-primary"
+      data-question-title="Choose the identity whose visible terms match $1-\sin^2 x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\sin^2 x+\\cos^2 x=1&quot;,&quot;distractor-1&quot;:&quot;1+\\tan^2 x=\\sec^2 x&quot;,&quot;distractor-2&quot;:&quot;\\cos2x=1-2\\sin^2x&quot;}"
+      data-correct-answer-label="\sin^2 x+\cos^2 x=1"
+      data-explanation="The expression has 1-\sin^2x. Use \sin^2x+\cos^2x=1. Rearrange to get 1-\sin^2x=\cos^2x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
@@ -185,10 +196,14 @@
       data-field-guide-topic-id="trig_pythagorean_identities"
       data-skill-id="p3_trig_identity_selection"
       data-check-id="learn-trig-identity-form-choice-similar"
+      data-question-title="Which identity should be used first to rewrite $\sec^2x-1$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;1+\\tan^2x=\\sec^2x&quot;,&quot;distractor-1&quot;:&quot;\\sin2x=2\\sin x\\cos x&quot;,&quot;distractor-2&quot;:&quot;\\sin^2x+\\cos^2x=1&quot;}"
+      data-correct-answer-label="1+\tan^2x=\sec^2x"
+      data-explanation="Use 1+\tan^2x=\sec^2x. Subtract 1 from both sides. So \sec^2x-1=\tan^2x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
@@ -295,19 +310,40 @@
       data-field-guide-topic-id="trig_pythagorean_identities"
       data-skill-id="p3_trig_identity_selection"
       data-check-id="learn-trig-pythagorean-rewrite-primary"
+      data-question-title="Rewrite $1-\sin^2x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;cos^2x&quot;,&quot;\\cos^2x&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="cos^2x"
+      data-explanation="\sin^2x+\cos^2x=1. Subtract \sin^2x from both sides. Therefore 1-\sin^2x=\cos^2x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-pythagorean-rewrite-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-pythagorean-rewrite-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-pythagorean-rewrite-primary-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -351,19 +387,40 @@
       data-field-guide-topic-id="trig_pythagorean_identities"
       data-skill-id="p3_trig_identity_selection"
       data-check-id="learn-trig-pythagorean-rewrite-similar"
+      data-question-title="Rewrite $\sec^2x-1$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;tan^2x&quot;,&quot;\\tan^2x&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="tan^2x"
+      data-explanation="Start from 1+\tan^2x=\sec^2x. Subtract 1. So \sec^2x-1=\tan^2x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-pythagorean-rewrite-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-pythagorean-rewrite-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-pythagorean-rewrite-similar-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -446,19 +503,40 @@
       data-field-guide-topic-id="trig_reciprocal_functions"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-reciprocal-graphs-primary"
+      data-question-title="List the vertical asymptotes of $y=\sec x$ on $0\le x&lt;2\pi$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/2, 3pi/2&quot;,&quot;\\pi/2, 3\\pi/2&quot;,&quot;x=pi/2, x=3pi/2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/2, 3pi/2"
+      data-explanation="\sec x=1/\cos x. Set \cos x=0. The asymptotes are x=\frac\pi2 and x=\frac{3\pi}{2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-reciprocal-graphs-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-reciprocal-graphs-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-reciprocal-graphs-primary-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -502,19 +580,40 @@
       data-field-guide-topic-id="trig_reciprocal_functions"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-reciprocal-graphs-similar"
+      data-question-title="Where does $y=\operatorname{cosec}x$ have vertical asymptotes on $0&lt;x&lt;2\pi$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi&quot;,&quot;\\pi&quot;,&quot;x=pi&quot;,&quot;x=\\pi&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi"
+      data-explanation="\operatorname{cosec}x=1/\sin x. On 0&lt;x&lt;2\pi, \sin x=0 only at x=\pi inside the interval. So the listed asymptote is x=\pi."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-reciprocal-graphs-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-reciprocal-graphs-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-reciprocal-graphs-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -597,19 +696,40 @@
       data-field-guide-topic-id="trig_reciprocal_functions"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-reciprocal-identities-equations-primary"
+      data-question-title="Solve $\cot x=1$ for $0\le x&lt;2\pi$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/4, 5pi/4&quot;,&quot;\\pi/4, 5\\pi/4&quot;,&quot;x=pi/4, x=5pi/4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/4, 5pi/4"
+      data-explanation="\cot x=1 gives \tan x=1. Tangent is positive in quadrants I and III. So x=\frac\pi4,\frac{5\pi}{4}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;domain/range issue&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-reciprocal-identities-equations-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-reciprocal-identities-equations-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-reciprocal-identities-equations-primary-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -653,19 +773,40 @@
       data-field-guide-topic-id="trig_reciprocal_functions"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-reciprocal-identities-equations-similar"
+      data-question-title="Use an identity to rewrite $\operatorname{cosec}^2x-1$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;cot^2x&quot;,&quot;\\cot^2x&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="cot^2x"
+      data-explanation="Start from 1+\cot^2x=\operatorname{cosec}^2x. Subtract 1. So \operatorname{cosec}^2x-1=\cot^2x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-reciprocal-identities-equations-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-reciprocal-identities-equations-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-reciprocal-identities-equations-similar-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -730,10 +871,14 @@
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-double-angle-choice-primary"
+      data-question-title="Choose the sine-only form of $\cos2x$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\cos2x=1-2\\sin^2x&quot;,&quot;distractor-1&quot;:&quot;\\cos2x=2\\cos^2x-1&quot;,&quot;distractor-2&quot;:&quot;\\cos2x=2\\sin x\\cos x&quot;}"
+      data-correct-answer-label="\cos2x=1-2\sin^2x"
+      data-explanation="The target uses only sine. Select \cos2x=1-2\sin^2x. This avoids introducing \cos^2x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
@@ -819,10 +964,14 @@
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-double-angle-choice-similar"
+      data-question-title="Choose the cosine-only form of $\cos2x$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\cos2x=2\\cos^2x-1&quot;,&quot;distractor-1&quot;:&quot;\\cos2x=1-2\\sin^2x&quot;,&quot;distractor-2&quot;:&quot;\\sin2x=2\\sin x\\cos x&quot;}"
+      data-correct-answer-label="\cos2x=2\cos^2x-1"
+      data-explanation="\cos2x can be written several ways. For a cosine-only target, use 2\cos^2x-1. That is the useful form here."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
@@ -929,19 +1078,40 @@
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-double-angle-simplify-primary"
+      data-question-title="Simplify $\frac{\sin2x}{2\cos x}$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;sinx&quot;,&quot;sin x&quot;,&quot;\\sinx&quot;,&quot;\\sin x&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="sinx"
+      data-explanation="\sin2x=2\sin x\cos x. So \frac{\sin2x}{2\cos x}=\frac{2\sin x\cos x}{2\cos x}. Cancel the common non-zero factor to get \sin x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-double-angle-simplify-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-double-angle-simplify-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-double-angle-simplify-primary-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -985,19 +1155,40 @@
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-double-angle-simplify-similar"
+      data-question-title="Simplify $\frac{1-\cos2x}{2\sin x}$, with $\sin x\ne0$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;sinx&quot;,&quot;sin x&quot;,&quot;\\sinx&quot;,&quot;\\sin x&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="sinx"
+      data-explanation="Use 1-\cos2x=2\sin^2x. Then \frac{1-\cos2x}{2\sin x}=\frac{2\sin^2x}{2\sin x}. Cancel the common non-zero factor to get \sin x."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-double-angle-simplify-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-double-angle-simplify-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-double-angle-simplify-similar-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1080,19 +1271,40 @@
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-identity-full-solve-primary"
+      data-question-title="Solve $1-\cos2x=1$ for $0\le x&lt;2\pi$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/4, 3pi/4, 5pi/4, 7pi/4&quot;,&quot;\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4&quot;,&quot;x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/4, 3pi/4, 5pi/4, 7pi/4"
+      data-explanation="Use 1-\cos2x=2\sin^2x. Then 2\sin^2x=1, so \sin x=\pm\frac{1}{\sqrt2}. The interval solutions are \frac\pi4, \frac{3\pi}4, \frac{5\pi}4, and \frac{7\pi}4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-identity-full-solve-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-identity-full-solve-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-identity-full-solve-primary-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1158,19 +1370,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-identity-full-solve-similar"
+      data-question-title="Solve $1+\cos2x=1$ for $0\le x&lt;2\pi$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/4, 3pi/4, 5pi/4, 7pi/4&quot;,&quot;\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4&quot;,&quot;x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/4, 3pi/4, 5pi/4, 7pi/4"
+      data-explanation="Use 1+\cos2x=2\cos^2x. The equation becomes 2\cos^2x=1, so \cos x=\pm\frac{1}{\sqrt2}. The interval solutions are \frac\pi4, \frac{3\pi}4, \frac{5\pi}4, and \frac{7\pi}4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-identity-full-solve-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-identity-full-solve-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-identity-full-solve-similar-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1275,19 +1508,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_reciprocal_functions"
       data-skill-id="p3_trig_equation_interval"
       data-check-id="learn-trig-basic-equation-interval-primary"
+      data-question-title="Solve $\sin x=\frac12$ for $0\le x&lt;2\pi$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/6, 5pi/6&quot;,&quot;\\pi/6, 5\\pi/6&quot;,&quot;x=pi/6, x=5pi/6&quot;,&quot;x=\\pi/6, x=5\\pi/6&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/6, 5pi/6"
+      data-explanation="\sin x=\frac12 has reference angle \frac{\pi}{6}. Sine is positive in quadrants I and II. So x=\frac{\pi}{6},\frac{5\pi}{6}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-basic-equation-interval-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-basic-equation-interval-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-basic-equation-interval-primary-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1331,19 +1585,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_reciprocal_functions"
       data-skill-id="p3_trig_quadrant_solutions"
       data-check-id="learn-trig-basic-equation-interval-similar"
+      data-question-title="Solve $\cos x=-\frac12$ for $0\le x&lt;2\pi$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;2pi/3, 4pi/3&quot;,&quot;2\\pi/3, 4\\pi/3&quot;,&quot;x=2pi/3, x=4pi/3&quot;,&quot;x=2\\pi/3, x=4\\pi/3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2pi/3, 4pi/3"
+      data-explanation="The reference angle is \frac{\pi}{3}. Cosine is negative in quadrants II and III. Therefore x=\frac{2\pi}{3},\frac{4\pi}{3}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-basic-equation-interval-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-basic-equation-interval-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-basic-equation-interval-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1408,19 +1683,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-transformed-equation-primary"
+      data-question-title="Solve $2\cos^2x-1=0$ for $0\le x&lt;2\pi$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/4, 3pi/4, 5pi/4, 7pi/4&quot;,&quot;\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4&quot;,&quot;x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4&quot;,&quot;x=\\pi/4, x=3\\pi/4, x=5\\pi/4, x=7\\pi/4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/4, 3pi/4, 5pi/4, 7pi/4"
+      data-explanation="2\cos^2x-1=0 gives \cos^2x=\frac12. So \cos x=\pm\frac{1}{\sqrt2}. The interval solutions are \frac{\pi}{4},\frac{3\pi}{4},\frac{5\pi}{4},\frac{7\pi}{4}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-transformed-equation-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-transformed-equation-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-transformed-equation-primary-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1497,19 +1793,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-transformed-equation-similar"
+      data-question-title="Solve $1-2\sin^2x=0$ for $0\le x&lt;2\pi$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/4, 3pi/4, 5pi/4, 7pi/4&quot;,&quot;\\pi/4, 3\\pi/4, 5\\pi/4, 7\\pi/4&quot;,&quot;x=pi/4, x=3pi/4, x=5pi/4, x=7pi/4&quot;,&quot;x=\\pi/4, x=3\\pi/4, x=5\\pi/4, x=7\\pi/4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/4, 3pi/4, 5pi/4, 7pi/4"
+      data-explanation="1-2\sin^2x=0 gives \sin^2x=\frac12. So \sin x=\pm\frac{1}{\sqrt2}. All four diagonal angles in the interval work."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-transformed-equation-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-transformed-equation-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-transformed-equation-similar-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1596,10 +1913,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_equation_interval"
       data-check-id="learn-trig-division-trap-primary"
+      data-question-title="In $\sin x\cos x=\sin x$, which case is lost if you divide by $\sin x$?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\sin x=0&quot;,&quot;distractor-1&quot;:&quot;\\cos x=0&quot;,&quot;distractor-2&quot;:&quot;\\cos x=1&quot;}"
+      data-correct-answer-label="\sin x=0"
+      data-explanation="\sin x\cos x-\sin x=0. Factor to get \sin x(\cos x-1)=0. The lost case is \sin x=0."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
@@ -1685,19 +2006,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_equation_interval"
       data-check-id="learn-trig-division-trap-similar"
+      data-question-title="Solve $\sin x(2\cos x-1)=0$ for $0\le x&lt;2\pi$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;0, pi, pi/3, 5pi/3&quot;,&quot;0, \\pi, \\pi/3, 5\\pi/3&quot;,&quot;x=0, x=pi, x=pi/3, x=5pi/3&quot;,&quot;x=0, x=\\pi, x=\\pi/3, x=5\\pi/3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="0, pi, pi/3, 5pi/3"
+      data-explanation="\sin x=0 gives x=0,\pi. 2\cos x-1=0 gives \cos x=\frac12. So x=0,\frac{\pi}{3},\pi,\frac{5\pi}{3}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-division-trap-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-division-trap-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-division-trap-similar-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1762,10 +2104,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_pythagorean_identities"
       data-skill-id="p3_trig_equation_interval"
       data-check-id="learn-trig-quadratic-reject-primary"
+      data-question-title="For $2\cos^2x+5\cos x+2=0$, which candidate value is invalid?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;\\cos x=-2&quot;,&quot;distractor-1&quot;:&quot;\\cos x=-\\frac12&quot;,&quot;distractor-2&quot;:&quot;x=\\frac{2\\pi}{3}&quot;}"
+      data-correct-answer-label="\cos x=-2"
+      data-explanation="Factor the quadratic in \cos x. The candidates are \cos x=-\frac12 and \cos x=-2. \cos x=-2 is impossible, so reject it."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
@@ -1851,19 +2197,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_pythagorean_identities"
       data-skill-id="p3_trig_quadrant_solutions"
       data-check-id="learn-trig-quadratic-reject-similar"
+      data-question-title="Now solve $2\cos^2x+5\cos x+2=0$ for $0\le x&lt;2\pi$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;2pi/3, 4pi/3&quot;,&quot;2\\pi/3, 4\\pi/3&quot;,&quot;x=2pi/3, x=4pi/3&quot;,&quot;x=2\\pi/3, x=4\\pi/3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2pi/3, 4pi/3"
+      data-explanation="Reject \cos x=-2. Solve \cos x=-\frac12. The interval solutions are \frac{2\pi}{3} and \frac{4\pi}{3}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-quadratic-reject-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-quadratic-reject-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-quadratic-reject-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1928,19 +2295,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_addition_formulae"
       data-skill-id="p3_trig_quadrant_solutions"
       data-check-id="learn-trig-repeated-angle-pattern-primary"
+      data-question-title="Solve $\sin(2x)=0$ for $0\le x&lt;2\pi$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;0, pi/2, pi, 3pi/2&quot;,&quot;0, \\pi/2, \\pi, 3\\pi/2&quot;,&quot;x=0, x=pi/2, x=pi, x=3pi/2&quot;,&quot;x=0, x=\\pi/2, x=\\pi, x=3\\pi/2&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="0, pi/2, pi, 3pi/2"
+      data-explanation="\sin(2x)=0 gives 2x=n\pi. In 0\le2x&lt;4\pi, use 2x=0,\pi,2\pi,3\pi. Divide by 2 to get x=0,\frac{\pi}{2},\pi,\frac{3\pi}{2}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-repeated-angle-pattern-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-repeated-angle-pattern-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-repeated-angle-pattern-primary-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1984,19 +2372,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_addition_formulae"
       data-skill-id="p3_trig_quadrant_solutions"
       data-check-id="learn-trig-repeated-angle-pattern-similar"
+      data-question-title="Solve $\cos(2x)=1$ for $0\le x&lt;2\pi$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;0, pi&quot;,&quot;0, \\pi&quot;,&quot;x=0, x=pi&quot;,&quot;x=0, x=\\pi&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="0, pi"
+      data-explanation="Let u=2x, so 0\le u&lt;4\pi. \cos u=1 gives u=0 or 2\pi in this interval. Therefore x=0 or x=\pi."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-repeated-angle-pattern-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-repeated-angle-pattern-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-repeated-angle-pattern-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2079,19 +2488,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_r_form_transformations"
       data-skill-id="p3_trig_r_form_compound_angles"
       data-check-id="learn-trig-r-form-transform-primary"
+      data-question-title="For $3\sin x+4\cos x=R\sin(x+\alpha)$, find $R$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;5&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="5"
+      data-explanation="Expand R\sin(x+\alpha). Match R\cos\alpha=3 and R\sin\alpha=4. Thus R=\sqrt{3^2+4^2}=5."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-r-form-transform-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-r-form-transform-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-r-form-transform-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2146,19 +2576,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_r_form_transformations"
       data-skill-id="p3_trig_r_form_compound_angles"
       data-check-id="learn-trig-r-form-transform-similar"
+      data-question-title="For $3\sin x+4\cos x=5\sin(x+\alpha)$ with acute $\alpha$, find $\tan\alpha$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;4/3&quot;,&quot;\\frac43&quot;,&quot;\\frac{4}{3}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="4/3"
+      data-explanation="Matching coefficients gives 5\cos\alpha=3 and 5\sin\alpha=4. Therefore \sin\alpha=4/5 and \cos\alpha=3/5. So \tan\alpha=\frac43."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-r-form-transform-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-r-form-transform-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-r-form-transform-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2223,19 +2674,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-mixed-exam-transfer-primary"
+      data-question-title="Solve $1-\cos2x=\sin x$ for $0\le x&lt;2\pi$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;0, pi/6, 5pi/6, pi&quot;,&quot;0, \\pi/6, 5\\pi/6, \\pi&quot;,&quot;x=0, x=pi/6, x=5pi/6, x=pi&quot;,&quot;x=0, x=\\pi/6, x=5\\pi/6, x=\\pi&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="0, pi/6, 5pi/6, pi"
+      data-explanation="Rewrite 1-\cos2x as 2\sin^2x. Factor 2\sin^2x-\sin x=0 to get \sin x(2\sin x-1)=0. The solutions are 0,\frac{\pi}{6},\frac{5\pi}{6},\pi."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-mixed-exam-transfer-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-mixed-exam-transfer-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-mixed-exam-transfer-primary-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2279,19 +2751,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="trig_double_angle_formulae"
       data-skill-id="p3_trig_reciprocal_double_angle"
       data-check-id="learn-trig-mixed-exam-transfer-similar"
+      data-question-title="Solve $1+\cos2x=\cos x$ for $0\le x&lt;2\pi$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;pi/3, pi/2, 3pi/2, 5pi/3&quot;,&quot;\\pi/3, \\pi/2, 3\\pi/2, 5\\pi/3&quot;,&quot;x=pi/3, x=pi/2, x=3pi/2, x=5pi/3&quot;,&quot;x=\\pi/3, x=\\pi/2, x=3\\pi/2, x=5\\pi/3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/3, pi/2, 3pi/2, 5pi/3"
+      data-explanation="1+\cos2x=2\cos^2x. So 2\cos^2x-\cos x=0, giving \cos x(2\cos x-1)=0. The interval solutions are \frac{\pi}{3},\frac{\pi}{2},\frac{3\pi}{2},\frac{5\pi}{3}."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;method choice&quot;,&quot;incomplete reasoning&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c, d.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c, d" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-trig-mixed-exam-transfer-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c, d.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c, d</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-trig-mixed-exam-transfer-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-trig-mixed-exam-transfer-similar-answer-guidance" placeholder="a, b, c, d" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">

@@ -37,6 +37,13 @@
     </nav>
 
 
+    <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
+    </div>
+
+
       <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
         <span class="theme-toggle-icon" aria-hidden="true"></span>
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
@@ -96,10 +103,14 @@
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-real-imag-add-primary"
+      data-question-title="Choose $(3+2i)+(1-5i)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;4-3i&quot;,&quot;distractor-1&quot;:&quot;4+7i&quot;,&quot;distractor-2&quot;:&quot;2-3i&quot;,&quot;distractor-3&quot;:&quot;3-5i&quot;}"
+      data-correct-answer-label="4-3i"
+      data-explanation="Add the real parts: 3+1=4. Add the imaginary parts: 2i-5i=-3i. The sum is 4-3i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
@@ -195,19 +206,40 @@
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-real-imag-add-similar"
+      data-question-title="Find $(2-3i)-(5+i)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="complex-number"
       data-accepted-answers="[&quot;-3-4i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-3-4i"
+      data-explanation="Subtract the real parts: 2-5=-3. Subtract the imaginary coefficients: -3-1=-4. The answer is -3-4i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: complex number in a+bi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3+2i" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="complex" data-answer-symbols="i,+,-">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-real-imag-add-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: complex number in a+bi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>i</code><code>+</code><code>-</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3+2i</code><code>-1-sqrt(7)i</code><code>4i+3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-real-imag-add-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-real-imag-add-similar-answer-guidance" placeholder="3+2i" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -272,19 +304,40 @@
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-multiply-i-squared-primary"
+      data-question-title="Calculate $(2+i)(3-4i)$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="complex-number"
       data-accepted-answers="[&quot;10-5i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="10-5i"
+      data-explanation="Expand to get 6-8i+3i-4i^2. Use i^2=-1, so -4i^2=+4. Collect terms to get 10-5i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;sign error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: complex number in a+bi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3+2i" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="complex" data-answer-symbols="i,+,-">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-multiply-i-squared-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: complex number in a+bi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>i</code><code>+</code><code>-</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3+2i</code><code>-1-sqrt(7)i</code><code>4i+3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-multiply-i-squared-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-multiply-i-squared-primary-answer-guidance" placeholder="3+2i" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -328,19 +381,40 @@
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-multiply-i-squared-similar"
+      data-question-title="Calculate $(1+2i)(4+i)$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="complex-number"
       data-accepted-answers="[&quot;2+9i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2+9i"
+      data-explanation="Expand to get 4+i+8i+2i^2. Use i^2=-1, so 2i^2=-2. The product is 2+9i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: complex number in a+bi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3+2i" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="complex" data-answer-symbols="i,+,-">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-multiply-i-squared-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: complex number in a+bi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>i</code><code>+</code><code>-</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3+2i</code><code>-1-sqrt(7)i</code><code>4i+3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-multiply-i-squared-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-multiply-i-squared-similar-answer-guidance" placeholder="3+2i" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -405,19 +479,40 @@
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-conjugate-division-primary"
+      data-question-title="For $\frac{5+i}{3-2i}$, type the conjugate of the denominator."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="complex-number"
       data-accepted-answers="[&quot;3+2i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3+2i"
+      data-explanation="The denominator is 3-2i. The conjugate keeps 3 and changes -2i to +2i. So multiply by 3+2i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: complex number in a+bi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3+2i" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="complex" data-answer-symbols="i,+,-">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-conjugate-division-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: complex number in a+bi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>i</code><code>+</code><code>-</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3+2i</code><code>-1-sqrt(7)i</code><code>4i+3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-conjugate-division-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-conjugate-division-primary-answer-guidance" placeholder="3+2i" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -461,19 +556,40 @@
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-conjugate-division-similar"
+      data-question-title="Simplify $\frac{5+i}{3-2i}$ into $a+bi$ form."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="complex-number"
       data-accepted-answers="[&quot;1+i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1+i"
+      data-explanation="Multiply by 3+2i over 3+2i. The numerator is 15+10i+3i+2i^2=13+13i. The denominator is 13, so the quotient is 1+i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: complex number in a+bi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3+2i" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="complex" data-answer-symbols="i,+,-">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-conjugate-division-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: complex number in a+bi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>i</code><code>+</code><code>-</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3+2i</code><code>-1-sqrt(7)i</code><code>4i+3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-conjugate-division-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-conjugate-division-similar-answer-guidance" placeholder="3+2i" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -556,19 +672,40 @@
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-modulus-primary"
+      data-question-title="Find the modulus of $3+4i$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;5&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="5"
+      data-explanation="Use |a+bi|=\sqrt{a^2+b^2}. |3+4i|=\sqrt{3^2+4^2}=\sqrt{25}. The modulus is 5."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-modulus-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-modulus-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-modulus-primary-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -667,19 +804,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-modulus-similar"
+      data-question-title="Find the modulus of $1-i$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;sqrt2&quot;,&quot;sqrt(2)&quot;,&quot;\\sqrt2&quot;,&quot;\\sqrt{2}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="sqrt2"
+      data-explanation="The real part is 1 and the imaginary part is -1. The modulus is \sqrt{1^2+(-1)^2}. So |1-i|=\sqrt2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;calculator&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-modulus-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-modulus-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-modulus-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -815,10 +973,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-argument-quadrant-primary"
+      data-question-title="For $z=-1+i$, use real &lt; 0 and imaginary &gt; 0 to choose the quadrant."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Quadrant II&quot;,&quot;distractor-1&quot;:&quot;Quadrant I&quot;,&quot;distractor-2&quot;:&quot;Quadrant III&quot;,&quot;distractor-3&quot;:&quot;Quadrant IV&quot;}"
+      data-correct-answer-label="Quadrant II"
+      data-explanation="The real part -1 places the point left of the origin. The imaginary part +1 places it above the real axis. So the point is in quadrant II."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;sign error&quot;]"
@@ -914,19 +1076,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-argument-quadrant-similar"
+      data-question-title="What is the principal argument of $-1+i$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;3pi/4&quot;,&quot;3*pi/4&quot;,&quot;\\frac{3\\pi}{4}&quot;,&quot;3\\pi/4&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3pi/4"
+      data-explanation="-1+i is in quadrant II. The reference angle is \pi/4. So the principal argument is 3\pi/4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-argument-quadrant-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-argument-quadrant-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-argument-quadrant-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1009,19 +1192,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-cartesian-to-modarg-primary"
+      data-question-title="Write $1+i$ in modulus-argument form."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;sqrt2(cos(pi/4)+isin(pi/4))&quot;,&quot;sqrt(2)(cos(pi/4)+isin(pi/4))&quot;,&quot;\\sqrt2(cos(\\pi/4)+isin(\\pi/4))&quot;,&quot;sqrt2e^(ipi/4)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="sqrt2(cos(pi/4)+isin(pi/4))"
+      data-explanation="The modulus is \sqrt{1^2+1^2}=\sqrt2. The argument is \pi/4. So 1+i=\sqrt2(\cos(\pi/4)+i\sin(\pi/4))."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;domain/range issue&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-cartesian-to-modarg-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-cartesian-to-modarg-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-cartesian-to-modarg-primary-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1131,19 +1335,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-cartesian-to-modarg-similar"
+      data-question-title="Write $-1+i$ in modulus-argument form."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;sqrt2(cos(3pi/4)+isin(3pi/4))&quot;,&quot;sqrt(2)(cos(3pi/4)+isin(3pi/4))&quot;,&quot;\\sqrt2(cos(3\\pi/4)+isin(3\\pi/4))&quot;,&quot;sqrt2e^(i3pi/4)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="sqrt2(cos(3pi/4)+isin(3pi/4))"
+      data-explanation="The modulus is \sqrt2. The principal argument is 3\pi/4. So the modulus-argument form uses r=\sqrt2 and \theta=3\pi/4."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;notation&quot;,&quot;domain/range issue&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="sin^2x" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-cartesian-to-modarg-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-cartesian-to-modarg-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-cartesian-to-modarg-similar-answer-guidance" placeholder="sin^2x" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1281,19 +1506,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-modarg-to-cartesian-primary"
+      data-question-title="Write $2(\cos(\pi/6)+i\sin(\pi/6))$ in Cartesian form."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;sqrt3+i&quot;,&quot;sqrt(3)+i&quot;,&quot;\\sqrt3+i&quot;,&quot;\\sqrt{3}+i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="sqrt3+i"
+      data-explanation="The real part is 2\cos(\pi/6)=\sqrt3. The imaginary part is 2\sin(\pi/6)=1. So the Cartesian form is \sqrt3+i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-modarg-to-cartesian-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-modarg-to-cartesian-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-modarg-to-cartesian-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1392,19 +1638,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-modarg-to-cartesian-similar"
+      data-question-title="Write $4(\cos(\pi/3)+i\sin(\pi/3))$ in Cartesian form."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;2+2sqrt3i&quot;,&quot;2+2sqrt(3)i&quot;,&quot;2+2\\sqrt3i&quot;,&quot;2+2\\sqrt{3}i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2+2sqrt3i"
+      data-explanation="The real part is 4\cos(\pi/3)=2. The imaginary part is 4\sin(\pi/3)=2\sqrt3. So the Cartesian form is 2+2\sqrt3i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;wrong identity&quot;,&quot;coefficient error&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sin,cos,tan,pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-modarg-to-cartesian-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sin</code><code>cos</code><code>tan</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>sin^2x</code><code>cos(2x)</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-modarg-to-cartesian-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-modarg-to-cartesian-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1524,19 +1791,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-polar-multiply-divide-primary"
+      data-question-title="For $2e^{i\pi/6}\cdot3e^{i\pi/3}$, type the new argument."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;pi/2&quot;,&quot;\\pi/2&quot;,&quot;\\frac{\\pi}{2}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/2"
+      data-explanation="For multiplication, add arguments. \pi/6+\pi/3=\pi/2. So the new argument is \pi/2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-polar-multiply-divide-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-polar-multiply-divide-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-polar-multiply-divide-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1580,19 +1868,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-polar-multiply-divide-similar"
+      data-question-title="For $6e^{i5\pi/6}\div2e^{i\pi/3}$, type the new argument."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;pi/2&quot;,&quot;\\pi/2&quot;,&quot;\\frac{\\pi}{2}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/2"
+      data-explanation="For division, subtract arguments. 5\pi/6-\pi/3=3\pi/6=\pi/2. So the new argument is \pi/2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,ln(),log_a(),e^()">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-polar-multiply-divide-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>ln()</code><code>log_a()</code><code>e^()</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>ln(5x)</code><code>log_a(6)</code><code>e^(2x)</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-polar-multiply-divide-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-polar-multiply-divide-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1657,19 +1966,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="roots"
       data-skill-id="p3_complex_roots_powers"
       data-check-id="learn-complex-de-moivre-power-primary"
+      data-question-title="If $\arg z=\pi/6$, what is $\arg(z^3)$ before any principal-range adjustment?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;pi/2&quot;,&quot;\\pi/2&quot;,&quot;\\frac{\\pi}{2}&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="pi/2"
+      data-explanation="Use de Moivre for powers. Multiply the argument by 3. This gives 3\pi/6=\pi/2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-de-moivre-power-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-de-moivre-power-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-de-moivre-power-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1713,19 +2043,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="roots"
       data-skill-id="p3_complex_roots_powers"
       data-check-id="learn-complex-de-moivre-power-similar"
+      data-question-title="If $|z|=2$, what is $|z^3|$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="numeric"
       data-accepted-answers="[&quot;8&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="8"
+      data-explanation="For powers, raise the modulus to the power. |z^3|=2^3. So the modulus is 8."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;calculator&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: number, fraction, radical, or pi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3/2" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="numeric" data-answer-symbols="/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-de-moivre-power-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: number, fraction, radical, or pi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3/2</code><code>sqrt(3)/2</code><code>pi/3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-de-moivre-power-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-de-moivre-power-similar-answer-guidance" placeholder="3/2" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1808,19 +2159,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="roots"
       data-skill-id="p3_complex_roots_powers"
       data-check-id="learn-complex-roots-arguments-primary"
+      data-question-title="The cube roots of $8$ include argument $0$. Type the next positive argument."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;2pi/3&quot;,&quot;2*pi/3&quot;,&quot;\\frac{2\\pi}{3}&quot;,&quot;2\\pi/3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2pi/3"
+      data-explanation="There are three cube roots. Their arguments are spaced by 2\pi/3. The next positive argument after 0 is 2\pi/3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-roots-arguments-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-roots-arguments-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-roots-arguments-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1864,19 +2236,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="roots"
       data-skill-id="p3_complex_roots_powers"
       data-check-id="learn-complex-roots-arguments-similar"
+      data-question-title="Type all arguments in $0\le\theta&lt;2\pi$ for the cube roots of $8$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;0, 2pi/3, 4pi/3&quot;,&quot;0, 2*pi/3, 4*pi/3&quot;,&quot;0, 2\\pi/3, 4\\pi/3&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="0, 2pi/3, 4pi/3"
+      data-explanation="The first argument is 0. Add 2\pi/3 to get the next root. The three arguments are 0, 2\pi/3, and 4\pi/3."
       data-tolerance=""
       data-order-matters="true"
       data-mistake-tags="[&quot;coefficient error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b, c.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b, c" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-roots-arguments-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b, c.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b, c</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-roots-arguments-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-roots-arguments-similar-answer-guidance" placeholder="a, b, c" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1941,19 +2334,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="roots"
       data-skill-id="p3_complex_roots_powers"
       data-check-id="learn-complex-exact-square-roots-cartesian-primary"
+      data-question-title="Find the two square roots of $3+4i$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;2+i, -2-i&quot;,&quot;-2-i, 2+i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="2+i, -2-i"
+      data-explanation="Compute (2+i)^2=4+4i-1=3+4i. So one square root is 2+i. The other is -2-i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-exact-square-roots-cartesian-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-exact-square-roots-cartesian-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-exact-square-roots-cartesian-primary-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -1997,19 +2411,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="roots"
       data-skill-id="p3_complex_roots_powers"
       data-check-id="learn-complex-exact-square-roots-cartesian-similar"
+      data-question-title="Find the two square roots of $5-12i$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="multi-value"
       data-accepted-answers="[&quot;3-2i, -3+2i&quot;,&quot;-3+2i, 3-2i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="3-2i, -3+2i"
+      data-explanation="Compute (3-2i)^2=9-12i-4=5-12i. So one root is 3-2i. The other root is -3+2i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;incomplete reasoning&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: separate values with commas, e.g. a, b.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="a, b" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="multi-value" data-answer-symbols="commas,and">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-exact-square-roots-cartesian-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: separate values with commas, e.g. a, b.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>commas</code><code>and</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>a, b</code><code>x=1, x=2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-exact-square-roots-cartesian-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-exact-square-roots-cartesian-similar-answer-guidance" placeholder="a, b" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -2074,10 +2509,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-argand-transformations-primary"
+      data-question-title="What is the geometric effect of $z\mapsto\overline z$?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Reflection in the real axis&quot;,&quot;distractor-1&quot;:&quot;Translation one unit right&quot;,&quot;distractor-2&quot;:&quot;Rotation by \\pi/2 about the origin&quot;,&quot;distractor-3&quot;:&quot;Reflection in the imaginary axis&quot;}"
+      data-correct-answer-label="Reflection in the real axis"
+      data-explanation="Conjugation keeps the real coordinate. It changes y to -y. That is reflection in the real axis."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -2173,10 +2612,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-argand-transformations-similar"
+      data-question-title="Match $z\mapsto z+(2-i)$ with its Argand effect."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Translation by (2,-1)&quot;,&quot;distractor-1&quot;:&quot;Reflection in the real axis&quot;,&quot;distractor-2&quot;:&quot;Rotation by -\\pi/2&quot;,&quot;distractor-3&quot;:&quot;Scaling by \\sqrt5 only&quot;}"
+      data-correct-answer-label="Translation by (2,-1)"
+      data-explanation="Adding 2-i adds 2 to the real coordinate. It subtracts 1 from the imaginary coordinate. So the effect is translation by (2,-1)."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
@@ -2304,10 +2747,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-argand-multiply-divide-effects-primary"
+      data-question-title="What is the effect of multiplying by $i$?"
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Rotate by \\pi/2 anticlockwise&quot;,&quot;distractor-1&quot;:&quot;Reflect in the real axis&quot;,&quot;distractor-2&quot;:&quot;Translate up one unit&quot;,&quot;distractor-3&quot;:&quot;Scale by 2&quot;}"
+      data-correct-answer-label="Rotate by \pi/2 anticlockwise"
+      data-explanation="i=e^{i\pi/2}. Multiplying by i adds \pi/2 to the argument. The modulus is unchanged."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;wrong identity&quot;]"
@@ -2403,10 +2850,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="modulus-argument"
       data-skill-id="p3_complex_modulus_argument_form"
       data-check-id="learn-complex-argand-multiply-divide-effects-similar"
+      data-question-title="What is the effect of dividing by $2e^{i\pi/3}$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Scale by 1/2 and rotate by -\\pi/3&quot;,&quot;distractor-1&quot;:&quot;Scale by 2 and rotate by \\pi/3&quot;,&quot;distractor-2&quot;:&quot;Translate by (2,\\pi/3)&quot;,&quot;distractor-3&quot;:&quot;Reflect in the imaginary axis&quot;}"
+      data-correct-answer-label="Scale by 1/2 and rotate by -\pi/3"
+      data-explanation="Dividing by modulus 2 scales distances by 1/2. Dividing subtracts the argument \pi/3. So the effect is scale by 1/2 and rotate by -\pi/3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;coefficient error&quot;]"
@@ -2541,10 +2992,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="locus"
       data-skill-id="p3_complex_argand_loci_regions"
       data-check-id="learn-complex-modulus-locus-primary"
+      data-question-title="Choose the locus of $|z-(2+i)|=3$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Circle centre (2,1) radius 3&quot;,&quot;distractor-1&quot;:&quot;Circle centre (-2,-1) radius 3&quot;,&quot;distractor-2&quot;:&quot;Vertical line x=2&quot;,&quot;distractor-3&quot;:&quot;Ray from (2,1) at angle 3&quot;}"
+      data-correct-answer-label="Circle centre (2,1) radius 3"
+      data-explanation="|z-(2+i)| means distance from 2+i. The distance is fixed at 3. So the locus is a circle centre (2,1) radius 3."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;sign error&quot;]"
@@ -2640,10 +3095,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="locus"
       data-skill-id="p3_complex_argand_loci_regions"
       data-check-id="learn-complex-modulus-locus-similar"
+      data-question-title="Choose the locus of $|z+1-i|=2$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Circle centre (-1,1) radius 2&quot;,&quot;distractor-1&quot;:&quot;Circle centre (1,-1) radius 2&quot;,&quot;distractor-2&quot;:&quot;Line x=-1&quot;,&quot;distractor-3&quot;:&quot;Circle centre (-1,1) radius 1&quot;}"
+      data-correct-answer-label="Circle centre (-1,1) radius 2"
+      data-explanation="z+1-i=z-(-1+i). The fixed point is (-1,1). The locus is a circle centre (-1,1) radius 2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;sign error&quot;]"
@@ -2778,10 +3237,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="locus"
       data-skill-id="p3_complex_argand_loci_regions"
       data-check-id="learn-complex-argument-locus-primary"
+      data-question-title="Choose the shape of $\arg(z-1)=\pi/4$."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Ray from 1+0i at angle \\pi/4, excluding the endpoint&quot;,&quot;distractor-1&quot;:&quot;Circle centre 1+0i radius \\pi/4&quot;,&quot;distractor-2&quot;:&quot;Full line through 1+0i&quot;,&quot;distractor-3&quot;:&quot;Horizontal ray to the right of 1+0i&quot;}"
+      data-correct-answer-label="Ray from 1+0i at angle \pi/4, excluding the endpoint"
+      data-explanation="z-1 measures from 1+0i to z. The argument fixes direction \pi/4. The endpoint is excluded because \arg(0) is undefined."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;method choice&quot;]"
@@ -2877,10 +3340,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="locus"
       data-skill-id="p3_complex_argand_loci_regions"
       data-check-id="learn-complex-argument-locus-similar"
+      data-question-title="Choose the shape of $\arg(z+i)=\pi/2$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Ray from -i at angle \\pi/2, excluding the endpoint&quot;,&quot;distractor-1&quot;:&quot;Circle centre -i radius \\pi/2&quot;,&quot;distractor-2&quot;:&quot;Ray from i at angle \\pi/2&quot;,&quot;distractor-3&quot;:&quot;The whole imaginary axis&quot;}"
+      data-correct-answer-label="Ray from -i at angle \pi/2, excluding the endpoint"
+      data-explanation="z+i=z-(-i), so the starting point is -i. The argument \pi/2 points upward. The endpoint is excluded because the argument of zero is undefined."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;domain/range issue&quot;,&quot;sign error&quot;]"
@@ -3008,19 +3475,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-polynomial-conjugate-root-primary"
+      data-question-title="A real polynomial has root $-1+\sqrt7 i$. Type the conjugate root."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;-1-sqrt7i&quot;,&quot;-1-sqrt(7)i&quot;,&quot;-1-\\sqrt7i&quot;,&quot;-1-\\sqrt{7}i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="-1-sqrt7i"
+      data-explanation="The coefficients are real, so complex roots come in conjugate pairs. Keep the real part -1. Change +\sqrt7 i to -\sqrt7 i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;notation&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-polynomial-conjugate-root-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-polynomial-conjugate-root-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-polynomial-conjugate-root-primary-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -3119,19 +3607,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="cartesian-conjugate"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-polynomial-conjugate-root-similar"
+      data-question-title="What quadratic factor has roots $-1+\sqrt7 i$ and $-1-\sqrt7 i$?"
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="expression-text"
       data-accepted-answers="[&quot;x^2+2x+8&quot;,&quot;(x^2+2x+8)&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="x^2+2x+8"
+      data-explanation="The sum of the roots is -2. Their product is (-1)^2+7=8. The quadratic factor is x^2+2x+8."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;method choice&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: type a compact expression using ^ for powers.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="x^2-x-6" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="expression" data-answer-symbols="^,/,sqrt(),pi">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-polynomial-conjugate-root-similar-answer-guidance">
+      <span class="math-answer-instruction">Answer format: type a compact expression using ^ for powers.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>^</code><code>/</code><code>sqrt()</code><code>pi</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>x^2-x-6</code><code>(x+1)/(x-2)</code><code>sqrt(3)/2</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-polynomial-conjugate-root-similar-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-polynomial-conjugate-root-similar-answer-guidance" placeholder="x^2-x-6" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -3196,19 +3705,40 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="locus"
       data-skill-id="p3_complex_cartesian_conjugate"
       data-check-id="learn-complex-mixed-exam-transfer-primary"
+      data-question-title="Simplify $w=\frac{5+i}{3-2i}$ into $a+bi$ form."
       data-learn-variant="primary"
       data-learn-saves-skill-pass="false"
       data-answer-type="complex-number"
       data-accepted-answers="[&quot;1+i&quot;]"
+      data-answer-labels="{}"
+      data-correct-answer-label="1+i"
+      data-explanation="The denominator conjugate is 3+2i. The numerator becomes 13+13i and the denominator becomes 13. So w=1+i."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;sign error&quot;,&quot;wrong identity&quot;]"
     >
 
-    <label class="single-answer-field">
-      <span>Answer</span>
-      <small class="answer-format-guidance">Answer format: complex number in a+bi form.</small>
-      <input name="submittedAnswer" type="text" autocomplete="off" placeholder="3+2i" required />
+    <label class="single-answer-field math-answer-input" data-answer-kind="complex" data-answer-symbols="i,+,-">
+      <span class="math-answer-label">Answer</span>
+
+    <small class="answer-format-guidance math-answer-guidance" id="learn-complex-mixed-exam-transfer-primary-answer-guidance">
+      <span class="math-answer-instruction">Answer format: complex number in a+bi form.</span>
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Use</span>
+          <span class="math-answer-symbols"><code>i</code><code>+</code><code>-</code></span>
+        </span>
+
+
+        <span class="math-answer-guidance-row">
+          <span class="math-answer-guidance-label">Examples</span>
+          <span class="math-answer-examples"><code>3+2i</code><code>-1-sqrt(7)i</code><code>4i+3</code></span>
+        </span>
+
+    </small>
+
+      <input id="learn-complex-mixed-exam-transfer-primary-answer" name="submittedAnswer" type="text" autocomplete="off" inputmode="text" spellcheck="false" autocapitalize="off" autocorrect="off" aria-describedby="learn-complex-mixed-exam-transfer-primary-answer-guidance" placeholder="3+2i" required />
+
     </label>
 
       <div class="skill-check-actions learn-check-actions">
@@ -3252,10 +3782,14 @@ M834 80h400000v40h-400000z"/></svg></span></span></span><span class="vlist-s">â€
       data-field-guide-topic-id="locus"
       data-skill-id="p3_complex_argand_loci_regions"
       data-check-id="learn-complex-mixed-exam-transfer-similar"
+      data-question-title="Using $w=1+i$, choose the locus $|z-w|=2$."
       data-learn-variant="similar"
       data-learn-saves-skill-pass="false"
       data-answer-type="exact-text"
       data-accepted-answers="[&quot;correct&quot;]"
+      data-answer-labels="{&quot;correct&quot;:&quot;Circle centre (1,1) radius 2&quot;,&quot;distractor-1&quot;:&quot;Circle centre (-1,-1) radius 2&quot;,&quot;distractor-2&quot;:&quot;Ray from (1,1) at angle 2&quot;,&quot;distractor-3&quot;:&quot;Vertical line x=1&quot;}"
+      data-correct-answer-label="Circle centre (1,1) radius 2"
+      data-explanation="|z-w|=2 means distance from w is 2. w=1+i has coordinates (1,1). The locus is a circle centre (1,1) radius 2."
       data-tolerance=""
       data-order-matters="false"
       data-mistake-tags="[&quot;method choice&quot;,&quot;notation&quot;]"
