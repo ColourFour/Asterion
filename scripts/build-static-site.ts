@@ -2585,27 +2585,10 @@ function mathAnswerId(value: string): string {
   return cleaned || 'math-answer';
 }
 
-function renderMathAnswerTokenList(values: string[], className: string): string {
-  if (!values.length) return '';
-  return `<span class="${className}">${values.map((value) => `<code>${escapeHtml(value)}</code>`).join('')}</span>`;
-}
-
 function renderMathAnswerGuidance(guidance: AnswerFormatGuidance, id: string): string {
   return `
-    <small class="answer-format-guidance math-answer-guidance" id="${escapeAttr(id)}">
-      <span class="math-answer-instruction">${escapeHtml(guidance.instruction)}</span>
-      ${guidance.symbols.length ? `
-        <span class="math-answer-guidance-row">
-          <span class="math-answer-guidance-label">Use</span>
-          ${renderMathAnswerTokenList(guidance.symbols, 'math-answer-symbols')}
-        </span>
-      ` : ''}
-      ${guidance.examples.length ? `
-        <span class="math-answer-guidance-row">
-          <span class="math-answer-guidance-label">Examples</span>
-          ${renderMathAnswerTokenList(guidance.examples, 'math-answer-examples')}
-        </span>
-      ` : ''}
+    <small class="answer-format-guidance math-answer-guidance visually-hidden" id="${escapeAttr(id)}">
+      ${escapeHtml(guidance.instruction)}
     </small>
   `;
 }
@@ -2657,7 +2640,8 @@ function renderMathAnswerInput(options: MathAnswerInputOptions): string {
     <label class="${escapeAttr(classes)}" data-answer-kind="${escapeAttr(options.guidance.kind)}" data-answer-symbols="${escapeAttr(options.guidance.symbols.join(','))}">
       <span class="math-answer-label">${options.labelHtml}</span>
       ${renderMathAnswerGuidance(options.guidance, guidanceId)}
-      <input${renderInputAttributes(attributes)} />
+      <input class="math-answer-raw" data-math-answer-raw${renderInputAttributes(attributes)} />
+      <span class="math-editor-mount" data-math-editor-mount></span>
       ${options.afterInputHtml ?? ''}
     </label>
   `;

@@ -121,9 +121,11 @@ async function assertLearnVisualBasics(browser) {
           };
           const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
           const primaryForm = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"]');
-          const firstAnswerControl = primaryForm?.querySelector('input[name="submittedAnswer"]');
+          const firstAnswerControl = primaryForm?.querySelector('.math-editor-display, input[name="submittedAnswer"]');
           const typedAnswerControl = primaryForm?.querySelector('.math-answer-input input[name="submittedAnswer"][type="text"]');
           const mathAnswerInput = typedAnswerControl?.closest('.math-answer-input');
+          const mathEditor = mathAnswerInput?.querySelector('[data-math-editor]');
+          const mathEditorDisplay = mathAnswerInput?.querySelector('.math-editor-display');
           const checkButton = primaryForm?.querySelector('button[type="submit"]');
           const typedHelp = mathAnswerInput?.querySelector('.answer-format-guidance');
           const optionLegend = primaryForm?.querySelector('.learn-option-bank legend');
@@ -142,8 +144,10 @@ async function assertLearnVisualBasics(browser) {
             helperText: (typedHelp?.textContent || optionLegend?.textContent || '').trim(),
             hasTypedControl: Boolean(typedAnswerControl),
             hasMathAnswerInput: Boolean(mathAnswerInput),
+            hasMathEditor: Boolean(mathEditor),
+            mathEditorVisible: inViewport(mathEditorDisplay),
             hasDescribedGuidance: Boolean(describedBy && mathAnswerInput?.querySelector(`#${CSS.escape(describedBy)}`)),
-            symbolCount: mathAnswerInput?.querySelectorAll('.math-answer-symbols code').length ?? 0,
+            keyCount: mathAnswerInput?.querySelectorAll('.math-editor-key').length ?? 0,
             optionCount: visibleOptionLabels.length,
             optionMinHeight: visibleOptionLabels.length
               ? Math.min(...visibleOptionLabels.map((label) => label.getBoundingClientRect().height))
@@ -167,8 +171,8 @@ async function assertLearnVisualBasics(browser) {
         if (!result.helperText) {
           fail(`${pagePath} is missing nearby answer-format help at ${viewport.width}x${viewport.height}.`);
         }
-        if (result.hasTypedControl && (!result.hasMathAnswerInput || !result.hasDescribedGuidance || result.symbolCount < 1)) {
-          fail(`${pagePath} typed answer input is missing the standardized math input wrapper, symbols, or aria description at ${viewport.width}x${viewport.height}.`);
+        if (result.hasTypedControl && (!result.hasMathAnswerInput || !result.hasMathEditor || !result.mathEditorVisible || !result.hasDescribedGuidance || result.keyCount < 1)) {
+          fail(`${pagePath} typed answer input is missing the standardized math editor, keyboard, or aria description at ${viewport.width}x${viewport.height}.`);
         }
         if (result.optionCount && result.optionMinHeight < 40) {
           fail(`${pagePath} has cramped option targets at ${viewport.width}x${viewport.height}.`);

@@ -412,15 +412,21 @@ describe('static P3 product contract', () => {
     }
   });
 
-  it('renders explicit answer-format guidance for deterministic typed answer inputs', () => {
+  it('renders structured math editor mounts for deterministic typed answer inputs', () => {
     const oldGenericInstruction = 'Type a compact expression, e.g. ln(5x) or x^2-x-6.';
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
+    const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
 
     expect(generatorSource).toContain('answerFormatGuidance');
     expect(generatorSource).toContain('renderMathAnswerInput');
     expect(generatorSource).toContain('data-answer-format');
     expect(generatorSource).toContain('math-answer-input');
+    expect(generatorSource).toContain('data-math-answer-raw');
+    expect(generatorSource).toContain('data-math-editor-mount');
     expect(generatorSource).not.toContain(oldGenericInstruction);
+    expect(staticClientSource).toContain('setupMathAnswerEditors');
+    expect(staticClientSource).toContain('MATH_EDITOR_BUTTON_GROUPS');
+    expect(staticClientSource).toContain('normalizeMathEditorValue');
 
     for (const generatedPath of [
       'docs/p3/topics/vectors/learn/index.html',
@@ -434,6 +440,8 @@ describe('static P3 product contract', () => {
       const html = readFileSync(generatedPath, 'utf8');
       expect(html, generatedPath).not.toContain(oldGenericInstruction);
       expect(html, generatedPath).toContain('math-answer-input');
+      expect(html, generatedPath).toContain('data-math-answer-raw');
+      expect(html, generatedPath).toContain('data-math-editor-mount');
       expect(html, generatedPath).toContain('aria-describedby');
     }
 
@@ -442,29 +450,32 @@ describe('static P3 product contract', () => {
         const notationStep = document.querySelector('[data-learn-step-id="learn-vectors-2d-3d-notation"]');
         expect(notationStep).not.toBeNull();
         if (notationStep) {
-          expect(visibleText(notationStep)).toContain('Answer format: column-vector components as (a,b,c), with commas.');
-          expect(Array.from(notationStep.querySelectorAll('.math-answer-symbols code'), (element) => visibleText(element))).toEqual(expect.arrayContaining(['commas', '( )', '< >']));
+          const guidance = notationStep.querySelector('.answer-format-guidance');
+          expect(guidance?.textContent).toContain('Answer format: column-vector components as (a,b,c), with commas.');
           expect(notationStep.querySelector('.math-answer-input[data-answer-kind="coordinate-vector"]')).not.toBeNull();
-          expect(notationStep.querySelector('input[name="submittedAnswer"]')?.getAttribute('placeholder')).toBe('(a,b,c)');
+          expect(notationStep.querySelector('[data-math-editor-mount]')).not.toBeNull();
+          expect(notationStep.querySelector('input[name="submittedAnswer"][data-math-answer-raw]')?.getAttribute('placeholder')).toBe('(a,b,c)');
         }
       });
     }
 
     if (existsSync('docs/p3/topics/trigonometry/learn/index.html')) {
       withStaticDocument('docs/p3/topics/trigonometry/learn/index.html', (document) => {
-        expect(visibleText(document.body)).toContain('Answer format: separate values with commas, e.g. a, b.');
-        expect(Array.from(document.querySelectorAll('.math-answer-input[data-answer-kind="multi-value"] .math-answer-examples code'), (element) => visibleText(element))).toEqual(expect.arrayContaining(['a, b', 'x=1, x=2']));
-        expect(document.querySelector('.math-answer-input[data-answer-kind="multi-value"]')).not.toBeNull();
-        expect(document.querySelector('input[name="submittedAnswer"][placeholder="a, b"]')).not.toBeNull();
+        const multiValueInput = document.querySelector('.math-answer-input[data-answer-kind="multi-value"]');
+        expect(multiValueInput).not.toBeNull();
+        expect(multiValueInput?.querySelector('.answer-format-guidance')?.textContent).toContain('Answer format: separate values with commas, e.g. a, b.');
+        expect(multiValueInput?.querySelector('[data-math-editor-mount]')).not.toBeNull();
+        expect(multiValueInput?.querySelector('input[name="submittedAnswer"][data-math-answer-raw][placeholder="a, b"]')).not.toBeNull();
       });
     }
 
     if (existsSync('docs/p3/topics/algebra/learn/index.html')) {
       withStaticDocument('docs/p3/topics/algebra/learn/index.html', (document) => {
-        expect(visibleText(document.body)).toContain('Answer format: number, fraction, radical, or pi form.');
-        expect(Array.from(document.querySelectorAll('.math-answer-input[data-answer-kind="numeric"] .math-answer-symbols code'), (element) => visibleText(element))).toEqual(expect.arrayContaining(['/', 'sqrt()', 'pi']));
-        expect(document.querySelector('.math-answer-input[data-answer-kind="numeric"]')).not.toBeNull();
-        expect(document.querySelector('input[name="submittedAnswer"][placeholder="3/2"]')).not.toBeNull();
+        const numericInput = document.querySelector('.math-answer-input[data-answer-kind="numeric"]');
+        expect(numericInput).not.toBeNull();
+        expect(numericInput?.querySelector('.answer-format-guidance')?.textContent).toContain('Answer format: number, fraction, radical, or pi form.');
+        expect(numericInput?.querySelector('[data-math-editor-mount]')).not.toBeNull();
+        expect(numericInput?.querySelector('input[name="submittedAnswer"][data-math-answer-raw][placeholder="3/2"]')).not.toBeNull();
       });
     }
 
@@ -473,11 +484,13 @@ describe('static P3 product contract', () => {
         const twoValueForm = document.querySelector('[data-check-id="sc-alg-polynomial-division-core-001"]');
         expect(twoValueForm).not.toBeNull();
         if (twoValueForm) {
-          expect(visibleText(twoValueForm)).toContain('Answer format: type a compact expression using ^ for powers.');
-          expect(visibleText(twoValueForm)).toContain('Answer format: number, fraction, radical, or pi form.');
+          const guidanceText = Array.from(twoValueForm.querySelectorAll('.answer-format-guidance'), (element) => element.textContent || '').join(' ');
+          expect(guidanceText).toContain('Answer format: type a compact expression using ^ for powers.');
+          expect(guidanceText).toContain('Answer format: number, fraction, radical, or pi form.');
           expect(twoValueForm.querySelectorAll('.math-answer-input')).toHaveLength(2);
-          expect(twoValueForm.querySelector('input[aria-label="quotient"]')?.getAttribute('placeholder')).toBe('x^2-x-6');
-          expect(twoValueForm.querySelector('input[aria-label="remainder"]')?.getAttribute('placeholder')).toBe('3/2');
+          expect(twoValueForm.querySelectorAll('[data-math-editor-mount]')).toHaveLength(2);
+          expect(twoValueForm.querySelector('input[aria-label="quotient"][data-math-answer-raw]')?.getAttribute('placeholder')).toBe('x^2-x-6');
+          expect(twoValueForm.querySelector('input[aria-label="remainder"][data-math-answer-raw]')?.getAttribute('placeholder')).toBe('3/2');
           const quotientInput = twoValueForm.querySelector('input[aria-label="quotient"]');
           const describedBy = quotientInput?.getAttribute('aria-describedby');
           expect(describedBy).toBeTruthy();
@@ -492,8 +505,9 @@ describe('static P3 product contract', () => {
         expect(diagnosticInput).not.toBeNull();
         expect(diagnosticInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
         expect(diagnosticInput?.getAttribute('placeholder')).toBeTruthy();
+        expect(diagnosticInput?.hasAttribute('data-math-answer-raw')).toBe(true);
         expect(diagnosticInput?.closest('.math-answer-input')).not.toBeNull();
-        expect(visibleText(document.body)).toContain('Answer format:');
+        expect(diagnosticInput?.closest('.math-answer-input')?.querySelector('[data-math-editor-mount]')).not.toBeNull();
       });
     }
 
@@ -503,8 +517,9 @@ describe('static P3 product contract', () => {
         expect(repairInput).not.toBeNull();
         expect(repairInput?.getAttribute('data-answer-format')).toMatch(/^Answer format:/);
         expect(repairInput?.getAttribute('placeholder')).toBeTruthy();
+        expect(repairInput?.hasAttribute('data-math-answer-raw')).toBe(true);
         expect(repairInput?.closest('.math-answer-input')).not.toBeNull();
-        expect(visibleText(document.body)).toContain('Answer format:');
+        expect(repairInput?.closest('.math-answer-input')?.querySelector('[data-math-editor-mount]')).not.toBeNull();
       });
     }
   });

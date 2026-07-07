@@ -3839,6 +3839,318 @@
     });
   }
 
+  var MATH_EDITOR_BUTTON_GROUPS = [
+    {
+      label: 'Structures',
+      buttons: [
+        { label: 'a/b', title: 'Fraction', insert: '/', kinds: ['numeric', 'expression', 'multi-value', 'complex'] },
+        { label: 'x²', title: 'Square', insert: '^2', kinds: ['numeric', 'expression', 'multi-value'] },
+        { label: 'xⁿ', title: 'Power', insert: '^', kinds: ['numeric', 'expression', 'multi-value'] },
+        { label: '√', title: 'Square root', insert: 'sqrt()', caret: -1, kinds: ['numeric', 'expression', 'multi-value', 'complex'] },
+        { label: '|x|', title: 'Absolute value', insert: 'abs()', caret: -1, kinds: ['expression'] },
+        { label: '( )', title: 'Brackets', insert: '()', caret: -1 },
+      ]
+    },
+    {
+      label: 'Functions',
+      buttons: [
+        { label: 'ln', title: 'Natural logarithm', insert: 'ln()', caret: -1, kinds: ['expression'] },
+        { label: 'logₐ', title: 'Logarithm with base', insert: 'log(,)', caret: -2, kinds: ['expression'] },
+        { label: 'eˣ', title: 'Exponential e power', insert: 'e^()', caret: -1, kinds: ['expression', 'complex'] },
+        { label: 'sin', title: 'Sine', insert: 'sin', kinds: ['expression', 'multi-value'] },
+        { label: 'cos', title: 'Cosine', insert: 'cos', kinds: ['expression', 'multi-value'] },
+        { label: 'tan', title: 'Tangent', insert: 'tan', kinds: ['expression', 'multi-value'] },
+      ]
+    },
+    {
+      label: 'Constants',
+      buttons: [
+        { label: 'π', title: 'Pi', insert: 'pi' },
+        { label: 'i', title: 'Imaginary unit', insert: 'i', kinds: ['complex', 'expression'] },
+        { label: 'θ', title: 'Theta', insert: 'theta', kinds: ['expression'] },
+        { label: '∞', title: 'Infinity', insert: 'infinity', kinds: ['interval'] },
+        { label: 'C', title: 'Constant of integration', insert: 'C', kinds: ['expression'] },
+      ]
+    },
+    {
+      label: 'Relations',
+      buttons: [
+        { label: '=', title: 'Equals', insert: '=' },
+        { label: '<', title: 'Less than', insert: '<', kinds: ['interval', 'expression'] },
+        { label: '≤', title: 'Less than or equal', insert: '<=', kinds: ['interval', 'expression'] },
+        { label: '≥', title: 'Greater than or equal', insert: '>=', kinds: ['interval', 'expression'] },
+        { label: ',', title: 'Comma separator', insert: ',', kinds: ['multi-value', 'coordinate-vector', 'expression'] },
+        { label: 'and', title: 'And', insert: ' and ', kinds: ['interval', 'multi-value'] },
+      ]
+    },
+    {
+      label: 'Coordinates',
+      buttons: [
+        { label: '(a,b)', title: 'Two-component coordinate', insert: '(,)', caret: -2, kinds: ['coordinate-vector'] },
+        { label: '(a,b,c)', title: 'Three-component vector', insert: '(,,)', caret: -3, kinds: ['coordinate-vector'] },
+        { label: '⟨a,b,c⟩', title: 'Angle-bracket vector', insert: '<,,>', caret: -3, kinds: ['coordinate-vector'] },
+      ]
+    },
+    {
+      label: 'Variables',
+      buttons: [
+        { label: 'x', title: 'x', insert: 'x' },
+        { label: 'y', title: 'y', insert: 'y' },
+        { label: 'z', title: 'z', insert: 'z' },
+        { label: '+', title: 'Plus', insert: '+' },
+        { label: '−', title: 'Minus', insert: '-' },
+      ]
+    },
+    {
+      label: 'Edit',
+      buttons: [
+        { label: '←', title: 'Move left', action: 'move-left' },
+        { label: '→', title: 'Move right', action: 'move-right' },
+        { label: '⌫', title: 'Delete last character', action: 'backspace' },
+        { label: 'Clear', title: 'Clear answer', action: 'clear' },
+      ]
+    }
+  ];
+
+  function mathEditorButtonsForKind(kind) {
+    return MATH_EDITOR_BUTTON_GROUPS.map(function (group) {
+      return {
+        label: group.label,
+        buttons: group.buttons.filter(function (button) {
+          return !button.kinds || button.kinds.includes(kind);
+        })
+      };
+    }).filter(function (group) {
+      return group.buttons.length > 0;
+    });
+  }
+
+  function canonicalFromKeyboardKey(key) {
+    if (key === 'π') return 'pi';
+    if (key === '√') return 'sqrt()';
+    if (key === '≤') return '<=';
+    if (key === '≥') return '>=';
+    if (key === '−') return '-';
+    if (/^[a-zA-Z0-9+\-*/^=(),.<>[\]\s]$/.test(key)) return key;
+    return '';
+  }
+
+  function normalizeMathEditorValue(value) {
+    return String(value || '')
+      .replace(/π/g, 'pi')
+      .replace(/√/g, 'sqrt')
+      .replace(/≤/g, '<=')
+      .replace(/≥/g, '>=')
+      .replace(/−/g, '-');
+  }
+
+  function mathEditorCaret(input, value) {
+    var stored = Number(input.getAttribute('data-math-editor-caret'));
+    if (Number.isFinite(stored)) return Math.max(0, Math.min(value.length, stored));
+    if (typeof input.selectionStart === 'number') return Math.max(0, Math.min(value.length, input.selectionStart));
+    return value.length;
+  }
+
+  function setMathEditorCaret(input, position) {
+    var value = normalizeMathEditorValue(input.value);
+    var next = Math.max(0, Math.min(value.length, position));
+    input.setAttribute('data-math-editor-caret', String(next));
+    input.setSelectionRange(next, next);
+  }
+
+  function insertIntoMathEditorInput(input, insert, caretOffset) {
+    var value = normalizeMathEditorValue(input.value);
+    var start = mathEditorCaret(input, value);
+    var end = start;
+    var next = value.slice(0, start) + insert + value.slice(end);
+    input.value = next;
+    var caret = start + insert.length + (caretOffset || 0);
+    setMathEditorCaret(input, caret);
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function deleteFromMathEditorInput(input) {
+    var value = normalizeMathEditorValue(input.value);
+    var start = mathEditorCaret(input, value);
+    var end = start;
+    if (start !== end) {
+      input.value = value.slice(0, start) + value.slice(end);
+      setMathEditorCaret(input, start);
+    } else if (start > 0) {
+      input.value = value.slice(0, start - 1) + value.slice(start);
+      setMathEditorCaret(input, start - 1);
+    }
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function moveMathEditorCaret(input, delta) {
+    var value = normalizeMathEditorValue(input.value);
+    input.value = value;
+    var start = mathEditorCaret(input, value);
+    var next = Math.max(0, Math.min(value.length, start + delta));
+    setMathEditorCaret(input, next);
+  }
+
+  function visualMathText(value) {
+    var escaped = escapeText(value || '');
+    escaped = escaped.replace(/pi/g, 'π');
+    escaped = escaped.replace(/theta/g, 'θ');
+    escaped = escaped.replace(/sqrt\(([^()]*)\)/g, '<span class="math-render-root"><span class="math-render-radical">√</span><span class="math-render-radicand">$1</span></span>');
+    escaped = escaped.replace(/log\(([^,()]*),([^()]*)\)/g, '<span class="math-render-log">log<span class="math-render-sub">$1</span>($2)</span>');
+    escaped = escaped.replace(/\^(\(?[A-Za-z0-9πθ+\-/* ]+\)?)/g, '<sup>$1</sup>');
+    escaped = escaped.replace(/([A-Za-z0-9πθ()]+)\/([A-Za-z0-9πθ()]+)/g, '<span class="math-render-frac"><span>$1</span><span>$2</span></span>');
+    return escaped;
+  }
+
+  function updateMathEditorDisplay(input, display, status) {
+    var value = normalizeMathEditorValue(input.value);
+    input.value = value;
+    if (value) {
+      display.innerHTML = visualMathText(value);
+      display.classList.remove('is-empty');
+      if (status) status.textContent = 'Answer ready for checking.';
+    } else {
+      display.textContent = 'Click to enter maths';
+      display.classList.add('is-empty');
+      if (status) status.textContent = 'Use the math keyboard to build your answer.';
+    }
+  }
+
+  function closeOtherMathEditors(current) {
+    document.querySelectorAll('[data-math-editor].is-open').forEach(function (editor) {
+      if (editor !== current) editor.classList.remove('is-open');
+    });
+  }
+
+  function setupMathAnswerEditors() {
+    document.querySelectorAll('.math-answer-input').forEach(function (field) {
+      if (field.getAttribute('data-math-editor-ready') === 'true') return;
+      var input = field.querySelector('input[data-math-answer-raw]');
+      var mount = field.querySelector('[data-math-editor-mount]');
+      if (!(input instanceof HTMLInputElement) || !(mount instanceof HTMLElement)) return;
+      field.setAttribute('data-math-editor-ready', 'true');
+
+      var kind = field.getAttribute('data-answer-kind') || 'text';
+      var editor = document.createElement('span');
+      editor.className = 'math-editor';
+      editor.setAttribute('data-math-editor', '');
+
+      var display = document.createElement('span');
+      display.className = 'math-editor-display is-empty';
+      display.setAttribute('role', 'textbox');
+      display.setAttribute('aria-label', 'Math answer editor');
+      display.setAttribute('aria-live', 'polite');
+      display.tabIndex = 0;
+
+      var panel = document.createElement('span');
+      panel.className = 'math-editor-panel';
+      panel.setAttribute('data-math-editor-panel', '');
+
+      var toolbar = document.createElement('span');
+      toolbar.className = 'math-editor-toolbar';
+      toolbar.setAttribute('role', 'toolbar');
+      toolbar.setAttribute('aria-label', 'Math keyboard');
+
+      mathEditorButtonsForKind(kind).forEach(function (group) {
+        var groupElement = document.createElement('span');
+        groupElement.className = 'math-editor-toolbar-group';
+        var groupLabel = document.createElement('span');
+        groupLabel.className = 'math-editor-toolbar-label';
+        groupLabel.textContent = group.label;
+        groupElement.append(groupLabel);
+        group.buttons.forEach(function (buttonSpec) {
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'math-editor-key';
+          button.textContent = buttonSpec.label;
+          button.title = buttonSpec.title || buttonSpec.label;
+          button.addEventListener('click', function (event) {
+            event.preventDefault();
+            closeOtherMathEditors(editor);
+            editor.classList.add('is-open');
+            input.focus({ preventScroll: true });
+            if (buttonSpec.action === 'clear') {
+              input.value = '';
+              setMathEditorCaret(input, 0);
+              input.dispatchEvent(new Event('input', { bubbles: true }));
+              return;
+            }
+            if (buttonSpec.action === 'backspace') {
+              deleteFromMathEditorInput(input);
+              return;
+            }
+            if (buttonSpec.action === 'move-left') {
+              moveMathEditorCaret(input, -1);
+              return;
+            }
+            if (buttonSpec.action === 'move-right') {
+              moveMathEditorCaret(input, 1);
+              return;
+            }
+            insertIntoMathEditorInput(input, buttonSpec.insert || '', buttonSpec.caret || 0);
+          });
+          groupElement.append(button);
+        });
+        toolbar.append(groupElement);
+      });
+
+      var status = document.createElement('span');
+      status.className = 'math-editor-status';
+      status.setAttribute('aria-live', 'polite');
+
+      panel.append(toolbar, status);
+      editor.append(display, panel);
+      mount.replaceChildren(editor);
+
+      display.addEventListener('click', function () {
+        closeOtherMathEditors(editor);
+        editor.classList.add('is-open');
+        input.focus({ preventScroll: true });
+      });
+
+      display.addEventListener('keydown', function (event) {
+        if (event.key === 'Backspace') {
+          event.preventDefault();
+          deleteFromMathEditorInput(input);
+          return;
+        }
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+          event.preventDefault();
+          moveMathEditorCaret(input, event.key === 'ArrowLeft' ? -1 : 1);
+          return;
+        }
+        if (event.key === 'Enter' || event.key === 'Escape') {
+          event.preventDefault();
+          editor.classList.toggle('is-open', event.key === 'Enter');
+          return;
+        }
+        var insert = canonicalFromKeyboardKey(event.key);
+        if (insert) {
+          event.preventDefault();
+          closeOtherMathEditors(editor);
+          editor.classList.add('is-open');
+          input.focus({ preventScroll: true });
+          insertIntoMathEditorInput(input, insert, insert === 'sqrt()' ? -1 : 0);
+        }
+      });
+
+      input.addEventListener('input', function () {
+        setMathEditorCaret(input, mathEditorCaret(input, normalizeMathEditorValue(input.value)));
+        updateMathEditorDisplay(input, display, status);
+      });
+
+      setMathEditorCaret(input, normalizeMathEditorValue(input.value).length);
+      updateMathEditorDisplay(input, display, status);
+    });
+
+    document.addEventListener('click', function (event) {
+      var target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest('[data-math-editor]')) return;
+      closeOtherMathEditors(null);
+    });
+  }
+
   function formatShortDate(value) {
     var ms = timestampMs(value);
     if (ms === undefined) return 'now';
@@ -4332,17 +4644,23 @@
       if (field instanceof HTMLInputElement && field.name === 'submittedAnswer') {
         if (field.type === 'checkbox' || field.type === 'radio') field.checked = false;
         else field.value = '';
+        field.dispatchEvent(new Event('input', { bubbles: true }));
       }
-      if (field instanceof HTMLTextAreaElement && field.name === 'submittedAnswer') field.value = '';
+      if (field instanceof HTMLTextAreaElement && field.name === 'submittedAnswer') {
+        field.value = '';
+        field.dispatchEvent(new Event('input', { bubbles: true }));
+      }
     });
     var input = form.querySelector('[name="submittedAnswer"]');
+    var mathDisplay = form.querySelector('.math-editor-display');
     var submit = form.querySelector('button[type="submit"]');
     setSkillFeedback(form, 'Try the first checked setup again. The explanation can stay open while you retry.', 'incorrect');
     if (submit instanceof HTMLButtonElement) {
       submit.textContent = 'Check Answer';
       submit.className = 'button primary-button';
     }
-    if (input instanceof HTMLElement) input.focus();
+    if (mathDisplay instanceof HTMLElement) mathDisplay.focus();
+    else if (input instanceof HTMLElement) input.focus();
   }
 
   function openLearnSimilarPanel(button) {
@@ -5636,6 +5954,7 @@
     setupExamSelfMarking();
     setupGuidedStudy();
     setupP1RepairLaneFlow();
+    setupMathAnswerEditors();
     updateProgressText();
     renderReviewPage();
 
