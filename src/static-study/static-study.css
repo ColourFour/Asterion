@@ -6059,6 +6059,8 @@ body.learn-mode-page .learn-exam-transfer {
 .math-editor-display {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
   min-height: 48px;
   width: 100%;
   padding: 8px 11px;
@@ -6145,7 +6147,69 @@ body.learn-mode-page .learn-exam-transfer {
   font-weight: 800;
 }
 
-.math-render-frac {
+.math-placeholder {
+  color: var(--muted);
+}
+
+.math-text-node {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.6em;
+}
+
+.math-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.35em;
+  margin: 0 1px;
+  border-radius: 999px;
+  background: var(--accent);
+  vertical-align: middle;
+  animation: math-caret-blink 1s steps(2, start) infinite;
+}
+
+@keyframes math-caret-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.math-slot {
+  display: inline-flex;
+  align-items: center;
+  min-width: 1.4em;
+  min-height: 1.55em;
+  padding: 0 3px;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  vertical-align: middle;
+}
+
+.math-slot.is-empty {
+  color: var(--muted);
+  background: rgba(126, 167, 217, 0.12);
+}
+
+.math-slot.is-active {
+  border-color: rgba(0, 87, 217, 0.5);
+  background: rgba(0, 87, 217, 0.08);
+  box-shadow: 0 0 0 2px rgba(0, 87, 217, 0.12);
+}
+
+.math-slot-placeholder {
+  font-size: 0.95em;
+  line-height: 1;
+}
+
+.math-structure {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
+  min-height: 1.75em;
+  vertical-align: middle;
+}
+
+.math-fraction {
   display: inline-grid;
   grid-template-rows: auto auto;
   align-items: center;
@@ -6154,18 +6218,28 @@ body.learn-mode-page .learn-exam-transfer {
   line-height: 1.05;
 }
 
-.math-render-frac > span:first-child {
+.math-fraction > .math-slot:first-child {
   padding: 0 4px 2px;
   border-bottom: 1px solid currentColor;
   text-align: center;
 }
 
-.math-render-frac > span:last-child {
+.math-fraction > .math-slot:last-child {
   padding: 2px 4px 0;
   text-align: center;
 }
 
-.math-render-root {
+.math-power {
+  align-items: baseline;
+}
+
+.math-power sup {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.72em;
+}
+
+.math-root {
   display: inline-flex;
   align-items: stretch;
   gap: 1px;
@@ -6176,20 +6250,25 @@ body.learn-mode-page .learn-exam-transfer {
   line-height: 1;
 }
 
-.math-render-radicand {
+.math-root > .math-slot {
   padding: 0 3px;
   border-top: 1px solid currentColor;
 }
 
-.math-render-log {
+.math-function {
   display: inline-flex;
   align-items: baseline;
   gap: 1px;
 }
 
-.math-render-sub {
+.math-function sub {
+  display: inline-flex;
+  align-items: center;
   font-size: 0.72em;
-  transform: translateY(0.28em);
+}
+
+.math-wrapper {
+  gap: 0;
 }
 
 @media (max-width: 720px) {
@@ -8497,6 +8576,16 @@ body.skill-check-page .exam-question-section {
 :root[data-theme="dark"] .math-editor-key:hover {
   border-color: rgba(169, 200, 235, 0.5);
   background: rgba(126, 167, 217, 0.24);
+}
+
+:root[data-theme="dark"] .math-slot.is-empty {
+  background: rgba(126, 167, 217, 0.16);
+}
+
+:root[data-theme="dark"] .math-slot.is-active {
+  border-color: rgba(169, 200, 235, 0.58);
+  background: rgba(126, 167, 217, 0.18);
+  box-shadow: 0 0 0 2px rgba(126, 167, 217, 0.14);
 }
 
 @media print {

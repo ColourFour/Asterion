@@ -3841,35 +3841,25 @@
 
   var MATH_EDITOR_BUTTON_GROUPS = [
     {
-      label: 'Structures',
+      label: 'Basic',
       buttons: [
-        { label: 'a/b', title: 'Fraction', insert: '/', kinds: ['numeric', 'expression', 'multi-value', 'complex'] },
-        { label: 'x²', title: 'Square', insert: '^2', kinds: ['numeric', 'expression', 'multi-value'] },
-        { label: 'xⁿ', title: 'Power', insert: '^', kinds: ['numeric', 'expression', 'multi-value'] },
-        { label: '√', title: 'Square root', insert: 'sqrt()', caret: -1, kinds: ['numeric', 'expression', 'multi-value', 'complex'] },
-        { label: '|x|', title: 'Absolute value', insert: 'abs()', caret: -1, kinds: ['expression'] },
-        { label: '( )', title: 'Brackets', insert: '()', caret: -1 },
+        { label: 'a/b', title: 'Fraction', action: 'template', template: 'fraction', wrapPrevious: true, kinds: ['numeric', 'expression', 'multi-value', 'complex'] },
+        { label: 'x²', title: 'Square', action: 'template', template: 'square', wrapPrevious: true, kinds: ['numeric', 'expression', 'multi-value'] },
+        { label: 'xⁿ', title: 'Power', action: 'template', template: 'power', wrapPrevious: true, kinds: ['numeric', 'expression', 'multi-value'] },
+        { label: '√', title: 'Square root', action: 'template', template: 'sqrt', kinds: ['numeric', 'expression', 'multi-value', 'complex'] },
+        { label: '|x|', title: 'Absolute value', action: 'template', template: 'abs', kinds: ['expression'] },
+        { label: '( )', title: 'Brackets', action: 'template', template: 'paren' },
       ]
     },
     {
       label: 'Functions',
       buttons: [
-        { label: 'ln', title: 'Natural logarithm', insert: 'ln()', caret: -1, kinds: ['expression'] },
-        { label: 'logₐ', title: 'Logarithm with base', insert: 'log(,)', caret: -2, kinds: ['expression'] },
-        { label: 'eˣ', title: 'Exponential e power', insert: 'e^()', caret: -1, kinds: ['expression', 'complex'] },
-        { label: 'sin', title: 'Sine', insert: 'sin', kinds: ['expression', 'multi-value'] },
-        { label: 'cos', title: 'Cosine', insert: 'cos', kinds: ['expression', 'multi-value'] },
-        { label: 'tan', title: 'Tangent', insert: 'tan', kinds: ['expression', 'multi-value'] },
-      ]
-    },
-    {
-      label: 'Constants',
-      buttons: [
-        { label: 'π', title: 'Pi', insert: 'pi' },
-        { label: 'i', title: 'Imaginary unit', insert: 'i', kinds: ['complex', 'expression'] },
-        { label: 'θ', title: 'Theta', insert: 'theta', kinds: ['expression'] },
-        { label: '∞', title: 'Infinity', insert: 'infinity', kinds: ['interval'] },
-        { label: 'C', title: 'Constant of integration', insert: 'C', kinds: ['expression'] },
+        { label: 'ln', title: 'Natural logarithm', action: 'template', template: 'ln', kinds: ['expression'] },
+        { label: 'logₐ', title: 'Logarithm with base', action: 'template', template: 'log', kinds: ['expression'] },
+        { label: 'eˣ', title: 'Exponential e power', action: 'template', template: 'exp', kinds: ['expression', 'complex'] },
+        { label: 'sin', title: 'Sine', action: 'template', template: 'sin', kinds: ['expression', 'multi-value'] },
+        { label: 'cos', title: 'Cosine', action: 'template', template: 'cos', kinds: ['expression', 'multi-value'] },
+        { label: 'tan', title: 'Tangent', action: 'template', template: 'tan', kinds: ['expression', 'multi-value'] },
       ]
     },
     {
@@ -3884,16 +3874,21 @@
       ]
     },
     {
-      label: 'Coordinates',
+      label: 'Vectors',
       buttons: [
-        { label: '(a,b)', title: 'Two-component coordinate', insert: '(,)', caret: -2, kinds: ['coordinate-vector'] },
-        { label: '(a,b,c)', title: 'Three-component vector', insert: '(,,)', caret: -3, kinds: ['coordinate-vector'] },
-        { label: '⟨a,b,c⟩', title: 'Angle-bracket vector', insert: '<,,>', caret: -3, kinds: ['coordinate-vector'] },
+        { label: '(a,b)', title: 'Two-component coordinate', action: 'template', template: 'coord2', kinds: ['coordinate-vector'] },
+        { label: '(a,b,c)', title: 'Three-component vector', action: 'template', template: 'coord3', kinds: ['coordinate-vector'] },
+        { label: '⟨a,b,c⟩', title: 'Angle-bracket vector', action: 'template', template: 'angle3', kinds: ['coordinate-vector'] },
       ]
     },
     {
-      label: 'Variables',
+      label: 'Greek/Constants',
       buttons: [
+        { label: 'π', title: 'Pi', insert: 'pi' },
+        { label: 'i', title: 'Imaginary unit', insert: 'i', kinds: ['complex', 'expression'] },
+        { label: 'θ', title: 'Theta', insert: 'theta', kinds: ['expression'] },
+        { label: '∞', title: 'Infinity', insert: 'infinity', kinds: ['interval'] },
+        { label: 'C', title: 'Constant of integration', insert: 'C', kinds: ['expression'] },
         { label: 'x', title: 'x', insert: 'x' },
         { label: 'y', title: 'y', insert: 'y' },
         { label: 'z', title: 'z', insert: 'z' },
@@ -3906,7 +3901,7 @@
       buttons: [
         { label: '←', title: 'Move left', action: 'move-left' },
         { label: '→', title: 'Move right', action: 'move-right' },
-        { label: '⌫', title: 'Delete last character', action: 'backspace' },
+        { label: '⌫', title: 'Delete last entry', action: 'backspace' },
         { label: 'Clear', title: 'Clear answer', action: 'clear' },
       ]
     }
@@ -3927,11 +3922,11 @@
 
   function canonicalFromKeyboardKey(key) {
     if (key === 'π') return 'pi';
-    if (key === '√') return 'sqrt()';
+    if (key === '√') return 'sqrt';
     if (key === '≤') return '<=';
     if (key === '≥') return '>=';
     if (key === '−') return '-';
-    if (/^[a-zA-Z0-9+\-*/^=(),.<>[\]\s]$/.test(key)) return key;
+    if (/^[a-zA-Z0-9+\-*_=(),.<>[\]\s]$/.test(key)) return key;
     return '';
   }
 
@@ -3944,51 +3939,99 @@
       .replace(/−/g, '-');
   }
 
-  function mathEditorCaret(input, value) {
-    var stored = Number(input.getAttribute('data-math-editor-caret'));
-    if (Number.isFinite(stored)) return Math.max(0, Math.min(value.length, stored));
-    if (typeof input.selectionStart === 'number') return Math.max(0, Math.min(value.length, input.selectionStart));
-    return value.length;
+  function mathText(value) {
+    return { type: 'text', value: normalizeMathEditorValue(value) };
   }
 
-  function setMathEditorCaret(input, position) {
-    var value = normalizeMathEditorValue(input.value);
-    var next = Math.max(0, Math.min(value.length, position));
-    input.setAttribute('data-math-editor-caret', String(next));
-    input.setSelectionRange(next, next);
+  function mathTemplate(type, slots) {
+    return { type: 'template', template: type, slots: slots };
   }
 
-  function insertIntoMathEditorInput(input, insert, caretOffset) {
-    var value = normalizeMathEditorValue(input.value);
-    var start = mathEditorCaret(input, value);
-    var end = start;
-    var next = value.slice(0, start) + insert + value.slice(end);
-    input.value = next;
-    var caret = start + insert.length + (caretOffset || 0);
-    setMathEditorCaret(input, caret);
-    dispatchMathEditorInput(input);
+  function emptySlot() {
+    return [];
   }
 
-  function deleteFromMathEditorInput(input) {
-    var value = normalizeMathEditorValue(input.value);
-    var start = mathEditorCaret(input, value);
-    var end = start;
-    if (start !== end) {
-      input.value = value.slice(0, start) + value.slice(end);
-      setMathEditorCaret(input, start);
-    } else if (start > 0) {
-      input.value = value.slice(0, start - 1) + value.slice(start);
-      setMathEditorCaret(input, start - 1);
+  function makeMathTemplate(type, wrappedNodes) {
+    var wrapped = wrappedNodes && wrappedNodes.length ? wrappedNodes : emptySlot();
+    if (type === 'fraction') return mathTemplate(type, [wrapped, emptySlot()]);
+    if (type === 'square') return mathTemplate('power', [wrapped, [mathText('2')]]);
+    if (type === 'power') return mathTemplate(type, [wrapped, emptySlot()]);
+    if (type === 'sqrt' || type === 'abs' || type === 'paren' || type === 'ln' || type === 'exp' || type === 'sin' || type === 'cos' || type === 'tan') return mathTemplate(type, [emptySlot()]);
+    if (type === 'log') return mathTemplate(type, [emptySlot(), emptySlot()]);
+    if (type === 'coord2') return mathTemplate(type, [emptySlot(), emptySlot()]);
+    if (type === 'coord3' || type === 'angle3') return mathTemplate(type, [emptySlot(), emptySlot(), emptySlot()]);
+    return mathText('');
+  }
+
+  function pathKey(path) {
+    return path.map(function (part) {
+      return part.node + ':' + part.slot;
+    }).join('/');
+  }
+
+  function parsePathKey(value) {
+    if (!value) return [];
+    return value.split('/').flatMap(function (part) {
+      var pieces = part.split(':');
+      var node = Number(pieces[0]);
+      var slot = Number(pieces[1]);
+      return Number.isFinite(node) && Number.isFinite(slot) ? [{ node: node, slot: slot }] : [];
+    });
+  }
+
+  function sameMathPath(a, b) {
+    return pathKey(a) === pathKey(b);
+  }
+
+  function mathSlotAt(nodes, path) {
+    var slot = nodes;
+    for (var index = 0; index < path.length; index += 1) {
+      var part = path[index];
+      var node = slot[part.node];
+      if (!node || node.type !== 'template') return nodes;
+      slot = node.slots[part.slot] || node.slots[0] || nodes;
     }
-    dispatchMathEditorInput(input);
+    return slot;
   }
 
-  function moveMathEditorCaret(input, delta) {
-    var value = normalizeMathEditorValue(input.value);
-    input.value = value;
-    var start = mathEditorCaret(input, value);
-    var next = Math.max(0, Math.min(value.length, start + delta));
-    setMathEditorCaret(input, next);
+  function clampMathCursor(state) {
+    var slot = mathSlotAt(state.nodes, state.cursor.path);
+    state.cursor.offset = Math.max(0, Math.min(slot.length, state.cursor.offset));
+  }
+
+  function nodeIsEmpty(node) {
+    if (!node) return true;
+    if (node.type === 'text') return !node.value;
+    return node.slots.every(function (slot) {
+      return slot.every(nodeIsEmpty);
+    });
+  }
+
+  function slotIsEmpty(nodes) {
+    return !nodes.length || nodes.every(nodeIsEmpty);
+  }
+
+  function serializeMathNodes(nodes) {
+    return nodes.map(serializeMathNode).join('');
+  }
+
+  function serializeMathNode(node) {
+    if (!node) return '';
+    if (node.type === 'text') return normalizeMathEditorValue(node.value);
+    var slots = node.slots.map(serializeMathNodes);
+    if (node.template === 'fraction') return slots[0] + '/' + slots[1];
+    if (node.template === 'power') return slots[0] + '^' + slots[1];
+    if (node.template === 'sqrt') return 'sqrt(' + slots[0] + ')';
+    if (node.template === 'abs') return 'abs(' + slots[0] + ')';
+    if (node.template === 'paren') return '(' + slots[0] + ')';
+    if (node.template === 'ln') return 'ln(' + slots[0] + ')';
+    if (node.template === 'log') return 'log(' + slots[0] + ',' + slots[1] + ')';
+    if (node.template === 'exp') return 'e^(' + slots[0] + ')';
+    if (node.template === 'sin' || node.template === 'cos' || node.template === 'tan') return node.template + '(' + slots[0] + ')';
+    if (node.template === 'coord2') return '(' + slots[0] + ',' + slots[1] + ')';
+    if (node.template === 'coord3') return '(' + slots[0] + ',' + slots[1] + ',' + slots[2] + ')';
+    if (node.template === 'angle3') return '<' + slots[0] + ',' + slots[1] + ',' + slots[2] + '>';
+    return slots.join('');
   }
 
   function dispatchMathEditorInput(input) {
@@ -3997,29 +4040,171 @@
     input.removeAttribute('data-math-editor-internal-input');
   }
 
-  function visualMathText(value) {
-    var escaped = escapeText(value || '');
-    escaped = escaped.replace(/pi/g, 'π');
-    escaped = escaped.replace(/theta/g, 'θ');
-    escaped = escaped.replace(/sqrt\(([^()]*)\)/g, '<span class="math-render-root"><span class="math-render-radical">√</span><span class="math-render-radicand">$1</span></span>');
-    escaped = escaped.replace(/log\(([^,()]*),([^()]*)\)/g, '<span class="math-render-log">log<span class="math-render-sub">$1</span>($2)</span>');
-    escaped = escaped.replace(/\^(\(?[A-Za-z0-9πθ+\-/* ]+\)?)/g, '<sup>$1</sup>');
-    escaped = escaped.replace(/([A-Za-z0-9πθ()]+)\/([A-Za-z0-9πθ()]+)/g, '<span class="math-render-frac"><span>$1</span><span>$2</span></span>');
-    return escaped;
+  function insertMathNode(state, node) {
+    var slot = mathSlotAt(state.nodes, state.cursor.path);
+    slot.splice(state.cursor.offset, 0, node);
+    state.cursor.offset += 1;
   }
 
-  function updateMathEditorDisplay(input, display, status) {
-    var value = normalizeMathEditorValue(input.value);
+  function insertMathText(state, value) {
+    var normalized = normalizeMathEditorValue(value);
+    if (!normalized) return;
+    var slot = mathSlotAt(state.nodes, state.cursor.path);
+    var previous = slot[state.cursor.offset - 1];
+    if (previous && previous.type === 'text') previous.value += normalized;
+    else insertMathNode(state, mathText(normalized));
+    clampMathCursor(state);
+  }
+
+  function insertMathTemplate(state, type, wrapPrevious) {
+    var slot = mathSlotAt(state.nodes, state.cursor.path);
+    var wrapped = [];
+    if (wrapPrevious && state.cursor.offset > 0) {
+      wrapped = slot.splice(state.cursor.offset - 1, 1);
+      state.cursor.offset -= 1;
+    }
+    var node = makeMathTemplate(type, wrapped);
+    insertMathNode(state, node);
+    var nodeIndex = state.cursor.offset - 1;
+    if (type === 'square' && wrapped.length) {
+      state.cursor.path = state.cursor.path.slice();
+      state.cursor.offset = nodeIndex + 1;
+      return;
+    }
+    var activeSlot = type === 'power' && wrapped.length ? 1 : 0;
+    state.cursor.path = state.cursor.path.concat([{ node: nodeIndex, slot: activeSlot }]);
+    state.cursor.offset = mathSlotAt(state.nodes, state.cursor.path).length;
+  }
+
+  function allMathSlots(nodes, basePath) {
+    var result = [{ path: basePath.slice(), nodes: nodes }];
+    nodes.forEach(function (node, nodeIndex) {
+      if (!node || node.type !== 'template') return;
+      node.slots.forEach(function (slot, slotIndex) {
+        result = result.concat(allMathSlots(slot, basePath.concat([{ node: nodeIndex, slot: slotIndex }])));
+      });
+    });
+    return result;
+  }
+
+  function moveMathCursor(state, delta) {
+    var slot = mathSlotAt(state.nodes, state.cursor.path);
+    if (delta < 0 && state.cursor.offset > 0) {
+      state.cursor.offset -= 1;
+      return;
+    }
+    if (delta > 0 && state.cursor.offset < slot.length) {
+      state.cursor.offset += 1;
+      return;
+    }
+    var slots = allMathSlots(state.nodes, []);
+    var current = slots.findIndex(function (candidate) {
+      return sameMathPath(candidate.path, state.cursor.path);
+    });
+    var next = Math.max(0, Math.min(slots.length - 1, current + delta));
+    state.cursor.path = slots[next].path.slice();
+    state.cursor.offset = delta < 0 ? slots[next].nodes.length : 0;
+  }
+
+  function deleteMathBackward(state) {
+    var slot = mathSlotAt(state.nodes, state.cursor.path);
+    if (state.cursor.offset > 0) {
+      var node = slot[state.cursor.offset - 1];
+      if (node && node.type === 'text' && node.value.length > 1) {
+        node.value = node.value.slice(0, -1);
+      } else {
+        slot.splice(state.cursor.offset - 1, 1);
+        state.cursor.offset -= 1;
+      }
+      return;
+    }
+    if (state.cursor.path.length) {
+      state.cursor.path = state.cursor.path.slice(0, -1);
+      state.cursor.offset = mathSlotAt(state.nodes, state.cursor.path).length;
+    }
+  }
+
+  function setMathCursorToSlot(state, path) {
+    state.cursor.path = path.slice();
+    state.cursor.offset = mathSlotAt(state.nodes, path).length;
+  }
+
+  function loadMathPlainText(state, value) {
+    var normalized = normalizeMathEditorValue(value);
+    state.nodes = normalized ? [mathText(normalized)] : [];
+    state.cursor = { path: [], offset: state.nodes.length };
+  }
+
+  function displayMathText(value) {
+    return escapeText(value)
+      .replace(/pi/g, 'π')
+      .replace(/theta/g, 'θ');
+  }
+
+  function renderMathSlot(nodes, state, path) {
+    var active = sameMathPath(path, state.cursor.path);
+    var html = '<span class="math-slot' + (active ? ' is-active' : '') + (slotIsEmpty(nodes) ? ' is-empty' : '') + '" data-math-slot-path="' + escapeAttr(pathKey(path)) + '">';
+    html += renderMathNodes(nodes, state, path);
+    if (!nodes.length && active) html += '<span class="math-caret" aria-hidden="true"></span>';
+    else if (!nodes.length) html += '<span class="math-slot-placeholder" aria-hidden="true">□</span>';
+    html += '</span>';
+    return html;
+  }
+
+  function renderMathNodes(nodes, state, path) {
+    var html = '';
+    nodes.forEach(function (node, index) {
+      if (sameMathPath(path, state.cursor.path) && state.cursor.offset === index) html += '<span class="math-caret" aria-hidden="true"></span>';
+      html += renderMathNode(node, state, path, index);
+    });
+    if (sameMathPath(path, state.cursor.path) && state.cursor.offset === nodes.length) html += '<span class="math-caret" aria-hidden="true"></span>';
+    return html;
+  }
+
+  function renderMathNode(node, state, path, index) {
+    if (node.type === 'text') return '<span class="math-text-node">' + displayMathText(node.value) + '</span>';
+    var slotPath = function (slotIndex) {
+      return path.concat([{ node: index, slot: slotIndex }]);
+    };
+    if (node.template === 'fraction') {
+      return '<span class="math-structure math-fraction">' + renderMathSlot(node.slots[0], state, slotPath(0)) + renderMathSlot(node.slots[1], state, slotPath(1)) + '</span>';
+    }
+    if (node.template === 'power') {
+      return '<span class="math-structure math-power">' + renderMathSlot(node.slots[0], state, slotPath(0)) + '<sup>' + renderMathSlot(node.slots[1], state, slotPath(1)) + '</sup></span>';
+    }
+    if (node.template === 'sqrt') {
+      return '<span class="math-structure math-root"><span class="math-render-radical">√</span>' + renderMathSlot(node.slots[0], state, slotPath(0)) + '</span>';
+    }
+    if (node.template === 'abs') return '<span class="math-structure math-wrapper">|' + renderMathSlot(node.slots[0], state, slotPath(0)) + '|</span>';
+    if (node.template === 'paren') return '<span class="math-structure math-wrapper">(' + renderMathSlot(node.slots[0], state, slotPath(0)) + ')</span>';
+    if (node.template === 'ln' || node.template === 'sin' || node.template === 'cos' || node.template === 'tan') {
+      return '<span class="math-structure math-function"><span>' + node.template + '</span>(' + renderMathSlot(node.slots[0], state, slotPath(0)) + ')</span>';
+    }
+    if (node.template === 'log') {
+      return '<span class="math-structure math-function"><span>log</span><sub>' + renderMathSlot(node.slots[0], state, slotPath(0)) + '</sub>(' + renderMathSlot(node.slots[1], state, slotPath(1)) + ')</span>';
+    }
+    if (node.template === 'exp') return '<span class="math-structure math-power"><span>e</span><sup>' + renderMathSlot(node.slots[0], state, slotPath(0)) + '</sup></span>';
+    if (node.template === 'coord2') return '<span class="math-structure math-wrapper">(' + renderMathSlot(node.slots[0], state, slotPath(0)) + ',' + renderMathSlot(node.slots[1], state, slotPath(1)) + ')</span>';
+    if (node.template === 'coord3') return '<span class="math-structure math-wrapper">(' + renderMathSlot(node.slots[0], state, slotPath(0)) + ',' + renderMathSlot(node.slots[1], state, slotPath(1)) + ',' + renderMathSlot(node.slots[2], state, slotPath(2)) + ')</span>';
+    if (node.template === 'angle3') return '<span class="math-structure math-wrapper">⟨' + renderMathSlot(node.slots[0], state, slotPath(0)) + ',' + renderMathSlot(node.slots[1], state, slotPath(1)) + ',' + renderMathSlot(node.slots[2], state, slotPath(2)) + '⟩</span>';
+    return '';
+  }
+
+  function syncMathEditorState(input, display, status, state) {
+    var value = serializeMathNodes(state.nodes);
     input.value = value;
-    if (value) {
-      display.innerHTML = visualMathText(value);
+    input.setAttribute('data-math-editor-internal-input', 'true');
+    dispatchMathEditorInput(input);
+    if (state.nodes.length) {
+      display.innerHTML = renderMathNodes(state.nodes, state, []);
       display.classList.remove('is-empty');
-      if (status) status.textContent = 'Answer ready for checking.';
+      if (status) status.textContent = value ? 'Submitted as: ' + value : 'Complete the highlighted slot.';
     } else {
-      display.textContent = 'Click to enter maths';
+      display.innerHTML = '<span class="math-placeholder">Click to enter maths</span><span class="math-caret" aria-hidden="true"></span>';
       display.classList.add('is-empty');
       if (status) status.textContent = 'Use the math keyboard to build your answer.';
     }
+    input.removeAttribute('data-math-editor-internal-input');
   }
 
   function closeOtherMathEditors(current) {
@@ -4037,6 +4222,7 @@
       field.setAttribute('data-math-editor-ready', 'true');
 
       var kind = field.getAttribute('data-answer-kind') || 'text';
+      var state = { nodes: [], cursor: { path: [], offset: 0 } };
       var editor = document.createElement('span');
       editor.className = 'math-editor';
       editor.setAttribute('data-math-editor', '');
@@ -4076,28 +4262,33 @@
             closeOtherMathEditors(editor);
             editor.classList.add('is-open');
             if (buttonSpec.action === 'clear') {
-              input.value = '';
-              setMathEditorCaret(input, 0);
-              dispatchMathEditorInput(input);
+              state.nodes = [];
+              state.cursor = { path: [], offset: 0 };
+              syncMathEditorState(input, display, status, state);
               display.focus({ preventScroll: true });
               return;
             }
             if (buttonSpec.action === 'backspace') {
-              deleteFromMathEditorInput(input);
+              deleteMathBackward(state);
+              syncMathEditorState(input, display, status, state);
               display.focus({ preventScroll: true });
               return;
             }
             if (buttonSpec.action === 'move-left') {
-              moveMathEditorCaret(input, -1);
+              moveMathCursor(state, -1);
+              syncMathEditorState(input, display, status, state);
               display.focus({ preventScroll: true });
               return;
             }
             if (buttonSpec.action === 'move-right') {
-              moveMathEditorCaret(input, 1);
+              moveMathCursor(state, 1);
+              syncMathEditorState(input, display, status, state);
               display.focus({ preventScroll: true });
               return;
             }
-            insertIntoMathEditorInput(input, buttonSpec.insert || '', buttonSpec.caret || 0);
+            if (buttonSpec.action === 'template') insertMathTemplate(state, buttonSpec.template, buttonSpec.wrapPrevious);
+            else insertMathText(state, buttonSpec.insert || '');
+            syncMathEditorState(input, display, status, state);
             display.focus({ preventScroll: true });
           });
           groupElement.append(button);
@@ -4116,20 +4307,28 @@
       display.addEventListener('click', function (event) {
         event.preventDefault();
         event.stopPropagation();
+        var target = event.target;
+        if (target instanceof Element) {
+          var slotTarget = target.closest('[data-math-slot-path]');
+          if (slotTarget instanceof HTMLElement) setMathCursorToSlot(state, parsePathKey(slotTarget.getAttribute('data-math-slot-path') || ''));
+        }
         closeOtherMathEditors(editor);
         editor.classList.add('is-open');
+        syncMathEditorState(input, display, status, state);
         display.focus({ preventScroll: true });
       });
 
       display.addEventListener('keydown', function (event) {
         if (event.key === 'Backspace') {
           event.preventDefault();
-          deleteFromMathEditorInput(input);
+          deleteMathBackward(state);
+          syncMathEditorState(input, display, status, state);
           return;
         }
-        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowRight' || event.key === 'Tab') {
           event.preventDefault();
-          moveMathEditorCaret(input, event.key === 'ArrowLeft' ? -1 : 1);
+          moveMathCursor(state, event.key === 'ArrowLeft' || event.shiftKey ? -1 : 1);
+          syncMathEditorState(input, display, status, state);
           return;
         }
         if (event.key === 'Enter' || event.key === 'Escape') {
@@ -4142,23 +4341,23 @@
           event.preventDefault();
           closeOtherMathEditors(editor);
           editor.classList.add('is-open');
-          insertIntoMathEditorInput(input, insert, insert === 'sqrt()' ? -1 : 0);
+          if (insert === '/') insertMathTemplate(state, 'fraction', true);
+          else if (insert === '^') insertMathTemplate(state, 'power', true);
+          else if (insert === '(') insertMathTemplate(state, 'paren', false);
+          else insertMathText(state, insert);
+          syncMathEditorState(input, display, status, state);
         }
       });
 
       input.addEventListener('input', function () {
         if (input.getAttribute('data-math-editor-internal-input') !== 'true') {
-          var normalized = normalizeMathEditorValue(input.value);
-          var nextCaret = document.activeElement === input && typeof input.selectionStart === 'number'
-            ? input.selectionStart
-            : normalized.length;
-          setMathEditorCaret(input, nextCaret);
+          loadMathPlainText(state, input.value);
+          syncMathEditorState(input, display, status, state);
         }
-        updateMathEditorDisplay(input, display, status);
       });
 
-      setMathEditorCaret(input, normalizeMathEditorValue(input.value).length);
-      updateMathEditorDisplay(input, display, status);
+      loadMathPlainText(state, input.value);
+      syncMathEditorState(input, display, status, state);
     });
 
     document.addEventListener('click', function (event) {

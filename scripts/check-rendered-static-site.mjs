@@ -87,6 +87,112 @@ async function visibleCounts(page) {
   });
 }
 
+async function clickMathEditorKey(page, label) {
+  return page.evaluate((buttonLabel) => {
+    const scope = '[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"]';
+    const buttons = Array.from(document.querySelectorAll(`${scope} .math-editor-key`));
+    const button = buttons.find((candidate) => (candidate.textContent || '').trim() === buttonLabel);
+    if (button instanceof HTMLButtonElement) {
+      button.click();
+      return true;
+    }
+    return false;
+  }, label);
+}
+
+async function runMathEditorSequence(page, sequence, expectedRaw, label) {
+  const scope = '[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"]';
+  const display = page.locator(`${scope} .math-editor-display`).first();
+  const rawInput = page.locator(`${scope} input[name="submittedAnswer"][type="text"]`).first();
+  await display.click();
+  await clickMathEditorKey(page, 'Clear');
+  for (const step of sequence) {
+    if (await clickMathEditorKey(page, step)) continue;
+    await display.press(step);
+  }
+  const raw = await rawInput.inputValue();
+  if (raw !== expectedRaw) {
+    fail(`${label} expected math editor raw value "${expectedRaw}", saw "${raw}".`);
+  }
+}
+
+async function assertMathEditorStructuredInput(browser) {
+  const cases = [
+    {
+      pagePath: 'p3/topics/algebra/learn/index.html',
+      label: 'Algebra power',
+      sequence: ['x', 'xⁿ', '2'],
+      expectedRaw: 'x^2',
+    },
+    {
+      pagePath: 'p3/topics/algebra/learn/index.html',
+      label: 'Algebra fraction',
+      sequence: ['a/b', 'a', 'Tab', 'b'],
+      expectedRaw: 'a/b',
+    },
+    {
+      pagePath: 'p3/topics/logarithmic-and-exponential-functions/learn/index.html',
+      label: 'Logs base-log',
+      sequence: ['logₐ', '2', 'Tab', '8'],
+      expectedRaw: 'log(2,8)',
+    },
+    {
+      pagePath: 'p3/topics/logarithmic-and-exponential-functions/learn/index.html',
+      label: 'Logs arrow and backspace',
+      sequence: ['logₐ', '2', 'ArrowRight', '8', 'Backspace'],
+      expectedRaw: 'log(2,)',
+    },
+    {
+      pagePath: 'p3/topics/trigonometry/learn/index.html',
+      label: 'Trigonometry function',
+      sequence: ['sin', 'π'],
+      expectedRaw: 'sin(pi)',
+    },
+    {
+      pagePath: 'p3/topics/complex-numbers/learn/index.html',
+      label: 'Complex number',
+      sequence: ['3', '+', 'i'],
+      expectedRaw: '3+i',
+    },
+    {
+      pagePath: 'p3/topics/vectors/learn/index.html',
+      label: 'Vector tuple',
+      sequence: ['(a,b,c)', '2', 'Tab', '3', 'Tab', '4'],
+      expectedRaw: '(2,3,4)',
+    },
+    {
+      pagePath: 'p3/topics/differentiation/learn/index.html',
+      label: 'Calculus power',
+      sequence: ['x', 'xⁿ', '2'],
+      expectedRaw: 'x^2',
+    },
+  ];
+
+  const page = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+  try {
+    for (const testCase of cases) {
+      await waitForStaticEnhancement(page, testCase.pagePath);
+      const stepId = await page.evaluate(() => {
+        const typedStep = document.querySelector('[data-learn-step-card]:has([data-check-learn-answer][data-learn-variant="primary"] .math-answer-input)');
+        if (!(typedStep instanceof HTMLElement)) return '';
+        document.querySelectorAll('[data-learn-step-card]').forEach((step) => {
+          if (step instanceof HTMLElement) step.hidden = step !== typedStep;
+        });
+        typedStep.hidden = false;
+        typedStep.removeAttribute('hidden');
+        return typedStep.getAttribute('data-learn-step-id') || '';
+      });
+      if (!stepId) {
+        fail(`${testCase.label} did not find a primary typed Learn card.`);
+        continue;
+      }
+      await runMathEditorSequence(page, testCase.sequence, testCase.expectedRaw, `${testCase.label} (${stepId})`);
+    }
+  } finally {
+    await page.close();
+  }
+}
+
 async function assertLearnVisualBasics(browser) {
   const viewports = [
     { width: 1280, height: 720, firstActionRequired: true },
@@ -703,6 +809,7 @@ try {
   }
 
   await assertLearnVisualBasics(browser);
+  await assertMathEditorStructuredInput(browser);
   await assertExamTrainingMobileVisuals(browser);
   await assertMobileSkillSelectorLabels(browser);
 
