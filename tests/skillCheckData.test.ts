@@ -1,4 +1,7 @@
 import { describe, expect, it } from 'vitest';
+import generatedPracticeBank from '../public/data/generated_practice_bank.json';
+import teachingSnippetsBank from '../public/data/teaching_snippets.json';
+import { getFieldGuideTopicsForRegion } from '../src/data/fieldGuideTopics';
 import {
   AUTHORED_SKILL_CHECK_ITEMS,
   skillCheckAnswerSpecForItem,
@@ -8,7 +11,13 @@ import {
   validateSkillCheckItemContract,
   type SkillCheckItem,
 } from '../src/data/skillCheckItems';
+import { getGeneratedPracticeForRegion, normalizeGeneratedPracticeData, reviewedGeneratedPractice } from '../src/lib/generatedPractice';
+import { buildSkillChecklistTopicGroups } from '../src/lib/skillChecklist';
+import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets } from '../src/lib/teachingSnippets';
+import { STUDY_TOPICS } from '../src/lib/topicStudy';
+import { P3_COURSE_MAP } from '../src/lib/worldMap';
 import { checkSkillCheckAnswer } from '../src/skill-checks/answerChecker';
+import type { SkillCheckAnswerSpec } from '../src/skill-checks/answerChecker';
 import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 
 const itemById = new Map(AUTHORED_SKILL_CHECK_ITEMS.map((item) => [item.itemId, item]));
@@ -28,6 +37,96 @@ function expectAccepted(itemId: string, submittedAnswer: string | string[]) {
     isCorrect: true,
     unsupported: false,
   });
+}
+
+function firstAnswer(value: string | string[] | undefined): string {
+  return Array.isArray(value) ? value[0] ?? '' : value ?? '';
+}
+
+function renderedAnswerSpecForItem(item: SkillCheckItem, spec: SkillCheckAnswerSpec): SkillCheckAnswerSpec {
+  if (!item.options?.length || !item.expectedOptionIds?.length) return spec;
+  if (item.inputType === 'checkbox') {
+    return {
+      ...spec,
+      answerType: 'multi-value',
+      acceptedAnswers: [item.expectedOptionIds.join(', ')],
+      orderMatters: false,
+    };
+  }
+  return {
+    ...spec,
+    answerType: 'exact-text',
+    acceptedAnswers: item.expectedOptionIds,
+    orderMatters: undefined,
+  };
+}
+
+function renderedCorrectSubmissionForItem(item: SkillCheckItem): string {
+  if ((item.inputType === 'multiple_choice' || item.inputType === 'checkbox') && item.expectedOptionIds?.length) {
+    return item.expectedOptionIds.join(', ');
+  }
+  if (item.inputType === 'ordered_cards' && item.expectedOrder?.length) {
+    return item.expectedOrder.join(', ');
+  }
+  if (item.inputType === 'two_value' && item.fields?.length) {
+    return item.fields.map((field) => firstAnswer(field.expectedAnswer)).join(', ');
+  }
+  return firstAnswer(item.expectedAnswer ?? item.acceptedAnswers?.[0]);
+}
+
+function validateRenderedControl(item: SkillCheckItem): string[] {
+  const errors: string[] = [];
+  if (!item.prompt.trim()) errors.push('missing rendered prompt');
+
+  if (item.inputType === 'multiple_choice' || item.inputType === 'checkbox') {
+    const optionIds = new Set((item.options ?? []).map((option) => option.id));
+    if (!item.options?.length) errors.push('choice item has no rendered options');
+    for (const option of item.options ?? []) {
+      if (!option.id.trim() || !option.label.trim()) errors.push('choice item has blank option id or label');
+    }
+    for (const expectedId of item.expectedOptionIds ?? []) {
+      if (!optionIds.has(expectedId)) errors.push(`expected option ${expectedId} is not rendered`);
+    }
+  }
+
+  if (item.inputType === 'ordered_cards') {
+    const cardIds = new Set((item.cards ?? []).map((card) => card.id));
+    if (!item.cards?.length) errors.push('ordered item has no rendered cards');
+    for (const card of item.cards ?? []) {
+      if (!card.id.trim() || !card.label.trim()) errors.push('ordered item has blank card id or label');
+    }
+    for (const expectedId of item.expectedOrder ?? []) {
+      if (!cardIds.has(expectedId)) errors.push(`expected card ${expectedId} is not rendered`);
+    }
+  }
+
+  if (item.inputType === 'two_value') {
+    if (!item.fields?.length) errors.push('two_value item has no rendered fields');
+    for (const field of item.fields ?? []) {
+      if (!field.id.trim() || !field.label.trim() || !firstAnswer(field.expectedAnswer).trim()) {
+        errors.push('two_value item has blank field id, label, or expected answer');
+      }
+    }
+  }
+
+  if (item.inputType === 'numeric' && !firstAnswer(item.expectedAnswer).trim()) {
+    errors.push('numeric item has no rendered expected answer');
+  }
+
+  const spec = skillCheckAnswerSpecForItem(item);
+  if (!spec) {
+    errors.push('missing checker spec');
+    return errors;
+  }
+
+  const renderedSpec = renderedAnswerSpecForItem(item, spec);
+  const submittedAnswer = renderedCorrectSubmissionForItem(item);
+  const result = checkSkillCheckAnswer({ spec: renderedSpec, submittedAnswer });
+  if (!result.isCorrect || result.unsupported) {
+    errors.push(`rendered correct submission is not accepted: ${result.reason}`);
+  }
+
+  return errors;
 }
 
 const repairStepExpectations = [
@@ -78,6 +177,51 @@ describe('P3 Skill Check machine-checkable data', () => {
     const failures = AUTHORED_SKILL_CHECK_ITEMS.flatMap((item) => (
       validateSkillCheckItemContract(item).map((error) => `${item.itemId}: ${error}`)
     ));
+
+    expect(failures).toEqual([]);
+  });
+
+  it('keeps every authored Checked Practice control answerable after rendering', () => {
+    const failures = AUTHORED_SKILL_CHECK_ITEMS.flatMap((item) => (
+      validateRenderedControl(item).map((error) => `${item.itemId}: ${error}`)
+    ));
+
+    expect(failures).toEqual([]);
+  });
+
+  it('keeps every Checked Practice support card answerable after grouping', () => {
+    const teachingSnippets = reviewedTeachingSnippets(normalizeTeachingSnippetsData(teachingSnippetsBank));
+    const generatedPractice = reviewedGeneratedPractice(normalizeGeneratedPracticeData(generatedPracticeBank));
+    const failures: string[] = [];
+
+    for (const topic of STUDY_TOPICS) {
+      const region = P3_COURSE_MAP.regions.find((candidate) => candidate.id === topic.regionId);
+      if (!region) {
+        failures.push(`${topic.slug}: missing P3 region`);
+        continue;
+      }
+
+      const groups = buildSkillChecklistTopicGroups({
+        fieldGuideTopics: getFieldGuideTopicsForRegion(region.id),
+        teachingSnippets: getTeachingSnippetsForRegion(teachingSnippets, P3_COURSE_MAP.paperFamily, region),
+        practiceItems: getGeneratedPracticeForRegion(generatedPractice, region.id, P3_COURSE_MAP.paperFamily),
+      });
+
+      for (const group of groups) {
+        for (const snippet of group.quickCheckSnippets) {
+          const check = snippet.quickCheck;
+          if (!check?.prompt.trim() || !check.answer.trim() || !check.explanation.trim()) {
+            failures.push(`${topic.slug}/${group.topic.id}/${snippet.snippetId}: quick check missing prompt, answer, or explanation`);
+          }
+        }
+
+        for (const item of group.guidedPracticeItems) {
+          if (!item.prompt.trim() || !item.answer.trim() || item.workedSolution.length === 0) {
+            failures.push(`${topic.slug}/${group.topic.id}/${item.practiceId}: guided practice missing prompt, answer, or worked solution`);
+          }
+        }
+      }
+    }
 
     expect(failures).toEqual([]);
   });
@@ -224,7 +368,7 @@ describe('P3 Skill Check machine-checkable data', () => {
 
   it('passes representative newly migrated remaining-topic checks through the deterministic answer checker', () => {
     expectAccepted('sc-trig-reciprocal-functions-core-001', '5');
-    expectAccepted('sc-trig-r-form-transformations-core-001', '$\\cos\\alpha=\\frac35$, $\\sin\\alpha=\\frac45$');
+    expectAccepted('sc-trig-r-form-transformations-core-001', '3/5, 4/5');
     expectAccepted('sc-diff-product-rule-challenge-001', '-1');
     expectAccepted('sc-diff-stationary-tangent-normal-core-001', '6');
     expectAccepted('sc-int-substitution-challenge-001', '$u=1$ to $u=2$');

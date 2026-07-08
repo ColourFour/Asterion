@@ -174,6 +174,21 @@ async function assertLearnVisualBasics(browser) {
         if (result.hasTypedControl && (!result.hasMathAnswerInput || !result.hasMathEditor || !result.mathEditorVisible || !result.hasDescribedGuidance || result.keyCount < 1)) {
           fail(`${pagePath} typed answer input is missing the standardized math editor, keyboard, or aria description at ${viewport.width}x${viewport.height}.`);
         }
+        if (result.hasTypedControl) {
+          const display = visualPage.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"] .math-editor-display').first();
+          await display.click();
+          const panelVisible = await visualPage.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"] .math-editor.is-open .math-editor-panel').first().isVisible();
+          if (!panelVisible) {
+            fail(`${pagePath} math editor keyboard did not stay open after clicking the visible editor at ${viewport.width}x${viewport.height}.`);
+          }
+          await display.press('1');
+          await display.press('2');
+          await display.press('3');
+          const typedValue = await visualPage.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"] input[name="submittedAnswer"][type="text"]').first().inputValue();
+          if (typedValue !== '123') {
+            fail(`${pagePath} math editor physical-key input must preserve order; expected "123", saw "${typedValue}" at ${viewport.width}x${viewport.height}.`);
+          }
+        }
         if (result.optionCount && result.optionMinHeight < 40) {
           fail(`${pagePath} has cramped option targets at ${viewport.width}x${viewport.height}.`);
         }

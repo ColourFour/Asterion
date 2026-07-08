@@ -443,6 +443,9 @@ const REMAINING_REGION_SKILL_CHECK_SPECS: TopicSpec[] = [
         correct: '$\\cos\\alpha=\\frac35$, $\\sin\\alpha=\\frac45$',
         distractors: ['$\\tan\\alpha=\\frac34$', '$\\tan\\alpha=\\frac53$', '$\\tan\\alpha=\\frac35$'],
         inputType: 'two_value',
+        answerType: 'multi-value',
+        acceptedAnswers: ['3/5, 4/5'],
+        orderInsensitive: false,
         fields: [
           { id: 'cos-alpha', label: 'cos alpha', expectedAnswer: ['3/5', '\\frac{3}{5}'], displayPrefix: '$\\cos\\alpha=$' },
           { id: 'sin-alpha', label: 'sin alpha', expectedAnswer: ['4/5', '\\frac{4}{5}'], displayPrefix: '$\\sin\\alpha=$' },

@@ -3966,7 +3966,7 @@
     input.value = next;
     var caret = start + insert.length + (caretOffset || 0);
     setMathEditorCaret(input, caret);
-    input.dispatchEvent(new Event('input', { bubbles: true }));
+    dispatchMathEditorInput(input);
   }
 
   function deleteFromMathEditorInput(input) {
@@ -3980,7 +3980,7 @@
       input.value = value.slice(0, start - 1) + value.slice(start);
       setMathEditorCaret(input, start - 1);
     }
-    input.dispatchEvent(new Event('input', { bubbles: true }));
+    dispatchMathEditorInput(input);
   }
 
   function moveMathEditorCaret(input, delta) {
@@ -3989,6 +3989,12 @@
     var start = mathEditorCaret(input, value);
     var next = Math.max(0, Math.min(value.length, start + delta));
     setMathEditorCaret(input, next);
+  }
+
+  function dispatchMathEditorInput(input) {
+    input.setAttribute('data-math-editor-internal-input', 'true');
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    input.removeAttribute('data-math-editor-internal-input');
   }
 
   function visualMathText(value) {
@@ -4066,28 +4072,33 @@
           button.title = buttonSpec.title || buttonSpec.label;
           button.addEventListener('click', function (event) {
             event.preventDefault();
+            event.stopPropagation();
             closeOtherMathEditors(editor);
             editor.classList.add('is-open');
-            input.focus({ preventScroll: true });
             if (buttonSpec.action === 'clear') {
               input.value = '';
               setMathEditorCaret(input, 0);
-              input.dispatchEvent(new Event('input', { bubbles: true }));
+              dispatchMathEditorInput(input);
+              display.focus({ preventScroll: true });
               return;
             }
             if (buttonSpec.action === 'backspace') {
               deleteFromMathEditorInput(input);
+              display.focus({ preventScroll: true });
               return;
             }
             if (buttonSpec.action === 'move-left') {
               moveMathEditorCaret(input, -1);
+              display.focus({ preventScroll: true });
               return;
             }
             if (buttonSpec.action === 'move-right') {
               moveMathEditorCaret(input, 1);
+              display.focus({ preventScroll: true });
               return;
             }
             insertIntoMathEditorInput(input, buttonSpec.insert || '', buttonSpec.caret || 0);
+            display.focus({ preventScroll: true });
           });
           groupElement.append(button);
         });
@@ -4102,10 +4113,12 @@
       editor.append(display, panel);
       mount.replaceChildren(editor);
 
-      display.addEventListener('click', function () {
+      display.addEventListener('click', function (event) {
+        event.preventDefault();
+        event.stopPropagation();
         closeOtherMathEditors(editor);
         editor.classList.add('is-open');
-        input.focus({ preventScroll: true });
+        display.focus({ preventScroll: true });
       });
 
       display.addEventListener('keydown', function (event) {
@@ -4129,13 +4142,18 @@
           event.preventDefault();
           closeOtherMathEditors(editor);
           editor.classList.add('is-open');
-          input.focus({ preventScroll: true });
           insertIntoMathEditorInput(input, insert, insert === 'sqrt()' ? -1 : 0);
         }
       });
 
       input.addEventListener('input', function () {
-        setMathEditorCaret(input, mathEditorCaret(input, normalizeMathEditorValue(input.value)));
+        if (input.getAttribute('data-math-editor-internal-input') !== 'true') {
+          var normalized = normalizeMathEditorValue(input.value);
+          var nextCaret = document.activeElement === input && typeof input.selectionStart === 'number'
+            ? input.selectionStart
+            : normalized.length;
+          setMathEditorCaret(input, nextCaret);
+        }
         updateMathEditorDisplay(input, display, status);
       });
 

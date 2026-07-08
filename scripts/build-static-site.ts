@@ -35,6 +35,7 @@ import { P3_COURSE_MAP } from '../src/lib/worldMap';
 import type { NormalizedQuestion, QuestionMarkPoint, QuestionPartMark, QuickCheckTwoValueField, RegionDefinition } from '../src/types';
 import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 import { answerFormatGuidance, type AnswerFormatGuidance } from '../src/lib/answerFormatGuidance';
+import type { SkillCheckAnswerSpec } from '../src/skill-checks/answerChecker';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const outputDirName = process.env.STATIC_SITE_OUTPUT_DIR ?? 'docs';
@@ -2752,6 +2753,24 @@ function answerLabelMap(item: SkillCheckItem): Record<string, string> {
   return Object.fromEntries(options.map((option) => [option.id, stripMathDelimiters(option.label)]));
 }
 
+function renderedAnswerSpecForItem(item: SkillCheckItem, spec: SkillCheckAnswerSpec): SkillCheckAnswerSpec {
+  if (!item.options?.length || !item.expectedOptionIds?.length) return spec;
+  if (item.inputType === 'checkbox') {
+    return {
+      ...spec,
+      answerType: 'multi-value',
+      acceptedAnswers: [item.expectedOptionIds.join(', ')],
+      orderMatters: false,
+    };
+  }
+  return {
+    ...spec,
+    answerType: 'exact-text',
+    acceptedAnswers: item.expectedOptionIds,
+    orderMatters: undefined,
+  };
+}
+
 function renderExpectedAnswerSummary(item: SkillCheckItem): string {
   const contract = skillCheckContractForItem(item);
   if (contract.answerType === 'single_value') {
@@ -2839,9 +2858,7 @@ function renderLearnCheckForm(
   if (!item) return '<p class="empty-state">This Learn step needs a deterministic check before it can be completed.</p>';
   const spec = skillCheckAnswerSpecForItem(item);
   if (!spec) return '<p class="empty-state">This Learn step is review only until a deterministic answer is authored.</p>';
-  const acceptedAnswers = (item.options?.length && item.expectedOptionIds?.length)
-    ? item.expectedOptionIds
-    : spec.acceptedAnswers;
+  const renderedSpec = renderedAnswerSpecForItem(item, spec);
   const isPrimary = variant === 'primary';
   const explanationText = isPrimary ? step.explanation : item.workedRoute.join(' ');
   const similarTargetId = `${step.id}-similar`;
@@ -2860,16 +2877,16 @@ function renderLearnCheckForm(
       data-question-title="${escapeAttr(item.prompt)}"
       data-learn-variant="${escapeAttr(variant)}"
       data-learn-saves-skill-pass="false"
-      data-answer-type="${escapeAttr(spec.answerType)}"
-      data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}"
+      data-answer-type="${escapeAttr(renderedSpec.answerType)}"
+      data-accepted-answers="${escapeAttr(JSON.stringify(renderedSpec.acceptedAnswers))}"
       data-answer-labels="${escapeAttr(JSON.stringify(answerLabelMap(item)))}"
       data-correct-answer-label="${escapeAttr(expectedAnswerPlainText(item))}"
       data-explanation="${escapeAttr(item.workedRoute.map(stripMathDelimiters).join(' '))}"
-      data-tolerance="${escapeAttr(spec.tolerance)}"
-      data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}"
+      data-tolerance="${escapeAttr(renderedSpec.tolerance)}"
+      data-order-matters="${renderedSpec.orderMatters === true ? 'true' : 'false'}"
       data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}"
     >
-      ${renderLearnAnswerInput(item, acceptedAnswers)}
+      ${renderLearnAnswerInput(item, renderedSpec.acceptedAnswers)}
       <div class="skill-check-actions learn-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-learn-hint>Hint</button>
@@ -3094,16 +3111,14 @@ function renderCheckableSkillCheckForm(
 ): string {
   const spec = skillCheckAnswerSpecForItem(item);
   if (!spec) return '';
-  const acceptedAnswers = (item.options?.length && item.expectedOptionIds?.length)
-    ? item.expectedOptionIds
-    : spec.acceptedAnswers;
+  const renderedSpec = renderedAnswerSpecForItem(item, spec);
   const mistakeTags = Array.from(new Set([
     ...(item.mistakeTags ?? []),
     ...SKILL_CHECK_MISTAKE_TAGS,
   ]));
   return `
-    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="${escapeAttr(spec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(acceptedAnswers))}" data-answer-labels="${escapeAttr(JSON.stringify(answerLabelMap(item)))}" data-correct-answer-label="${escapeAttr(expectedAnswerPlainText(item))}" data-explanation="${escapeAttr(item.workedRoute.map(stripMathDelimiters).join(' '))}" data-tolerance="${escapeAttr(spec.tolerance)}" data-order-matters="${spec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
-      ${renderLearnAnswerInput(item, acceptedAnswers)}
+    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="${escapeAttr(renderedSpec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(renderedSpec.acceptedAnswers))}" data-answer-labels="${escapeAttr(JSON.stringify(answerLabelMap(item)))}" data-correct-answer-label="${escapeAttr(expectedAnswerPlainText(item))}" data-explanation="${escapeAttr(item.workedRoute.map(stripMathDelimiters).join(' '))}" data-tolerance="${escapeAttr(renderedSpec.tolerance)}" data-order-matters="${renderedSpec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
+      ${renderLearnAnswerInput(item, renderedSpec.acceptedAnswers)}
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>
         <button class="button secondary-button" type="button" data-show-skill-hint>Hint</button>
