@@ -2464,11 +2464,40 @@
     return sign * coefficient * Math.PI;
   }
 
+  function parseSimpleCoefficient(value) {
+    var compact = value.replace(/^\+/, '');
+    var direct = parseDecimalNumber(compact);
+    if (direct !== undefined) return direct;
+    var fraction = compact.match(/^([+-]?\d+(?:\.\d+)?)\/([+-]?\d+(?:\.\d+)?)$/);
+    if (!fraction) return undefined;
+    var denominator = Number(fraction[2]);
+    if (denominator === 0) return undefined;
+    return Number(fraction[1]) / denominator;
+  }
+
+  function parseLogNumber(value) {
+    var compact = value.replace(/^\+/, '');
+    var log = compact.match(/^ln(?:\(([+-]?\d+(?:\.\d+)?)\)|([+-]?\d+(?:\.\d+)?))$/);
+    if (log) {
+      var argument = Number(log[1] ?? log[2]);
+      return argument > 0 ? Math.log(argument) : undefined;
+    }
+    var coefficientLog = compact.match(/^([+-]?(?:\d+(?:\.\d+)?|\d+(?:\.\d+)?\/\d+(?:\.\d+)?))\*?ln(?:\(([+-]?\d+(?:\.\d+)?)\)|([+-]?\d+(?:\.\d+)?))$/);
+    if (!coefficientLog) return undefined;
+    var coefficient = parseSimpleCoefficient(coefficientLog[1]);
+    var coefficientArgument = Number(coefficientLog[2] ?? coefficientLog[3]);
+    if (coefficient === undefined || coefficientArgument <= 0) return undefined;
+    return coefficient * Math.log(coefficientArgument);
+  }
+
   function parseNumericAtom(value) {
-    var decimal = parseDecimalNumber(value);
+    var normalized = stripBalancedOuterParentheses(value);
+    var decimal = parseDecimalNumber(normalized);
     if (decimal !== undefined) return decimal;
-    var radical = parseRadicalNumber(value);
-    return radical === undefined ? parsePiNumber(value) : radical;
+    var radical = parseRadicalNumber(normalized);
+    if (radical !== undefined) return radical;
+    var pi = parsePiNumber(normalized);
+    return pi === undefined ? parseLogNumber(normalized) : pi;
   }
 
   function parseSimpleNumber(value) {
@@ -2802,7 +2831,7 @@
     }
     if (spec.answerType === 'numeric') {
       var submittedNumber = parseSimpleNumber(trimmed);
-      if (submittedNumber === undefined) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, or simple pi form.', unsupported: false });
+      if (submittedNumber === undefined) return skillCheckResult(spec, { isCorrect: false, normalizedSubmittedAnswer: compactAnswerText(trimmed), reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, simple pi form, or simple natural-log form.', unsupported: false });
       match = spec.acceptedAnswers.find(function (accepted) {
         var acceptedNumber = parseSimpleNumber(accepted);
         return acceptedNumber !== undefined && numbersEqual(submittedNumber, acceptedNumber, tolerance);

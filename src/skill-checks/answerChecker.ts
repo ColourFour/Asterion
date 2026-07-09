@@ -130,8 +130,36 @@ function parsePiNumber(value: string): number | undefined {
   return sign * coefficient * Math.PI;
 }
 
+function parseSimpleCoefficient(value: string): number | undefined {
+  const compact = value.replace(/^\+/, '');
+  const direct = parseDecimalNumber(compact);
+  if (direct !== undefined) return direct;
+  const fraction = compact.match(/^([+-]?\d+(?:\.\d+)?)\/([+-]?\d+(?:\.\d+)?)$/);
+  if (!fraction) return undefined;
+  const denominator = Number(fraction[2]);
+  if (denominator === 0) return undefined;
+  return Number(fraction[1]) / denominator;
+}
+
+function parseLogNumber(value: string): number | undefined {
+  const compact = value.replace(/^\+/, '');
+  const log = compact.match(/^ln(?:\(([+-]?\d+(?:\.\d+)?)\)|([+-]?\d+(?:\.\d+)?))$/);
+  if (log) {
+    const argument = Number(log[1] ?? log[2]);
+    return argument > 0 ? Math.log(argument) : undefined;
+  }
+
+  const coefficientLog = compact.match(/^([+-]?(?:\d+(?:\.\d+)?|\d+(?:\.\d+)?\/\d+(?:\.\d+)?))\*?ln(?:\(([+-]?\d+(?:\.\d+)?)\)|([+-]?\d+(?:\.\d+)?))$/);
+  if (!coefficientLog) return undefined;
+  const coefficient = parseSimpleCoefficient(coefficientLog[1]);
+  const argument = Number(coefficientLog[2] ?? coefficientLog[3]);
+  if (coefficient === undefined || argument <= 0) return undefined;
+  return coefficient * Math.log(argument);
+}
+
 function parseNumericAtom(value: string): number | undefined {
-  return parseDecimalNumber(value) ?? parseRadicalNumber(value) ?? parsePiNumber(value);
+  const normalized = stripBalancedOuterParentheses(value);
+  return parseDecimalNumber(normalized) ?? parseRadicalNumber(normalized) ?? parsePiNumber(normalized) ?? parseLogNumber(normalized);
 }
 
 function parseSimpleNumber(value: string): number | undefined {
@@ -518,7 +546,7 @@ export function checkSkillCheckAnswer(input: SkillCheckAnswerCheckInput): SkillC
       return result(spec, {
         isCorrect: false,
         normalizedSubmittedAnswer: compactText(trimmedSubmitted),
-        reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, or simple pi form.',
+        reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, simple pi form, or simple natural-log form.',
         unsupported: false,
       });
     }

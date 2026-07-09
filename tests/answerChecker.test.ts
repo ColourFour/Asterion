@@ -65,7 +65,7 @@ describe('Skill Check answer checker', () => {
     });
     expect(invalid).toMatchObject({
       isCorrect: false,
-      reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, or simple pi form.',
+      reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, simple pi form, or simple natural-log form.',
       unsupported: false,
     });
   });
@@ -226,6 +226,13 @@ describe('Skill Check answer checker', () => {
     expect(reverseClosedLeft.normalizedSubmittedAnswer).toBe('(-infinity, 2]');
     expect(reverseClosedLeft.isCorrect).toBe(true);
     expect(reverseExactPiBound.isCorrect).toBe(true);
+  });
+
+  it('checks one-sided intervals with exact natural-log endpoints', () => {
+    expect(check({ answerType: 'interval', acceptedAnswers: ['x > ln7/2'] }, 'x > ln7/2').isCorrect).toBe(true);
+    expect(check({ answerType: 'interval', acceptedAnswers: ['x > ln7/2'] }, 'x > (ln7)/2').isCorrect).toBe(true);
+    expect(check({ answerType: 'interval', acceptedAnswers: ['x > ln7/2'] }, 'x > 1/2ln7').isCorrect).toBe(true);
+    expect(check({ answerType: 'interval', acceptedAnswers: ['x < ln20/ln3'] }, 'x < ln(20)/ln(3)').isCorrect).toBe(true);
   });
 
   it('fails closed for unsupported interval unions', () => {

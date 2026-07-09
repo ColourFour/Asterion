@@ -227,6 +227,32 @@ export const ANSWER_CHECKER_PARITY_CASES: AnswerCheckerParityCase[] = [
     },
   },
   {
+    name: 'one-sided interval with exact natural-log endpoint',
+    spec: { answerType: 'interval', acceptedAnswers: ['x > ln7/2'] },
+    submittedAnswer: 'x > (ln7)/2',
+    expected: {
+      isCorrect: true,
+      normalizedSubmittedAnswer: '(0.972955074528, infinity)',
+      matchedAcceptedAnswer: 'x > ln7/2',
+      reason: 'Matched interval bounds and endpoint inclusivity.',
+      answerType: 'interval',
+      unsupported: false,
+    },
+  },
+  {
+    name: 'one-sided interval with exact natural-log quotient endpoint',
+    spec: { answerType: 'interval', acceptedAnswers: ['x < ln20/ln3'] },
+    submittedAnswer: 'x < ln(20)/ln(3)',
+    expected: {
+      isCorrect: true,
+      normalizedSubmittedAnswer: '(-infinity, 2.72683302786)',
+      matchedAcceptedAnswer: 'x < ln20/ln3',
+      reason: 'Matched interval bounds and endpoint inclusivity.',
+      answerType: 'interval',
+      unsupported: false,
+    },
+  },
+  {
     name: 'complex-number answers',
     spec: { answerType: 'complex-number', acceptedAnswers: ['2 + 3i'] },
     submittedAnswer: 'z = 2+3i',
@@ -284,7 +310,7 @@ export const ANSWER_CHECKER_PARITY_CASES: AnswerCheckerParityCase[] = [
     expected: {
       isCorrect: false,
       normalizedSubmittedAnswer: 'four',
-      reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, or simple pi form.',
+      reason: 'Submitted answer is not a supported integer, decimal, simple fraction, simple radical, simple pi form, or simple natural-log form.',
       answerType: 'numeric',
       unsupported: false,
     },

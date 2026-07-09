@@ -1,0 +1,910 @@
+{
+  "generatedAt": "2026-07-09",
+  "totals": {
+    "pages": 57,
+    "answerSpecs": 501,
+    "generatedFormSubmissions": 431,
+    "answerFailures": 0,
+    "visibleInteractions": 31,
+    "visibleInteractionFailures": 0,
+    "screenshots": 88
+  },
+  "records": [
+    {
+      "index": 1,
+      "path": "index.html",
+      "label": "Course selector",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `about/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/index-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 2,
+      "path": "about/index.html",
+      "label": "About Asterion",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/about-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 3,
+      "path": "p1/index.html",
+      "label": "P1 course page",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 4,
+      "path": "p3/index.html",
+      "label": "P3 course page",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `m1/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 5,
+      "path": "m1/index.html",
+      "label": "M1 course page",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `s1/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/m1-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 6,
+      "path": "s1/index.html",
+      "label": "S1 course page",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/diagnostic/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/s1-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 7,
+      "path": "p3/diagnostic/index.html",
+      "label": "P3 diagnostic gate",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/repair-lane/index.html`.",
+      "answerSpecCount": 29,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "submitted 29 diagnostic mark points; report visible: true"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/diagnostic-page.png",
+        "after": "screenshots/p3/diagnostic-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 8,
+      "path": "p3/repair-lane/index.html",
+      "label": "P1 Review prerequisite practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/index.html`.",
+      "answerSpecCount": 41,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "submitted 41 repair answers across 5 module form(s); all feedback correct"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/repair-lane-page.png",
+        "after": "screenshots/p3/repair-lane-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 9,
+      "path": "p3/topics/index.html",
+      "label": "P3 unit sequence",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/exam-training/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 10,
+      "path": "p3/exam-training/index.html",
+      "label": "P3 Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/need-to-know/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/exam-training-page.png",
+        "after": "screenshots/p3/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 11,
+      "path": "p3/need-to-know/index.html",
+      "label": "P3 Need to Know checklist",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/review/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/need-to-know-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 12,
+      "path": "p3/review/index.html",
+      "label": "P3 final exam review",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/algebra/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "Email message prepared. The CSV is too large for a reliable email body, so download or copy the CSV shown below."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/review-page.png",
+        "after": "screenshots/p3/review-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 13,
+      "path": "p3/topics/algebra/learn/index.html",
+      "label": "P3 Algebra Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/algebra/field-guide/index.html`.",
+      "answerSpecCount": 34,
+      "generatedFormSubmissions": 34,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted 2; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/algebra/learn-page.png",
+        "after": "screenshots/p3/topics/algebra/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 14,
+      "path": "p3/topics/algebra/field-guide/index.html",
+      "label": "P3 Algebra Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/algebra/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/algebra/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 15,
+      "path": "p3/topics/algebra/skill-check/index.html",
+      "label": "P3 Algebra Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/algebra/exam-training/index.html`.",
+      "answerSpecCount": 24,
+      "generatedFormSubmissions": 24,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/algebra/skill-check-page.png",
+        "after": "screenshots/p3/topics/algebra/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 16,
+      "path": "p3/topics/algebra/exam-training/index.html",
+      "label": "P3 Algebra Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/algebra/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/algebra/exam-training-page.png",
+        "after": "screenshots/p3/topics/algebra/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 17,
+      "path": "p3/topics/algebra/worksheet/index.html",
+      "label": "P3 Algebra printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/logarithmic-and-exponential-functions/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/algebra/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 18,
+      "path": "p3/topics/logarithmic-and-exponential-functions/learn/index.html",
+      "label": "P3 Logarithmic and Exponential Functions Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/logarithmic-and-exponential-functions/field-guide/index.html`.",
+      "answerSpecCount": 34,
+      "generatedFormSubmissions": 34,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted correct; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/logarithmic-and-exponential-functions/learn-page.png",
+        "after": "screenshots/p3/topics/logarithmic-and-exponential-functions/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 19,
+      "path": "p3/topics/logarithmic-and-exponential-functions/field-guide/index.html",
+      "label": "P3 Logarithmic and Exponential Functions Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/logarithmic-and-exponential-functions/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/logarithmic-and-exponential-functions/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 20,
+      "path": "p3/topics/logarithmic-and-exponential-functions/skill-check/index.html",
+      "label": "P3 Logarithmic and Exponential Functions Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/logarithmic-and-exponential-functions/exam-training/index.html`.",
+      "answerSpecCount": 20,
+      "generatedFormSubmissions": 20,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/logarithmic-and-exponential-functions/skill-check-page.png",
+        "after": "screenshots/p3/topics/logarithmic-and-exponential-functions/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 21,
+      "path": "p3/topics/logarithmic-and-exponential-functions/exam-training/index.html",
+      "label": "P3 Logarithmic and Exponential Functions Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/logarithmic-and-exponential-functions/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/logarithmic-and-exponential-functions/exam-training-page.png",
+        "after": "screenshots/p3/topics/logarithmic-and-exponential-functions/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 22,
+      "path": "p3/topics/logarithmic-and-exponential-functions/worksheet/index.html",
+      "label": "P3 Logarithmic and Exponential Functions printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/trigonometry/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/logarithmic-and-exponential-functions/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 23,
+      "path": "p3/topics/trigonometry/learn/index.html",
+      "label": "P3 Trigonometry Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/trigonometry/field-guide/index.html`.",
+      "answerSpecCount": 28,
+      "generatedFormSubmissions": 28,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted correct; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/trigonometry/learn-page.png",
+        "after": "screenshots/p3/topics/trigonometry/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 24,
+      "path": "p3/topics/trigonometry/field-guide/index.html",
+      "label": "P3 Trigonometry Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/trigonometry/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/trigonometry/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 25,
+      "path": "p3/topics/trigonometry/skill-check/index.html",
+      "label": "P3 Trigonometry Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/trigonometry/exam-training/index.html`.",
+      "answerSpecCount": 17,
+      "generatedFormSubmissions": 17,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/trigonometry/skill-check-page.png",
+        "after": "screenshots/p3/topics/trigonometry/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 26,
+      "path": "p3/topics/trigonometry/exam-training/index.html",
+      "label": "P3 Trigonometry Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/trigonometry/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/trigonometry/exam-training-page.png",
+        "after": "screenshots/p3/topics/trigonometry/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 27,
+      "path": "p3/topics/trigonometry/worksheet/index.html",
+      "label": "P3 Trigonometry printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differentiation/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/trigonometry/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 28,
+      "path": "p3/topics/differentiation/learn/index.html",
+      "label": "P3 Differentiation Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differentiation/field-guide/index.html`.",
+      "answerSpecCount": 30,
+      "generatedFormSubmissions": 30,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted correct; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/differentiation/learn-page.png",
+        "after": "screenshots/p3/topics/differentiation/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 29,
+      "path": "p3/topics/differentiation/field-guide/index.html",
+      "label": "P3 Differentiation Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differentiation/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/differentiation/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 30,
+      "path": "p3/topics/differentiation/skill-check/index.html",
+      "label": "P3 Differentiation Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differentiation/exam-training/index.html`.",
+      "answerSpecCount": 22,
+      "generatedFormSubmissions": 22,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/differentiation/skill-check-page.png",
+        "after": "screenshots/p3/topics/differentiation/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 31,
+      "path": "p3/topics/differentiation/exam-training/index.html",
+      "label": "P3 Differentiation Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differentiation/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/differentiation/exam-training-page.png",
+        "after": "screenshots/p3/topics/differentiation/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 32,
+      "path": "p3/topics/differentiation/worksheet/index.html",
+      "label": "P3 Differentiation printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/integration/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/differentiation/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 33,
+      "path": "p3/topics/integration/learn/index.html",
+      "label": "P3 Integration Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/integration/field-guide/index.html`.",
+      "answerSpecCount": 28,
+      "generatedFormSubmissions": 28,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted correct; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/integration/learn-page.png",
+        "after": "screenshots/p3/topics/integration/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 34,
+      "path": "p3/topics/integration/field-guide/index.html",
+      "label": "P3 Integration Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/integration/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/integration/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 35,
+      "path": "p3/topics/integration/skill-check/index.html",
+      "label": "P3 Integration Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/integration/exam-training/index.html`.",
+      "answerSpecCount": 25,
+      "generatedFormSubmissions": 25,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/integration/skill-check-page.png",
+        "after": "screenshots/p3/topics/integration/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 36,
+      "path": "p3/topics/integration/exam-training/index.html",
+      "label": "P3 Integration Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/integration/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/integration/exam-training-page.png",
+        "after": "screenshots/p3/topics/integration/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 37,
+      "path": "p3/topics/integration/worksheet/index.html",
+      "label": "P3 Integration printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/numerical-solution-of-equations/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/integration/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 38,
+      "path": "p3/topics/numerical-solution-of-equations/learn/index.html",
+      "label": "P3 Numerical Solution of Equations Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/numerical-solution-of-equations/field-guide/index.html`.",
+      "answerSpecCount": 24,
+      "generatedFormSubmissions": 24,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted correct; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/numerical-solution-of-equations/learn-page.png",
+        "after": "screenshots/p3/topics/numerical-solution-of-equations/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 39,
+      "path": "p3/topics/numerical-solution-of-equations/field-guide/index.html",
+      "label": "P3 Numerical Solution of Equations Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/numerical-solution-of-equations/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/numerical-solution-of-equations/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 40,
+      "path": "p3/topics/numerical-solution-of-equations/skill-check/index.html",
+      "label": "P3 Numerical Solution of Equations Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/numerical-solution-of-equations/exam-training/index.html`.",
+      "answerSpecCount": 12,
+      "generatedFormSubmissions": 12,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/numerical-solution-of-equations/skill-check-page.png",
+        "after": "screenshots/p3/topics/numerical-solution-of-equations/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 41,
+      "path": "p3/topics/numerical-solution-of-equations/exam-training/index.html",
+      "label": "P3 Numerical Solution of Equations Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/numerical-solution-of-equations/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/numerical-solution-of-equations/exam-training-page.png",
+        "after": "screenshots/p3/topics/numerical-solution-of-equations/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 42,
+      "path": "p3/topics/numerical-solution-of-equations/worksheet/index.html",
+      "label": "P3 Numerical Solution of Equations printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/vectors/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/numerical-solution-of-equations/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 43,
+      "path": "p3/topics/vectors/learn/index.html",
+      "label": "P3 Vectors Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/vectors/field-guide/index.html`.",
+      "answerSpecCount": 24,
+      "generatedFormSubmissions": 24,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted (2,-3,4); Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/vectors/learn-page.png",
+        "after": "screenshots/p3/topics/vectors/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 44,
+      "path": "p3/topics/vectors/field-guide/index.html",
+      "label": "P3 Vectors Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/vectors/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/vectors/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 45,
+      "path": "p3/topics/vectors/skill-check/index.html",
+      "label": "P3 Vectors Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/vectors/exam-training/index.html`.",
+      "answerSpecCount": 25,
+      "generatedFormSubmissions": 25,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/vectors/skill-check-page.png",
+        "after": "screenshots/p3/topics/vectors/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 46,
+      "path": "p3/topics/vectors/exam-training/index.html",
+      "label": "P3 Vectors Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/vectors/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/vectors/exam-training-page.png",
+        "after": "screenshots/p3/topics/vectors/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 47,
+      "path": "p3/topics/vectors/worksheet/index.html",
+      "label": "P3 Vectors printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differential-equations/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/vectors/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 48,
+      "path": "p3/topics/differential-equations/learn/index.html",
+      "label": "P3 Differential Equations Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differential-equations/field-guide/index.html`.",
+      "answerSpecCount": 24,
+      "generatedFormSubmissions": 24,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted correct; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/differential-equations/learn-page.png",
+        "after": "screenshots/p3/topics/differential-equations/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 49,
+      "path": "p3/topics/differential-equations/field-guide/index.html",
+      "label": "P3 Differential Equations Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differential-equations/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/differential-equations/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 50,
+      "path": "p3/topics/differential-equations/skill-check/index.html",
+      "label": "P3 Differential Equations Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differential-equations/exam-training/index.html`.",
+      "answerSpecCount": 12,
+      "generatedFormSubmissions": 12,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/differential-equations/skill-check-page.png",
+        "after": "screenshots/p3/topics/differential-equations/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 51,
+      "path": "p3/topics/differential-equations/exam-training/index.html",
+      "label": "P3 Differential Equations Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/differential-equations/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/differential-equations/exam-training-page.png",
+        "after": "screenshots/p3/topics/differential-equations/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 52,
+      "path": "p3/topics/differential-equations/worksheet/index.html",
+      "label": "P3 Differential Equations printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/complex-numbers/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/differential-equations/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 53,
+      "path": "p3/topics/complex-numbers/learn/index.html",
+      "label": "P3 Complex Numbers Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/complex-numbers/field-guide/index.html`.",
+      "answerSpecCount": 34,
+      "generatedFormSubmissions": 34,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Learn check: submitted correct; Correct. Primary step checked; complete the similar question before this lesson step is finished."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/complex-numbers/learn-page.png",
+        "after": "screenshots/p3/topics/complex-numbers/learn-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 54,
+      "path": "p3/topics/complex-numbers/field-guide/index.html",
+      "label": "P3 Complex Numbers Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/complex-numbers/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/complex-numbers/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 55,
+      "path": "p3/topics/complex-numbers/skill-check/index.html",
+      "label": "P3 Complex Numbers Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/complex-numbers/exam-training/index.html`.",
+      "answerSpecCount": 14,
+      "generatedFormSubmissions": 14,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/complex-numbers/skill-check-page.png",
+        "after": "screenshots/p3/topics/complex-numbers/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 56,
+      "path": "p3/topics/complex-numbers/exam-training/index.html",
+      "label": "P3 Complex Numbers Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/complex-numbers/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "opened first mark-scheme reveal"
+      },
+      "screenshots": {
+        "page": "screenshots/p3/topics/complex-numbers/exam-training-page.png",
+        "after": "screenshots/p3/topics/complex-numbers/exam-training-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 57,
+      "path": "p3/topics/complex-numbers/worksheet/index.html",
+      "label": "P3 Complex Numbers printable Checked Practice worksheet",
+      "actionSummary": "Visited final page and checked deterministic answers.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p3/topics/complex-numbers/worksheet-page.png"
+      },
+      "notes": []
+    }
+  ]
+}

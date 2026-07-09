@@ -7,6 +7,8 @@
     "dev": "npm run build && npm run preview",
     "build": "npm run assets:sync && tsc -b && vite-node scripts/build-static-site.ts",
     "static:check": "node scripts/check-static-site.mjs && node scripts/check-rendered-static-site.mjs && node scripts/audit-static-page-interactions.mjs && node scripts/check-skill-check-interactions.mjs",
+    "static:review": "node scripts/full-static-review.mjs",
+    "static:walkthrough": "node scripts/student-path-walkthrough.mjs",
     "improve:units": "node scripts/run-unit-improvement-loop.mjs",
     "assets:sync": "node scripts/sync-exam-bank-assets.mjs",
     "preview": "vite preview --outDir docs",
