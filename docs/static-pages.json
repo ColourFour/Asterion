@@ -3,7 +3,7 @@
   "pages": [
     {
       "path": "index.html",
-      "label": "Course selector"
+      "label": "P3 landing / gated P1-P3 chooser"
     },
     {
       "path": "about/index.html",
@@ -31,7 +31,7 @@
     },
     {
       "path": "p3/repair-lane/index.html",
-      "label": "P1 Review prerequisite practice"
+      "label": "P3 Foundation Review prerequisite practice"
     },
     {
       "path": "p3/topics/index.html",
@@ -228,6 +228,190 @@
     {
       "path": "p3/topics/complex-numbers/worksheet/index.html",
       "label": "P3 Complex Numbers printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/diagnostic/index.html",
+      "label": "P1 optional Starting Check"
+    },
+    {
+      "path": "p1/topics/index.html",
+      "label": "P1 unit sequence"
+    },
+    {
+      "path": "p1/exam-training/index.html",
+      "label": "P1 Exam Training"
+    },
+    {
+      "path": "p1/need-to-know/index.html",
+      "label": "P1 Need to Know checklist"
+    },
+    {
+      "path": "p1/review/index.html",
+      "label": "P1 review and export"
+    },
+    {
+      "path": "p1/content-qa/index.html",
+      "label": "P1 internal Content QA"
+    },
+    {
+      "path": "p1/topics/quadratics/learn/index.html",
+      "label": "P1 Quadratics Learn"
+    },
+    {
+      "path": "p1/topics/quadratics/field-guide/index.html",
+      "label": "P1 Quadratics Learn bridge"
+    },
+    {
+      "path": "p1/topics/quadratics/skill-check/index.html",
+      "label": "P1 Quadratics Checked Practice"
+    },
+    {
+      "path": "p1/topics/quadratics/exam-training/index.html",
+      "label": "P1 Quadratics Exam Training"
+    },
+    {
+      "path": "p1/topics/quadratics/worksheet/index.html",
+      "label": "P1 Quadratics printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/topics/functions/learn/index.html",
+      "label": "P1 Functions Learn"
+    },
+    {
+      "path": "p1/topics/functions/field-guide/index.html",
+      "label": "P1 Functions Learn bridge"
+    },
+    {
+      "path": "p1/topics/functions/skill-check/index.html",
+      "label": "P1 Functions Checked Practice"
+    },
+    {
+      "path": "p1/topics/functions/exam-training/index.html",
+      "label": "P1 Functions Exam Training"
+    },
+    {
+      "path": "p1/topics/functions/worksheet/index.html",
+      "label": "P1 Functions printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/learn/index.html",
+      "label": "P1 Coordinate geometry Learn"
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/field-guide/index.html",
+      "label": "P1 Coordinate geometry Learn bridge"
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/skill-check/index.html",
+      "label": "P1 Coordinate geometry Checked Practice"
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/exam-training/index.html",
+      "label": "P1 Coordinate geometry Exam Training"
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/worksheet/index.html",
+      "label": "P1 Coordinate geometry printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/topics/circular-measure/learn/index.html",
+      "label": "P1 Circular measure Learn"
+    },
+    {
+      "path": "p1/topics/circular-measure/field-guide/index.html",
+      "label": "P1 Circular measure Learn bridge"
+    },
+    {
+      "path": "p1/topics/circular-measure/skill-check/index.html",
+      "label": "P1 Circular measure Checked Practice"
+    },
+    {
+      "path": "p1/topics/circular-measure/exam-training/index.html",
+      "label": "P1 Circular measure Exam Training"
+    },
+    {
+      "path": "p1/topics/circular-measure/worksheet/index.html",
+      "label": "P1 Circular measure printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/topics/trigonometry/learn/index.html",
+      "label": "P1 Trigonometry Learn"
+    },
+    {
+      "path": "p1/topics/trigonometry/field-guide/index.html",
+      "label": "P1 Trigonometry Learn bridge"
+    },
+    {
+      "path": "p1/topics/trigonometry/skill-check/index.html",
+      "label": "P1 Trigonometry Checked Practice"
+    },
+    {
+      "path": "p1/topics/trigonometry/exam-training/index.html",
+      "label": "P1 Trigonometry Exam Training"
+    },
+    {
+      "path": "p1/topics/trigonometry/worksheet/index.html",
+      "label": "P1 Trigonometry printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/topics/series/learn/index.html",
+      "label": "P1 Series Learn"
+    },
+    {
+      "path": "p1/topics/series/field-guide/index.html",
+      "label": "P1 Series Learn bridge"
+    },
+    {
+      "path": "p1/topics/series/skill-check/index.html",
+      "label": "P1 Series Checked Practice"
+    },
+    {
+      "path": "p1/topics/series/exam-training/index.html",
+      "label": "P1 Series Exam Training"
+    },
+    {
+      "path": "p1/topics/series/worksheet/index.html",
+      "label": "P1 Series printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/topics/differentiation/learn/index.html",
+      "label": "P1 Differentiation Learn"
+    },
+    {
+      "path": "p1/topics/differentiation/field-guide/index.html",
+      "label": "P1 Differentiation Learn bridge"
+    },
+    {
+      "path": "p1/topics/differentiation/skill-check/index.html",
+      "label": "P1 Differentiation Checked Practice"
+    },
+    {
+      "path": "p1/topics/differentiation/exam-training/index.html",
+      "label": "P1 Differentiation Exam Training"
+    },
+    {
+      "path": "p1/topics/differentiation/worksheet/index.html",
+      "label": "P1 Differentiation printable Checked Practice worksheet"
+    },
+    {
+      "path": "p1/topics/integration/learn/index.html",
+      "label": "P1 Integration Learn"
+    },
+    {
+      "path": "p1/topics/integration/field-guide/index.html",
+      "label": "P1 Integration Learn bridge"
+    },
+    {
+      "path": "p1/topics/integration/skill-check/index.html",
+      "label": "P1 Integration Checked Practice"
+    },
+    {
+      "path": "p1/topics/integration/exam-training/index.html",
+      "label": "P1 Integration Exam Training"
+    },
+    {
+      "path": "p1/topics/integration/worksheet/index.html",
+      "label": "P1 Integration printable Checked Practice worksheet"
     }
   ],
   "questionCount": 72,

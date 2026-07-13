@@ -1,14 +1,14 @@
 {
   "generatedAt": "2026-07-09",
   "docsManifest": "static-pages.json",
-  "pageCount": 57,
+  "pageCount": 103,
   "brokenLinks": [],
   "criticalFindings": [],
   "warnings": [],
   "pages": [
     {
       "path": "index.html",
-      "label": "Course selector",
+      "label": "P3 landing / gated P1-P3 chooser",
       "screenshots": [
         {
           "viewport": "desktop",
@@ -152,16 +152,27 @@
           "enhanced": true,
           "consoleErrors": [],
           "pageErrors": [],
-          "title": "P1: Pure Mathematics 1 | Asterion Study",
-          "h1": "P1: Pure Mathematics 1",
+          "title": "Pure Mathematics 1 | Asterion Study",
+          "h1": "Pure Mathematics 1",
           "visibleImageFailures": [],
           "imageSources": [],
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 1,
+          "visibleMainActionCount": 62,
           "visibleMainActions": [
-            "Back to P3"
+            "Start optional check",
+            "Skip and start Quadratics",
+            "Need to Know",
+            "Exam Training",
+            "Review / export",
+            "Content QA",
+            "Start Quadratics Learn",
+            "Already confident? Try Checked Practice",
+            "Direct routes",
+            "Learn",
+            "Checked Practice",
+            "Exam Training"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -174,16 +185,27 @@
           "enhanced": true,
           "consoleErrors": [],
           "pageErrors": [],
-          "title": "P1: Pure Mathematics 1 | Asterion Study",
-          "h1": "P1: Pure Mathematics 1",
+          "title": "Pure Mathematics 1 | Asterion Study",
+          "h1": "Pure Mathematics 1",
           "visibleImageFailures": [],
           "imageSources": [],
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 1,
+          "visibleMainActionCount": 62,
           "visibleMainActions": [
-            "Back to P3"
+            "Start optional check",
+            "Skip and start Quadratics",
+            "Need to Know",
+            "Exam Training",
+            "Review / export",
+            "Content QA",
+            "Start Quadratics Learn",
+            "Already confident? Try Checked Practice",
+            "Direct routes",
+            "Learn",
+            "Checked Practice",
+            "Exam Training"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -689,7 +711,7 @@
     },
     {
       "path": "p3/repair-lane/index.html",
-      "label": "P1 Review prerequisite practice",
+      "label": "P3 Foundation Review prerequisite practice",
       "screenshots": [
         {
           "viewport": "desktop",
@@ -697,8 +719,8 @@
           "enhanced": true,
           "consoleErrors": [],
           "pageErrors": [],
-          "title": "P1 Review | Asterion Study",
-          "h1": "P1 Review",
+          "title": "P3 Foundation Review | Asterion Study",
+          "h1": "P3 Foundation Review",
           "visibleImageFailures": [],
           "imageSources": [],
           "horizontalOverflow": false,
@@ -726,8 +748,8 @@
           "enhanced": true,
           "consoleErrors": [],
           "pageErrors": [],
-          "title": "P1 Review | Asterion Study",
-          "h1": "P1 Review",
+          "title": "P3 Foundation Review | Asterion Study",
+          "h1": "P3 Foundation Review",
           "visibleImageFailures": [],
           "imageSources": [],
           "horizontalOverflow": false,
@@ -8958,6 +8980,3751 @@
             "Locus",
             "Roots",
             "Next group"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/diagnostic/index.html",
+      "label": "P1 optional Starting Check",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/diagnostic.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Starting Check | Asterion Study",
+          "h1": "P1 Starting Check",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 5,
+          "visibleMainActions": [
+            "Skip and start Quadratics",
+            "Choose another topic",
+            "Next Question",
+            "Show suggested starting topics",
+            "Retake"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/diagnostic.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Starting Check | Asterion Study",
+          "h1": "P1 Starting Check",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 5,
+          "visibleMainActions": [
+            "Skip and start Quadratics",
+            "Choose another topic",
+            "Next Question",
+            "Show suggested starting topics",
+            "Retake"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/index.html",
+      "label": "P1 unit sequence",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Topic Overview | Asterion Study",
+          "h1": "P1 Topic Overview",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 57,
+          "visibleMainActions": [
+            "Optional Starting Check",
+            "Start Quadratics Learn",
+            "Already confident? Try Checked Practice",
+            "Direct routes",
+            "Learn",
+            "Checked Practice",
+            "Exam Training",
+            "Worksheet",
+            "Start Functions Learn",
+            "Already confident? Try Checked Practice",
+            "Direct routes",
+            "Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Topic Overview | Asterion Study",
+          "h1": "P1 Topic Overview",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 57,
+          "visibleMainActions": [
+            "Optional Starting Check",
+            "Start Quadratics Learn",
+            "Already confident? Try Checked Practice",
+            "Direct routes",
+            "Learn",
+            "Checked Practice",
+            "Exam Training",
+            "Worksheet",
+            "Start Functions Learn",
+            "Already confident? Try Checked Practice",
+            "Direct routes",
+            "Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/exam-training/index.html",
+      "label": "P1 Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Exam Training | Asterion Study",
+          "h1": "P1 Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Back to P1 units",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Exam Training | Asterion Study",
+          "h1": "P1 Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Back to P1 units",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training",
+            "Open topic Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/need-to-know/index.html",
+      "label": "P1 Need to Know checklist",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/need-to-know.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Need to Know | Asterion Study",
+          "h1": "P1 Need to Know",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 88,
+          "visibleMainActions": [
+            "Open P1 units",
+            "Notation rules",
+            "Formula scope",
+            "Explicit exclusions",
+            "1.1Quadratics5 atomic skills",
+            "Learn",
+            "Checked Practice",
+            "Learn",
+            "Checked Practice",
+            "Learn",
+            "Checked Practice",
+            "Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/need-to-know.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Need to Know | Asterion Study",
+          "h1": "P1 Need to Know",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 88,
+          "visibleMainActions": [
+            "Open P1 units",
+            "Notation rules",
+            "Formula scope",
+            "Explicit exclusions",
+            "1.1Quadratics5 atomic skills",
+            "Learn",
+            "Checked Practice",
+            "Learn",
+            "Checked Practice",
+            "Learn",
+            "Checked Practice",
+            "Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/review/index.html",
+      "label": "P1 review and export",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/review.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Review and Export | Asterion Study",
+          "h1": "P1 Review and Export",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 4,
+          "visibleMainActions": [
+            "Need to Know",
+            "Back to P1",
+            "Download CSV",
+            "Open Email"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/review.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Review and Export | Asterion Study",
+          "h1": "P1 Review and Export",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 4,
+          "visibleMainActions": [
+            "Need to Know",
+            "Back to P1",
+            "Download CSV",
+            "Open Email"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/review/index.html",
+          "surface": "Progress export submit",
+          "ok": true,
+          "message": "Email message prepared. The CSV is too large for a reliable email body, so download or copy the CSV shown below."
+        }
+      ]
+    },
+    {
+      "path": "p1/content-qa/index.html",
+      "label": "P1 internal Content QA",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/content-qa.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Content QA | Asterion Study",
+          "h1": "P1 Content QA",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 1,
+          "visibleMainActions": [
+            "Back to P1"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/content-qa.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "P1 Content QA | Asterion Study",
+          "h1": "P1 Content QA",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 1,
+          "visibleMainActions": [
+            "Back to P1"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/quadratics/learn/index.html",
+      "label": "P1 Quadratics Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/quadratics/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics — Learn | Asterion Study",
+          "h1": "Unit 1: Quadratics Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/quadratics/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics — Learn | Asterion Study",
+          "h1": "Unit 1: Quadratics Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/quadratics/field-guide/index.html",
+      "label": "P1 Quadratics Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/quadratics/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics — Learn | Asterion Study",
+          "h1": "Quadratics — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/quadratics/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics — Learn | Asterion Study",
+          "h1": "Quadratics — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/quadratics/skill-check/index.html",
+      "label": "P1 Quadratics Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/quadratics/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics Checked Practice | Asterion Study",
+          "h1": "Unit 1: Quadratics Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Functions Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/quadratics/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics Checked Practice | Asterion Study",
+          "h1": "Unit 1: Quadratics Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Functions Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 10,
+        "checks": [
+          {
+            "id": "p1_quad_complete_square::What is the vertex of $y=(x+2)^2-5$?::exact-text::correct",
+            "label": "What is the vertex of $y=(x+2)^2-5$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_complete_square::Write $2x^2+8x+3$ in completed-square form.::exact-text::correct",
+            "label": "Write $2x^2+8x+3$ in completed-square form.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_discriminant::How many real roots does $x^2+2x+5=0$ have?::exact-text::correct",
+            "label": "How many real roots does $x^2+2x+5=0$ have?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_discriminant::Classify the roots of $x^2-6x+9=0$.::exact-text::correct",
+            "label": "Classify the roots of $x^2-6x+9=0$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_equations_inequalities::Solve $x^2-5x+6\\ge0$.::exact-text::correct",
+            "label": "Solve $x^2-5x+6\\ge0$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_equations_inequalities::Solve $x^2+x-2<0$.::exact-text::correct",
+            "label": "Solve $x^2+x-2<0$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_simultaneous::If $y=2x$ and $x^2+y=3$, which pair is a solution?::exact-text::correct",
+            "label": "If $y=2x$ and $x^2+y=3$, which pair is a solution?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_simultaneous::Which ordered pair solves both $y=x$ and $x^2+y=2$?::exact-text::correct",
+            "label": "Which ordered pair solves both $y=x$ and $x^2+y=2$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_substitution_forms::Which substitution simplifies $(x+1)^2-5(x+1)+6=0$?::exact-text::correct",
+            "label": "Which substitution simplifies $(x+1)^2-5(x+1)+6=0$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_substitution_forms::Solve $x^4-10x^2+9=0$.::exact-text::correct",
+            "label": "Solve $x^4-10x^2+9=0$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/quadratics/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/quadratics/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/quadratics/exam-training/index.html",
+      "label": "P1 Quadratics Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/quadratics/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics — Exam Training | Asterion Study",
+          "h1": "Quadratics — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/quadratics/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics — Exam Training | Asterion Study",
+          "h1": "Quadratics — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/quadratics/worksheet/index.html",
+      "label": "P1 Quadratics printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/quadratics/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics Worksheet | Asterion Study",
+          "h1": "Quadratics Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/quadratics/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Quadratics Worksheet | Asterion Study",
+          "h1": "Quadratics Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/functions/learn/index.html",
+      "label": "P1 Functions Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/functions/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions — Learn | Asterion Study",
+          "h1": "Unit 2: Functions Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/functions/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions — Learn | Asterion Study",
+          "h1": "Unit 2: Functions Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/functions/field-guide/index.html",
+      "label": "P1 Functions Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/functions/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions — Learn | Asterion Study",
+          "h1": "Functions — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/functions/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions — Learn | Asterion Study",
+          "h1": "Functions — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/functions/skill-check/index.html",
+      "label": "P1 Functions Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/functions/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions Checked Practice | Asterion Study",
+          "h1": "Unit 2: Functions Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Coordinate geometry Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/functions/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions Checked Practice | Asterion Study",
+          "h1": "Unit 2: Functions Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Coordinate geometry Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 10,
+        "checks": [
+          {
+            "id": "p1_func_language_domain_range::What is the domain of $f(x)=1/(x-3)$?::exact-text::correct",
+            "label": "What is the domain of $f(x)=1/(x-3)$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_language_domain_range::What is the range of $f(x)=(x-1)^2+4$ for real x?::exact-text::correct",
+            "label": "What is the range of $f(x)=(x-1)^2+4$ for real x?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_composition::For the same f and g, what is $fg(x)$?::exact-text::correct",
+            "label": "For the same f and g, what is $fg(x)$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_composition::For $f(x)=2x+1$ and $g(x)=x-3$, find $gf(x)$.::exact-text::correct",
+            "label": "For $f(x)=2x+1$ and $g(x)=x-3$, find $gf(x)$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_one_one_inverse::Which restriction makes $f(x)=x^2$ one-one?::exact-text::correct",
+            "label": "Which restriction makes $f(x)=x^2$ one-one?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_one_one_inverse::Find the inverse of $f(x)=2x+5$.::exact-text::correct",
+            "label": "Find the inverse of $f(x)=2x+5$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_inverse_graphs::Which line is the mirror line between f and $f^{-1}$?::exact-text::correct",
+            "label": "Which line is the mirror line between f and $f^{-1}$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_inverse_graphs::The graph of f contains $(-1,4)$. Which point lies on $f^{-1}$?::exact-text::correct",
+            "label": "The graph of f contains $(-1,4)$. Which point lies on $f^{-1}$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_transformations::What does $y=f(2x)$ do horizontally?::exact-text::correct",
+            "label": "What does $y=f(2x)$ do horizontally?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_transformations::Describe the transformation from $y=f(x)$ to $y=f(x)+5$.::exact-text::correct",
+            "label": "Describe the transformation from $y=f(x)$ to $y=f(x)+5$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/functions/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/functions/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/functions/exam-training/index.html",
+      "label": "P1 Functions Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/functions/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions — Exam Training | Asterion Study",
+          "h1": "Functions — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/functions/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions — Exam Training | Asterion Study",
+          "h1": "Functions — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/functions/worksheet/index.html",
+      "label": "P1 Functions printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/functions/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions Worksheet | Asterion Study",
+          "h1": "Functions Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/functions/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Functions Worksheet | Asterion Study",
+          "h1": "Functions Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/learn/index.html",
+      "label": "P1 Coordinate geometry Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/coordinate-geometry/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry — Learn | Asterion Study",
+          "h1": "Unit 3: Coordinate geometry Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/coordinate-geometry/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry — Learn | Asterion Study",
+          "h1": "Unit 3: Coordinate geometry Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/field-guide/index.html",
+      "label": "P1 Coordinate geometry Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/coordinate-geometry/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry — Learn | Asterion Study",
+          "h1": "Coordinate geometry — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/coordinate-geometry/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry — Learn | Asterion Study",
+          "h1": "Coordinate geometry — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/skill-check/index.html",
+      "label": "P1 Coordinate geometry Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/coordinate-geometry/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry Checked Practice | Asterion Study",
+          "h1": "Unit 3: Coordinate geometry Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Circular measure Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/coordinate-geometry/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry Checked Practice | Asterion Study",
+          "h1": "Unit 3: Coordinate geometry Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Circular measure Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 10,
+        "checks": [
+          {
+            "id": "p1_coord_line_equations::Which line passes through $(1,-2)$ with gradient 3?::exact-text::correct",
+            "label": "Which line passes through $(1,-2)$ with gradient 3?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_equations::Find the line through $(-1,2)$ with gradient $-2$.::exact-text::correct",
+            "label": "Find the line through $(-1,2)$ with gradient $-2$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_relationships::What is the midpoint of $(2,5)$ and $(8,-1)$?::exact-text::correct",
+            "label": "What is the midpoint of $(2,5)$ and $(8,-1)$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_relationships::What gradient is perpendicular to a line with gradient $-1/4$?::exact-text::correct",
+            "label": "What gradient is perpendicular to a line with gradient $-1/4$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_circle_equations::What is the centre of $x^2+y^2+6x-4y=0$?::exact-text::correct",
+            "label": "What is the centre of $x^2+y^2+6x-4y=0$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_circle_equations::State the centre and radius of $(x+4)^2+(y-3)^2=25$.::exact-text::correct",
+            "label": "State the centre and radius of $(x+4)^2+(y-3)^2=25$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_circle_problems::How many intersections does a tangent line have with a circle?::exact-text::correct",
+            "label": "How many intersections does a tangent line have with a circle?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_circle_problems::A radius has gradient $-3$ at contact. What is the tangent gradient?::exact-text::correct",
+            "label": "A radius has gradient $-3$ at contact. What is the tangent gradient?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_graph_intersections::What condition means two graphs do not meet in real coordinates?::exact-text::correct",
+            "label": "What condition means two graphs do not meet in real coordinates?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_graph_intersections::Which discriminant condition means a line crosses a quadratic curve at two points?::exact-text::correct",
+            "label": "Which discriminant condition means a line crosses a quadratic curve at two points?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/coordinate-geometry/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/coordinate-geometry/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/exam-training/index.html",
+      "label": "P1 Coordinate geometry Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/coordinate-geometry/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry — Exam Training | Asterion Study",
+          "h1": "Coordinate geometry — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/coordinate-geometry/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry — Exam Training | Asterion Study",
+          "h1": "Coordinate geometry — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/coordinate-geometry/worksheet/index.html",
+      "label": "P1 Coordinate geometry printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/coordinate-geometry/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry Worksheet | Asterion Study",
+          "h1": "Coordinate geometry Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/coordinate-geometry/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Coordinate geometry Worksheet | Asterion Study",
+          "h1": "Coordinate geometry Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/circular-measure/learn/index.html",
+      "label": "P1 Circular measure Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/circular-measure/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure — Learn | Asterion Study",
+          "h1": "Unit 4: Circular measure Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 7,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/circular-measure/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure — Learn | Asterion Study",
+          "h1": "Unit 4: Circular measure Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 7,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/circular-measure/field-guide/index.html",
+      "label": "P1 Circular measure Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/circular-measure/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure — Learn | Asterion Study",
+          "h1": "Circular measure — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/circular-measure/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure — Learn | Asterion Study",
+          "h1": "Circular measure — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/circular-measure/skill-check/index.html",
+      "label": "P1 Circular measure Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/circular-measure/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure Checked Practice | Asterion Study",
+          "h1": "Unit 4: Circular measure Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 8,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Trigonometry Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/circular-measure/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure Checked Practice | Asterion Study",
+          "h1": "Unit 4: Circular measure Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 8,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Trigonometry Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 6,
+        "checks": [
+          {
+            "id": "p1_circ_radians_degrees::Convert $2\\pi/3$ radians to degrees.::exact-text::correct",
+            "label": "Convert $2\\pi/3$ radians to degrees.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_radians_degrees::Convert $225^\\circ$ to radians.::exact-text::correct",
+            "label": "Convert $225^\\circ$ to radians.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_arc_sector::Find the sector area for $r=4$ and $\\theta=\\pi/2$.::exact-text::correct",
+            "label": "Find the sector area for $r=4$ and $\\theta=\\pi/2$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_arc_sector::Find the sector area when $r=3$ and $\\theta=2$ radians.::exact-text::correct",
+            "label": "Find the sector area when $r=3$ and $\\theta=2$ radians.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_composite_geometry::A sector perimeter contains which lengths?::exact-text::correct",
+            "label": "A sector perimeter contains which lengths?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_composite_geometry::Which calculation gives the area of a minor circular segment?::exact-text::correct",
+            "label": "Which calculation gives the area of a minor circular segment?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/circular-measure/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/circular-measure/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/circular-measure/exam-training/index.html",
+      "label": "P1 Circular measure Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/circular-measure/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure — Exam Training | Asterion Study",
+          "h1": "Circular measure — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/circular-measure/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure — Exam Training | Asterion Study",
+          "h1": "Circular measure — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/circular-measure/worksheet/index.html",
+      "label": "P1 Circular measure printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/circular-measure/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure Worksheet | Asterion Study",
+          "h1": "Circular measure Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/circular-measure/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Circular measure Worksheet | Asterion Study",
+          "h1": "Circular measure Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/trigonometry/learn/index.html",
+      "label": "P1 Trigonometry Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/trigonometry/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry — Learn | Asterion Study",
+          "h1": "Unit 5: Trigonometry Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/trigonometry/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry — Learn | Asterion Study",
+          "h1": "Unit 5: Trigonometry Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/trigonometry/field-guide/index.html",
+      "label": "P1 Trigonometry Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/trigonometry/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry — Learn | Asterion Study",
+          "h1": "Trigonometry — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/trigonometry/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry — Learn | Asterion Study",
+          "h1": "Trigonometry — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/trigonometry/skill-check/index.html",
+      "label": "P1 Trigonometry Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/trigonometry/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry Checked Practice | Asterion Study",
+          "h1": "Unit 5: Trigonometry Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Series Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/trigonometry/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry Checked Practice | Asterion Study",
+          "h1": "Unit 5: Trigonometry Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Series Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 10,
+        "checks": [
+          {
+            "id": "p1_trig_graphs::What is the period of $y=\\cos 3x$?::exact-text::correct",
+            "label": "What is the period of $y=\\cos 3x$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_graphs::What is the period of $y=\\sin(x/2)$?::exact-text::correct",
+            "label": "What is the period of $y=\\sin(x/2)$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_exact_values::What is $\\sin225^\\circ$?::exact-text::correct",
+            "label": "What is $\\sin225^\\circ$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_exact_values::Find the exact value of $\\cos240^\\circ$.::exact-text::correct",
+            "label": "Find the exact value of $\\cos240^\\circ$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_inverse_principal::What is the principal value of $\\cos^{-1}(-1)$?::exact-text::correct",
+            "label": "What is the principal value of $\\cos^{-1}(-1)$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_inverse_principal::Find the principal value of $\\tan^{-1}(1)$ in degrees.::exact-text::correct",
+            "label": "Find the principal value of $\\tan^{-1}(1)$ in degrees.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_identities::Which expression equals $\\tan x\\cos x$?::exact-text::correct",
+            "label": "Which expression equals $\\tan x\\cos x$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_identities::Simplify $\\sin^2x/(1-\\cos^2x)$ where defined.::exact-text::correct",
+            "label": "Simplify $\\sin^2x/(1-\\cos^2x)$ where defined.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_equations_intervals::Solve $\\cos x=-1$ for $0^\\circ\\le x\\le360^\\circ$.::exact-text::correct",
+            "label": "Solve $\\cos x=-1$ for $0^\\circ\\le x\\le360^\\circ$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_equations_intervals::Solve $\\tan x=0$ for $0^\\circ\\le x\\le360^\\circ$.::exact-text::correct",
+            "label": "Solve $\\tan x=0$ for $0^\\circ\\le x\\le360^\\circ$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/trigonometry/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/trigonometry/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/trigonometry/exam-training/index.html",
+      "label": "P1 Trigonometry Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/trigonometry/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry — Exam Training | Asterion Study",
+          "h1": "Trigonometry — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/trigonometry/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry — Exam Training | Asterion Study",
+          "h1": "Trigonometry — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/trigonometry/worksheet/index.html",
+      "label": "P1 Trigonometry printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/trigonometry/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry Worksheet | Asterion Study",
+          "h1": "Trigonometry Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/trigonometry/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Trigonometry Worksheet | Asterion Study",
+          "h1": "Trigonometry Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/series/learn/index.html",
+      "label": "P1 Series Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/series/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series — Learn | Asterion Study",
+          "h1": "Unit 6: Series Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 8,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/series/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series — Learn | Asterion Study",
+          "h1": "Unit 6: Series Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 8,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/series/field-guide/index.html",
+      "label": "P1 Series Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/series/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series — Learn | Asterion Study",
+          "h1": "Series — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/series/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series — Learn | Asterion Study",
+          "h1": "Series — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/series/skill-check/index.html",
+      "label": "P1 Series Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/series/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series Checked Practice | Asterion Study",
+          "h1": "Unit 6: Series Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 10,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Differentiation Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/series/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series Checked Practice | Asterion Study",
+          "h1": "Unit 6: Series Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 10,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Start Differentiation Learn"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 8,
+        "checks": [
+          {
+            "id": "p1_series_binomial::What is the coefficient of $x^2$ in $(1+x)^5$?::exact-text::correct",
+            "label": "What is the coefficient of $x^2$ in $(1+x)^5$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_binomial::Find the coefficient of $x^3$ in $(2+x)^4$.::exact-text::correct",
+            "label": "Find the coefficient of $x^3$ in $(2+x)^4$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_progression_recognition::Classify $7,11,15,19,\\ldots$.::exact-text::correct",
+            "label": "Classify $7,11,15,19,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_progression_recognition::Classify $81,27,9,3,\\ldots$.::exact-text::correct",
+            "label": "Classify $81,27,9,3,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_finite_sums::Find the sum of the first 5 terms of $2,5,8,\\ldots$.::exact-text::correct",
+            "label": "Find the sum of the first 5 terms of $2,5,8,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_finite_sums::Find the sum of the first four terms of $3,6,12,24,\\ldots$.::exact-text::correct",
+            "label": "Find the sum of the first four terms of $3,6,12,24,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_geometric_infinity::Does $2-3+4.5-\\cdots$ have a sum to infinity?::exact-text::correct",
+            "label": "Does $2-3+4.5-\\cdots$ have a sum to infinity?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_geometric_infinity::Find the sum to infinity of $8-4+2-1+\\cdots$.::exact-text::correct",
+            "label": "Find the sum to infinity of $8-4+2-1+\\cdots$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/series/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/series/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/series/exam-training/index.html",
+      "label": "P1 Series Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/series/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series — Exam Training | Asterion Study",
+          "h1": "Series — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/series/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series — Exam Training | Asterion Study",
+          "h1": "Series — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/series/worksheet/index.html",
+      "label": "P1 Series printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/series/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series Worksheet | Asterion Study",
+          "h1": "Series Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/series/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Series Worksheet | Asterion Study",
+          "h1": "Series Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/differentiation/learn/index.html",
+      "label": "P1 Differentiation Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/differentiation/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation — Learn | Asterion Study",
+          "h1": "Unit 7: Differentiation Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 10,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/differentiation/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation — Learn | Asterion Study",
+          "h1": "Unit 7: Differentiation Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 10,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/differentiation/field-guide/index.html",
+      "label": "P1 Differentiation Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/differentiation/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation — Learn | Asterion Study",
+          "h1": "Differentiation — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/differentiation/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation — Learn | Asterion Study",
+          "h1": "Differentiation — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/differentiation/skill-check/index.html",
+      "label": "P1 Differentiation Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/differentiation/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation Checked Practice | Asterion Study",
+          "h1": "Unit 7: Differentiation Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 14,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/differentiation/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation Checked Practice | Asterion Study",
+          "h1": "Unit 7: Differentiation Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 14,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 12,
+        "checks": [
+          {
+            "id": "p1_diff_gradient_limit_notation::Which notation is a second derivative?::exact-text::correct",
+            "label": "Which notation is a second derivative?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_gradient_limit_notation::What does $f\\doubleprime(x)<0$ say about the gradient of f?::exact-text::correct",
+            "label": "What does $f\\doubleprime(x)<0$ say about the gradient of f?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_power_chain::Differentiate $3x^{1/2}$.::exact-text::correct",
+            "label": "Differentiate $3x^{1/2}$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_power_chain::Differentiate $(3x-2)^5$.::exact-text::correct",
+            "label": "Differentiate $(3x-2)^5$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_tangent_normal::What is the normal gradient to $y=x^2$ at x=1?::exact-text::correct",
+            "label": "What is the normal gradient to $y=x^2$ at x=1?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_tangent_normal::What is the normal gradient to $y=x^3$ at x=1?::exact-text::correct",
+            "label": "What is the normal gradient to $y=x^3$ at x=1?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_increasing_decreasing::For $f\\prime(x)=6-3x$, where is f decreasing?::exact-text::correct",
+            "label": "For $f\\prime(x)=6-3x$, where is f decreasing?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_increasing_decreasing::If $f\\prime(x)=x+2$, where is f increasing?::exact-text::correct",
+            "label": "If $f\\prime(x)=x+2$, where is f increasing?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_connected_rates::If $V=x^3$ and $dx/dt=4$, what is $dV/dt$ when x=2?::exact-text::correct",
+            "label": "If $V=x^3$ and $dx/dt=4$, what is $dV/dt$ when x=2?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_connected_rates::A square side grows at 3 cm/s. Find $dA/dt$ when the side is 4 cm.::exact-text::correct",
+            "label": "A square side grows at 3 cm/s. Find $dA/dt$ when the side is 4 cm.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_stationary_classification::If $f\\prime(a)=0$ and $f\\doubleprime(a)=-3$, what is the stationary point?::exact-text::correct",
+            "label": "If $f\\prime(a)=0$ and $f\\doubleprime(a)=-3$, what is the stationary point?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_stationary_classification::If $f\\prime(a)=0$ and $f\\doubleprime(a)=5$, classify the stationary point.::exact-text::correct",
+            "label": "If $f\\prime(a)=0$ and $f\\doubleprime(a)=5$, classify the stationary point.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/differentiation/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/differentiation/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/differentiation/exam-training/index.html",
+      "label": "P1 Differentiation Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/differentiation/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation — Exam Training | Asterion Study",
+          "h1": "Differentiation — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/differentiation/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation — Exam Training | Asterion Study",
+          "h1": "Differentiation — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/differentiation/worksheet/index.html",
+      "label": "P1 Differentiation printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/differentiation/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation Worksheet | Asterion Study",
+          "h1": "Differentiation Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/differentiation/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Differentiation Worksheet | Asterion Study",
+          "h1": "Differentiation Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/integration/learn/index.html",
+      "label": "P1 Integration Learn",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/integration/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration — Learn | Asterion Study",
+          "h1": "Unit 8: Integration Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/integration/learn.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration — Learn | Asterion Study",
+          "h1": "Unit 8: Integration Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 9,
+          "visibleMainActions": [
+            "Go to Checked Practice",
+            "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice",
+            "Optional Exam Training"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/integration/field-guide/index.html",
+      "label": "P1 Integration Learn bridge",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/integration/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration — Learn | Asterion Study",
+          "h1": "Integration — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/integration/field-guide.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration — Learn | Asterion Study",
+          "h1": "Integration — Learn",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Open Learn",
+            "All P1 units"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/integration/skill-check/index.html",
+      "label": "P1 Integration Checked Practice",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/integration/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration Checked Practice | Asterion Study",
+          "h1": "Unit 8: Integration Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Review / export"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/integration/skill-check.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration Checked Practice | Asterion Study",
+          "h1": "Unit 8: Integration Checked Practice",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 12,
+          "visibleMainActions": [
+            "Learn support",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Check Answer",
+            "Hint",
+            "Review / export"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 10,
+        "checks": [
+          {
+            "id": "p1_int_reverse_power::Integrate $4x^3$.::exact-text::correct",
+            "label": "Integrate $4x^3$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_reverse_power::Integrate $3(3x+1)^2$.::exact-text::correct",
+            "label": "Integrate $3(3x+1)^2$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_constant::If $dy/dx=3x^2$ and the curve passes through $(1,4)$, find C in $y=x^3+C$.::exact-text::correct",
+            "label": "If $dy/dx=3x^2$ and the curve passes through $(1,4)$, find C in $y=x^3+C$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_constant::A curve has $dy/dx=2x+1$ and passes through $(0,4)$. Find C in $y=x^2+x+C$.::exact-text::correct",
+            "label": "A curve has $dy/dx=2x+1$ and passes through $(0,4)$. Find C in $y=x^2+x+C$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_definite::Evaluate $\\int_0^2 3x^2\\,dx$.::exact-text::correct",
+            "label": "Evaluate $\\int_0^2 3x^2\\,dx$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_definite::Evaluate $\\int_1^2 3x^2\\,dx$.::exact-text::correct",
+            "label": "Evaluate $\\int_1^2 3x^2\\,dx$.",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_areas::Which integrand gives the area between $y=5$ and $y=x^2$ where $5\\ge x^2$?::exact-text::correct",
+            "label": "Which integrand gives the area between $y=5$ and $y=x^2$ where $5\\ge x^2$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_areas::On $0\\le x\\le1$, which integrand gives the area between $y=x$ and $y=x^2$?::exact-text::correct",
+            "label": "On $0\\le x\\le1$, which integrand gives the area between $y=x$ and $y=x^2$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_volumes::For rotation about the x-axis, which integrand uses curve $y=f(x)$?::exact-text::correct",
+            "label": "For rotation about the x-axis, which integrand uses curve $y=f(x)$?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_volumes::For rotation about the y-axis using $x=g(y)$, which disk integrand is required?::exact-text::correct",
+            "label": "For rotation about the y-axis using $x=g(y)$, which disk integrand is required?",
+            "answerType": "exact-text",
+            "accepted": "correct",
+            "correctAccepted": true,
+            "wrongRejected": true
+          }
+        ],
+        "failures": []
+      },
+      "interactions": [
+        {
+          "page": "p1/topics/integration/skill-check/index.html",
+          "surface": "Checked Practice wrong answer",
+          "ok": true,
+          "message": "Not yet. Saved as an incorrect attempt. Try Again or open the repair step.",
+          "skillAttempts": 1,
+          "firstCorrect": false
+        },
+        {
+          "page": "p1/topics/integration/skill-check/index.html",
+          "surface": "Checked Practice correct answer",
+          "ok": true,
+          "message": "Correct. Saved as a clean Checked Practice pass.",
+          "skillAttempts": 1,
+          "firstCleanCorrect": true
+        }
+      ]
+    },
+    {
+      "path": "p1/topics/integration/exam-training/index.html",
+      "label": "P1 Integration Exam Training",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/integration/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration — Exam Training | Asterion Study",
+          "h1": "Integration — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/integration/exam-training.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration — Exam Training | Asterion Study",
+          "h1": "Integration — Exam Training",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Learn",
+            "Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        }
+      ],
+      "answerSpecAudit": {
+        "count": 0,
+        "checks": [],
+        "failures": []
+      },
+      "interactions": []
+    },
+    {
+      "path": "p1/topics/integration/worksheet/index.html",
+      "label": "P1 Integration printable Checked Practice worksheet",
+      "screenshots": [
+        {
+          "viewport": "desktop",
+          "screenshot": "screenshots/desktop/p1/topics/integration/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration Worksheet | Asterion Study",
+          "h1": "Integration Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 1365,
+          "viewportWidth": 1365,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
+          ],
+          "openMarkSchemes": 0,
+          "examCards": 0,
+          "examCardsMissingImages": 0,
+          "imageFailures": []
+        },
+        {
+          "viewport": "mobile",
+          "screenshot": "screenshots/mobile/p1/topics/integration/worksheet.png",
+          "enhanced": true,
+          "consoleErrors": [],
+          "pageErrors": [],
+          "title": "Integration Worksheet | Asterion Study",
+          "h1": "Integration Checked Practice Worksheet",
+          "visibleImageFailures": [],
+          "imageSources": [],
+          "horizontalOverflow": false,
+          "bodyWidth": 390,
+          "viewportWidth": 390,
+          "visibleMainActionCount": 2,
+          "visibleMainActions": [
+            "Print / Save PDF",
+            "Interactive Checked Practice"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,

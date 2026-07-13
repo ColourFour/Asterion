@@ -1,4 +1,4 @@
-import type { NormalizedQuestion, RegionDefinition } from '../types';
+import type { NormalizedQuestion, RegionDefinition, WorldDefinition } from '../types';
 import { filterQuestionsForRegion, isP3Question } from './worldMap';
 
 export function trainingBlockersForQuestion(question: NormalizedQuestion): string[] {
@@ -23,6 +23,7 @@ export function isTrainableP3Question(question: NormalizedQuestion): boolean {
 export function filterTrainableQuestionsForRegion(
   questions: NormalizedQuestion[],
   region: RegionDefinition,
+  world: WorldDefinition,
 ): NormalizedQuestion[] {
-  return filterQuestionsForRegion(filterTrainableQuestions(questions), region);
+  return filterQuestionsForRegion(filterTrainableQuestions(questions), region, world);
 }

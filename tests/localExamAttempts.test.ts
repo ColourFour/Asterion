@@ -92,6 +92,7 @@ describe('local exam self-marked attempts', () => {
     expect(loadExamAttempts(storage)).toEqual([
       expect.objectContaining({
         id: 'part_attempt',
+        course: 'p3',
         selfMarked: true,
         evidenceKind: 'weak_self_marked_exam',
         partScores: [
@@ -134,6 +135,23 @@ describe('local exam self-marked attempts', () => {
       expect.objectContaining({
         action: 'micro_reteach',
       }),
+    ]);
+  });
+
+  it('preserves explicit P1 course context and defaults legacy attempts to P3', () => {
+    const storage = memoryStorage({
+      attempts: [attempt({ id: 'legacy' })],
+    });
+    saveExamAttempt(storage, attempt({
+      id: 'p1-attempt',
+      course: 'p1',
+      paperFamily: 'p1',
+      topicDisplayName: 'Quadratics',
+    }));
+
+    expect(loadExamAttempts(storage)).toEqual([
+      expect.objectContaining({ id: 'legacy', course: 'p3' }),
+      expect.objectContaining({ id: 'p1-attempt', course: 'p1', paperFamily: 'p1' }),
     ]);
   });
 

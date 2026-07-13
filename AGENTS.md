@@ -1,14 +1,14 @@
 # Asterion Agent Notes
 
 ## Project Purpose
-Asterion is a static CAIE 9709 study hub generated into `docs/` for GitHub Pages. P3 is the active product path and the root page is P3-first. P1, M1, and S1 exist only as coming-soon course entries in the static selector; they do not expose topic pages, Skill Checks, exam mappings, attempt storage, or progression systems on this branch.
+Asterion is a static CAIE 9709 study hub generated into `docs/` for GitHub Pages. P3 is the active launched product path and the root remains P3-first while P1 is gated. This branch generates internal P1 review routes for all eight official topics, with course-scoped progress and a fail-closed exam-bank promotion overlay; P1 must remain `coming-soon` until every archive and launch gate passes. M1 and S1 remain coming-soon entries without topic routes.
 
-P3 currently exposes a diagnostic gate, P1 Review repair lane, topic Learn pages, Field Guide compatibility pages, Checked Practice/Skill Check pages, topic Exam Training, printable worksheets, Need to Know, Review/export, and an internal Content QA page.
+P3 currently exposes a diagnostic gate, P3 Foundation Review repair lane, topic Learn pages, Field Guide compatibility pages, Checked Practice/Skill Check pages, topic Exam Training, printable worksheets, Need to Know, Review/export, and an internal Content QA page. P1 internally mirrors the study surfaces with an optional non-credit Starting Check; its Exam Training remains empty until reviewed runtime-safe records are promoted.
 
 ## Architecture Principles
 - Keep the site GitHub Pages compatible. Do not add a backend, authentication, Supabase, AI marking, teacher/class flows, or dynamic game systems to the static production surface.
 - Course metadata belongs in centralized course data, currently `src/data/courses.ts`. Do not hard-code course cards or course slugs in multiple components.
-- P1, M1, and S1 must remain coming-soon only until a separate syllabus-contract audit verifies coverage, wording, formula scope, exam alignment, and static route scope against the official Cambridge 9709 syllabus.
+- P1 must remain coming-soon until its eight-topic 2026–2027 course contract and full archive review pass the recorded launch gates. M1 and S1 must remain coming-soon until separate syllabus-contract audits verify coverage, wording, formula scope, exam alignment, and static route scope.
 - For P3, the question image and mark-scheme image are the student-facing source of truth. Text extraction, OCR/raw text, AI labels, legacy DeepSeek labels, and fallback labels are metadata/display support only.
 - The reviewed P3 skill map is the current P3 curriculum authority. Topic-routing records can validate placement only when clean/reviewed; fallback labels are display-only.
 - Difficulty is deprecated metadata and must not drive routing, selection, mastery, generation eligibility, or warm-up readiness.
@@ -50,7 +50,8 @@ Asterion uses a parallel-specialist agent workflow, optimized first for mastery 
 - Academic data shapes and attempt records live in `src/types.ts`, `src/skill-checks/localAttempts.ts`, and the static browser progress shape in `src/static-study/static-study.js`.
 - Course metadata lives in `src/data/courses.ts`.
 - P3 diagnostic source data lives in `src/data/p3DiagnosticGate.ts`; diagnostic scoring helper tests use `src/lib/p3DiagnosticGate.ts`.
-- P1 Review repair-lane source data lives in `src/data/p1RepairLane.ts`; helper tests use `src/lib/p1RepairLane.ts`.
+- P3 Foundation Review repair-lane source data lives in `src/data/p1RepairLane.ts`; helper tests use `src/lib/p1RepairLane.ts`. Its legacy route and internal data names remain unchanged.
+- P1 course authority lives in `src/data/p1CourseContract.ts`; finite study content lives in `src/data/p1StudyContent.ts`; the frozen archive review projection and promotion overlay live beside them.
 - Deterministic Skill Check data lives in `src/data/skillCheckItems.ts` and `src/data/remainingSkillCheckItems.ts`; answer checking lives in `src/skill-checks/answerChecker.ts` and static browser parity code.
 - Topic, label, paper-family, and region routing live in `src/lib/worldMap.ts` and related progress helpers.
 - Public image URL and asset-path behavior lives in `src/lib/resolveAssetPath.ts`.
@@ -151,7 +152,7 @@ Use these templates when splitting work across agents. Keep outputs concise, dec
 - Region display matching must tolerate snake case, title case, legacy DeepSeek labels, local labels, and missing fields, but fallback labels are display-only.
 - Content Lab candidates are blocked until reviewed source-skill evidence exists.
 - Mastery must consume only clean P3 evidence from mastery-eligible reviewed P3 skills backed by canonical question and mark-scheme image pairs.
-- P1/M1/S1 topic seed pages are not present in the current static route set. Do not reintroduce them until reviewed course contracts exist.
+- P1 internal review routes are present but launch-gated; no P1 archive record becomes runtime content without explicit review and safe promotion. M1/S1 topic seed pages are not present.
 
 ## Before Finalizing Changes
 - Run `npm test`.
@@ -160,4 +161,4 @@ Use these templates when splitting work across agents. Keep outputs concise, dec
 - Check that region practice still uses the existing image-first practice loop.
 - For progression changes, add focused Vitest coverage for weak-area routing, recent-question avoidance, mastery inflation risks, and localStorage migration tolerance.
 - For data or content changes, check malformed/missing legacy enrichment, local label preservation, P3 route evidence, reviewed skill-map alignment, and centralized question/mark-scheme image path resolution.
-- For UX changes, manually verify the P3-first home page, P1/M1/S1 coming-soon course pages, P3 dashboard, diagnostic, repair lane, topic Learn, Field Guide bridge, Checked Practice, Exam Training, worksheet, Review/export, mark-scheme reveal, attempt save where still present, and mobile layout.
+- For UX changes, manually verify the P3-first gated home page and future ready-state chooser, P1 and P3 dashboards, P1 Starting Check, P3 diagnostic, P3 Foundation Review, topic Learn, Field Guide bridge, Checked Practice, Exam Training, worksheet, Review/export, mark-scheme reveal, attempt save where still present, M1/S1 coming-soon pages, and mobile layout.

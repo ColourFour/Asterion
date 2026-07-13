@@ -150,7 +150,7 @@ function matchesRegion(item: GeneratedPracticeItem, regionId?: string): boolean 
   const acceptedTopics = topicAliasesForRegion(regionId, 'practice').map(normalizeLabel);
   if (acceptedTopics.includes(normalizeLabel(item.topic))) return true;
 
-  const mappedRegion = matchRegionForLabels([item.topic]);
+  const mappedRegion = matchRegionForLabels([item.topic], P3_COURSE_MAP);
   if (mappedRegion?.id === regionId) return true;
 
   const region = regionById(regionId);

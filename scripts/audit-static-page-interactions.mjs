@@ -29,13 +29,15 @@ function selectorCount(root, selector) {
 function pageLabel(pagePath) {
   if (pagePath === 'index.html') return 'Home';
   if (pagePath === 'p3/diagnostic/index.html') return 'P3 Diagnostic';
-  if (pagePath === 'p3/repair-lane/index.html') return 'P1 Review repair lane';
+  if (pagePath === 'p3/repair-lane/index.html') return 'P3 Foundation Review';
   if (pagePath === 'p3/exam-training/index.html') return 'P3 Exam Training';
-  const match = pagePath.match(/^p3\/topics\/([^/]+)\/([^/]+)\/index\.html$/);
+  if (pagePath === 'p1/diagnostic/index.html') return 'P1 Starting Check';
+  if (pagePath === 'p1/exam-training/index.html') return 'P1 Exam Training';
+  const match = pagePath.match(/^(p1|p3)\/topics\/([^/]+)\/([^/]+)\/index\.html$/);
   if (!match) return pagePath.replace('/index.html', '');
-  const topic = match[1].split('-').map((part) => part[0].toUpperCase() + part.slice(1)).join(' ');
-  const mode = match[2] === 'skill-check' ? 'Checked Practice' : match[2].split('-').map((part) => part[0].toUpperCase() + part.slice(1)).join(' ');
-  return `${topic} ${mode}`;
+  const topic = match[2].split('-').map((part) => part[0].toUpperCase() + part.slice(1)).join(' ');
+  const mode = match[3] === 'skill-check' ? 'Checked Practice' : match[3].split('-').map((part) => part[0].toUpperCase() + part.slice(1)).join(' ');
+  return `${match[1].toUpperCase()} ${topic} ${mode}`;
 }
 
 function status(ok, message) {
@@ -94,6 +96,25 @@ function auditPage(filePath) {
     });
   }
 
+  const p1StartingCheckForms = Array.from(document.querySelectorAll('form[data-p1-starting-check]'));
+  if (p1StartingCheckForms.length) {
+    const missing = p1StartingCheckForms.filter((form) => (
+      !hasSubmitButton(form)
+      || !form.querySelector('[data-p1-starting-check-question]')
+      || !document.querySelector('[data-p1-starting-check-report]')
+    ));
+    rows.push({
+      pagePath,
+      page: pageLabel(pagePath),
+      surface: 'P1 Starting Check Submit',
+      checkButton: 'n/a',
+      submitButton: `${p1StartingCheckForms.length} form(s)`,
+      correctResponse: 'Responses produce one or two advisory topic links and save no completion credit.',
+      incorrectResponse: 'Missed topics become recommendations; every P1 unit remains directly available.',
+      status: missing.length ? status(false, `${missing.length} Starting Check form(s) missing questions/report wiring.`) : status(true, 'Wired')
+    });
+  }
+
   const examForms = Array.from(document.querySelectorAll('form[data-save-exam-attempt]'));
   if (examForms.length) {
     const missing = examForms.filter((form) => !hasSubmitButton(form) || !form.querySelector('.form-status') || !form.closest('.exam-question-card')?.querySelector('[data-mark-scheme-reveal]'));
@@ -121,7 +142,7 @@ function auditPage(filePath) {
     rows.push({
       pagePath,
       page: pageLabel(pagePath),
-      surface: 'P1 Review Submit',
+      surface: 'P3 Foundation Review Submit',
       checkButton: 'n/a',
       submitButton: `${repairForms.length} module form(s)`,
       correctResponse: 'Fast/mini answers are checked by checkSubmittedSkillAnswer; mini-check success within retry window completes module evidence.',
@@ -167,6 +188,7 @@ function auditPage(filePath) {
     ...learnForms,
     ...skillForms,
     ...diagnosticForms,
+    ...p1StartingCheckForms,
     ...examForms,
     ...repairForms,
     ...demoForms,

@@ -6,7 +6,7 @@ import {
   normalizeQuestionBankWithDiagnostics,
 } from './normalizeQuestionBank';
 import { applyP3TopicPackRefreshOverlay } from './p3TopicPackRefreshOverlay';
-import { isP3Question, matchRegionForQuestion } from './worldMap';
+import { isP3Question, matchRegionForQuestion, P3_COURSE_MAP } from './worldMap';
 
 interface LoadedJson {
   url: string;
@@ -141,7 +141,7 @@ function logDevelopmentDiagnostics(questions: NormalizedQuestion[], diagnostics:
   if (!import.meta.env.DEV || import.meta.env.MODE === 'test') return;
   const p3 = questions.filter(isP3Question);
   const regionCounts = p3.reduce<Record<string, number>>((counts, question) => {
-    const region = matchRegionForQuestion(question)?.name ?? 'Unmatched';
+    const region = matchRegionForQuestion(question, P3_COURSE_MAP)?.name ?? 'Unmatched';
     counts[region] = (counts[region] ?? 0) + 1;
     return counts;
   }, {});

@@ -145,6 +145,7 @@ describe('local progress CSV export', () => {
     expect(rows).toEqual([
       expect.objectContaining({
         activity_type: 'Submission Summary',
+        course: 'p3',
         route_page_type: 'export',
         submission_id: 'progress_export_1',
         student_name: 'Ada Lovelace',
@@ -155,6 +156,7 @@ describe('local progress CSV export', () => {
       }),
       expect.objectContaining({
         activity_type: 'Checked Practice',
+        course: 'p3',
         route_page_type: 'skill-check',
         item_id: 'sc-alg-001',
         deterministic_pass_fail: 'fail',
@@ -169,6 +171,7 @@ describe('local progress CSV export', () => {
       }),
       expect.objectContaining({
         activity_type: 'Exam Training',
+        course: 'p3',
         route_page_type: 'exam-training',
         item_id: '33autumn23_q03',
         self_marked_score: '5/5',
@@ -250,6 +253,58 @@ describe('local progress CSV export', () => {
         deterministic_pass_fail: 'fail',
         evidence_status_label: 'not_passed',
       }),
+    ]);
+  });
+
+  it('exports same-item corrections as practice-only and distinct retry variants as strong evidence', () => {
+    const progress: Partial<StoredProgress> = {
+      skillCheckAttempts: [
+        skillAttempt({ attemptId: 'wrong', course: 'p1', checkId: 'p1-quadratics-1', isCorrect: false }),
+        skillAttempt({ attemptId: 'same-item-correction', course: 'p1', checkId: 'p1-quadratics-1' }),
+        skillAttempt({
+          attemptId: 'retry-variant',
+          course: 'p1',
+          checkId: 'p1-quadratics-1',
+          retryVariantId: 'variant-b',
+        }),
+      ],
+      attempts: [],
+      learningActivityAttempts: [],
+    };
+
+    expect(localProgressSubmissionSummary(progress).checkedPracticePasses).toBe(1);
+    const checkedRows = localProgressCsvRows(progress, '2026-07-13T00:00:00.000Z')
+      .filter((row) => row.activity_type === 'Checked Practice');
+    expect(checkedRows).toEqual([
+      expect.objectContaining({ course: 'p1', deterministic_pass_fail: 'fail', evidence_status_label: 'not_passed' }),
+      expect.objectContaining({
+        course: 'p1',
+        deterministic_pass_fail: 'fail',
+        evidence_status_label: 'practice_only_after_prior_submission',
+      }),
+      expect.objectContaining({
+        course: 'p1',
+        deterministic_pass_fail: 'pass',
+        evidence_status_label: 'checked_practice_passed',
+      }),
+    ]);
+  });
+
+  it('defaults missing course context to P3 in exported legacy rows', () => {
+    const legacyExam = { ...examAttempt({ id: 'legacy-exam' }) };
+    delete legacyExam.course;
+    const rows = localProgressCsvRows({
+      attempts: [legacyExam],
+      skillCheckAttempts: [],
+      learningActivityAttempts: [{
+        id: 'legacy-learn',
+        regionId: 'algebra',
+      }],
+    }, '2026-07-13T00:00:00.000Z');
+
+    expect(rows.filter((row) => row.activity_type !== 'Submission Summary')).toEqual([
+      expect.objectContaining({ activity_type: 'Exam Training', course: 'p3' }),
+      expect.objectContaining({ activity_type: 'Learn', course: 'p3' }),
     ]);
   });
 });

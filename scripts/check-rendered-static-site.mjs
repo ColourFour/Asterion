@@ -30,6 +30,25 @@ const p3TopicSlugs = [
   'numerical-solution-of-equations',
 ];
 
+const p1TopicSlugs = [
+  'quadratics',
+  'functions',
+  'coordinate-geometry',
+  'circular-measure',
+  'trigonometry',
+  'series',
+  'differentiation',
+  'integration',
+];
+
+const p1StudyPages = p1TopicSlugs.flatMap((slug) => [
+  `p1/topics/${slug}/learn/index.html`,
+  `p1/topics/${slug}/field-guide/index.html`,
+  `p1/topics/${slug}/skill-check/index.html`,
+  `p1/topics/${slug}/exam-training/index.html`,
+  `p1/topics/${slug}/worksheet/index.html`,
+]);
+
 const p3ExamTrainingPages = p3TopicSlugs.map((slug) => `p3/topics/${slug}/exam-training/index.html`);
 
 const p3SkillSelectorPages = p3TopicSlugs.flatMap((slug) => [
@@ -40,6 +59,13 @@ const p3SkillSelectorPages = p3TopicSlugs.flatMap((slug) => [
 const requiredRenderedPages = Array.from(new Set([
   'index.html',
   'p1/index.html',
+  'p1/diagnostic/index.html',
+  'p1/topics/index.html',
+  'p1/exam-training/index.html',
+  'p1/need-to-know/index.html',
+  'p1/review/index.html',
+  'p1/content-qa/index.html',
+  ...p1StudyPages,
   'p3/index.html',
   'm1/index.html',
   's1/index.html',
@@ -399,6 +425,77 @@ async function assertMobileSkillSelectorLabels(browser) {
   }
 }
 
+async function assertP1ResponsiveBasics(browser) {
+  const pages = [
+    'p1/index.html',
+    'p1/diagnostic/index.html',
+    'p1/topics/index.html',
+    'p1/exam-training/index.html',
+    'p1/need-to-know/index.html',
+    'p1/review/index.html',
+    'p1/content-qa/index.html',
+    ...p1TopicSlugs.flatMap((slug) => [
+      `p1/topics/${slug}/learn/index.html`,
+      `p1/topics/${slug}/skill-check/index.html`,
+      `p1/topics/${slug}/worksheet/index.html`,
+    ]),
+  ];
+  for (const viewport of [{ width: 1280, height: 720 }, { width: 390, height: 844 }]) {
+    const visualPage = await browser.newPage({ viewport });
+    const consoleErrors = [];
+    visualPage.on('console', (message) => {
+      if (message.type() === 'error') consoleErrors.push(message.text());
+    });
+    visualPage.on('pageerror', (error) => consoleErrors.push(error.message));
+    try {
+      for (const pagePath of pages) {
+        await waitForStaticEnhancement(visualPage, pagePath);
+        const result = await visualPage.evaluate(() => {
+          const visible = (element) => {
+            if (!element || element.hidden) return false;
+            const style = getComputedStyle(element);
+            const rect = element.getBoundingClientRect();
+            return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0;
+          };
+          const choiceLabels = Array.from(document.querySelectorAll('.choice-list label')).filter(visible);
+          return {
+            horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+            mainVisible: visible(document.querySelector('main')),
+            retryCardsVisible: Array.from(document.querySelectorAll('[data-p1-retry-for]')).filter(visible).length,
+            minimumChoiceHeight: choiceLabels.length ? Math.min(...choiceLabels.map((label) => label.getBoundingClientRect().height)) : undefined,
+          };
+        });
+        if (consoleErrors.length) fail(`${pagePath} has console errors at ${viewport.width}x${viewport.height}: ${consoleErrors.join(' | ')}`);
+        consoleErrors.length = 0;
+        if (result.horizontalOverflow) fail(`${pagePath} has horizontal overflow at ${viewport.width}x${viewport.height}.`);
+        if (!result.mainVisible) fail(`${pagePath} has no visible main content at ${viewport.width}x${viewport.height}.`);
+        if (/\/skill-check\//.test(pagePath) && result.retryCardsVisible !== 0) fail(`${pagePath} exposes retry variants before a primary attempt.`);
+        if (result.minimumChoiceHeight !== undefined && result.minimumChoiceHeight < 40) fail(`${pagePath} has cramped answer targets at ${viewport.width}x${viewport.height}.`);
+      }
+
+      await waitForStaticEnhancement(visualPage, 'p1/index.html');
+      await visualPage.evaluate(() => window.localStorage.setItem('asterion.theme.v1', 'dark'));
+      await visualPage.reload({ waitUntil: 'load' });
+      await visualPage.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'));
+      const darkTheme = await visualPage.evaluate(() => document.documentElement.dataset.theme);
+      if (darkTheme !== 'dark') fail('P1 dashboard must restore the dark theme preference.');
+      await visualPage.evaluate(() => window.localStorage.setItem('asterion.theme.v1', 'light'));
+      await visualPage.reload({ waitUntil: 'load' });
+      await visualPage.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'));
+      const lightTheme = await visualPage.evaluate(() => document.documentElement.dataset.theme);
+      if (lightTheme !== 'light') fail('P1 dashboard must restore the light theme preference.');
+      await visualPage.keyboard.press('Tab');
+      const keyboardFocus = await visualPage.evaluate(() => {
+        const active = document.activeElement;
+        return active instanceof HTMLElement && ['A', 'BUTTON', 'INPUT', 'SUMMARY'].includes(active.tagName);
+      });
+      if (!keyboardFocus) fail('P1 dashboard must expose a keyboard-focusable first control.');
+    } finally {
+      await visualPage.close();
+    }
+  }
+}
+
 for (const pagePath of requiredRenderedPages) {
   if (!existsSync(path.join(siteRoot, pagePath))) {
     fail(`Rendered check page is missing: ${pagePath}`);
@@ -445,7 +542,7 @@ try {
     fail('Root page must not retain the old course-selector, direct-P3 path grid, or teacher-facing shell.');
   }
 
-  for (const coursePage of ['p1/index.html', 'm1/index.html', 's1/index.html']) {
+  for (const coursePage of ['m1/index.html', 's1/index.html']) {
     await waitForStaticEnhancement(page, coursePage);
     const supportResult = await page.evaluate(() => ({
       hasSupportOnly: document.body.innerText.includes('Support only'),
@@ -455,6 +552,34 @@ try {
     if (!supportResult.hasSupportOnly || supportResult.topicCards !== 0 || !supportResult.hasP3Link) {
       fail(`${coursePage} must be a demoted support-only page with no topic route cards.`);
     }
+  }
+
+
+  await waitForStaticEnhancement(page, 'p1/index.html');
+  const p1CourseResult = await page.evaluate(() => {
+    const text = document.body.textContent || '';
+    return {
+      pathCards: document.querySelectorAll('[data-path-unit][data-course-id="p1"]').length,
+      hasStartingCheck: text.includes('P1 Starting Check') && text.includes('10–15 minutes'),
+      hasArchiveGate: text.includes('Course-contract and archive review are still in progress.'),
+      hasProgressLabels: Boolean(document.querySelector('[data-progress-field-guide]'))
+        && Boolean(document.querySelector('[data-progress-skill]'))
+        && Boolean(document.querySelector('[data-progress-exam]')),
+    };
+  });
+  if (p1CourseResult.pathCards !== 8 || !p1CourseResult.hasStartingCheck || !p1CourseResult.hasArchiveGate || !p1CourseResult.hasProgressLabels) {
+    fail(`p1/index.html must render the eight-topic gated P1 dashboard: ${JSON.stringify(p1CourseResult)}`);
+  }
+
+  await waitForStaticEnhancement(page, 'p1/diagnostic/index.html');
+  const p1StartingCheckResult = await page.evaluate(() => ({
+    formCount: document.querySelectorAll('[data-p1-starting-check]').length,
+    questionCount: document.querySelectorAll('[data-p1-starting-check-question]').length,
+    hasSkip: Array.from(document.querySelectorAll('a')).some((link) => /Skip and start Quadratics/.test(link.textContent || '')),
+    hasReport: Boolean(document.querySelector('[data-p1-starting-check-report][hidden]')),
+  }));
+  if (p1StartingCheckResult.formCount !== 1 || p1StartingCheckResult.questionCount !== 8 || !p1StartingCheckResult.hasSkip || !p1StartingCheckResult.hasReport) {
+    fail(`P1 Starting Check must stay optional and finite: ${JSON.stringify(p1StartingCheckResult)}`);
   }
 
   for (const coursePage of ['p3/index.html']) {
@@ -812,6 +937,7 @@ try {
   await assertMathEditorStructuredInput(browser);
   await assertExamTrainingMobileVisuals(browser);
   await assertMobileSkillSelectorLabels(browser);
+  await assertP1ResponsiveBasics(browser);
 
   for (const [oldAlgebraPath, bridgeTitle, buttonLabel] of [
     ['p3/topics/algebra/field-guide/index.html', 'Algebra — Learn', 'Learn'],

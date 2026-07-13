@@ -1272,7 +1272,65 @@ try {
     assert(checkedRouteShape.visibleSkillForm, `${label} route must show a visible checked question.`);
   }
 
-  console.log('P3 Learn and Checked Practice interaction browser check passed.');
+  await waitForStaticEnhancement(page, 'p1/topics/quadratics/skill-check/index.html');
+  await resetPageProgress(page);
+  const p1Primary = page.locator('[data-check-skill-answer][data-course-id="p1"][data-retry-variant-id="primary"]').first();
+  const p1PrimaryAnswer = JSON.parse(await p1Primary.getAttribute('data-accepted-answers') || '[]')[0];
+  const p1WrongAnswer = await p1Primary.locator('input[name="submittedAnswer"]').evaluateAll((inputs, correct) => (
+    inputs.map((input) => input.value).find((value) => value !== correct) || ''
+  ), p1PrimaryAnswer);
+  await submitAnswer(p1Primary, p1WrongAnswer);
+  const p1Retry = page.locator('[data-check-skill-answer][data-course-id="p1"]:not([data-retry-variant-id="primary"])').first();
+  assert(await p1Retry.isVisible(), 'A distinct P1 retry variant must appear after an incorrect primary submission.');
+  const p1RetryAnswer = JSON.parse(await p1Retry.getAttribute('data-accepted-answers') || '[]')[0];
+  await submitAnswer(p1Retry, p1RetryAnswer);
+  const p1Evidence = await page.evaluate((key) => {
+    const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+    return (progress.skillCheckAttempts || []).map((attempt) => ({
+      course: attempt.course,
+      checkId: attempt.checkId,
+      retryVariantId: attempt.retryVariantId,
+      strongEvidence: attempt.strongEvidence,
+    }));
+  }, storageKey);
+  assert(p1Evidence.length === 2, 'P1 primary and retry submissions must both be retained.');
+  assert(p1Evidence[0].course === 'p1' && p1Evidence[0].strongEvidence === false, 'Incorrect P1 primary must not create strong evidence.');
+  assert(p1Evidence[1].course === 'p1' && p1Evidence[1].retryVariantId !== 'primary' && p1Evidence[1].strongEvidence === true, 'First clean submission to the distinct P1 retry must create strong evidence.');
+
+  await waitForStaticEnhancement(page, 'p1/topics/quadratics/learn/index.html');
+  await page.locator('[data-complete-field-guide-topic][data-region-id="quadratics"]').first().click();
+  const p1LearningKeys = await page.evaluate((key) => Object.keys(JSON.parse(window.localStorage.getItem(key) || '{}').regionLearning || {}), storageKey);
+  assert(p1LearningKeys.includes('p1:quadratics'), 'P1 Learn activity must use a course-qualified region key.');
+  assert(!p1LearningKeys.includes('quadratics'), 'P1 Learn activity must not write a legacy unscoped region key.');
+
+  await waitForStaticEnhancement(page, 'p1/diagnostic/index.html');
+  await resetPageProgress(page);
+  await page.locator('[data-p1-starting-check-question]').first().locator('input[type="radio"]').first().check();
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'), undefined, { timeout: 5000 });
+  assert(await page.locator('[data-p1-starting-check-question]').first().locator('input[type="radio"]:checked').count() === 1, 'P1 Starting Check draft responses must resume after reload.');
+  await page.locator('[data-p1-starting-check-reset]').click();
+  await page.locator('[data-p1-starting-check-question]').evaluateAll((questions) => {
+    questions.forEach((question) => {
+      const input = question.querySelector('input[type="radio"]');
+      if (input instanceof HTMLInputElement) input.checked = true;
+    });
+  });
+  await page.locator('[data-p1-starting-check] button[type="submit"]').click();
+  const p1DiagnosticState = await page.evaluate((key) => {
+    const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+    const report = (progress.diagnosticReports || []).at(-1);
+    return {
+      reportVisible: !document.querySelector('[data-p1-starting-check-report]')?.hidden,
+      completionCredit: report?.completionCredit,
+      advisory: report?.advisory,
+      skillAttempts: (progress.skillCheckAttempts || []).length,
+    };
+  }, storageKey);
+  assert(p1DiagnosticState.reportVisible && p1DiagnosticState.advisory === true && p1DiagnosticState.completionCredit === false, 'P1 Starting Check must save an advisory, non-credit report.');
+  assert(p1DiagnosticState.skillAttempts === 0, 'P1 Starting Check must not create Checked Practice evidence.');
+
+  console.log('P1/P3 Learn and Checked Practice interaction browser check passed.');
 } finally {
   await browser.close();
 }

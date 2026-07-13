@@ -29,6 +29,7 @@ export interface CourseMetadata {
 }
 
 export const P3_COURSE_ID: CourseId = 'p3';
+export const P1_COURSE_ID: CourseId = 'p1';
 
 export const COURSES: CourseMetadata[] = [
   {
@@ -36,14 +37,23 @@ export const COURSES: CourseMetadata[] = [
     slug: 'p1',
     displayName: 'Pure Mathematics 1',
     shortName: 'P1',
-    shortDescription: 'Locked for now. P1 will be available later after a syllabus check.',
-    launchDescription: 'Available later.',
+    shortDescription: 'Pure Mathematics 1 is being built against the reviewed 2026–2027 syllabus contract.',
+    launchDescription: 'Eight-topic course review in progress.',
     examComponentLabel: 'Paper 1 / Pure Mathematics 1',
     paperFamilies: ['p1'],
     status: 'coming-soon',
-    statusLabel: 'Available later',
-    coverageSummary: 'P1 is locked on this branch until a separate syllabus check verifies coverage and exam alignment.',
-    topics: [],
+    statusLabel: 'Review in progress',
+    coverageSummary: 'P1 remains locked until all eight topic contracts, checked practice, and reviewed exam-image routes pass the launch gates.',
+    topics: [
+      { id: 'p1-quadratics', slug: 'quadratics', syllabusRef: '1.1', title: 'Quadratics', note: 'Internal course-contract review.' },
+      { id: 'p1-functions', slug: 'functions', syllabusRef: '1.2', title: 'Functions', note: 'Internal course-contract review.' },
+      { id: 'p1-coordinate-geometry', slug: 'coordinate-geometry', syllabusRef: '1.3', title: 'Coordinate geometry', note: 'Internal course-contract review.' },
+      { id: 'p1-circular-measure', slug: 'circular-measure', syllabusRef: '1.4', title: 'Circular measure', note: 'Internal course-contract review.' },
+      { id: 'p1-trigonometry', slug: 'trigonometry', syllabusRef: '1.5', title: 'Trigonometry', note: 'Internal course-contract review.' },
+      { id: 'p1-series', slug: 'series', syllabusRef: '1.6', title: 'Series', note: 'Internal course-contract review.' },
+      { id: 'p1-differentiation', slug: 'differentiation', syllabusRef: '1.7', title: 'Differentiation', note: 'Internal course-contract review.' },
+      { id: 'p1-integration', slug: 'integration', syllabusRef: '1.8', title: 'Integration', note: 'Internal course-contract review.' },
+    ],
   },
   {
     id: 'p3',

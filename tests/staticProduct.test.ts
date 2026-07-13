@@ -6,7 +6,7 @@ import { JSDOM } from 'jsdom';
 import { COURSES, P3_COURSE_ID, coursePath, getCourseBySlug } from '../src/data/courses';
 import { P3_REGION_DEFINITIONS } from '../src/lib/p3SkillContract';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS } from '../src/lib/staticStudyRoutes';
-import { STUDY_TOPICS } from '../src/lib/topicStudy';
+import { P1_STUDY_TOPICS, STUDY_TOPICS } from '../src/lib/topicStudy';
 
 const officialP3Topics = [
   'Algebra',
@@ -72,15 +72,20 @@ function primaryLearningAreaCount(document: Document): number {
   ).length;
 }
 
-describe('static P3 product contract', () => {
-  it('makes P3 the only ready course path', () => {
+describe('static P1/P3 product contract', () => {
+  it('keeps P3 ready while P1 remains gated by archive review', () => {
     expect(COURSES.map((course) => course.id)).toEqual(['p1', 'p3', 'm1', 's1']);
     expect(COURSES.map(coursePath)).toEqual(['/p1', '/p3', '/m1', '/s1']);
 
     expect(getCourseBySlug(P3_COURSE_ID)?.status).toBe('ready');
     expect(getCourseBySlug(P3_COURSE_ID)?.statusLabel).toBe('Content available');
 
-    for (const slug of ['p1', 'm1', 's1'] as const) {
+    const p1 = getCourseBySlug('p1');
+    expect(p1?.status).toBe('coming-soon');
+    expect(p1?.statusLabel).toBe('Review in progress');
+    expect(p1?.topics).toHaveLength(8);
+
+    for (const slug of ['m1', 's1'] as const) {
       const course = getCourseBySlug(slug);
       expect(course?.status).toBe('coming-soon');
       expect(course?.statusLabel).toBe('Available later');
@@ -104,12 +109,16 @@ describe('static P3 product contract', () => {
     ]);
   });
 
-  it('declares only canonical P3 topic task routes', () => {
+  it('declares canonical P1 and P3 study routes while M1 and S1 stay locked', () => {
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/need-to-know/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/review/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p3/content-qa/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/exam-training/index.html');
-    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('p1/need-to-know/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p1/diagnostic/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p1/need-to-know/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p1/review/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p1/content-qa/index.html');
+    expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p1/exam-training/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('m1/content-qa/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('s1/content-qa/index.html');
 
@@ -123,12 +132,20 @@ describe('static P3 product contract', () => {
       expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain(`p3/topics/${topic.slug}/index.html`);
     }
 
+    for (const topic of P1_STUDY_TOPICS) {
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p1/topics/${topic.slug}/learn/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p1/topics/${topic.slug}/field-guide/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p1/topics/${topic.slug}/skill-check/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p1/topics/${topic.slug}/exam-training/index.html`);
+      expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain(`p1/topics/${topic.slug}/worksheet/index.html`);
+    }
+
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).toContain('p3/topics/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('regions/index.html');
     expect(REQUIRED_STATIC_STUDY_PAGE_PATHS).not.toContain('topics/algebra/index.html');
   });
 
-  it('uses the root page as the focused P3 starfield landing page', () => {
+  it('keeps the P3 root until the equal P1/P3 launch chooser is ready', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const generatedHomePath = 'docs/index.html';
     const generatedP3Path = 'docs/p3/index.html';
@@ -139,14 +156,14 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('Start diagnostic');
     expect(generatorSource).toContain('Default path: Diagnostic → Learn → Checked Practice → Exam Training.');
     expect(generatorSource).toContain('Already confident? Try Checked Practice');
-    expect(generatorSource).toContain("htmlByPath.set('index.html', renderCourseSelectorPage())");
+    expect(generatorSource).toContain("htmlByPath.set('index.html', p1LaunchReady ? renderCourseSelectorPage() : renderP3LandingPage())");
     expect(generatorSource).toContain('renderP3DashboardPage(data, course)');
     expect(generatorSource).toContain('data-p3-exam-review-gate');
     expect(generatorSource).toContain('data-flow-final-href');
     expect(generatorSource).toContain('Check Answer');
-    expect(generatorSource).toContain('home-p3-landing');
-    expect(generatorSource).toContain('Master CAIE 9709');
-    expect(generatorSource).toContain('Already completed it? Start Algebra Learn');
+    expect(generatorSource).toContain('course-selector-landing');
+    expect(generatorSource).toContain('Choose Pure Mathematics 1 or 3');
+    expect(generatorSource).toContain('renderHomepageCoursePanel(pagePath)');
 
     if (existsSync(generatedHomePath)) {
       const generatedHome = readFileSync(generatedHomePath, 'utf8');
@@ -175,7 +192,6 @@ describe('static P3 product contract', () => {
       for (const topicLabel of ['Algebra', 'Log/Exp', 'Complex', 'Trigonometry', 'Vectors', 'Differentiation', 'Integration', 'Diff Eq', 'Iteration']) {
         expect(generatedHome).toContain(topicLabel);
       }
-      expect(generatedHome).not.toContain('Start P3 with Algebra.');
       expect(generatedHome).not.toContain('path-unit-grid');
       expect(generatedHome).not.toContain('homepage-course-panel');
       expect(generatedHome).not.toContain('Choose a paper');
@@ -370,7 +386,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('Review mistakes from saved Checked Practice');
   });
 
-  it('keeps P1 Review standalone with one module visible and mini-checks revealed after fast checks', () => {
+  it('keeps P3 Foundation Review standalone with one module visible and mini-checks revealed after fast checks', () => {
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
 
@@ -407,6 +423,7 @@ describe('static P3 product contract', () => {
       expect(generatedP1Review).toContain('Submit Fast Check');
       expect(generatedP1Review).toContain('Submit Mini-Check');
       expect(generatedP1Review).toContain('Next module');
+      expect(generatedP1Review).toContain('P3 Foundation Review');
       expect(generatedP1Review).not.toContain('Readiness rule');
       expect(generatedP1Review).not.toContain('Recommended route');
     }

@@ -570,7 +570,7 @@ for (const page of p3LearnPages) {
   }
 }
 
-for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/field-guide\/index\.html$/.test(page))) {
+for (const page of requiredPages.filter((page) => /^p[13]\/topics\/[^/]+\/field-guide\/index\.html$/.test(page))) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
   const expectedTitle = '— Learn';
@@ -581,7 +581,7 @@ for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/field-gui
   }
 }
 
-for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/skill-check\/index\.html$/.test(page))) {
+for (const page of requiredPages.filter((page) => /^p[13]\/topics\/[^/]+\/skill-check\/index\.html$/.test(page))) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);
   if (!text.includes('Checked Practice') || !html.includes('data-check-skill-answer') || html.includes('data-check-learn-answer')) {
@@ -590,10 +590,10 @@ for (const page of requiredPages.filter((page) => /^p3\/topics\/[^/]+\/skill-che
   }
 }
 
-for (const course of ['p1', 'm1', 's1']) {
+for (const course of ['m1', 's1']) {
   const page = `${course}/exam-training/index.html`;
   if (existsSync(path.join(siteRoot, page))) {
-    console.error(`${page} should not exist on the static P3 product branch.`);
+    console.error(`${page} should not exist without a reviewed course contract.`);
     process.exit(1);
   }
 }
@@ -662,7 +662,6 @@ const forbiddenRouteDirectories = [
   'regions',
   'exam-training',
   'p3/regions',
-  'p1/topics',
   'm1/topics',
   's1/topics',
 ];
@@ -680,6 +679,16 @@ const forbiddenRouteFiles = collectFiles(path.join(siteRoot, 'p3/topics'))
   ));
 if (forbiddenRouteFiles.length) {
   console.error(`P3 topic routes must be only learn, field-guide, skill-check, worksheet, and exam-training:\n${forbiddenRouteFiles.join('\n')}`);
+  process.exit(1);
+}
+
+const forbiddenP1RouteFiles = collectFiles(path.join(siteRoot, 'p1/topics'))
+  .filter((file) => (
+    /\/practice\/index\.html$/.test(file)
+    || /^[^/]+\/index\.html$/.test(file)
+  ));
+if (forbiddenP1RouteFiles.length) {
+  console.error(`P1 topic routes must be only learn, field-guide, skill-check, worksheet, and exam-training:\n${forbiddenP1RouteFiles.join('\n')}`);
   process.exit(1);
 }
 

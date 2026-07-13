@@ -12,7 +12,7 @@ For the current project contract, use:
 Current static-page state:
 
 - P3 is the only ready product path.
-- P1, M1, and S1 are coming-soon course pages only.
+- P1 remains coming-soon but now has internal eight-topic review routes; M1 and S1 are coming-soon course pages only.
 - P3 topic pages include Learn, Field Guide bridge, Checked Practice, Exam Training, and printable worksheet routes.
 - The old self-reported `I tried this` Checked Practice path is gone.
 - Current tests expect 171 authored P3 Skill Check items, all deterministically checkable.

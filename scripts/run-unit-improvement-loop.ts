@@ -288,7 +288,7 @@ function examTrainingSnapshot(topic: StudyTopic, questions: NormalizedQuestion[]
       sampleQuestionIds: [],
     };
   }
-  const trainableQuestions = filterTrainableQuestionsForRegion(questions, region);
+  const trainableQuestions = filterTrainableQuestionsForRegion(questions, region, P3_COURSE_MAP);
   const withImagePairs = trainableQuestions.filter((question) => (
     (question.questionImageCandidates.length > 0 || question.questionImageUrls.length > 0)
     && (question.markSchemeImageCandidates.length > 0 || question.markSchemeImageUrls.length > 0)

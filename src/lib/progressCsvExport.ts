@@ -7,8 +7,11 @@ import type {
   LearningActivityAttempt,
   SkillCheckAttemptRecord,
   StoredProgress,
+  StudyCourseId,
 } from '../types';
-import { isPassingSkillCheckAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
+import { isStrongSkillCheckEvidenceAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
+import { normalizeStudyCourseId } from './courseProgress';
+import { normalizeExamAttempts } from './localExamAttempts';
 
 export const LOCAL_PROGRESS_CSV_HEADERS = [
   'submission_id',
@@ -17,6 +20,7 @@ export const LOCAL_PROGRESS_CSV_HEADERS = [
   'reporting_period',
   'submission_timestamp',
   'export_timestamp',
+  'course',
   'topic',
   'route_page_type',
   'activity_type',
@@ -128,17 +132,15 @@ function summaryText(summary: LocalProgressSubmissionSummary): string {
   ].join('; ');
 }
 
-function isCleanCheckedPracticeAttempt(attempt: SkillCheckAttemptRecord): boolean {
-  return isPassingSkillCheckAttempt(attempt) && attempt.usedHint !== true;
-}
-
 export function localProgressSubmissionSummary(progress: Partial<StoredProgress>): LocalProgressSubmissionSummary {
   const skillAttempts = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts);
   const reviewCandidates = skillAttempts.filter((attempt) => rowForReviewCandidate(attempt, '')).length;
   const examAttempts = Array.isArray(progress.attempts) ? progress.attempts : [];
   return {
     checkedPracticeAttempts: skillAttempts.length,
-    checkedPracticePasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
+    checkedPracticePasses: skillAttempts.filter((attempt) => (
+      isStrongSkillCheckEvidenceAttempt(attempt, skillAttempts)
+    )).length,
     reviewCandidates,
     selfMarkedExamAttempts: examAttempts.filter((attempt) => attempt.selfMarked === true).length,
     learningActivityAttempts: Array.isArray(progress.learningActivityAttempts) ? progress.learningActivityAttempts.length : 0,
@@ -154,9 +156,12 @@ function rowForSubmissionSummary(
   metadata: Required<LocalProgressExportMetadata>,
 ): LocalProgressCsvRow {
   const summary = localProgressSubmissionSummary(progress);
+  const courses = coursesForProgress(progress);
+  const course = courses.length === 1 ? courses[0] : courses.length > 1 ? 'mixed' : 'p3';
   return rowWithExportMetadata({
     ...blankRow(exportTimestamp),
-    topic: 'All P3 local progress',
+    course,
+    topic: course === 'p1' ? 'All P1 local progress' : course === 'mixed' ? 'All local progress' : 'All P3 local progress',
     route_page_type: 'export',
     activity_type: 'Submission Summary',
     item_id: metadata.submissionId,
@@ -166,6 +171,14 @@ function rowForSubmissionSummary(
     evidence_label: 'Student-submitted local progress export',
     evidence_status_label: 'export_metadata_only',
   }, metadata);
+}
+
+function coursesForProgress(progress: Partial<StoredProgress>): StudyCourseId[] {
+  const courses = new Set<StudyCourseId>();
+  normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts).forEach((attempt) => courses.add(attempt.course));
+  normalizeExamAttempts(progress.attempts).forEach((attempt) => courses.add(normalizeStudyCourseId(attempt.course)));
+  (progress.learningActivityAttempts ?? []).forEach((attempt) => courses.add(normalizeStudyCourseId(attempt.course)));
+  return Array.from(courses).sort();
 }
 
 function scoreSummary(attempt: Attempt): string {
@@ -181,10 +194,19 @@ function examEvidenceStatusLabel(attempt: Attempt): string {
   return 'self_marked_exam_practice_only';
 }
 
-function rowForSkillCheckAttempt(attempt: SkillCheckAttemptRecord, exportTimestamp: string): LocalProgressCsvRow {
-  const passed = isCleanCheckedPracticeAttempt(attempt);
+function rowForSkillCheckAttempt(
+  attempt: SkillCheckAttemptRecord,
+  attemptHistory: SkillCheckAttemptRecord[],
+  exportTimestamp: string,
+): LocalProgressCsvRow {
+  const passed = isStrongSkillCheckEvidenceAttempt(attempt, attemptHistory);
+  const intrinsicallyCorrect = attempt.isCorrect
+    && !attempt.usedHint
+    && !attempt.revealedAnswer
+    && !attempt.revealedRepairStep;
   return {
     ...blankRow(exportTimestamp),
+    course: attempt.course,
     topic: attempt.topic,
     route_page_type: 'skill-check',
     activity_type: 'Checked Practice',
@@ -193,7 +215,11 @@ function rowForSkillCheckAttempt(attempt: SkillCheckAttemptRecord, exportTimesta
     answer_result_summary: attempt.submittedAnswer,
     deterministic_pass_fail: passed ? 'pass' : 'fail',
     evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
-    evidence_status_label: passed ? 'checked_practice_passed' : 'not_passed',
+    evidence_status_label: passed
+      ? 'checked_practice_passed'
+      : intrinsicallyCorrect
+        ? 'practice_only_after_prior_submission'
+        : 'not_passed',
     suspicion_flags: '',
   };
 }
@@ -211,6 +237,7 @@ function rowForReviewCandidate(attempt: SkillCheckAttemptRecord, exportTimestamp
         : 'incorrect';
   return {
     ...blankRow(exportTimestamp),
+    course: attempt.course,
     topic: attempt.topic,
     route_page_type: 'review',
     activity_type: 'Review',
@@ -227,6 +254,7 @@ function rowForReviewCandidate(attempt: SkillCheckAttemptRecord, exportTimestamp
 function rowForExamAttempt(attempt: Attempt, exportTimestamp: string): LocalProgressCsvRow {
   return {
     ...blankRow(exportTimestamp),
+    course: normalizeStudyCourseId(attempt.course),
     topic: attempt.topicDisplayName,
     route_page_type: 'exam-training',
     activity_type: 'Exam Training',
@@ -245,6 +273,7 @@ function rowForLearningActivity(attempt: LearningActivityAttempt, exportTimestam
   const isLearnMode = attempt.activityType === 'learn_mode';
   return {
     ...blankRow(exportTimestamp),
+    course: normalizeStudyCourseId(attempt.course),
     topic: attempt.topic ?? attempt.regionId,
     route_page_type: isLearnMode ? 'learn' : 'field-guide',
     activity_type: isLearnMode ? 'Learn' : (attempt.activityType ?? 'Learn'),
@@ -334,14 +363,14 @@ export function localProgressCsvRows(
     ? exportMetadataOrTimestamp
     : (exportMetadataOrTimestamp.submissionTimestamp ?? new Date().toISOString());
   const exportMetadata = normalizeExportMetadata(exportMetadataOrTimestamp, exportTimestamp);
-  const skillRows = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts)
+  const skillAttempts = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts);
+  const skillRows = skillAttempts
     .flatMap((attempt) => [
-      rowForSkillCheckAttempt(attempt, exportTimestamp),
+      rowForSkillCheckAttempt(attempt, skillAttempts, exportTimestamp),
       rowForReviewCandidate(attempt, exportTimestamp),
     ].filter((row): row is LocalProgressCsvRow => Boolean(row)));
-  const examRows = Array.isArray(progress.attempts)
-    ? progress.attempts.map((attempt) => rowForExamAttempt(attempt, exportTimestamp))
-    : [];
+  const examRows = normalizeExamAttempts(progress.attempts)
+    .map((attempt) => rowForExamAttempt(attempt, exportTimestamp));
   const learningRows = Array.isArray(progress.learningActivityAttempts)
     ? progress.learningActivityAttempts.map((attempt) => rowForLearningActivity(attempt, exportTimestamp))
     : [];

@@ -33,6 +33,7 @@
     'reporting_period',
     'submission_timestamp',
     'export_timestamp',
+    'course',
     'topic',
     'route_page_type',
     'activity_type',
@@ -328,6 +329,41 @@
     return Array.isArray(value) ? value : [];
   }
 
+  function normalizeStudyCourse(value) {
+    return String(value || '').toLowerCase() === 'p1' ? 'p1' : 'p3';
+  }
+
+  function activeStudyCourse() {
+    var declared = document.body?.getAttribute('data-course-id');
+    if (declared === 'p1' || declared === 'p3') return declared;
+    return window.location.pathname.split('/').filter(Boolean).includes('p1') ? 'p1' : 'p3';
+  }
+
+  function courseRegionLearningKey(course, regionId) {
+    return normalizeStudyCourse(course) + ':' + regionId;
+  }
+
+  function courseRegionLearningRecord(progress, course, regionId) {
+    var records = progress.regionLearning || {};
+    var normalizedCourse = normalizeStudyCourse(course);
+    var scoped = records[courseRegionLearningKey(normalizedCourse, regionId)];
+    if (scoped) return Object.assign({}, scoped, { course: normalizedCourse, regionId: regionId });
+    if (normalizedCourse === 'p3' && records[regionId]) {
+      return Object.assign({}, records[regionId], { course: 'p3', regionId: regionId });
+    }
+    return undefined;
+  }
+
+  function saveCourseRegionLearningRecord(progress, course, regionId, record) {
+    var normalizedCourse = normalizeStudyCourse(course);
+    progress.regionLearning = progress.regionLearning || {};
+    progress.regionLearning[courseRegionLearningKey(normalizedCourse, regionId)] = Object.assign({}, record, {
+      course: normalizedCourse,
+      regionId: regionId
+    });
+    return progress;
+  }
+
   function isRecord(value) {
     return Boolean(value && typeof value === 'object' && !Array.isArray(value));
   }
@@ -421,12 +457,12 @@
   function knowledgeSkillNodes(question) {
     if (safeArray(question.skillNodes).length) return question.skillNodes;
     var ids = knowledgeSkillNodeIds(question);
-    if (!ids.length) ids = [String(question.unit || question.topic || 'p3:unknown_skill')];
+    if (!ids.length) ids = [String(question.unit || question.topic || normalizeStudyCourse(question.course) + ':unknown_skill')];
     return ids.map(function (id) {
       return {
         id: id,
         label: question.topic || question.unit || '',
-        course: 'p3',
+        course: normalizeStudyCourse(question.course),
         topicId: question.primaryTopicId,
         regionId: question.mappedRegionId || question.regionId,
         source: question.skillRef === id
@@ -490,7 +526,7 @@
       timestamp: timestamp,
       question: {
         questionId: questions.length === 1 ? firstQuestion.question_id : input.assessment_id,
-        course: 'p3',
+        course: normalizeStudyCourse(firstQuestion.course),
         topic: input.unit || firstQuestion.topic,
         regionId: firstQuestion.regionId,
         primaryTopicId: firstQuestion.primaryTopicId,
@@ -1085,7 +1121,7 @@
 
   function isSkillCheckAttemptRecord(value) {
     return Boolean(value && typeof value === 'object'
-      && value.course === 'p3'
+      && (value.course === undefined || value.course === 'p1' || value.course === 'p3')
       && typeof value.attemptId === 'string'
       && typeof value.topic === 'string'
       && typeof value.skillId === 'string'
@@ -1097,18 +1133,22 @@
       && typeof value.revealedRepairStep === 'boolean'
       && Array.isArray(value.mistakeTags)
       && value.mistakeTags.every(function (tag) { return typeof tag === 'string'; })
-      && typeof value.timestamp === 'string');
+      && typeof value.timestamp === 'string'
+      && (value.retryVariantId === undefined || typeof value.retryVariantId === 'string')
+      && (value.strongEvidence === undefined || typeof value.strongEvidence === 'boolean'));
   }
 
   function normalizeSkillCheckAttempts(records) {
-    return safeArray(records).filter(isSkillCheckAttemptRecord);
+    return safeArray(records).filter(isSkillCheckAttemptRecord).map(function (attempt) {
+      return Object.assign({}, attempt, { course: normalizeStudyCourse(attempt.course) });
+    });
   }
 
   function isStudentAttemptHistoryRecord(value) {
     return Boolean(value && typeof value === 'object'
       && typeof value.id === 'string'
       && (value.source === 'checked_practice' || value.source === 'learn_mode')
-      && value.course === 'p3'
+      && (value.course === undefined || value.course === 'p1' || value.course === 'p3')
       && typeof value.questionId === 'string'
       && typeof value.response === 'string'
       && typeof value.correct === 'boolean'
@@ -1122,14 +1162,17 @@
     return {
       schemaVersion: 1,
       records: history && typeof history === 'object' && Array.isArray(history.records)
-        ? history.records.filter(isStudentAttemptHistoryRecord)
+        ? history.records.filter(isStudentAttemptHistoryRecord).map(function (record) {
+          return Object.assign({}, record, { course: normalizeStudyCourse(record.course) });
+        })
         : []
     };
   }
 
-  function nextStudentAttemptNumber(history, questionId) {
+  function nextStudentAttemptNumber(history, questionId, course) {
+    var normalizedCourse = normalizeStudyCourse(course);
     var numbers = normalizeStudentAttemptHistory(history).records
-      .filter(function (record) { return record.questionId === questionId; })
+      .filter(function (record) { return record.course === normalizedCourse && record.questionId === questionId; })
       .map(function (record) { return record.attemptNumber; });
     return numbers.length ? Math.max.apply(null, numbers) + 1 : 1;
   }
@@ -1138,7 +1181,7 @@
     var history = normalizeStudentAttemptHistory(progress.attemptHistory);
     var attemptNumber = typeof record.attemptNumber === 'number' && Number.isFinite(record.attemptNumber) && record.attemptNumber >= 1
       ? record.attemptNumber
-      : nextStudentAttemptNumber(history, record.questionId);
+      : nextStudentAttemptNumber(history, record.questionId, record.course);
     progress.attemptHistory = {
       schemaVersion: 1,
       records: history.records.concat(Object.assign({}, record, { attemptNumber: attemptNumber }))
@@ -1237,12 +1280,14 @@
   function localProgressSubmissionSummary(progress) {
     var skillAttempts = normalizeSkillCheckAttempts(progress.skillCheckAttempts);
     var reviewCandidates = skillAttempts.filter(function (attempt) {
-      return Boolean(reviewCsvRow(attempt, ''));
+      return Boolean(reviewCsvRow(attempt, '', skillAttempts));
     }).length;
     var examAttempts = safeArray(progress.attempts);
     return {
       checkedPracticeAttempts: skillAttempts.length,
-      checkedPracticePasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
+      checkedPracticePasses: skillAttempts.filter(function (attempt) {
+        return isPassingSkillCheckAttempt(attempt, skillAttempts);
+      }).length,
       reviewCandidates: reviewCandidates,
       selfMarkedExamAttempts: examAttempts.filter(function (attempt) { return attempt.selfMarked === true; }).length,
       learningActivityAttempts: safeArray(progress.learningActivityAttempts).length,
@@ -1250,6 +1295,25 @@
       knowledgeErrors: safeArray(progress.knowledge_errors).length,
       knowledgeInterventions: safeArray(progress.knowledge_interventions).length
     };
+  }
+
+  function progressForCourse(progress, course) {
+    var normalizedCourse = normalizeStudyCourse(course);
+    return Object.assign({}, progress, {
+      skillCheckAttempts: normalizeSkillCheckAttempts(progress.skillCheckAttempts).filter(function (attempt) {
+        return attempt.course === normalizedCourse;
+      }),
+      attempts: safeArray(progress.attempts).filter(function (attempt) {
+        return normalizeStudyCourse(attempt.course) === normalizedCourse;
+      }),
+      learningActivityAttempts: safeArray(progress.learningActivityAttempts).filter(function (attempt) {
+        return normalizeStudyCourse(attempt.course) === normalizedCourse;
+      }),
+      knowledge_state_updates: normalizedCourse === 'p3' ? safeArray(progress.knowledge_state_updates) : [],
+      knowledge_errors: normalizedCourse === 'p3' ? safeArray(progress.knowledge_errors) : [],
+      knowledge_interventions: normalizedCourse === 'p3' ? safeArray(progress.knowledge_interventions) : [],
+      knowledge_schedules: normalizedCourse === 'p3' ? safeArray(progress.knowledge_schedules) : []
+    });
   }
 
   function localProgressSummaryText(summary) {
@@ -1266,6 +1330,7 @@
   }
 
   function localProgressTeacherSummary(progress, requirements) {
+    progress = progressForCourse(progress, activeStudyCourse());
     var skillAttempts = normalizeSkillCheckAttempts(progress.skillCheckAttempts);
     var learningAttempts = safeArray(progress.learningActivityAttempts);
     var examAttempts = safeArray(progress.attempts);
@@ -1287,7 +1352,9 @@
     return {
       completeUnits: validRequirements.length ? completeUnits : undefined,
       incompleteUnits: validRequirements.length ? incompleteUnits : undefined,
-      totalCleanPasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
+      totalCleanPasses: skillAttempts.filter(function (attempt) {
+        return isPassingSkillCheckAttempt(attempt, skillAttempts);
+      }).length,
       hintUsedAttempts: skillAttempts.filter(function (attempt) { return attempt.usedHint; }).length
         + learningAttempts.filter(function (attempt) { return attempt && attempt.usedHint === true; }).length,
       revealedAnswerAttempts: skillAttempts.filter(function (attempt) { return attempt.revealedAnswer; }).length
@@ -1315,9 +1382,10 @@
     var gate = document.querySelector('[data-p3-exam-review-gate]');
     var requirements = gate ? parseExamReviewRequirements(gate) : [];
     var summary = localProgressTeacherSummary(progress, requirements);
+    var courseLabel = activeStudyCourse().toUpperCase();
     summaryNode.innerHTML = '<dl class="teacher-progress-summary-list">'
-      + '<div><dt>P3 units with clean Checked Practice pass</dt><dd>' + escapeText(teacherSummaryListValue(summary.completeUnits, 'None recorded yet')) + '</dd></div>'
-      + '<div><dt>P3 units still incomplete</dt><dd>' + escapeText(teacherSummaryListValue(summary.incompleteUnits, 'None')) + '</dd></div>'
+      + '<div><dt>' + courseLabel + ' units with clean Checked Practice pass</dt><dd>' + escapeText(teacherSummaryListValue(summary.completeUnits, 'None recorded yet')) + '</dd></div>'
+      + '<div><dt>' + courseLabel + ' units still incomplete</dt><dd>' + escapeText(teacherSummaryListValue(summary.incompleteUnits, 'None')) + '</dd></div>'
       + '<div><dt>Total clean Checked Practice passes</dt><dd>' + escapeText(teacherSummaryCountValue(summary.totalCleanPasses)) + '</dd></div>'
       + '<div><dt>Hint-used attempts</dt><dd>' + escapeText(teacherSummaryCountValue(summary.hintUsedAttempts)) + '</dd></div>'
       + '<div><dt>Revealed-answer attempts</dt><dd>' + escapeText(teacherSummaryCountValue(summary.revealedAnswerAttempts)) + '</dd></div>'
@@ -1334,9 +1402,10 @@
     });
   }
 
-  function submissionSummaryCsvRow(progress, exportTimestamp, metadata) {
+  function submissionSummaryCsvRow(progress, exportTimestamp, metadata, course) {
     return csvRowWithExportMetadata(Object.assign(blankCsvRow(exportTimestamp), {
-      topic: 'All P3 local progress',
+      course: course,
+      topic: course === 'p1' ? 'All P1 local progress' : 'All P3 local progress',
       route_page_type: 'export',
       activity_type: 'Submission Summary',
       item_id: metadata.submissionId,
@@ -1348,9 +1417,10 @@
     }), metadata);
   }
 
-  function skillCheckCsvRow(attempt, exportTimestamp) {
-    var passed = isCleanCheckedPracticeAttempt(attempt);
+  function skillCheckCsvRow(attempt, exportTimestamp, history) {
+    var passed = isPassingSkillCheckAttempt(attempt, history);
     return Object.assign(blankCsvRow(exportTimestamp), {
+      course: normalizeStudyCourse(attempt.course),
       topic: attempt.topic || '',
       route_page_type: 'skill-check',
       activity_type: 'Checked Practice',
@@ -1363,14 +1433,16 @@
     });
   }
 
-  function reviewCsvRow(attempt, exportTimestamp) {
+  function reviewCsvRow(attempt, exportTimestamp, history) {
     var tags = safeArray(attempt.mistakeTags).filter(Boolean);
-    var isCandidate = tags.length > 0 || !attempt.isCorrect || attempt.revealedAnswer || attempt.revealedRepairStep;
+    var cleanButNotStrong = isCleanCheckedPracticeAttempt(attempt) && !isPassingSkillCheckAttempt(attempt, history || [attempt]);
+    var isCandidate = tags.length > 0 || !attempt.isCorrect || attempt.revealedAnswer || attempt.revealedRepairStep || cleanButNotStrong;
     if (!isCandidate) return undefined;
     var state = attempt.revealedAnswer
       ? 'answer_revealed'
-      : attempt.revealedRepairStep ? 'repair_revealed' : attempt.isCorrect ? 'tagged_review' : 'incorrect';
+      : attempt.revealedRepairStep ? 'repair_revealed' : cleanButNotStrong ? 'practice_after_prior_submission' : attempt.isCorrect ? 'tagged_review' : 'incorrect';
     return Object.assign(blankCsvRow(exportTimestamp), {
+      course: normalizeStudyCourse(attempt.course),
       topic: attempt.topic || '',
       route_page_type: 'review',
       activity_type: 'Review',
@@ -1392,6 +1464,7 @@
       ? 'checked_practice_passed_self_marked_exam_practice'
       : 'self_marked_exam_practice_only';
     return Object.assign(blankCsvRow(exportTimestamp), {
+      course: normalizeStudyCourse(attempt.course),
       topic: attempt.topicDisplayName || '',
       route_page_type: 'exam-training',
       activity_type: 'Exam Training',
@@ -1409,6 +1482,7 @@
   function learningCsvRow(attempt, exportTimestamp) {
     var isLearnMode = attempt.activityType === 'learn_mode';
     return Object.assign(blankCsvRow(exportTimestamp), {
+      course: normalizeStudyCourse(attempt.course),
       topic: attempt.topic || attempt.regionId || '',
       route_page_type: isLearnMode ? 'learn' : 'field-guide',
       activity_type: isLearnMode ? 'Learn' : (attempt.activityType || 'Learn'),
@@ -1424,6 +1498,7 @@
 
   function knowledgeStateCsvRow(update, exportTimestamp) {
     return Object.assign(blankCsvRow(exportTimestamp), {
+      course: 'p3',
       topic: update.skillNodeId || '',
       route_page_type: 'knowledge-state',
       activity_type: 'Skill State Update',
@@ -1444,6 +1519,7 @@
 
   function knowledgeErrorCsvRow(error, exportTimestamp) {
     return Object.assign(blankCsvRow(exportTimestamp), {
+      course: 'p3',
       topic: error.primarySkillNodeId || '',
       route_page_type: 'knowledge-state',
       activity_type: 'Error Diagnostic',
@@ -1466,6 +1542,7 @@
       return candidate.interventionId === intervention.id;
     });
     return Object.assign(blankCsvRow(exportTimestamp), {
+      course: 'p3',
       topic: intervention.skillNodeId || '',
       route_page_type: 'knowledge-state',
       activity_type: 'Intervention Plan',
@@ -1486,9 +1563,12 @@
   }
 
   function buildLocalProgressCsv(progress, exportTimestamp, metadata) {
+    var course = activeStudyCourse();
+    progress = progressForCourse(progress, course);
     var exportMetadata = normalizeExportMetadata(metadata, exportTimestamp);
-    var skillRows = normalizeSkillCheckAttempts(progress.skillCheckAttempts).flatMap(function (attempt) {
-      return [skillCheckCsvRow(attempt, exportTimestamp), reviewCsvRow(attempt, exportTimestamp)].filter(Boolean);
+    var skillHistory = normalizeSkillCheckAttempts(progress.skillCheckAttempts);
+    var skillRows = skillHistory.flatMap(function (attempt) {
+      return [skillCheckCsvRow(attempt, exportTimestamp, skillHistory), reviewCsvRow(attempt, exportTimestamp, skillHistory)].filter(Boolean);
     });
     var examRows = safeArray(progress.attempts).map(function (attempt) {
       return examCsvRow(attempt, exportTimestamp);
@@ -1505,7 +1585,7 @@
     var knowledgeInterventionRows = safeArray(progress.knowledge_interventions).map(function (intervention) {
       return knowledgeInterventionCsvRow(intervention, progress.knowledge_schedules, exportTimestamp);
     });
-    var rows = [submissionSummaryCsvRow(progress, exportTimestamp, exportMetadata)]
+    var rows = [submissionSummaryCsvRow(progress, exportTimestamp, exportMetadata, course)]
       .concat(skillRows, examRows, learningRows, knowledgeStateRows, knowledgeErrorRows, knowledgeInterventionRows)
       .map(function (row) {
         return csvRowWithExportMetadata(row, exportMetadata);
@@ -1849,36 +1929,50 @@
     updateLocalProgressTeacherSummaries();
   }
 
-  function completionsFor(progress, regionId) {
-    var record = progress.regionLearning && progress.regionLearning[regionId];
+  function completionsFor(progress, regionId, course) {
+    var record = courseRegionLearningRecord(progress, course || activeStudyCourse(), regionId);
     var completions = record && record.fieldGuideTopicCompletions;
     return completions && typeof completions === 'object' ? completions : {};
   }
 
-  function fieldGuideCompletedCount(progress, regionId, total) {
-    var record = progress.regionLearning && progress.regionLearning[regionId];
+  function fieldGuideCompletedCount(progress, regionId, total, course) {
+    var normalizedCourse = course || activeStudyCourse();
+    var record = courseRegionLearningRecord(progress, normalizedCourse, regionId);
     if (record && record.fieldGuideCompletedAt) return total;
-    return Math.min(total, Object.keys(completionsFor(progress, regionId)).length);
+    return Math.min(total, Object.keys(completionsFor(progress, regionId, normalizedCourse)).length);
   }
 
-  function attemptsForRegion(progress, regionId) {
+  function attemptsForRegion(progress, regionId, course) {
+    var normalizedCourse = normalizeStudyCourse(course || activeStudyCourse());
     return progress.attempts.filter(function (attempt) {
-      return attempt.validatedRegionId === regionId || attempt.displayRegionId === regionId;
+      return normalizeStudyCourse(attempt.course) === normalizedCourse
+        && (attempt.validatedRegionId === regionId || attempt.displayRegionId === regionId);
     });
   }
 
-  function skillAttemptsForRegion(progress, regionId) {
+  function skillAttemptsForRegion(progress, regionId, course) {
+    var normalizedCourse = normalizeStudyCourse(course || activeStudyCourse());
     return progress.skillCheckAttempts.filter(function (attempt) {
-      return attempt.regionId === regionId;
+      return normalizeStudyCourse(attempt.course) === normalizedCourse && attempt.regionId === regionId;
     });
   }
 
-  function passingSkillAttemptsForRegion(progress, regionId) {
-    return skillAttemptsForRegion(progress, regionId).filter(isPassingSkillCheckAttempt);
+  function skillAttemptItemKey(attempt) {
+    return normalizeStudyCourse(attempt.course) + '\u0000' + attempt.checkId + '\u0000' + (attempt.retryVariantId || 'primary');
   }
 
-  function isPassingSkillCheckAttempt(attempt) {
-    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep);
+  function isPassingSkillCheckAttempt(attempt, history) {
+    if (!isCleanCheckedPracticeAttempt(attempt)) return false;
+    var normalized = normalizeSkillCheckAttempts(history || [attempt]);
+    var attemptIndex = normalized.findIndex(function (candidate) { return candidate.attemptId === attempt.attemptId; });
+    if (attemptIndex < 0) return false;
+    var key = skillAttemptItemKey(attempt);
+    return normalized.findIndex(function (candidate) { return skillAttemptItemKey(candidate) === key; }) === attemptIndex;
+  }
+
+  function passingSkillAttemptsForRegion(progress, regionId, course) {
+    var attempts = skillAttemptsForRegion(progress, regionId, course);
+    return attempts.filter(function (attempt) { return isPassingSkillCheckAttempt(attempt, attempts); });
   }
 
   function isCleanCheckedPracticeAttempt(attempt) {
@@ -1894,20 +1988,17 @@
     }
   }
 
-  function passedCheckIds(progress, requiredCheckIds, regionId) {
+  function passedCheckIds(progress, requiredCheckIds, regionId, course) {
+    var attempts = skillAttemptsForRegion(progress, regionId, course);
     return requiredCheckIds.filter(function (checkId) {
-      return progress.skillCheckAttempts.some(function (attempt) {
-        return attempt.regionId === regionId && attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt);
+      return attempts.some(function (attempt) {
+        return attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt, attempts);
       });
     });
   }
 
-  function cleanPassedCheckIds(progress, requiredCheckIds, regionId) {
-    return requiredCheckIds.filter(function (checkId) {
-      return progress.skillCheckAttempts.some(function (attempt) {
-        return attempt.regionId === regionId && attempt.checkId === checkId && isCleanCheckedPracticeAttempt(attempt);
-      });
-    });
+  function cleanPassedCheckIds(progress, requiredCheckIds, regionId, course) {
+    return passedCheckIds(progress, requiredCheckIds, regionId, course);
   }
 
   function p3Attempts(progress) {
@@ -2315,7 +2406,8 @@
   function completeFieldGuideTopic(regionId, topicId, title) {
     var progress = loadProgress();
     var now = new Date().toISOString();
-    var current = progress.regionLearning[regionId] || { regionId: regionId };
+    var course = activeStudyCourse();
+    var current = courseRegionLearningRecord(progress, course, regionId) || { course: course, regionId: regionId };
     var completions = Object.assign({}, current.fieldGuideTopicCompletions || {});
     completions[topicId] = completions[topicId] || {
       topicId: topicId,
@@ -2331,13 +2423,13 @@
       return Boolean(completions[id]);
     });
 
-    progress.regionLearning[regionId] = Object.assign({}, current, {
+    saveCourseRegionLearningRecord(progress, course, regionId, Object.assign({}, current, {
       regionId: regionId,
       fieldGuideStartedAt: current.fieldGuideStartedAt || now,
       fieldGuideCompletedAt: allComplete ? (current.fieldGuideCompletedAt || now) : current.fieldGuideCompletedAt,
       fieldGuideTopicCompletions: completions,
       updatedAt: now
-    });
+    }));
     saveProgress(progress);
     updateProgressText();
   }
@@ -2348,13 +2440,14 @@
     });
     var progress = loadProgress();
     var now = new Date().toISOString();
-    var current = progress.regionLearning[regionId] || { regionId: regionId };
-    progress.regionLearning[regionId] = Object.assign({}, current, {
+    var course = activeStudyCourse();
+    var current = courseRegionLearningRecord(progress, course, regionId) || { course: course, regionId: regionId };
+    saveCourseRegionLearningRecord(progress, course, regionId, Object.assign({}, current, {
       regionId: regionId,
       fieldGuideStartedAt: current.fieldGuideStartedAt || now,
       fieldGuideCompletedAt: current.fieldGuideCompletedAt || now,
       updatedAt: now
-    });
+    }));
     saveProgress(progress);
     updateProgressText();
   }
@@ -2362,7 +2455,8 @@
   function completeLearnStepInProgress(progress, regionId, stepId, title, attemptId) {
     if (!regionId || !stepId) return progress;
     var now = new Date().toISOString();
-    var current = progress.regionLearning[regionId] || { regionId: regionId };
+    var course = activeStudyCourse();
+    var current = courseRegionLearningRecord(progress, course, regionId) || { course: course, regionId: regionId };
     var completions = Object.assign({}, current.fieldGuideTopicCompletions || {});
     completions[stepId] = completions[stepId] || {
       topicId: stepId,
@@ -2381,13 +2475,13 @@
       return Boolean(completions[id] || completions[legacyId]);
     });
 
-    progress.regionLearning[regionId] = Object.assign({}, current, {
+    saveCourseRegionLearningRecord(progress, course, regionId, Object.assign({}, current, {
       regionId: regionId,
       fieldGuideStartedAt: current.fieldGuideStartedAt || now,
       fieldGuideCompletedAt: allComplete ? (current.fieldGuideCompletedAt || now) : current.fieldGuideCompletedAt,
       fieldGuideTopicCompletions: completions,
       updatedAt: now
-    });
+    }));
     return progress;
   }
 
@@ -4459,10 +4553,12 @@
     var history = normalizeStudentAttemptHistory(progress.attemptHistory);
     var source = section.getAttribute('data-attempt-history-source') || '';
     var regionId = section.getAttribute('data-attempt-history-region') || '';
+    var course = normalizeStudyCourse(section.getAttribute('data-course-id') || activeStudyCourse());
     var limit = Number(section.getAttribute('data-attempt-history-limit') || 60);
     return history.records
       .filter(function (record) {
         return (!source || record.source === source)
+          && record.course === course
           && (!regionId || record.regionId === regionId);
       })
       .sort(function (a, b) {
@@ -4595,10 +4691,11 @@
 
   function historyRecordFromForm(form, attemptId, source, submittedAnswer, isCorrect, timestamp) {
     var questionId = form.getAttribute('data-check-id') || '';
+    var course = normalizeStudyCourse(form.getAttribute('data-course-id') || activeStudyCourse());
     return {
       id: attemptId + ':history',
       source: source,
-      course: 'p3',
+      course: course,
       questionId: questionId,
       questionTitle: form.getAttribute('data-question-title') || form.getAttribute('data-topic') || questionId,
       topic: form.getAttribute('data-topic') || '',
@@ -4611,6 +4708,7 @@
       explanation: form.getAttribute('data-explanation') || '',
       timestamp: timestamp,
       retryHref: currentPageRetryHref(form),
+      retryVariantId: form.getAttribute('data-retry-variant-id') || undefined,
       relatedAttemptId: attemptId
     };
   }
@@ -4620,7 +4718,7 @@
     var now = new Date().toISOString();
     var attempt = {
       attemptId: createId('skill_attempt'),
-      course: 'p3',
+      course: normalizeStudyCourse(form.getAttribute('data-course-id') || activeStudyCourse()),
       topic: form.getAttribute('data-topic') || '',
       skillId: form.getAttribute('data-skill-id') || '',
       checkId: form.getAttribute('data-check-id') || '',
@@ -4630,9 +4728,14 @@
       usedHint: form.getAttribute('data-used-hint') === 'true',
       revealedAnswer: form.getAttribute('data-revealed-answer') === 'true',
       revealedRepairStep: form.getAttribute('data-revealed-repair-step') === 'true',
+      retryVariantId: form.getAttribute('data-retry-variant-id') || undefined,
       mistakeTags: selectedMistakeTags(form),
       timestamp: now
     };
+    attempt.strongEvidence = isCleanCheckedPracticeAttempt(attempt)
+      && !progress.skillCheckAttempts.some(function (candidate) {
+        return skillAttemptItemKey(candidate) === skillAttemptItemKey(attempt);
+      });
     progress.skillCheckAttempts.push(attempt);
     progress = appendStudentAttemptHistoryRecord(
       progress,
@@ -4650,6 +4753,7 @@
       revealedAnswer: attempt.revealedAnswer || attempt.revealedRepairStep,
       questions: [{
         question_id: attempt.checkId,
+        course: attempt.course,
         unit: attempt.regionId || attempt.topic,
         topic: attempt.topic,
         regionId: attempt.regionId,
@@ -4697,6 +4801,7 @@
     var completesStep = Boolean(checkResult.isCorrect && (!requiresSimilar || variant === 'similar'));
     var attempt = {
       id: createId('learn_attempt'),
+      course: normalizeStudyCourse(form.getAttribute('data-course-id') || activeStudyCourse()),
       regionId: regionId,
       activityType: 'learn_mode',
       activityId: form.getAttribute('data-check-id') || stepId,
@@ -4735,9 +4840,28 @@
 
   function updateSkillCheckFormState(form, progress) {
     var checkId = form.getAttribute('data-check-id') || '';
-    var passingAttempt = progress.skillCheckAttempts.find(function (attempt) {
-      return attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt);
+    var course = normalizeStudyCourse(form.getAttribute('data-course-id') || activeStudyCourse());
+    var courseAttempts = progress.skillCheckAttempts.filter(function (attempt) {
+      return normalizeStudyCourse(attempt.course) === course;
     });
+    var passingAttempt = courseAttempts.find(function (attempt) {
+      return attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt, courseAttempts);
+    });
+    if (course === 'p1' && form.getAttribute('data-retry-variant-id') === 'primary') {
+      var skillId = form.getAttribute('data-skill-id') || checkId;
+      var primaryAttempts = courseAttempts.filter(function (attempt) {
+        return attempt.checkId === checkId && (attempt.retryVariantId || 'primary') === 'primary';
+      });
+      var primaryPassed = primaryAttempts.some(function (attempt) {
+        return isPassingSkillCheckAttempt(attempt, courseAttempts);
+      });
+      var needsRetry = primaryAttempts.some(function (attempt) {
+        return !attempt.isCorrect || attempt.usedHint || attempt.revealedAnswer || attempt.revealedRepairStep;
+      }) && !primaryPassed;
+      document.querySelectorAll('[data-p1-retry-for]').forEach(function (card) {
+        if (card.getAttribute('data-p1-retry-for') === skillId) card.hidden = !needsRetry;
+      });
+    }
     var next = form.querySelector('[data-skill-check-inline-next]');
     if (passingAttempt) {
       form.classList.add('is-passed');
@@ -5016,6 +5140,7 @@
     var attempt = applyExamAttemptIntegrity({
       id: createId('attempt'),
       profileId: PROFILE_ID,
+      course: normalizeStudyCourse(form.getAttribute('data-course-id') || form.getAttribute('data-paper-family') || activeStudyCourse()),
       questionId: form.getAttribute('data-question-id') || '',
       paperFamily: form.getAttribute('data-paper-family') || 'p3',
       paper: form.getAttribute('data-paper') || undefined,
@@ -5057,6 +5182,7 @@
         var gainedIds = new Set(safeArray(part.markPointIds));
         return {
           question_id: partQuestionId,
+          course: attempt.course,
           unit: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
           topic: attempt.topicDisplayName,
           regionId: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId,
@@ -5068,7 +5194,7 @@
             return {
               id: id,
               label: attempt.topicDisplayName,
-              course: 'p3',
+              course: attempt.course,
               topicId: part.primaryTopicId,
               regionId: part.mappedRegionId || attempt.validatedRegionId || attempt.displayRegionId,
               source: part.skillRef === id ? 'reviewed_skill_map' : part.primaryTopicId === id ? 'topic_route' : 'exam_part'
@@ -5093,6 +5219,7 @@
         };
       }) : [{
         question_id: attempt.questionId,
+        course: attempt.course,
         unit: attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
         topic: attempt.topicDisplayName,
         regionId: attempt.validatedRegionId || attempt.displayRegionId,
@@ -5100,7 +5227,7 @@
         skillNodes: [{
           id: attempt.validatedRegionId || attempt.displayRegionId || attempt.topicDisplayName,
           label: attempt.topicDisplayName,
-          course: 'p3',
+          course: attempt.course,
           regionId: attempt.validatedRegionId || attempt.displayRegionId,
           source: attempt.validatedRegionId || attempt.displayRegionId ? 'topic_route' : 'fallback_region'
         }],
@@ -6185,6 +6312,81 @@
     });
   }
 
+  function setupP1StartingCheck() {
+    document.querySelectorAll('[data-p1-starting-check]').forEach(function (form) {
+      if (!(form instanceof HTMLFormElement)) return;
+      var report = document.querySelector('[data-p1-starting-check-report]');
+      var summary = report?.querySelector('[data-p1-starting-check-summary]');
+      var links = report?.querySelector('[data-p1-starting-check-links]');
+      var savedDraft = loadProgress().p1StartingCheckDraft;
+      if (savedDraft && typeof savedDraft === 'object') {
+        form.querySelectorAll('input[type="radio"]').forEach(function (input) {
+          if (!(input instanceof HTMLInputElement)) return;
+          input.checked = savedDraft[input.name] === input.value;
+        });
+      }
+
+      form.addEventListener('change', function () {
+        var progress = loadProgress();
+        var draft = {};
+        form.querySelectorAll('input[type="radio"]:checked').forEach(function (input) {
+          if (input instanceof HTMLInputElement) draft[input.name] = input.value;
+        });
+        progress.p1StartingCheckDraft = draft;
+        saveProgress(progress);
+      });
+
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var misses = Array.from(form.querySelectorAll('[data-p1-starting-check-question]')).flatMap(function (question) {
+          var selected = question.querySelector('input[type="radio"]:checked');
+          var expected = question.getAttribute('data-expected-option') || '';
+          if (selected instanceof HTMLInputElement && selected.value === expected) return [];
+          return [{
+            topicSlug: question.getAttribute('data-topic-slug') || '',
+            topicName: question.getAttribute('data-topic-name') || 'P1 topic',
+            href: question.getAttribute('data-topic-href') || '../topics/'
+          }];
+        }).slice(0, 2);
+        if (!misses.length) {
+          var first = form.querySelector('[data-p1-starting-check-question]');
+          if (first) misses = [{
+            topicSlug: first.getAttribute('data-topic-slug') || 'quadratics',
+            topicName: first.getAttribute('data-topic-name') || 'Quadratics',
+            href: first.getAttribute('data-topic-href') || '../topics/quadratics/learn/'
+          }];
+        }
+        if (summary) summary.textContent = misses.length === 1
+          ? 'Start with ' + misses[0].topicName + ', or choose any other P1 unit.'
+          : 'Start with ' + misses.map(function (item) { return item.topicName; }).join(' and ') + ', or choose any other P1 unit.';
+        if (links) links.innerHTML = misses.map(function (item) {
+          return '<a class="button primary-button" href="' + escapeText(item.href) + '">Start ' + escapeText(item.topicName) + ' Learn</a>';
+        }).join('');
+        if (report) {
+          report.hidden = false;
+          report.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        var progress = loadProgress();
+        progress.diagnosticReports = safeArray(progress.diagnosticReports).concat({
+          id: createId('p1_starting_check'),
+          course: 'p1',
+          advisory: true,
+          completionCredit: false,
+          recommendedTopicSlugs: misses.map(function (item) { return item.topicSlug; }),
+          submittedAt: new Date().toISOString()
+        });
+        saveProgress(progress);
+      });
+
+      form.addEventListener('reset', function () {
+        if (report) report.hidden = true;
+        var progress = loadProgress();
+        delete progress.p1StartingCheckDraft;
+        saveProgress(progress);
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     document.documentElement.classList.add('static-enhanced');
     setupThemeToggle();
@@ -6192,6 +6394,7 @@
     setupProgressTransferControls();
     setupProgressExportForms();
     setupP3DiagnosticFlow();
+    setupP1StartingCheck();
     setupPracticeStacks();
     setupOneCardFlow();
     setupExamQuestionFlow();

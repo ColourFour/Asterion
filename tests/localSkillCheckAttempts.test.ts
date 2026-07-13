@@ -136,16 +136,34 @@ describe('local Skill Check attempts', () => {
     });
   });
 
-  it('allows retry after a wrong answer without counting the wrong answer as passed', () => {
+  it('keeps a later correction to the same item as practice-only evidence', () => {
     const state = skillCheckPassState([
       attempt({ checkId: 'check-a', attemptId: 'wrong', isCorrect: false, submittedAnswer: '5' }),
       attempt({ checkId: 'check-a', attemptId: 'retry', isCorrect: true, submittedAnswer: '4' }),
     ], ['check-a']);
 
     expect(state).toMatchObject({
+      passed: false,
+      passedCheckIds: [],
+      attemptedCheckIds: ['check-a'],
+    });
+  });
+
+  it('accepts the first clean submission to a distinct retry variant as strong evidence', () => {
+    const state = skillCheckPassState([
+      attempt({ checkId: 'check-a', attemptId: 'wrong', isCorrect: false, submittedAnswer: '5' }),
+      attempt({
+        checkId: 'check-a',
+        attemptId: 'retry-variant',
+        retryVariantId: 'variant-b',
+        isCorrect: true,
+        submittedAnswer: '7',
+      }),
+    ], ['check-a']);
+
+    expect(state).toMatchObject({
       passed: true,
       passedCheckIds: ['check-a'],
-      attemptedCheckIds: ['check-a'],
     });
   });
 
@@ -171,6 +189,20 @@ describe('local Skill Check attempts', () => {
         relatedAttemptId: 'retry',
       }),
     ]);
+  });
+
+  it('persists derived strong-evidence state for primary and distinct retry variants', () => {
+    const storage = memoryStorage();
+    saveSkillCheckAttempt(storage, attempt({ attemptId: 'wrong', checkId: 'check-a', isCorrect: false }));
+    saveSkillCheckAttempt(storage, attempt({ attemptId: 'same-item-correction', checkId: 'check-a', isCorrect: true }));
+    saveSkillCheckAttempt(storage, attempt({
+      attemptId: 'clean-variant',
+      checkId: 'check-a',
+      retryVariantId: 'variant-b',
+      isCorrect: true,
+    }));
+
+    expect(loadSkillCheckAttempts(storage).map((record) => record.strongEvidence)).toEqual([false, false, true]);
   });
 
   it('normalizes malformed response history without breaking old progress', () => {
@@ -224,15 +256,46 @@ describe('local Skill Check attempts', () => {
     ]);
   });
 
-  it('records hint use without blocking a correct unrevealed pass', () => {
+  it('records hint use and keeps the attempt out of strong evidence', () => {
     const hintedAttempt = attempt({ checkId: 'check-a', usedHint: true });
     const state = skillCheckPassState([hintedAttempt], ['check-a']);
 
     expect(hintedAttempt.usedHint).toBe(true);
     expect(state).toMatchObject({
-      passed: true,
-      passedCheckIds: ['check-a'],
+      passed: false,
+      passedCheckIds: [],
     });
+  });
+
+  it('keeps P1 and P3 passes isolated even when check IDs match', () => {
+    const attempts = [
+      attempt({ attemptId: 'p3-pass', checkId: 'shared-check', course: 'p3' }),
+      attempt({ attemptId: 'p1-wrong', checkId: 'shared-check', course: 'p1', isCorrect: false }),
+    ];
+
+    expect(skillCheckPassState(attempts, ['shared-check'], 'p3').passed).toBe(true);
+    expect(skillCheckPassState(attempts, ['shared-check'], 'p1').passed).toBe(false);
+  });
+
+  it('defaults legacy records without a course to P3', () => {
+    const legacy = { ...attempt({ attemptId: 'legacy' }) } as Record<string, unknown>;
+    delete legacy.course;
+
+    expect(normalizeSkillCheckLocalAttempts([legacy])).toEqual([
+      expect.objectContaining({ attemptId: 'legacy', course: 'p3' }),
+    ]);
+    expect(normalizeStudentAttemptHistory({
+      schemaVersion: 1,
+      records: [{
+        id: 'legacy-history',
+        source: 'checked_practice',
+        questionId: 'q1',
+        response: '2',
+        correct: true,
+        timestamp: '2026-07-07T00:00:00.000Z',
+        attemptNumber: 1,
+      }],
+    }).records[0]).toMatchObject({ course: 'p3' });
   });
 
   it('requires all configured checkable items to pass', () => {

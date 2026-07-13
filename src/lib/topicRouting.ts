@@ -1,5 +1,5 @@
 import type { RegionDefinition } from '../types';
-import { isValidP3RegionId, P3_TOPIC_ID_TO_REGION_ID, P3_TOPIC_ID_TO_REGION_NAME } from './p3SkillContract';
+import { P3_TOPIC_ID_TO_REGION_ID, P3_TOPIC_ID_TO_REGION_NAME } from './p3SkillContract';
 import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
 
 export interface TopicRoutingMetadata {
@@ -26,6 +26,11 @@ export function regionForTopicRouting(
   routing: TopicRoutingMetadata | undefined,
   regions: RegionDefinition[],
 ): RegionDefinition | undefined {
-  if (!isValidP3RegionId(routing?.mappedRegionId)) return undefined;
-  return regions.find((region) => region.id === routing.mappedRegionId);
+  if (!routing) return undefined;
+  if (routing.mappedRegionId) {
+    const mapped = regions.find((region) => region.id === routing.mappedRegionId);
+    if (mapped) return mapped;
+  }
+  if (!routing.primaryTopicId) return undefined;
+  return regions.find((region) => region.topicIds?.includes(routing.primaryTopicId as string));
 }

@@ -1,5 +1,5 @@
 import type { NormalizedQuestion, PaperFamily, QuestionRouteEvidence, QuestionTopicRouting, RegionDefinition, WorldDefinition } from '../types';
-import { isValidP3RegionId, P3_REGION_DEFINITIONS } from './p3SkillContract';
+import { P3_REGION_DEFINITIONS, P3_TOPIC_ID_TO_REGION_ID } from './p3SkillContract';
 import type { QuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily } from './resolveAssetPath';
 import { regionForTopicRouting } from './topicRouting';
@@ -12,6 +12,9 @@ export const P3_COURSE_MAP: WorldDefinition = {
   paperFamily: 'p3',
   regions: P3_REGION_DEFINITIONS.map(({ syllabusTopics: _syllabusTopics, subtopics, matchTerms, ...region }) => ({
     ...region,
+    topicIds: Object.entries(P3_TOPIC_ID_TO_REGION_ID)
+      .filter(([, regionId]) => regionId === region.id)
+      .map(([topicId]) => topicId),
     subtopics: [...subtopics],
     matchTerms: [...matchTerms],
   })),
@@ -71,7 +74,7 @@ function fallbackLabelsForQuestion(question: NormalizedQuestion): string[] {
   ].filter((value): value is string => Boolean(value));
 }
 
-export function matchRegionForLabels(labels: Array<string | undefined>, world: WorldDefinition = P3_COURSE_MAP): RegionDefinition | undefined {
+export function matchRegionForLabels(labels: Array<string | undefined>, world: WorldDefinition): RegionDefinition | undefined {
   const normalizedLabels = labels.map(normalizeLabel).filter(Boolean);
   const scored = world.regions.map((region) => {
     const terms = [...region.matchTerms, region.name, ...region.subtopics].map(normalizeLabel);
@@ -94,12 +97,12 @@ function unique(values: string[]): string[] {
   return Array.from(new Set(values.filter(Boolean)));
 }
 
-function p3RegionIdsForRouting(routing: QuestionTopicRouting | undefined): string[] {
+function regionIdsForRouting(routing: QuestionTopicRouting | undefined, world: WorldDefinition): string[] {
   if (!routing) return [];
   return unique([
     routing.mappedRegionId,
     ...(routing.topicDistribution ?? []).map((item) => item.mappedRegionId),
-  ].filter((value): value is string => isValidP3RegionId(value)));
+  ].filter((value): value is string => Boolean(value && world.regions.some((region) => region.id === value))));
 }
 
 function reviewReasonLooksAmbiguous(reason: string): boolean {
@@ -114,12 +117,13 @@ function unresolvedReviewReasonCodes(routing: QuestionTopicRouting | undefined):
   ]);
 }
 
-function topicIdLooksP3(topicId: string | undefined): boolean {
-  return Boolean(topicId && /^9709_p3_topic_/i.test(topicId));
+function topicIdLooksForWorld(topicId: string | undefined, world: WorldDefinition): boolean {
+  if (!topicId) return false;
+  return new RegExp(`^9709_${world.paperFamily}_topic_`, 'i').test(topicId);
 }
 
-function topicIdLooksPrerequisite(topicId: string | undefined): boolean {
-  return Boolean(topicId && /^9709_p[12]_topic_/i.test(topicId) && !topicIdLooksP3(topicId));
+function topicIdLooksLikeAnotherPureComponent(topicId: string | undefined, world: WorldDefinition): boolean {
+  return Boolean(topicId && /^9709_p[13]_topic_/i.test(topicId) && !topicIdLooksForWorld(topicId, world));
 }
 
 function hasTopicRoutingAuthority(routing: QuestionTopicRouting | undefined): boolean {
@@ -178,18 +182,17 @@ function routeEvidence(
     evidenceUsed: routing?.evidenceUsed,
     reviewReasons: routing?.reviewReasons,
     matchedLabels: source === 'fallback-label' ? fallbackLabelsForQuestion(question) : undefined,
-    candidateRegionIds: p3RegionIdsForRouting(routing).filter((regionId) => world.regions.some((item) => item.id === regionId)),
+    candidateRegionIds: regionIdsForRouting(routing, world),
   };
 }
 
-export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: WorldDefinition = P3_COURSE_MAP): QuestionRouteEvidence {
+export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: WorldDefinition): QuestionRouteEvidence {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) {
     return routeEvidence('not-P3', 'paper-family', question, world, ['non-p3-paper-family']);
   }
 
   const routedRegion = regionForTopicRouting(question.topicRouting, world.regions);
-  const candidateRegionIds = p3RegionIdsForRouting(question.topicRouting)
-    .filter((regionId) => world.regions.some((region) => region.id === regionId));
+  const candidateRegionIds = regionIdsForRouting(question.topicRouting, world);
   const hasRoutingAuthority = hasTopicRoutingAuthority(question.topicRouting);
   const fallbackRegion = fallbackDisplayRegion(question, world);
 
@@ -200,7 +203,7 @@ export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: 
     }
 
     if (candidateRegionIds.length > 1) {
-      return routeEvidence('ambiguous-route', 'topic-routing', question, world, ['multiple-p3-candidate-regions'], routedRegion, routedRegion ?? fallbackRegion);
+      return routeEvidence('ambiguous-route', 'topic-routing', question, world, ['multiple-course-candidate-regions'], routedRegion, routedRegion ?? fallbackRegion);
     }
 
     if (question.topicRouting?.reviewRequired) {
@@ -227,9 +230,9 @@ export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: 
     }
 
     if (question.topicRouting?.primaryTopicId) {
-      const status: QuestionRouteEvidenceStatus = topicIdLooksPrerequisite(question.topicRouting.primaryTopicId)
+      const status: QuestionRouteEvidenceStatus = topicIdLooksLikeAnotherPureComponent(question.topicRouting.primaryTopicId, world)
         ? 'prerequisite-only'
-        : topicIdLooksP3(question.topicRouting.primaryTopicId)
+        : topicIdLooksForWorld(question.topicRouting.primaryTopicId, world)
           ? 'missing-route'
           : 'not-P3';
       return routeEvidence(status, 'topic-routing', question, world, ['unmapped-topic-routing-id'], undefined, fallbackRegion);
@@ -250,16 +253,20 @@ export function inferQuestionRouteEvidence(question: NormalizedQuestion, world: 
   return routeEvidence('missing-route', 'none', question, world, ['no-topic-routing-record']);
 }
 
-export function matchRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_COURSE_MAP): RegionDefinition | undefined {
+export function matchRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition): RegionDefinition | undefined {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) return undefined;
-  const routeEvidence = question.routeEvidence ?? inferQuestionRouteEvidence(question, world);
+  const routeEvidence = world === P3_COURSE_MAP
+    ? question.routeEvidence ?? inferQuestionRouteEvidence(question, world)
+    : inferQuestionRouteEvidence(question, world);
   if (routeEvidence.status !== 'clean') return undefined;
   return regionById(routeEvidence.validatedRegionId, world);
 }
 
-export function matchDisplayRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition = P3_COURSE_MAP): RegionDefinition | undefined {
+export function matchDisplayRegionForQuestion(question: NormalizedQuestion, world: WorldDefinition): RegionDefinition | undefined {
   if (!isPaperFamilyQuestion(question, world.paperFamily)) return undefined;
-  const routeEvidence = question.routeEvidence ?? inferQuestionRouteEvidence(question, world);
+  const routeEvidence = world === P3_COURSE_MAP
+    ? question.routeEvidence ?? inferQuestionRouteEvidence(question, world)
+    : inferQuestionRouteEvidence(question, world);
   const displayRegion = regionById(routeEvidence.displayRegionId, world);
   if (displayRegion) return displayRegion;
   const routedRegion = regionForTopicRouting(question.topicRouting, world.regions);
@@ -275,9 +282,13 @@ export function isP3Question(question: NormalizedQuestion): boolean {
   return isPaperFamilyQuestion(question, 'p3');
 }
 
-export function filterQuestionsForRegion(questions: NormalizedQuestion[], region: RegionDefinition, paperFamily: PaperFamily = 'p3'): NormalizedQuestion[] {
+export function filterQuestionsForRegion(
+  questions: NormalizedQuestion[],
+  region: RegionDefinition,
+  world: WorldDefinition,
+): NormalizedQuestion[] {
   return questions.filter((question) => (
-    isPaperFamilyQuestion(question, paperFamily)
-    && matchRegionForQuestion(question)?.id === region.id
+    isPaperFamilyQuestion(question, world.paperFamily)
+    && matchRegionForQuestion(question, world)?.id === region.id
   ));
 }

@@ -255,7 +255,7 @@ describe('P3 topic-pack exam-training refresh', () => {
 
   it('does not duplicate the same source question on a topic exam-training page', () => {
     for (const region of P3_COURSE_MAP.regions) {
-      const visibleQuestions = filterTrainableQuestionsForRegion(normalizedQuestions, region).slice(0, 8);
+      const visibleQuestions = filterTrainableQuestionsForRegion(normalizedQuestions, region, P3_COURSE_MAP).slice(0, 8);
       const sourceKeys = visibleQuestions.map(importedSourceKey);
       expect(new Set(sourceKeys).size, region.id).toBe(sourceKeys.length);
     }
@@ -265,7 +265,7 @@ describe('P3 topic-pack exam-training refresh', () => {
     for (const [slug, minimum] of Object.entries(priorityTopicMinimums)) {
       const region = P3_COURSE_MAP.regions.find((candidate) => candidate.id === slug);
       expect(region, slug).toBeDefined();
-      const visibleCount = filterTrainableQuestionsForRegion(normalizedQuestions, region!).slice(0, 8).length;
+      const visibleCount = filterTrainableQuestionsForRegion(normalizedQuestions, region!, P3_COURSE_MAP).slice(0, 8).length;
       expect(visibleCount, slug).toBeGreaterThanOrEqual(minimum);
     }
   });

@@ -1,13 +1,17 @@
 import { getFieldGuideTopicsForRegion } from '../data/fieldGuideTopics';
 import { getLearnStepsForRegion } from '../data/learnModeLessons';
 import { COURSES, P3_COURSE_ID, type CourseId } from '../data/courses';
-import { isPassingSkillCheckAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
+import { P1_STUDY_TOPICS as P1_CONTRACT_TOPICS } from '../data/p1CourseContract';
+import { isStrongSkillCheckEvidenceAttempt, normalizeSkillCheckLocalAttempts } from '../skill-checks/localAttempts';
 import type { RegionDefinition, RegionLearningRecord, RegionProgress, SkillCheckAttemptRecord, StoredProgress } from '../types';
+import { getCourseRegionLearning } from './courseProgress';
 import { P3_COURSE_MAP } from './worldMap';
+import { P1_COURSE_MAP } from './p1CourseMap';
 
 export type TopicStudyPage = 'field-guide' | 'skill-check' | 'exam-training';
 
 export interface StudyTopic {
+  courseId: CourseId;
   regionId: string;
   slug: string;
   name: string;
@@ -28,6 +32,7 @@ export interface TopicProgressSummary {
 
 export const STUDY_TOPICS: StudyTopic[] = [
   {
+    courseId: 'p3',
     regionId: 'algebra',
     slug: 'algebra',
     name: 'Algebra',
@@ -36,6 +41,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: 'f(x), \\; P(x), \\; |x|, \\; (1+x)^n',
   },
   {
+    courseId: 'p3',
     regionId: 'logarithmic-and-exponential-functions',
     slug: 'logarithmic-and-exponential-functions',
     name: 'Logarithmic and Exponential Functions',
@@ -44,6 +50,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\log_a x, \\; e^x, \\; y = ab^x',
   },
   {
+    courseId: 'p3',
     regionId: 'trigonometry',
     slug: 'trigonometry',
     name: 'Trigonometry',
@@ -52,6 +59,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\sin x, \\; \\cos x, \\; \\tan x',
   },
   {
+    courseId: 'p3',
     regionId: 'differentiation',
     slug: 'differentiation',
     name: 'Differentiation',
@@ -60,6 +68,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\frac{dy}{dx}, \\; f^{\\prime}(x), \\; \\frac{dy/dt}{dx/dt}',
   },
   {
+    courseId: 'p3',
     regionId: 'integration',
     slug: 'integration',
     name: 'Integration',
@@ -68,6 +77,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\int f(x)\\,dx, \\; \\int_a^b f(x)\\,dx',
   },
   {
+    courseId: 'p3',
     regionId: 'numerical-solution-of-equations',
     slug: 'numerical-solution-of-equations',
     name: 'Numerical Solution of Equations',
@@ -76,6 +86,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: 'x_{n+1}=g(x_n), \\; f(a)f(b)<0',
   },
   {
+    courseId: 'p3',
     regionId: 'vectors',
     slug: 'vectors',
     name: 'Vectors',
@@ -84,6 +95,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\mathbf{r}=\\mathbf{a}+\\lambda\\mathbf{b}, \\; \\mathbf{a}\\cdot\\mathbf{b}',
   },
   {
+    courseId: 'p3',
     regionId: 'differential-equations',
     slug: 'differential-equations',
     name: 'Differential Equations',
@@ -92,6 +104,7 @@ export const STUDY_TOPICS: StudyTopic[] = [
     headerFormula: '\\frac{dy}{dx}=f(x,y), \\; y(x_0)=y_0',
   },
   {
+    courseId: 'p3',
     regionId: 'complex-numbers',
     slug: 'complex-numbers',
     name: 'Complex Numbers',
@@ -101,23 +114,38 @@ export const STUDY_TOPICS: StudyTopic[] = [
   },
 ];
 
-const topicsByRegionId = new Map(STUDY_TOPICS.map((topic) => [topic.regionId, topic]));
-const topicsBySlug = new Map(STUDY_TOPICS.map((topic) => [topic.slug, topic]));
+export const P1_STUDY_TOPICS: StudyTopic[] = P1_CONTRACT_TOPICS.map((topic) => ({
+  courseId: 'p1',
+  regionId: topic.slug,
+  slug: topic.slug,
+  name: topic.title,
+  shortName: topic.shortTitle,
+  description: topic.description,
+  headerFormula: topic.headerFormula,
+}));
+
+export const COURSE_STUDY_TOPICS: StudyTopic[] = [...P1_STUDY_TOPICS, ...STUDY_TOPICS];
+
+const topicsByRegionId = new Map(COURSE_STUDY_TOPICS.map((topic) => [`${topic.courseId}:${topic.regionId}`, topic]));
+const topicsBySlug = new Map(COURSE_STUDY_TOPICS.map((topic) => [`${topic.courseId}:${topic.slug}`, topic]));
+
+export const P3_STUDY_TOPICS = STUDY_TOPICS;
 
 export const STUDY_ROUTE_ROOTS = new Set<string>([
   ...COURSES.map((course) => course.slug),
 ]);
 
-export function studyTopicForRegionId(regionId: string | undefined): StudyTopic | undefined {
-  return regionId ? topicsByRegionId.get(regionId) : undefined;
+export function studyTopicForRegionId(regionId: string | undefined, courseId: CourseId): StudyTopic | undefined {
+  return regionId ? topicsByRegionId.get(`${courseId}:${regionId}`) : undefined;
 }
 
-export function studyTopicForSlug(slug: string | undefined): StudyTopic | undefined {
-  return slug ? topicsBySlug.get(slug) : undefined;
+export function studyTopicForSlug(slug: string | undefined, courseId: CourseId): StudyTopic | undefined {
+  return slug ? topicsBySlug.get(`${courseId}:${slug}`) : undefined;
 }
 
 export function regionForStudyTopic(topic: StudyTopic): RegionDefinition | undefined {
-  return P3_COURSE_MAP.regions.find((region) => region.id === topic.regionId);
+  const world = topic.courseId === 'p1' ? P1_COURSE_MAP : P3_COURSE_MAP;
+  return world.regions.find((region) => region.id === topic.regionId);
 }
 
 export function displayRegionForTopic(topic: StudyTopic, region?: RegionDefinition): RegionDefinition {
@@ -133,13 +161,13 @@ export function displayRegionForTopic(topic: StudyTopic, region?: RegionDefiniti
   };
 }
 
-export function topicPath(topic: StudyTopic, page: TopicStudyPage = 'field-guide', courseSlug?: CourseId): string {
-  const root = `/${courseSlug ?? P3_COURSE_ID}/topics`;
+export function topicPath(topic: StudyTopic, courseSlug: CourseId, page: TopicStudyPage = 'field-guide'): string {
+  const root = `/${courseSlug}/topics`;
   return `${root}/${topic.slug}/${page}`;
 }
 
 export function p3TopicPath(topic: StudyTopic, page: TopicStudyPage = 'field-guide'): string {
-  return topicPath(topic, page, P3_COURSE_ID);
+  return topicPath(topic, P3_COURSE_ID, page);
 }
 
 export function stripStaticBasePath(pathname: string): string {
@@ -161,19 +189,29 @@ export function topicProgressSummary(input: {
   progress: StoredProgress;
   regionProgress?: RegionProgress;
   regionId: string;
+  courseId: 'p1' | 'p3';
 }): TopicProgressSummary {
+  const courseId = input.courseId;
   const fieldGuideTopics = getFieldGuideTopicsForRegion(input.regionId);
   const learnSteps = getLearnStepsForRegion(input.regionId);
   const fieldGuideTotal = Math.max(1, learnSteps.length || fieldGuideTopics.length || 1);
-  const learningRecord: RegionLearningRecord | undefined = input.progress.regionLearning?.[input.regionId];
+  const learningRecord: RegionLearningRecord | undefined = getCourseRegionLearning(
+    input.progress.regionLearning,
+    courseId,
+    input.regionId,
+  );
   const completedTopicCount = fieldGuideTotal
     ? Math.min(fieldGuideTotal, Object.keys(learningRecord?.fieldGuideTopicCompletions ?? {}).length)
     : learningRecord?.fieldGuideCompletedAt ? 1 : 0;
-  const skillPracticeAttempts = normalizeSkillCheckLocalAttempts(input.progress.skillCheckAttempts ?? []).filter((attempt: SkillCheckAttemptRecord) => (
-    (attempt.regionId === input.regionId || attempt.topic === input.regionId) && isPassingSkillCheckAttempt(attempt)
+  const normalizedSkillAttempts = normalizeSkillCheckLocalAttempts(input.progress.skillCheckAttempts ?? []);
+  const skillPracticeAttempts = normalizedSkillAttempts.filter((attempt: SkillCheckAttemptRecord) => (
+    attempt.course === courseId
+    && (attempt.regionId === input.regionId || attempt.topic === input.regionId)
+    && isStrongSkillCheckEvidenceAttempt(attempt, normalizedSkillAttempts)
   )).length;
   const questionAttempts = input.regionProgress?.attempts ?? input.progress.attempts.filter((attempt) => (
-    attempt.validatedRegionId === input.regionId || attempt.displayRegionId === input.regionId
+    (attempt.course ?? P3_COURSE_ID) === courseId
+    && (attempt.validatedRegionId === input.regionId || attempt.displayRegionId === input.regionId)
   )).length;
 
   return {

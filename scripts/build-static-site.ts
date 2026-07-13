@@ -3,7 +3,17 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import katex from 'katex';
-import { COURSES, P3_COURSE_ID, type CourseMetadata } from '../src/data/courses';
+import { COURSES, P1_COURSE_ID, P3_COURSE_ID, getCourseById, type CourseMetadata } from '../src/data/courses';
+import { P1_COURSE_STUDY_CONTRACT, P1_CURRICULUM_CONSTRAINTS, P1_SKILL_CONTRACT } from '../src/data/p1CourseContract';
+import { validateCourseStudyContract } from '../src/data/courseStudyContract';
+import {
+  P1_TOPIC_STUDY_CONTENT,
+  type P1CheckedPracticeContent,
+  type P1LearnContent,
+  type P1TopicStudyContent,
+} from '../src/data/p1StudyContent';
+import { P1_EXAM_BANK_REVIEW_PROJECTION } from '../src/data/p1ExamBankReviewProjection';
+import p1PromotionOverlay from '../src/data/p1ExamTrainingPromotionOverlay.json';
 import { examQuestionSupportPrompt } from '../src/data/examQuestionSupport';
 import {
   P1_REPAIR_MODULES,
@@ -28,10 +38,21 @@ import { normalizeQuestionBankWithDiagnostics } from '../src/lib/normalizeQuesti
 import { filterTrainableQuestionsForRegion, isQuestionTrainable, isTrainableP3Question } from '../src/lib/questionTraining';
 import { filterCourseExamQuestions, readableRoutingTopicLabel } from '../src/lib/courseExamTraining';
 import { applyP3TopicPackRefreshOverlay } from '../src/lib/p3TopicPackRefreshOverlay';
+import { applyCourseTopicPacketOverlay } from '../src/lib/courseTopicPacketOverlay';
 import { REQUIRED_STATIC_STUDY_PAGE_PATHS, STATIC_STUDY_PAGE_ROUTES } from '../src/lib/staticStudyRoutes';
-import { STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
+import { P1_STUDY_TOPICS, STUDY_TOPICS, type StudyTopic } from '../src/lib/topicStudy';
 import { getTeachingSnippetsForRegion, normalizeTeachingSnippetsData, reviewedTeachingSnippets, type TeachingSnippet } from '../src/lib/teachingSnippets';
 import { P3_COURSE_MAP } from '../src/lib/worldMap';
+import { P1_COURSE_MAP } from '../src/lib/p1CourseMap';
+import {
+  courseContentQaPath,
+  courseExamTrainingPath,
+  courseNeedToKnowPath,
+  courseReviewPath,
+  courseStartingCheckPath,
+  courseTopicPath,
+  courseTopicsIndexPath,
+} from '../src/lib/courseStudyRoutes';
 import type { NormalizedQuestion, QuestionMarkPoint, QuestionPartMark, QuickCheckTwoValueField, RegionDefinition } from '../src/types';
 import { SKILL_CHECK_MISTAKE_TAGS } from '../src/skill-checks/mistakeRecovery';
 import { answerFormatGuidance, type AnswerFormatGuidance } from '../src/lib/answerFormatGuidance';
@@ -62,6 +83,13 @@ interface TopicContext {
   fieldGuideTopics: FieldGuideTopic[];
   learnSteps: LearnStep[];
   groups: SkillChecklistTopicGroup[];
+  questions: NormalizedQuestion[];
+}
+
+interface P1TopicContext {
+  topic: StudyTopic;
+  region: RegionDefinition;
+  content: P1TopicStudyContent;
   questions: NormalizedQuestion[];
 }
 
@@ -113,9 +141,10 @@ interface RenderPageOptions {
   pagePath: string;
   title: string;
   description: string;
-  active: 'courses' | 'p1' | 'p3' | 'm1' | 's1' | 'p3-diagnostic' | 'p1-repair' | 'p3-topics' | 'p3-exam-training';
+  active: 'courses' | 'p1' | 'p3' | 'm1' | 's1' | 'p3-diagnostic' | 'p1-repair' | 'p3-topics' | 'p3-exam-training' | 'p1-diagnostic' | 'p1-topics' | 'p1-exam-training';
   body: string;
   bodyClass?: string;
+  courseId?: 'p1' | 'p3';
   hideThemeToggle?: boolean;
   forcedTheme?: 'dark' | 'light';
 }
@@ -370,6 +399,34 @@ function p3ContentQaPagePath(): string {
   return `${P3_COURSE_ID}/content-qa/index.html`;
 }
 
+function p1CoursePagePath(): string {
+  return `${P1_COURSE_ID}/index.html`;
+}
+
+function p1TopicsIndexPagePath(): string {
+  return courseTopicsIndexPath('p1');
+}
+
+function p1StartingCheckPagePath(): string {
+  return courseStartingCheckPath('p1');
+}
+
+function p1ExamTrainingPagePath(): string {
+  return courseExamTrainingPath('p1');
+}
+
+function p1NeedToKnowPagePath(): string {
+  return courseNeedToKnowPath('p1');
+}
+
+function p1ReviewPagePath(): string {
+  return courseReviewPath('p1');
+}
+
+function p1ContentQaPagePath(): string {
+  return courseContentQaPath('p1');
+}
+
 function aboutPagePath(): string {
   return 'about/index.html';
 }
@@ -396,6 +453,26 @@ function topicExamTrainingPagePath(topic: StudyTopic): string {
 
 function worksheetPagePath(topic: StudyTopic): string {
   return `${P3_COURSE_ID}/topics/${topic.slug}/worksheet/index.html`;
+}
+
+function p1LearnPagePath(topic: StudyTopic): string {
+  return courseTopicPath('p1', topic.slug, 'learn');
+}
+
+function p1FieldGuidePagePath(topic: StudyTopic): string {
+  return courseTopicPath('p1', topic.slug, 'field-guide');
+}
+
+function p1SkillCheckPagePath(topic: StudyTopic): string {
+  return courseTopicPath('p1', topic.slug, 'skill-check');
+}
+
+function p1TopicExamTrainingPagePath(topic: StudyTopic): string {
+  return courseTopicPath('p1', topic.slug, 'exam-training');
+}
+
+function p1WorksheetPagePath(topic: StudyTopic): string {
+  return courseTopicPath('p1', topic.slug, 'worksheet');
 }
 
 function routeLink(fromPagePath: string, targetPagePath: string, label: string, className?: string): string {
@@ -595,18 +672,88 @@ function topicContext(topic: StudyTopic, data: StaticSiteData): TopicContext {
       teachingSnippets,
       practiceItems: generatedPractice,
     }),
-    questions: filterTrainableQuestionsForRegion(data.questions, region).slice(0, 8),
+    questions: filterTrainableQuestionsForRegion(data.questions, region, P3_COURSE_MAP).slice(0, 8),
   };
 }
 
+function p1TopicContext(topic: StudyTopic, data: StaticSiteData): P1TopicContext {
+  const region = P1_COURSE_MAP.regions.find((candidate) => candidate.id === topic.regionId);
+  const content = P1_TOPIC_STUDY_CONTENT.find((candidate) => candidate.topicSlug === topic.slug);
+  if (!region) throw new Error(`Missing P1 region for topic ${topic.slug}`);
+  if (!content) throw new Error(`Missing P1 study content for topic ${topic.slug}`);
+  const expectedSkillCount = P1_SKILL_CONTRACT.filter((skill) => skill.topicId === content.topicId).length;
+  if (
+    content.skillIds.length !== expectedSkillCount
+    || content.learn.length !== expectedSkillCount
+    || content.checkedPractice.length !== expectedSkillCount
+    || content.checkedPracticeRetries.length !== expectedSkillCount
+  ) {
+    throw new Error(`Incomplete P1 study-content contract for ${topic.slug}.`);
+  }
+  return {
+    topic,
+    region,
+    content,
+    questions: filterTrainableQuestionsForRegion(data.questions, region, P1_COURSE_MAP).slice(0, 12),
+  };
+}
+
+function validateP1ArchiveReviewGate(): { complete: boolean; errors: string[] } {
+  const errors: string[] = [];
+  const projection = P1_EXAM_BANK_REVIEW_PROJECTION;
+  const ids = projection.records.map((record) => record.identity.question_id);
+  if (new Set(ids).size !== ids.length) errors.push('P1 review projection contains duplicate question identities.');
+  if (projection.totals.records !== projection.records.length) errors.push('P1 review projection record total does not reconcile.');
+  const sourceApproved = projection.records.filter((record) => record.source.packet_section === 'approved').length;
+  const sourceReviewRequired = projection.records.filter((record) => record.source.packet_section === 'review_required').length;
+  const reviewed = projection.records.filter((record) => record.review.review_status === 'reviewed').length;
+  const runtimeSafe = projection.records.filter((record) => record.review.student_runtime_safe).length;
+  const promotionReady = projection.records.filter((record) => (
+    record.review.disposition === 'promote'
+    && record.review.review_status === 'reviewed'
+    && record.review.student_runtime_safe
+  )).length;
+  if (projection.totals.source_packet_approved !== sourceApproved) errors.push('P1 source-approved total does not reconcile.');
+  if (projection.totals.source_packet_review_required !== sourceReviewRequired) errors.push('P1 source review-required total does not reconcile.');
+  if (projection.totals.asterion_reviewed !== reviewed) errors.push('P1 Asterion-reviewed total does not reconcile.');
+  if (projection.totals.student_runtime_safe !== runtimeSafe) errors.push('P1 runtime-safe total does not reconcile.');
+  if (projection.totals.promotion_ready !== promotionReady) errors.push('P1 promotion-ready total does not reconcile.');
+  if (p1PromotionOverlay.promoted_question_ids.length !== promotionReady) errors.push('P1 promotion overlay is stale against the review projection.');
+  const projectionById = new Map(projection.records.map((record) => [record.identity.question_id, record]));
+  for (const questionId of p1PromotionOverlay.promoted_question_ids) {
+    const record = projectionById.get(questionId);
+    if (!record || record.review.disposition !== 'promote' || record.review.review_status !== 'reviewed' || !record.review.student_runtime_safe) {
+      errors.push(`P1 promotion overlay includes ineligible question ${questionId}.`);
+    }
+  }
+  const complete = projection.records.every((record) => (
+    (record.review.disposition === 'promote'
+      && record.review.review_status === 'reviewed'
+      && record.review.student_runtime_safe)
+    || (record.review.disposition === 'reject'
+      && record.review.review_status === 'rejected'
+      && !record.review.student_runtime_safe)
+  ));
+  return { complete, errors };
+}
+
 function primaryNav(pagePath: string, active: RenderPageOptions['active']): string {
-  const items = [
-    { key: 'courses', label: 'Home', path: 'index.html' },
-    { key: 'p3-diagnostic', label: 'Diagnostic', path: p3DiagnosticPagePath() },
-    { key: 'p3-topics', label: 'P3 Units', path: p3TopicsIndexPagePath() },
-    { key: 'p3-exam-training', label: 'Exam Training', path: p3ExamTrainingPagePath() },
-  ];
-  const activeKey = ['p1', 'm1', 's1'].includes(active) ? 'courses' : active;
+  const isP1 = pagePath.startsWith('p1/');
+  const items = isP1
+    ? [
+      { key: 'courses', label: 'Home', path: 'index.html' },
+      { key: 'p1', label: 'P1 Home', path: p1CoursePagePath() },
+      { key: 'p1-diagnostic', label: 'Starting Check', path: p1StartingCheckPagePath() },
+      { key: 'p1-topics', label: 'P1 Units', path: p1TopicsIndexPagePath() },
+      { key: 'p1-exam-training', label: 'Exam Training', path: p1ExamTrainingPagePath() },
+    ]
+    : [
+      { key: 'courses', label: 'Home', path: 'index.html' },
+      { key: 'p3-diagnostic', label: 'Diagnostic', path: p3DiagnosticPagePath() },
+      { key: 'p3-topics', label: 'P3 Units', path: p3TopicsIndexPagePath() },
+      { key: 'p3-exam-training', label: 'Exam Training', path: p3ExamTrainingPagePath() },
+    ];
+  const activeKey = ['m1', 's1'].includes(active) ? 'courses' : active;
 
   return `
     <nav class="site-nav" aria-label="Primary">
@@ -641,6 +788,7 @@ function renderPage(options: RenderPageOptions): string {
         <span class="theme-toggle-text" data-theme-toggle-label>Dark</span>
       </button>`;
 
+  const courseId = options.courseId ?? (options.pagePath.startsWith('p1/') ? 'p1' : options.pagePath.startsWith('p3/') ? 'p3' : undefined);
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -652,7 +800,7 @@ function renderPage(options: RenderPageOptions): string {
     <link rel="stylesheet" href="${cssHref}" />
     <title>${escapeHtml(title)}</title>
   </head>
-  <body${options.bodyClass ? ` class="${escapeAttr(options.bodyClass)}"` : ''}>
+  <body${options.bodyClass ? ` class="${escapeAttr(options.bodyClass)}"` : ''}${courseId ? ` data-course-id="${courseId}"` : ''}>
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <header class="site-header">
       <a class="brand-link" href="${hrefToPage(options.pagePath, 'index.html')}" aria-label="Asterion Study home">
@@ -1032,23 +1180,23 @@ function renderP1RepairModule(module: P1RepairModuleDefinition, index: number): 
 function renderP1RepairLanePage(pagePath = p1RepairLanePagePath()): string {
   const body = `
     ${renderHero(
-      'P1 Review',
+      'P3 Foundation Review',
       'Short prerequisite review for core P1 algebra and calculus fluency before P3 Exam Training.',
       'x^2-9, \\quad \\sin^2 x+\\cos^2 x=1, \\quad \\frac{dy}{dx}',
       '<a class="button primary-button" href="#repair-modules">Start review</a>',
       'CAIE 9709 foundation review',
     )}
-    <nav class="repair-module-nav" aria-label="P1 Review modules" data-p1-repair-module-nav>
+    <nav class="repair-module-nav" aria-label="P3 Foundation Review modules" data-p1-repair-module-nav>
       ${P1_REPAIR_MODULES.map((module, index) => `<button class="repair-module-tab" type="button" data-p1-repair-module-tab="${escapeAttr(module.module_id)}"${index === 0 ? ' aria-current="true"' : ''}>Module ${index + 1}</button>`).join('')}
     </nav>
-    <section class="repair-module-list" id="repair-modules" aria-label="P1 Review modules">
+    <section class="repair-module-list" id="repair-modules" aria-label="P3 Foundation Review modules">
       ${P1_REPAIR_MODULES.map((module, index) => renderP1RepairModule(module, index)).join('')}
     </section>
   `;
   return renderPage({
     pagePath,
-    title: 'P1 Review',
-    description: 'Standalone P1 prerequisite review for CAIE 9709 students who need foundation practice before P3 Exam Training.',
+    title: 'P3 Foundation Review',
+    description: 'Standalone prerequisite review for CAIE 9709 students who need foundation practice before P3 Exam Training.',
     active: 'p1-repair',
     body,
     bodyClass: 'repair-lane-page',
@@ -1557,7 +1705,7 @@ function renderHomepageCoursePanel(pagePath: string): string {
       m1: 'Forces, motion, energy, momentum.',
       s1: 'Probability, distributions, and data.',
     }[course.id];
-    const label = course.id === P3_COURSE_ID ? 'Ready' : 'In progress';
+    const label = course.status === 'ready' ? 'Ready' : 'In progress';
     const title = course.id === 's1' ? 'Statistics 1' : course.displayName;
     const modeLinks = course.id === P3_COURSE_ID
       ? [
@@ -1566,6 +1714,13 @@ function renderHomepageCoursePanel(pagePath: string): string {
         { label: 'Checked Practice', path: skillCheckPagePath(STUDY_TOPICS[0]) },
         { label: 'Exam Questions', path: topicExamTrainingPagePath(STUDY_TOPICS[0]) },
       ]
+      : course.id === P1_COURSE_ID && course.status === 'ready'
+        ? [
+          { label: 'Open P1', path: p1CoursePagePath() },
+          { label: 'Learn', path: p1LearnPagePath(P1_STUDY_TOPICS[0]) },
+          { label: 'Checked Practice', path: p1SkillCheckPagePath(P1_STUDY_TOPICS[0]) },
+          { label: 'Exam Questions', path: p1TopicExamTrainingPagePath(P1_STUDY_TOPICS[0]) },
+        ]
       : [
         { label: `Open ${course.shortName}`, path: coursePagePath(course) },
       ];
@@ -1597,6 +1752,50 @@ function renderHomepageCoursePanel(pagePath: string): string {
       <div class="home-course-row">${courseCards}</div>
     </section>
   `;
+}
+
+function renderP3LandingPage(): string {
+  const pagePath = 'index.html';
+  const body = `
+    <section class="home-p3-landing" aria-labelledby="home-p3-title">
+      <div class="home-starfield" aria-hidden="true">
+        <span class="home-star-layer home-star-layer-one"></span>
+        <span class="home-star-layer home-star-layer-two"></span>
+        <svg class="home-constellation home-constellation-left" viewBox="0 0 260 260" focusable="false">
+          <path d="M34 64 86 92 126 52 182 108 224 86" />
+          <path d="M86 92 76 154 118 208 176 178" />
+          <circle cx="34" cy="64" r="3" /><circle cx="86" cy="92" r="3" /><circle cx="126" cy="52" r="3" /><circle cx="182" cy="108" r="3" /><circle cx="224" cy="86" r="3" /><circle cx="76" cy="154" r="3" /><circle cx="118" cy="208" r="3" /><circle cx="176" cy="178" r="3" />
+        </svg>
+        <svg class="home-constellation home-constellation-right" viewBox="0 0 260 260" focusable="false">
+          <path d="M44 74 94 46 150 92 208 84" />
+          <path d="M150 92 138 154 190 210 226 166" />
+          <circle cx="44" cy="74" r="3" /><circle cx="94" cy="46" r="3" /><circle cx="150" cy="92" r="3" /><circle cx="208" cy="84" r="3" /><circle cx="138" cy="154" r="3" /><circle cx="190" cy="210" r="3" /><circle cx="226" cy="166" r="3" />
+        </svg>
+      </div>
+      <div class="home-p3-hero">
+        <p class="home-p3-eyebrow">Master CAIE 9709</p>
+        <h1 id="home-p3-title">Pure Mathematics 3</h1>
+        <p class="home-p3-subtitle">Learn what matters. Practice with purpose.<br />Prepare for the exam with confidence.</p>
+        <p class="home-p3-path-line">Default path: Diagnostic → Learn → Checked Practice → Exam Training.</p>
+        ${renderHomepageActionCards(pagePath)}
+        <div class="home-p3-cta-group">
+          <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">Start diagnostic</a>
+          <a class="home-p3-diagnostic-link" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Already completed it? Start Algebra Learn</a>
+        </div>
+      </div>
+      ${renderHomepageTopicStrip(pagePath)}
+    </section>
+  `;
+  return renderPage({
+    pagePath,
+    title: 'Pure Mathematics 3',
+    description: 'Asterion Pure Mathematics 3 practice landing page for CAIE 9709.',
+    active: 'courses',
+    body,
+    bodyClass: 'home-page',
+    hideThemeToggle: true,
+    forcedTheme: 'dark',
+  });
 }
 
 const homepageContactEmail = 'brooker@rdfzcygj.cn';
@@ -1714,39 +1913,23 @@ function renderAboutPage(): string {
 function renderCourseSelectorPage(): string {
   const pagePath = 'index.html';
   const body = `
-    <section class="home-p3-landing" aria-labelledby="home-p3-title">
-      <div class="home-starfield" aria-hidden="true">
-        <span class="home-star-layer home-star-layer-one"></span>
-        <span class="home-star-layer home-star-layer-two"></span>
-        <svg class="home-constellation home-constellation-left" viewBox="0 0 260 260" focusable="false">
-          <path d="M34 64 86 92 126 52 182 108 224 86" />
-          <path d="M86 92 76 154 118 208 176 178" />
-          <circle cx="34" cy="64" r="3" /><circle cx="86" cy="92" r="3" /><circle cx="126" cy="52" r="3" /><circle cx="182" cy="108" r="3" /><circle cx="224" cy="86" r="3" /><circle cx="76" cy="154" r="3" /><circle cx="118" cy="208" r="3" /><circle cx="176" cy="178" r="3" />
-        </svg>
-        <svg class="home-constellation home-constellation-right" viewBox="0 0 260 260" focusable="false">
-          <path d="M44 74 94 46 150 92 208 84" />
-          <path d="M150 92 138 154 190 210 226 166" />
-          <circle cx="44" cy="74" r="3" /><circle cx="94" cy="46" r="3" /><circle cx="150" cy="92" r="3" /><circle cx="208" cy="84" r="3" /><circle cx="138" cy="154" r="3" /><circle cx="190" cy="210" r="3" /><circle cx="226" cy="166" r="3" />
-        </svg>
-      </div>
+    <section class="home-p3-landing course-selector-landing" aria-labelledby="home-p3-title">
       <div class="home-p3-hero">
-        <p class="home-p3-eyebrow">Master CAIE 9709</p>
-        <h1 id="home-p3-title">Pure Mathematics 3</h1>
-        <p class="home-p3-subtitle">Learn what matters. Practice with purpose.<br />Prepare for the exam with confidence.</p>
-        <p class="home-p3-path-line">Default path: Diagnostic → Learn → Checked Practice → Exam Training.</p>
-        ${renderHomepageActionCards(pagePath)}
-        <div class="home-p3-cta-group">
-          <a class="button primary-button home-p3-primary-cta" href="${hrefToPage(pagePath, p3DiagnosticPagePath())}">Start diagnostic</a>
-          <a class="home-p3-diagnostic-link" href="${hrefToPage(pagePath, learnPagePath(STUDY_TOPICS[0]))}">Already completed it? Start Algebra Learn</a>
-        </div>
+        <p class="home-p3-eyebrow">CAIE 9709 Study Hub</p>
+        <h1 id="home-p3-title">Choose Pure Mathematics 1 or 3</h1>
+        <p class="home-p3-subtitle">Learn what matters. Check your understanding.<br />Train with canonical exam images.</p>
+        <p class="home-p3-path-line">Each course uses Learn → Checked Practice → optional self-marked Exam Training.</p>
       </div>
-      ${renderHomepageTopicStrip(pagePath)}
+      ${renderHomepageCoursePanel(pagePath)}
     </section>
+    ${renderHomepageLearningLoop()}
+    ${renderHomepageTrustContract()}
+    ${renderHomepageContactBar()}
   `;
   return renderPage({
     pagePath,
-    title: 'Pure Mathematics 3',
-    description: 'Asterion Pure Mathematics 3 practice landing page for CAIE 9709.',
+    title: 'CAIE 9709 Study Hub',
+    description: 'Choose Pure Mathematics 1 or Pure Mathematics 3 in the Asterion CAIE 9709 study hub.',
     active: 'courses',
     body,
     bodyClass: 'home-page',
@@ -1815,6 +1998,248 @@ function renderCourseDashboardPage(course: CourseMetadata): string {
     active: course.id,
     body,
   });
+}
+
+function p1TopicIndex(topic: StudyTopic): number {
+  return P1_STUDY_TOPICS.findIndex((candidate) => candidate.slug === topic.slug);
+}
+
+function p1RequiredCheckIds(context: P1TopicContext): string[] {
+  return Array.from(new Set(context.content.skillIds));
+}
+
+function p1PracticeItems(context: P1TopicContext): P1CheckedPracticeContent[] {
+  return context.content.checkedPractice.flatMap((primary, index) => [
+    primary,
+    context.content.checkedPracticeRetries[index],
+  ].filter((item): item is P1CheckedPracticeContent => Boolean(item)));
+}
+
+function renderP1UnitCard(fromPagePath: string, context: P1TopicContext, index: number): string {
+  const requiredCheckIds = p1RequiredCheckIds(context);
+  return `
+    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(context.region.id)}" data-course-id="p1" data-unit-name="${escapeAttr(context.topic.name)}" data-unit-label="Unit ${index + 1}">
+      <div class="path-unit-number">Unit ${index + 1}</div>
+      <div class="path-unit-main">
+        <header><h2>${escapeHtml(context.topic.name)}</h2><p>${escapeHtml(context.topic.description)}</p></header>
+        <div class="path-unit-representation" aria-label="${escapeAttr(context.topic.name)} example representation">${renderMathText(`$${context.topic.headerFormula}$`)}</div>
+      </div>
+      <p class="compact-progress path-unit-compact-progress" data-progress-summary="${escapeAttr(context.region.id)}" data-field-total="${context.content.learn.length}">No saved progress yet</p>
+      <div class="path-unit-progress-metadata" aria-hidden="true">
+        <span data-progress-field-guide="${escapeAttr(context.region.id)}" data-total="${context.content.learn.length}" data-label="Learn">Learn: 0/${context.content.learn.length}</span>
+        <span data-progress-skill="${escapeAttr(context.region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredCheckIds))}" data-label="Checked">Checked: 0/${requiredCheckIds.length} passed</span>
+        <span data-progress-exam="${escapeAttr(context.region.id)}" data-label="Exam">Exam: 0 self-marked</span>
+      </div>
+      ${routeLink(fromPagePath, p1LearnPagePath(context.topic), `Start ${context.topic.name} Learn`, 'button primary-button path-unit-primary-action')}
+      ${routeLink(fromPagePath, p1SkillCheckPagePath(context.topic), 'Already confident? Try Checked Practice', 'path-unit-fast-lane-link text-link')}
+      <details class="path-unit-direct-routes">
+        <summary>Direct routes</summary>
+        <nav aria-label="${escapeAttr(context.topic.name)} direct routes">
+          ${routeLink(fromPagePath, p1LearnPagePath(context.topic), 'Learn', 'text-link')}
+          ${routeLink(fromPagePath, p1SkillCheckPagePath(context.topic), 'Checked Practice', 'text-link')}
+          ${routeLink(fromPagePath, p1TopicExamTrainingPagePath(context.topic), 'Exam Training', 'text-link')}
+          ${routeLink(fromPagePath, p1WorksheetPagePath(context.topic), 'Worksheet', 'text-link')}
+        </nav>
+      </details>
+    </article>
+  `;
+}
+
+function renderP1DashboardPage(data: StaticSiteData, course: CourseMetadata, pagePath = p1CoursePagePath()): string {
+  const contexts = P1_STUDY_TOPICS.map((topic) => p1TopicContext(topic, data));
+  const body = `
+    <section class="p3-dashboard-hero">
+      <div class="p3-dashboard-copy">
+        <p class="eyebrow">${escapeHtml(course.examComponentLabel)}</p>
+        <h1>${escapeHtml(course.displayName)}</h1>
+        <p>Use the optional Starting Check for a suggested first topic, or open any of the eight official units directly.</p>
+        <p class="teacher-progress-warning">Course-contract and archive review are still in progress. Exam Training only exposes explicitly reviewed runtime-safe image pairs.</p>
+      </div>
+      <section class="p3-next-step-panel" aria-labelledby="p1-first-action-title">
+        <div><p class="eyebrow">Optional first action</p><h2 id="p1-first-action-title">Take the P1 Starting Check</h2><p>10–15 minutes, not a grade, never locks a topic, and never counts as completion evidence.</p></div>
+        ${routeLink(pagePath, p1StartingCheckPagePath(), 'Start optional check', 'button primary-button')}
+        ${routeLink(pagePath, p1LearnPagePath(P1_STUDY_TOPICS[0]), 'Skip and start Quadratics', 'p3-fast-lane-link text-link')}
+      </section>
+      <nav class="p3-dashboard-secondary-links" aria-label="Other P1 routes">
+        ${routeLink(pagePath, p1NeedToKnowPagePath(), 'Need to Know', 'text-link')}
+        ${routeLink(pagePath, p1ExamTrainingPagePath(), 'Exam Training', 'text-link')}
+        ${routeLink(pagePath, p1ReviewPagePath(), 'Review / export', 'text-link')}
+        ${routeLink(pagePath, p1ContentQaPagePath(), 'Content QA', 'text-link')}
+      </nav>
+    </section>
+    <section class="p3-unit-sequence" aria-labelledby="p1-dashboard-units-title">
+      <div class="section-heading"><div><h2 id="p1-dashboard-units-title">All eight P1 units</h2><p>Learn is optional support. Clean first-attempt Checked Practice is the strongest local evidence; Exam Training remains self-marked practice.</p></div></div>
+      <div class="path-unit-grid">${contexts.map((context, index) => renderP1UnitCard(pagePath, context, index)).join('')}</div>
+    </section>
+  `;
+  return renderPage({ pagePath, title: course.displayName, description: 'Pure Mathematics 1 course dashboard.', active: 'p1', courseId: 'p1', body, bodyClass: 'p3-path-page p3-dashboard-page' });
+}
+
+function renderP1TopicsIndexPage(data: StaticSiteData, pagePath = p1TopicsIndexPagePath()): string {
+  const contexts = P1_STUDY_TOPICS.map((topic) => p1TopicContext(topic, data));
+  const body = `
+    ${renderHero('P1 Topic Overview', 'Eight official 2026–2027 syllabus units with finite Learn and Checked Practice paths.', 'ax^2+bx+c,\quad f(x),\quad \frac{dy}{dx},\quad \int f(x)\,dx', `${routeLink(pagePath, p1StartingCheckPagePath(), 'Optional Starting Check', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    <section class="path-principle-strip" aria-label="How the P1 path works"><article><strong>1. Learn</strong><span>Short support attached to one atomic skill.</span></article><article><strong>2. Checked Practice</strong><span>Clean first submissions provide strong local evidence.</span></article><article><strong>3. Exam Training</strong><span>Optional canonical image-first self-marking.</span></article></section>
+    <section class="p3-unit-sequence" aria-labelledby="p1-unit-sequence-title"><div class="section-heading"><div><h2 id="p1-unit-sequence-title">Units</h2><p>Choose one next action; the full packet archive is never a completion checklist.</p></div></div><div class="path-unit-grid">${contexts.map((context, index) => renderP1UnitCard(pagePath, context, index)).join('')}</div></section>
+  `;
+  return renderPage({ pagePath, title: 'P1 Topic Overview', description: 'Pure Mathematics 1 topic sequence.', active: 'p1-topics', courseId: 'p1', body, bodyClass: 'p3-path-page' });
+}
+
+function p1SkillForPractice(item: P1CheckedPracticeContent) {
+  const enriched = item as P1CheckedPracticeContent & { skillId?: string };
+  if (enriched.skillId) return P1_SKILL_CONTRACT.find((skill) => skill.id === enriched.skillId);
+  return P1_SKILL_CONTRACT.find((skill) => item.itemId.includes(skill.id.slice(3)));
+}
+
+function p1PracticeVariantId(item: P1CheckedPracticeContent): string {
+  return (item as P1CheckedPracticeContent & { retryVariantId?: string }).retryVariantId ?? 'primary';
+}
+
+function renderP1CheckedPracticeForm(context: P1TopicContext, item: P1CheckedPracticeContent): string {
+  const skill = p1SkillForPractice(item);
+  const variantId = p1PracticeVariantId(item);
+  const labels = Object.fromEntries(item.options.map((option) => [option.id, option.label]));
+  const correctLabel = item.options.find((option) => option.id === item.expectedOptionId)?.label ?? item.expectedOptionId;
+  return `
+    <article class="practice-card" id="${escapeAttr(item.itemId)}" ${variantId === 'primary' ? `data-p1-primary-for="${escapeAttr(skill?.id)}"` : `data-p1-retry-for="${escapeAttr(skill?.id)}" hidden`}>
+      <p class="eyebrow">${escapeHtml(skill?.title ?? 'Checked Practice')}</p>
+      <h3>${renderMathText(item.prompt)}</h3>
+      <form class="skill-check-form" data-check-skill-answer data-course-id="p1" data-course="p1" data-region-id="${escapeAttr(context.region.id)}" data-topic="${escapeAttr(context.topic.name)}" data-skill-id="${escapeAttr(skill?.id)}" data-check-id="${escapeAttr(skill?.id ?? item.itemId)}" data-retry-variant-id="${escapeAttr(variantId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="exact-text" data-accepted-answers="${escapeAttr(JSON.stringify([item.expectedOptionId]))}" data-answer-labels="${escapeAttr(JSON.stringify(labels))}" data-correct-answer-label="${escapeAttr(correctLabel)}" data-explanation="${escapeAttr(item.workedSolution.join(' '))}" data-order-matters="false" data-mistake-tags="[]">
+        <fieldset class="choice-list"><legend>Choose one answer</legend>${item.options.map((option) => `<label><input type="radio" name="submittedAnswer" value="${escapeAttr(option.id)}" required /><span>${renderMathText(option.label)}</span></label>`).join('')}</fieldset>
+        <div class="skill-check-actions"><button class="button primary-button" type="submit">Check Answer</button><button class="button secondary-button" type="button" data-show-skill-hint>Hint</button><button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next Question</button></div>
+        <div class="skill-check-feedback" role="status" aria-live="polite"></div>
+        <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden><legend>What went wrong?</legend><p class="targeted-prompt" data-targeted-prompt></p></fieldset>
+        <div class="skill-check-hint-panel" data-skill-hint hidden><p>${renderMathText(item.hint)}</p><p>Hint-assisted work remains useful practice but is not strong completion evidence.</p></div>
+        <details class="skill-check-repair-details" data-skill-repair hidden><summary>Show repair step</summary><p>${renderMathText(item.workedSolution[0] ?? item.hint)}</p></details>
+        <details class="skill-check-answer-details" data-skill-answer-reveal hidden><summary>Reveal Answer</summary><p>${renderMathText(correctLabel)}</p><ol>${item.workedSolution.map((step) => `<li>${renderMathText(step)}</li>`).join('')}</ol></details>
+      </form>
+    </article>
+  `;
+}
+
+function renderP1LearnPage(context: P1TopicContext, pagePath = p1LearnPagePath(context.topic)): string {
+  const index = p1TopicIndex(context.topic);
+  const body = `
+    ${renderHero(`Unit ${index + 1}: ${context.topic.name} Learn`, 'Finite support for each reviewed atomic P1 skill. Learn activity helps you prepare but does not itself complete the unit.', context.topic.headerFormula, `${routeLink(pagePath, p1SkillCheckPagePath(context.topic), 'Go to Checked Practice', 'button primary-button')}${routeLink(pagePath, p1TopicsIndexPagePath(), 'All P1 units', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    <section class="learn-flow" data-course-id="p1">${context.content.learn.map((learn, skillIndex) => renderP1LearnCard(learn, context, skillIndex)).join('')}</section>
+    <section class="next-step-card"><h2>Ready to check your understanding?</h2><p>A clean first submission to each reviewed check is the strongest local evidence. If the primary is missed, use its distinct retry variant.</p>${routeLink(pagePath, p1SkillCheckPagePath(context.topic), 'Checked Practice', 'button primary-button')}${routeLink(pagePath, p1TopicExamTrainingPagePath(context.topic), 'Optional Exam Training', 'button secondary-button')}</section>
+  `;
+  return renderPage({ pagePath, title: `${context.topic.name} — Learn`, description: `P1 Learn for ${context.topic.name}.`, active: 'p1-topics', courseId: 'p1', body, bodyClass: 'learn-mode-page' });
+}
+
+function renderP1LearnCard(learn: P1LearnContent, context: P1TopicContext, index: number): string {
+  const learnStepId = `${context.topic.slug}-learn-${index + 1}`;
+  return `<article class="learn-step-card" data-learn-step-card data-course-id="p1" data-region-id="${escapeAttr(context.region.id)}" data-learn-step-id="${escapeAttr(learnStepId)}"><header><p class="eyebrow">Skill ${index + 1} of ${context.content.learn.length}</p><h2>${escapeHtml(learn.title)}</h2><p>${escapeHtml(learn.learningGoal)}</p></header><section class="knowledge-card"><h3>Need to know</h3><ul>${learn.teachingPoints.map((point) => `<li>${renderMathText(point)}</li>`).join('')}</ul><p><strong>Common error:</strong> ${renderMathText(learn.commonError)}</p></section><section class="worked-example"><h3>Worked example</h3><p>${renderMathText(learn.workedExample.prompt)}</p><ol>${learn.workedExample.steps.map((step) => `<li>${renderMathText(step)}</li>`).join('')}</ol><p><strong>Answer:</strong> ${renderMathText(learn.workedExample.answer)}</p></section><button class="button secondary-button" type="button" data-complete-field-guide-topic="${escapeAttr(learnStepId)}" data-region-id="${escapeAttr(context.region.id)}" data-topic-title="${escapeAttr(learn.title)}">Mark Learn activity reviewed</button></article>`;
+}
+
+function renderP1FieldGuideBridge(context: P1TopicContext, pagePath = p1FieldGuidePagePath(context.topic)): string {
+  const body = `${renderHero(`${context.topic.name} — Learn`, 'Field Guide now leads to the same step-by-step Learn material for this unit.', context.topic.headerFormula, `${routeLink(pagePath, p1LearnPagePath(context.topic), 'Open Learn', 'button primary-button')}${routeLink(pagePath, p1TopicsIndexPagePath(), 'All P1 units', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}`;
+  return renderPage({ pagePath, title: `${context.topic.name} — Learn`, description: `Open the current P1 Learn material for ${context.topic.name}.`, active: 'p1-topics', courseId: 'p1', body });
+}
+
+function renderP1CheckedPracticePage(context: P1TopicContext, pagePath = p1SkillCheckPagePath(context.topic)): string {
+  const index = p1TopicIndex(context.topic);
+  const next = P1_STUDY_TOPICS[index + 1];
+  const body = `
+    ${renderHero(`Unit ${index + 1}: ${context.topic.name} Checked Practice`, 'Primary checks and distinct reviewed retry variants protect strong evidence from hint use and answer cycling.', context.topic.headerFormula, `${routeLink(pagePath, p1LearnPagePath(context.topic), 'Learn support', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    <section class="practice-stack" data-course-id="p1">${p1PracticeItems(context).map((item) => renderP1CheckedPracticeForm(context, item)).join('')}</section>
+    <section class="next-step-card"><h2>${next ? `Next unit: ${escapeHtml(next.name)}` : 'P1 review'}</h2><p>Complete the finite core checks, then continue when you are ready. Retry variants appear only after a primary attempt is missed or invalidated by help.</p>${routeLink(pagePath, next ? p1LearnPagePath(next) : p1ReviewPagePath(), next ? `Start ${next.name} Learn` : 'Review / export', 'button primary-button')}</section>
+    <section class="attempt-history-section" data-attempt-history-list data-course-id="p1" data-attempt-history-source="checked_practice" data-attempt-history-region="${escapeAttr(context.region.id)}" data-attempt-history-limit="80" aria-labelledby="p1-attempt-history-title"><div class="section-heading"><div><p class="eyebrow">Review</p><h2 id="p1-attempt-history-title">Submitted responses</h2><p data-attempt-history-summary>No submitted responses saved in this browser yet.</p></div></div><p class="empty-state" data-attempt-history-empty>Submit a checked answer to see it here.</p><div class="attempt-history-list" data-attempt-history-items></div></section>
+  `;
+  return renderPage({ pagePath, title: `${context.topic.name} Checked Practice`, description: `P1 Checked Practice for ${context.topic.name}.`, active: 'p1-topics', courseId: 'p1', body });
+}
+
+function renderP1WorksheetPage(context: P1TopicContext, pagePath = p1WorksheetPagePath(context.topic)): string {
+  const body = `<section class="worksheet-hero"><p class="eyebrow">Paper 1 printable worksheet</p><h1>${escapeHtml(context.topic.name)} Checked Practice Worksheet</h1><div class="worksheet-meta"><p>Student name: <span></span></p><p>Date: <span></span></p></div><div class="worksheet-actions"><button class="button primary-button" type="button" onclick="window.print()">Print / Save PDF</button>${routeLink(pagePath, p1SkillCheckPagePath(context.topic), 'Interactive Checked Practice', 'button secondary-button')}</div></section><section class="worksheet-question-list">${context.content.checkedPractice.map((item, index) => `<article class="worksheet-question"><header><p class="eyebrow">Question ${index + 1}</p><h2>${renderMathText(item.prompt)}</h2></header><ul class="worksheet-option-list">${item.options.map((option) => `<li><span class="worksheet-checkbox"></span>${renderMathText(option.label)}</li>`).join('')}</ul><div class="worksheet-working-space" aria-label="Working space"></div></article>`).join('')}</section>`;
+  return renderPage({ pagePath, title: `${context.topic.name} Worksheet`, description: `Printable P1 worksheet for ${context.topic.name}.`, active: 'p1-topics', courseId: 'p1', body, bodyClass: 'worksheet-page' });
+}
+
+function renderP1TopicExamTrainingPage(context: P1TopicContext, pagePath = p1TopicExamTrainingPagePath(context.topic)): string {
+  const body = `${renderHero(`${context.topic.name} — Exam Training`, 'Optional self-marked Paper 1 practice. Only explicitly reviewed runtime-safe image pairs appear here.', context.topic.headerFormula, `${routeLink(pagePath, p1LearnPagePath(context.topic), 'Learn', 'button secondary-button')}${routeLink(pagePath, p1SkillCheckPagePath(context.topic), 'Checked Practice', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}<section class="exam-question-section"><div class="section-heading"><div><h2>Reviewed exam questions</h2><p>Question and mark-scheme images are the source of truth. Self-marking never completes a unit.</p></div></div><div class="exam-question-grid" data-exam-flow data-flow-label="Paper 1 exam question">${context.questions.map((question) => renderExamQuestionCard(question, pagePath, { displayTopic: context.topic.name, validatedRegionId: context.region.id, displayRegionId: context.region.id })).join('')}</div>${context.questions.length ? '' : '<p class="empty-state">No P1 questions have passed Asterion’s explicit runtime promotion gate for this topic yet.</p>'}</section>`;
+  return renderPage({ pagePath, title: `${context.topic.name} — Exam Training`, description: `P1 Exam Training for ${context.topic.name}.`, active: 'p1-exam-training', courseId: 'p1', body, bodyClass: 'exam-training-page' });
+}
+
+function p1StartingCheckItems(data: StaticSiteData): Array<{ context: P1TopicContext; item: P1CheckedPracticeContent }> {
+  return P1_STUDY_TOPICS.map((topic) => p1TopicContext(topic, data)).flatMap((context) => {
+    const primary = context.content.checkedPractice.find((item) => p1PracticeVariantId(item) === 'primary')
+      ?? context.content.checkedPractice[0];
+    return primary ? [{ context, item: primary }] : [];
+  });
+}
+
+function renderP1StartingCheckPage(data: StaticSiteData, pagePath = p1StartingCheckPagePath()): string {
+  const items = p1StartingCheckItems(data);
+  const body = `
+    ${renderHero('P1 Starting Check', 'Optional, 10–15 minutes, not a grade, and never a lock. Use the result only to choose one or two useful starting topics.', 'ax^2+bx+c,\quad f(x),\quad \sin x,\quad \int f(x)\,dx', `${routeLink(pagePath, p1LearnPagePath(P1_STUDY_TOPICS[0]), 'Skip and start Quadratics', 'button secondary-button')}${routeLink(pagePath, p1TopicsIndexPagePath(), 'Choose another topic', 'button text-button')}`, 'CAIE 9709 Paper 1')}
+    <section class="summary-card"><p class="eyebrow">Starting-point check</p><h2>${items.length} short questions</h2><ul class="plain-list"><li>You can leave or retake it at any time.</li><li>It creates no completion or strong evidence.</li><li>Recommendations remain advisory.</li></ul></section>
+    <form class="diagnostic-paper" data-p1-starting-check>
+      <div class="practice-card-stack">${items.map(({ context, item }, index) => `<article class="practice-card" data-p1-starting-check-question data-topic-slug="${escapeAttr(context.topic.slug)}" data-topic-name="${escapeAttr(context.topic.name)}" data-topic-href="${escapeAttr(hrefToPage(pagePath, p1LearnPagePath(context.topic)))}" data-expected-option="${escapeAttr(item.expectedOptionId)}"><p class="eyebrow">Question ${index + 1} of ${items.length} · ${escapeHtml(context.topic.name)}</p><h2>${renderMathText(item.prompt)}</h2><fieldset class="choice-list"><legend>Choose one answer</legend>${item.options.map((option) => `<label><input type="radio" name="starting-${index}" value="${escapeAttr(option.id)}" required /><span>${renderMathText(option.label)}</span></label>`).join('')}</fieldset></article>`).join('')}</div>
+      <div class="diagnostic-progress-controls"><button class="button primary-button" type="submit">Show suggested starting topics</button><button class="button secondary-button" type="reset" data-p1-starting-check-reset>Retake</button></div>
+    </form>
+    <section class="diagnostic-report-panel summary-card" data-p1-starting-check-report hidden aria-live="polite"><p class="eyebrow">Advisory result</p><h2>Suggested next topics</h2><p data-p1-starting-check-summary></p><div class="hero-actions" data-p1-starting-check-links></div><p><a class="text-link" href="${hrefToPage(pagePath, p1TopicsIndexPagePath())}">Choose another topic instead</a></p></section>
+  `;
+  return renderPage({ pagePath, title: 'P1 Starting Check', description: 'Optional advisory Pure Mathematics 1 starting check.', active: 'p1-diagnostic', courseId: 'p1', body });
+}
+
+function p1Contexts(data: StaticSiteData): P1TopicContext[] {
+  return P1_STUDY_TOPICS.map((topic) => p1TopicContext(topic, data));
+}
+
+function renderP1ExamTrainingPage(data: StaticSiteData, pagePath = p1ExamTrainingPagePath()): string {
+  const contexts = p1Contexts(data);
+  const seen = new Set<string>();
+  const mixed = contexts.flatMap((context) => context.questions.map((question) => ({ context, question }))).filter(({ question }) => {
+    if (seen.has(question.id)) return false;
+    seen.add(question.id);
+    return true;
+  }).slice(0, 16);
+  const body = `
+    ${renderHero('P1 Exam Training', 'Optional image-first practice from explicitly reviewed, runtime-safe Paper 1 records. It never replaces Checked Practice evidence.', '\Delta,\quad s=r\theta,\quad \frac{dy}{dx},\quad \int_a^b f(x)\,dx', `${routeLink(pagePath, p1TopicsIndexPagePath(), 'Back to P1 units', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    <section class="exam-question-section"><div class="section-heading"><div><h2>Mixed reviewed Paper 1 questions</h2><p>The full 2008–2025 archive remains behind the review gate; packet approval alone does not publish a question.</p></div></div><div class="exam-question-grid" data-exam-flow data-flow-label="Paper 1 mixed exam question">${mixed.map(({ context, question }) => renderExamQuestionCard(question, pagePath, { displayTopic: context.topic.name, validatedRegionId: context.region.id, displayRegionId: context.region.id, reviewLinkPath: p1LearnPagePath(context.topic) })).join('')}</div>${mixed.length ? '' : '<p class="empty-state">No P1 archive records are runtime-safe yet. Use topic Learn and Checked Practice while human image/routing review continues.</p>'}</section>
+    <section class="exam-topic-panel"><div class="section-heading"><div><h2>Choose a topic</h2><p>Each topic page exposes only its reviewed runtime projection.</p></div></div><div class="exam-topic-list">${contexts.map((context) => `<article class="exam-topic-row"><div><h3>${escapeHtml(context.topic.name)}</h3><p>${context.questions.length} reviewed runtime question${context.questions.length === 1 ? '' : 's'}</p></div>${routeLink(pagePath, p1TopicExamTrainingPagePath(context.topic), 'Open topic Exam Training', 'button secondary-button')}</article>`).join('')}</div></section>
+  `;
+  return renderPage({ pagePath, title: 'P1 Exam Training', description: 'Reviewed image-first Pure Mathematics 1 exam practice.', active: 'p1-exam-training', courseId: 'p1', body, bodyClass: 'exam-training-page' });
+}
+
+function renderP1NeedToKnowPage(pagePath = p1NeedToKnowPagePath()): string {
+  const assessment = P1_CURRICULUM_CONSTRAINTS.assessmentContext;
+  const body = `
+    ${renderHero('P1 Need to Know', 'A finite checklist derived from the reviewed 2026–2027 syllabus contract. It is a study map, not a claim of exam mastery.', '1.1\to1.8', `${routeLink(pagePath, p1TopicsIndexPagePath(), 'Open P1 units', 'button primary-button')}`, 'CAIE 9709 Paper 1')}
+    <section class="contract-summary-grid"><article class="summary-card"><p class="eyebrow">Assessment</p><h2>${Math.floor(assessment.durationMinutes / 60)} h ${assessment.durationMinutes % 60} min · ${assessment.marks} marks</h2><p>${assessment.structuredQuestionRange[0]}–${assessment.structuredQuestionRange[1]} compulsory structured questions. Scientific calculator and MF19 formula list available.</p></article><article class="summary-card"><p class="eyebrow">Answer discipline</p><h2>Show the route</h2><p>${escapeHtml(assessment.workingRequirement)}</p></article></section>
+    <section class="contract-topic-groups"><details class="summary-card"><summary><strong>Notation rules</strong></summary><ul class="plain-list">${P1_CURRICULUM_CONSTRAINTS.notationRules.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul></details><details class="summary-card"><summary><strong>Formula scope</strong></summary><ul class="plain-list">${P1_CURRICULUM_CONSTRAINTS.formulaScope.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul></details><details class="summary-card"><summary><strong>Explicit exclusions</strong></summary><ul class="plain-list">${P1_CURRICULUM_CONSTRAINTS.explicitExclusions.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul></details></section>
+    <section class="need-to-know-groups">${P1_STUDY_TOPICS.map((topic) => {
+      const contractTopic = P1_COURSE_STUDY_CONTRACT.topics.find((candidate) => candidate.slug === topic.slug);
+      const skills = P1_SKILL_CONTRACT.filter((skill) => skill.topicId === contractTopic?.id);
+      return `<details class="need-to-know-topic" open><summary><span>${escapeHtml(contractTopic?.syllabusRef ?? '')}</span><strong>${escapeHtml(topic.name)}</strong><span>${skills.length} atomic skills</span></summary><div class="need-to-know-skill-list">${skills.map((skill) => `<article class="need-to-know-skill"><h3>${escapeHtml(skill.title)}</h3><ul>${skill.syllabusOutcomes.map((outcome) => `<li>${escapeHtml(outcome)}</li>`).join('')}</ul><p><strong>Evidence:</strong> ${skill.evidenceEligibility === 'strong-checked-practice' ? 'reviewed deterministic Checked Practice' : 'manual practice only'}</p><div class="homepage-card-links">${routeLink(pagePath, p1LearnPagePath(topic), 'Learn', 'text-link')}${routeLink(pagePath, p1SkillCheckPagePath(topic), 'Checked Practice', 'text-link')}</div></article>`).join('')}</div></details>`;
+    }).join('')}</section>
+  `;
+  return renderPage({ pagePath, title: 'P1 Need to Know', description: 'Reviewed Pure Mathematics 1 syllabus checklist.', active: 'p1', courseId: 'p1', body });
+}
+
+function renderP1ProgressExportPanel(): string {
+  return `<section class="support-panel" id="export-progress" data-export-panel aria-labelledby="p1-export-progress-title"><div><p class="eyebrow">Local export</p><h2 id="p1-export-progress-title">Export browser progress</h2><p>The CSV includes course context so P1 and P3 topics cannot merge. Strong Checked Practice remains local evidence, not a server-verified grade.</p></div><form class="export-progress-form" data-export-local-progress-form><label class="single-answer-field"><span>Student name</span><input name="studentName" type="text" autocomplete="name" required /></label><label class="single-answer-field"><span>Class/group</span><input name="classGroup" type="text" autocomplete="organization" required /></label><label class="single-answer-field"><span>Teacher email</span><input name="teacherEmail" type="email" autocomplete="email" required /></label><label class="single-answer-field"><span>Reporting period</span><input name="reportingPeriod" type="text" /></label><div class="export-progress-actions"><button class="button primary-button" type="button" data-download-export-csv>Download CSV</button><button class="button secondary-button" type="submit">Open Email</button></div></form><div class="export-csv-fallback" data-export-fallback hidden><textarea class="export-csv-output" data-export-csv-output readonly rows="8" aria-label="Generated progress CSV"></textarea><button class="button secondary-button" type="button" data-copy-export-csv>Copy CSV</button></div><p class="save-status" data-export-status role="status"></p></section>`;
+}
+
+function renderP1ReviewPage(data: StaticSiteData, pagePath = p1ReviewPagePath()): string {
+  const body = `
+    ${renderHero('P1 Review and Export', 'Review your finite core path and export course-scoped local progress. Exam Training remains optional self-marked practice.', '\Delta,\quad f^{-1}(x),\quad S_\infty,\quad \int_a^b f(x)\,dx', `${routeLink(pagePath, p1NeedToKnowPagePath(), 'Need to Know', 'button secondary-button')}${routeLink(pagePath, p1CoursePagePath(), 'Back to P1', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    ${renderP1ProgressExportPanel()}
+    <section class="attempt-history-section" data-attempt-history-list data-course-id="p1" data-attempt-history-limit="160" aria-labelledby="p1-all-attempt-history-title"><div class="section-heading"><div><p class="eyebrow">P1 response history</p><h2 id="p1-all-attempt-history-title">Review submitted answers</h2><p data-attempt-history-summary>No P1 responses saved in this browser yet.</p></div></div><p class="empty-state" data-attempt-history-empty>Complete P1 Learn or Checked Practice questions to see submissions here.</p><div class="attempt-history-list" data-attempt-history-items></div></section>
+    <section class="exam-callout compact-callout"><div><p class="eyebrow">Optional practice</p><h2>Paper 1 Exam Training</h2><p>Saved self-marked attempts help plan revision but cannot complete a skill or unit.</p></div><div class="exam-stats"><span data-total-attempts data-paper-family="p1" data-paper-label="Paper 1">0 saved Paper 1 attempts</span><span data-topic-tried-count data-paper-family="p1">0 topic areas tried</span></div></section>
+  `;
+  return renderPage({ pagePath, title: 'P1 Review and Export', description: 'Course-scoped P1 progress review and export.', active: 'p1', courseId: 'p1', body, bodyClass: 'exam-training-page' });
+}
+
+function renderP1ContentQaPage(pagePath = p1ContentQaPagePath()): string {
+  const totals = P1_EXAM_BANK_REVIEW_PROJECTION.totals;
+  const routeReadyTopics = P1_COURSE_STUDY_CONTRACT.topics.filter((topic) => Object.values(topic.routeAvailability).every(Boolean)).length;
+  const body = `
+    ${renderHero('P1 Content QA', 'Internal evidence view for the syllabus contract, authored finite path, and pinned 2008–2025 archive review projection.', '1034=410+624', `${routeLink(pagePath, p1CoursePagePath(), 'Back to P1', 'button secondary-button')}`, 'Internal Content QA')}
+    <section class="contract-summary-grid"><article class="summary-card"><p class="eyebrow">Syllabus contract</p><h2>${P1_COURSE_STUDY_CONTRACT.topics.length} topics · ${P1_SKILL_CONTRACT.length} atomic skills</h2><p>Authority: 2026–2027 syllabus v${escapeHtml(P1_COURSE_STUDY_CONTRACT.syllabus.version)}.</p></article><article class="summary-card"><p class="eyebrow">Archive snapshot</p><h2>${totals.records} records</h2><p>${totals.source_packet_approved} packet-approved; ${totals.source_packet_review_required} source-review-required.</p></article><article class="summary-card"><p class="eyebrow">Asterion promotion</p><h2>${totals.promotion_ready} runtime-ready</h2><p>${totals.asterion_reviewed} Asterion-reviewed; ${totals.student_runtime_safe} marked runtime-safe.</p></article></section>
+    <section class="summary-card"><h2>Launch gates</h2><ul class="plain-list"><li>${routeReadyTopics}/${P1_COURSE_STUDY_CONTRACT.topics.length} topic surface contracts complete.</li><li>${totals.records - totals.asterion_reviewed} archive records still require an Asterion review disposition.</li><li>Every promoted record must have reviewed skill routing and verified question/mark-scheme image pairs.</li><li>Difficulty metadata is excluded from selection, progression, and promotion.</li></ul><p class="teacher-progress-warning">P1 remains coming-soon while the archive promotion count is ${totals.promotion_ready}.</p></section>
+    <section class="contract-topic-groups">${P1_EXAM_BANK_REVIEW_PROJECTION.topics.map((topic) => `<article class="summary-card"><p class="eyebrow">${escapeHtml(topic.official_section_code)}</p><h2>${escapeHtml(topic.topic_label)}</h2><p>${topic.counts.total} records · ${topic.counts.source_packet_approved} packet-approved · ${topic.counts.source_packet_review_required} review-required</p><p><code>${escapeHtml(topic.manifest.projection_fingerprint)}</code></p></article>`).join('')}</section>
+  `;
+  return renderPage({ pagePath, title: 'P1 Content QA', description: 'Internal P1 syllabus and exam-bank review evidence.', active: 'p1', courseId: 'p1', body });
 }
 
 function renderP3TopicsIndexPage(
@@ -3269,7 +3694,7 @@ function renderSkillPracticeGroup(group: SkillChecklistTopicGroup, pagePath: str
 }
 
 function questionTitle(question: NormalizedQuestion): string {
-  const paper = question.paper ? `Paper ${question.paper}` : 'Paper 3';
+  const paper = question.paper ? `Paper ${question.paper}` : question.paperFamily === 'p1' ? 'Paper 1' : 'Paper 3';
   const number = question.questionNumber ? `Q${question.questionNumber}` : question.id;
   return `${paper} ${number}`;
 }
@@ -3452,7 +3877,7 @@ function renderExamQuestionCard(question: NormalizedQuestion, pagePath: string, 
         </figure>
       </details>
       ${options.reviewLinkPath ? `<p class="question-review-link">${routeLink(pagePath, options.reviewLinkPath, 'Learn', 'text-link')}</p>` : ''}
-      ${allowAttemptSave ? `<form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-parts="${escapeRawAttr(JSON.stringify(selfMarkParts))}" data-coarse-self-marking="${usesCoarseSelfMarking ? 'true' : 'false'}" data-has-mark-points="${hasTickableMarkPoints ? 'true' : 'false'}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
+      ${allowAttemptSave ? `<form class="attempt-form exam-self-mark-form" data-save-exam-attempt data-course-id="${question.paperFamily === 'p1' ? 'p1' : 'p3'}" data-question-id="${escapeAttr(question.id)}" data-paper-family="${escapeAttr(question.paperFamily)}" data-paper="${escapeAttr(question.paper)}" data-question-number="${escapeAttr(question.questionNumber)}" data-topic="${escapeAttr(displayTopic)}" data-subtopic="${escapeAttr(displaySubtopic)}" data-marks-available="${totalMarks}" data-parts="${escapeRawAttr(JSON.stringify(selfMarkParts))}" data-coarse-self-marking="${usesCoarseSelfMarking ? 'true' : 'false'}" data-has-mark-points="${hasTickableMarkPoints ? 'true' : 'false'}" data-validated-region-id="${escapeAttr(options.validatedRegionId ?? question.routeEvidence?.validatedRegionId)}" data-display-region-id="${escapeAttr(options.displayRegionId ?? question.routeEvidence?.displayRegionId)}">
         <div class="exam-evidence-banner">
           <strong>Self-marked attempt</strong>
           <span>Exam Training is self-marked practice. It does not replace Checked Practice evidence unless your teacher says so.</span>
@@ -3747,24 +4172,53 @@ async function copyStaticAssets(): Promise<void> {
   await cp(path.join(repoRoot, 'node_modules/katex/dist/fonts'), path.join(outputRoot, 'assets/fonts'), { recursive: true });
 }
 
+async function copyP1RuntimeQuestionAssets(questions: NormalizedQuestion[]): Promise<void> {
+  const runtimeAssets = new Set<string>();
+  for (const question of questions.filter((candidate) => candidate.paperFamily === 'p1')) {
+    const questionImage = firstExistingAssetCandidate(question.questionImageCandidates, question.questionImageUrls);
+    const markSchemeImage = firstExistingAssetCandidate(question.markSchemeImageCandidates, question.markSchemeImageUrls);
+    for (const assetPath of [questionImage, markSchemeImage]) {
+      if (!assetPath || /^https?:\/\//i.test(assetPath)) continue;
+      const clean = assetPath.replace(/^\/+/, '');
+      if (clean.startsWith('../') || path.isAbsolute(clean)) {
+        throw new Error(`Unsafe P1 runtime asset path: ${assetPath}`);
+      }
+      runtimeAssets.add(clean);
+    }
+  }
+  for (const assetPath of runtimeAssets) {
+    const source = path.join(publicRoot, assetPath);
+    if (!existsSync(source)) throw new Error(`Missing promoted P1 runtime asset: ${assetPath}`);
+    const destination = path.join(outputRoot, assetPath);
+    await ensureParent(destination);
+    await cp(source, destination);
+  }
+}
+
 async function loadStaticSiteData(): Promise<StaticSiteData> {
   const baseQuestionBank = await readJson('public/assets/exam-bank-data/asterion_question_bank_v1.json');
   const catalogQuestionBank = await readJson('public/assets/exam-bank-data/asterion_exam_bank_catalog_v1.json');
   const baseTopicRouting = await readJson('public/assets/exam-bank-data/question_bank.topic_routing.v1.json');
-  const { questionBank, topicRouting } = applyP3TopicPackRefreshOverlay(baseQuestionBank, baseTopicRouting);
+  const p3Overlay = applyP3TopicPackRefreshOverlay(baseQuestionBank, baseTopicRouting);
+  const { questionBank, topicRouting } = applyCourseTopicPacketOverlay(
+    p3Overlay.questionBank,
+    p3Overlay.topicRouting,
+    p1PromotionOverlay,
+  );
   const generatedPracticeJson = await readJson('public/data/generated_practice_bank.json');
   const teachingSnippetsJson = await readJson('public/data/teaching_snippets.json');
   const p3SkillCoverageReport = await readJson('tools/content_lab/outputs/p3_skill_coverage_report.json');
   const { questions } = normalizeQuestionBankWithDiagnostics(questionBank, {}, topicRouting, {
     contentSourceKind: 'projected-bank',
   });
-  const { questions: normalizedCatalogQuestions } = normalizeQuestionBankWithDiagnostics(catalogQuestionBank, {}, topicRouting, {
+  const catalogOverlay = applyCourseTopicPacketOverlay(catalogQuestionBank, topicRouting, p1PromotionOverlay);
+  const { questions: normalizedCatalogQuestions } = normalizeQuestionBankWithDiagnostics(catalogOverlay.questionBank, {}, catalogOverlay.topicRouting, {
     contentSourceKind: 'raw-bank-fallback',
   });
   const catalogRecords = normalizedCatalogQuestions.filter(isQuestionTrainable);
 
   return {
-    questions: questions.filter(isTrainableP3Question),
+    questions: questions.filter(isQuestionTrainable),
     catalogRecords,
     catalogQuestions: catalogRecords.filter(hasExistingQuestionImagePair),
     generatedPractice: reviewedGeneratedPractice(normalizeGeneratedPracticeData(generatedPracticeJson)),
@@ -3792,6 +4246,10 @@ function validateNoVisibleGameTerms(htmlByPath: Map<string, string>): void {
 }
 
 async function generate(): Promise<void> {
+  const p1ContractValidation = validateCourseStudyContract(P1_COURSE_STUDY_CONTRACT);
+  if (!p1ContractValidation.valid) {
+    throw new Error(`P1 course study contract failed:\n${p1ContractValidation.errors.join('\n')}`);
+  }
   const lessonErrors = validateProblemFirstFieldGuideLessons();
   if (lessonErrors.length) {
     throw new Error(`P3 Field Guide problem-first lesson QA failed:\n${lessonErrors.join('\n')}`);
@@ -3800,21 +4258,35 @@ async function generate(): Promise<void> {
   if (learnErrors.length) {
     throw new Error(`P3 Learn Mode lesson QA failed:\n${learnErrors.join('\n')}`);
   }
+  const p1ArchiveGate = validateP1ArchiveReviewGate();
+  if (p1ArchiveGate.errors.length) {
+    throw new Error(`P1 archive review projection failed:\n${p1ArchiveGate.errors.join('\n')}`);
+  }
+  const p1CourseMetadata = getCourseById(P1_COURSE_ID);
+  if (p1CourseMetadata?.status === 'ready' && !p1ArchiveGate.complete) {
+    throw new Error('P1 cannot be marked ready until all archive review dispositions reconcile as promoted or rejected.');
+  }
 
   await rm(outputRoot, { recursive: true, force: true });
   await mkdir(outputRoot, { recursive: true });
   await copyStaticAssets();
 
   const data = await loadStaticSiteData();
+  await copyP1RuntimeQuestionAssets(data.questions);
   const htmlByPath = new Map<string, string>();
 
-  htmlByPath.set('index.html', renderCourseSelectorPage());
+  const p1LaunchReady = p1CourseMetadata?.status === 'ready' && p1ArchiveGate.complete;
+  htmlByPath.set('index.html', p1LaunchReady ? renderCourseSelectorPage() : renderP3LandingPage());
   htmlByPath.set(aboutPagePath(), renderAboutPage());
 
   for (const course of COURSES) {
     htmlByPath.set(
       coursePagePath(course),
-      course.id === P3_COURSE_ID ? renderP3DashboardPage(data, course) : renderCourseDashboardPage(course),
+      course.id === P3_COURSE_ID
+        ? renderP3DashboardPage(data, course)
+        : course.id === P1_COURSE_ID
+          ? renderP1DashboardPage(data, course)
+          : renderCourseDashboardPage(course),
     );
   }
 
@@ -3825,6 +4297,13 @@ async function generate(): Promise<void> {
   htmlByPath.set(p3NeedToKnowPagePath(), renderP3NeedToKnowPage(data));
   htmlByPath.set(p3ReviewPagePath(), renderP3ReviewPage(data));
 
+  htmlByPath.set(p1TopicsIndexPagePath(), renderP1TopicsIndexPage(data));
+  htmlByPath.set(p1StartingCheckPagePath(), renderP1StartingCheckPage(data));
+  htmlByPath.set(p1ExamTrainingPagePath(), renderP1ExamTrainingPage(data));
+  htmlByPath.set(p1NeedToKnowPagePath(), renderP1NeedToKnowPage());
+  htmlByPath.set(p1ReviewPagePath(), renderP1ReviewPage(data));
+  htmlByPath.set(p1ContentQaPagePath(), renderP1ContentQaPage());
+
   for (const topic of STUDY_TOPICS) {
     const context = topicContext(topic, data);
     htmlByPath.set(learnPagePath(topic), renderLearnPage(context));
@@ -3832,6 +4311,14 @@ async function generate(): Promise<void> {
     htmlByPath.set(skillCheckPagePath(topic), renderPracticePage(context, skillCheckPagePath(topic), learnPagePath(topic)));
     htmlByPath.set(topicExamTrainingPagePath(topic), renderTopicExamTrainingPage(context));
     htmlByPath.set(worksheetPagePath(topic), renderWorksheetPage(context));
+  }
+  for (const topic of P1_STUDY_TOPICS) {
+    const context = p1TopicContext(topic, data);
+    htmlByPath.set(p1LearnPagePath(topic), renderP1LearnPage(context));
+    htmlByPath.set(p1FieldGuidePagePath(topic), renderP1FieldGuideBridge(context));
+    htmlByPath.set(p1SkillCheckPagePath(topic), renderP1CheckedPracticePage(context));
+    htmlByPath.set(p1TopicExamTrainingPagePath(topic), renderP1TopicExamTrainingPage(context));
+    htmlByPath.set(p1WorksheetPagePath(topic), renderP1WorksheetPage(context));
   }
   validateNoVisibleGameTerms(htmlByPath);
 

@@ -3,7 +3,8 @@ import { reviewedExamTrainingMarkPointsForSubpart } from '../data/examTrainingRe
 import { p3RegionIdForTopicId, p3RegionNameForTopicId } from './p3SkillContract';
 import { normalizeQuestionRouteEvidenceStatus } from './questionRouteEvidence';
 import { canonicalPaperFamily, resolveQuestionAssetPathCandidateGroups, resolveQuestionAssetPaths } from './resolveAssetPath';
-import { inferQuestionRouteEvidence } from './worldMap';
+import { inferQuestionRouteEvidence, P3_COURSE_MAP } from './worldMap';
+import { P1_COURSE_MAP } from './p1CourseMap';
 
 type LooseRecord = Record<string, unknown>;
 
@@ -1006,7 +1007,10 @@ export function normalizeQuestionBank(
       trainingBlockers,
       raw: { local: record, deepseek: deepseekRaw },
     };
-    const routeEvidence = inferQuestionRouteEvidence(normalizedQuestion);
+    const routeWorld = canonicalPaperFamily(String(normalizedQuestion.paperFamily)) === 'p1'
+      ? P1_COURSE_MAP
+      : P3_COURSE_MAP;
+    const routeEvidence = inferQuestionRouteEvidence(normalizedQuestion, routeWorld);
     const questionWithRouteEvidence = {
       ...normalizedQuestion,
       routeEvidence,

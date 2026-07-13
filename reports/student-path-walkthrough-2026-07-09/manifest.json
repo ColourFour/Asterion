@@ -1,19 +1,19 @@
 {
   "generatedAt": "2026-07-09",
   "totals": {
-    "pages": 57,
-    "answerSpecs": 501,
-    "generatedFormSubmissions": 431,
+    "pages": 103,
+    "answerSpecs": 577,
+    "generatedFormSubmissions": 507,
     "answerFailures": 0,
-    "visibleInteractions": 31,
+    "visibleInteractions": 40,
     "visibleInteractionFailures": 0,
-    "screenshots": 88
+    "screenshots": 143
   },
   "records": [
     {
       "index": 1,
       "path": "index.html",
-      "label": "Course selector",
+      "label": "P3 landing / gated P1-P3 chooser",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `about/index.html`.",
       "answerSpecCount": 0,
       "generatedFormSubmissions": 0,
@@ -109,7 +109,7 @@
     {
       "index": 8,
       "path": "p3/repair-lane/index.html",
-      "label": "P1 Review prerequisite practice",
+      "label": "P3 Foundation Review prerequisite practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/index.html`.",
       "answerSpecCount": 41,
       "generatedFormSubmissions": 0,
@@ -897,12 +897,655 @@
       "index": 57,
       "path": "p3/topics/complex-numbers/worksheet/index.html",
       "label": "P3 Complex Numbers printable Checked Practice worksheet",
-      "actionSummary": "Visited final page and checked deterministic answers.",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/diagnostic/index.html`.",
       "answerSpecCount": 0,
       "generatedFormSubmissions": 0,
       "answerSpecFailures": [],
       "screenshots": {
         "page": "screenshots/p3/topics/complex-numbers/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 58,
+      "path": "p1/diagnostic/index.html",
+      "label": "P1 optional Starting Check",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/diagnostic-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 59,
+      "path": "p1/topics/index.html",
+      "label": "P1 unit sequence",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/exam-training/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 60,
+      "path": "p1/exam-training/index.html",
+      "label": "P1 Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/need-to-know/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 61,
+      "path": "p1/need-to-know/index.html",
+      "label": "P1 Need to Know checklist",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/review/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/need-to-know-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 62,
+      "path": "p1/review/index.html",
+      "label": "P1 review and export",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/content-qa/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "Email message prepared. The CSV is too large for a reliable email body, so download or copy the CSV shown below."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/review-page.png",
+        "after": "screenshots/p1/review-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 63,
+      "path": "p1/content-qa/index.html",
+      "label": "P1 internal Content QA",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/quadratics/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/content-qa-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 64,
+      "path": "p1/topics/quadratics/learn/index.html",
+      "label": "P1 Quadratics Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/quadratics/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/quadratics/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 65,
+      "path": "p1/topics/quadratics/field-guide/index.html",
+      "label": "P1 Quadratics Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/quadratics/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/quadratics/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 66,
+      "path": "p1/topics/quadratics/skill-check/index.html",
+      "label": "P1 Quadratics Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/quadratics/exam-training/index.html`.",
+      "answerSpecCount": 10,
+      "generatedFormSubmissions": 10,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/quadratics/skill-check-page.png",
+        "after": "screenshots/p1/topics/quadratics/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 67,
+      "path": "p1/topics/quadratics/exam-training/index.html",
+      "label": "P1 Quadratics Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/quadratics/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/quadratics/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 68,
+      "path": "p1/topics/quadratics/worksheet/index.html",
+      "label": "P1 Quadratics printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/functions/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/quadratics/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 69,
+      "path": "p1/topics/functions/learn/index.html",
+      "label": "P1 Functions Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/functions/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/functions/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 70,
+      "path": "p1/topics/functions/field-guide/index.html",
+      "label": "P1 Functions Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/functions/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/functions/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 71,
+      "path": "p1/topics/functions/skill-check/index.html",
+      "label": "P1 Functions Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/functions/exam-training/index.html`.",
+      "answerSpecCount": 10,
+      "generatedFormSubmissions": 10,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/functions/skill-check-page.png",
+        "after": "screenshots/p1/topics/functions/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 72,
+      "path": "p1/topics/functions/exam-training/index.html",
+      "label": "P1 Functions Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/functions/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/functions/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 73,
+      "path": "p1/topics/functions/worksheet/index.html",
+      "label": "P1 Functions printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/coordinate-geometry/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/functions/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 74,
+      "path": "p1/topics/coordinate-geometry/learn/index.html",
+      "label": "P1 Coordinate geometry Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/coordinate-geometry/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/coordinate-geometry/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 75,
+      "path": "p1/topics/coordinate-geometry/field-guide/index.html",
+      "label": "P1 Coordinate geometry Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/coordinate-geometry/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/coordinate-geometry/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 76,
+      "path": "p1/topics/coordinate-geometry/skill-check/index.html",
+      "label": "P1 Coordinate geometry Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/coordinate-geometry/exam-training/index.html`.",
+      "answerSpecCount": 10,
+      "generatedFormSubmissions": 10,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/coordinate-geometry/skill-check-page.png",
+        "after": "screenshots/p1/topics/coordinate-geometry/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 77,
+      "path": "p1/topics/coordinate-geometry/exam-training/index.html",
+      "label": "P1 Coordinate geometry Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/coordinate-geometry/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/coordinate-geometry/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 78,
+      "path": "p1/topics/coordinate-geometry/worksheet/index.html",
+      "label": "P1 Coordinate geometry printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/circular-measure/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/coordinate-geometry/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 79,
+      "path": "p1/topics/circular-measure/learn/index.html",
+      "label": "P1 Circular measure Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/circular-measure/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/circular-measure/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 80,
+      "path": "p1/topics/circular-measure/field-guide/index.html",
+      "label": "P1 Circular measure Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/circular-measure/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/circular-measure/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 81,
+      "path": "p1/topics/circular-measure/skill-check/index.html",
+      "label": "P1 Circular measure Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/circular-measure/exam-training/index.html`.",
+      "answerSpecCount": 6,
+      "generatedFormSubmissions": 6,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/circular-measure/skill-check-page.png",
+        "after": "screenshots/p1/topics/circular-measure/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 82,
+      "path": "p1/topics/circular-measure/exam-training/index.html",
+      "label": "P1 Circular measure Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/circular-measure/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/circular-measure/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 83,
+      "path": "p1/topics/circular-measure/worksheet/index.html",
+      "label": "P1 Circular measure printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/trigonometry/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/circular-measure/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 84,
+      "path": "p1/topics/trigonometry/learn/index.html",
+      "label": "P1 Trigonometry Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/trigonometry/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/trigonometry/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 85,
+      "path": "p1/topics/trigonometry/field-guide/index.html",
+      "label": "P1 Trigonometry Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/trigonometry/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/trigonometry/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 86,
+      "path": "p1/topics/trigonometry/skill-check/index.html",
+      "label": "P1 Trigonometry Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/trigonometry/exam-training/index.html`.",
+      "answerSpecCount": 10,
+      "generatedFormSubmissions": 10,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/trigonometry/skill-check-page.png",
+        "after": "screenshots/p1/topics/trigonometry/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 87,
+      "path": "p1/topics/trigonometry/exam-training/index.html",
+      "label": "P1 Trigonometry Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/trigonometry/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/trigonometry/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 88,
+      "path": "p1/topics/trigonometry/worksheet/index.html",
+      "label": "P1 Trigonometry printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/series/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/trigonometry/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 89,
+      "path": "p1/topics/series/learn/index.html",
+      "label": "P1 Series Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/series/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/series/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 90,
+      "path": "p1/topics/series/field-guide/index.html",
+      "label": "P1 Series Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/series/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/series/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 91,
+      "path": "p1/topics/series/skill-check/index.html",
+      "label": "P1 Series Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/series/exam-training/index.html`.",
+      "answerSpecCount": 8,
+      "generatedFormSubmissions": 8,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/series/skill-check-page.png",
+        "after": "screenshots/p1/topics/series/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 92,
+      "path": "p1/topics/series/exam-training/index.html",
+      "label": "P1 Series Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/series/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/series/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 93,
+      "path": "p1/topics/series/worksheet/index.html",
+      "label": "P1 Series printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/differentiation/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/series/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 94,
+      "path": "p1/topics/differentiation/learn/index.html",
+      "label": "P1 Differentiation Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/differentiation/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/differentiation/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 95,
+      "path": "p1/topics/differentiation/field-guide/index.html",
+      "label": "P1 Differentiation Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/differentiation/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/differentiation/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 96,
+      "path": "p1/topics/differentiation/skill-check/index.html",
+      "label": "P1 Differentiation Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/differentiation/exam-training/index.html`.",
+      "answerSpecCount": 12,
+      "generatedFormSubmissions": 12,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/differentiation/skill-check-page.png",
+        "after": "screenshots/p1/topics/differentiation/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 97,
+      "path": "p1/topics/differentiation/exam-training/index.html",
+      "label": "P1 Differentiation Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/differentiation/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/differentiation/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 98,
+      "path": "p1/topics/differentiation/worksheet/index.html",
+      "label": "P1 Differentiation printable Checked Practice worksheet",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/integration/learn/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/differentiation/worksheet-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 99,
+      "path": "p1/topics/integration/learn/index.html",
+      "label": "P1 Integration Learn",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/integration/field-guide/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/integration/learn-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 100,
+      "path": "p1/topics/integration/field-guide/index.html",
+      "label": "P1 Integration Learn bridge",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/integration/skill-check/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/integration/field-guide-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 101,
+      "path": "p1/topics/integration/skill-check/index.html",
+      "label": "P1 Integration Checked Practice",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/integration/exam-training/index.html`.",
+      "answerSpecCount": 10,
+      "generatedFormSubmissions": 10,
+      "answerSpecFailures": [],
+      "visibleInteraction": {
+        "ok": true,
+        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+      },
+      "screenshots": {
+        "page": "screenshots/p1/topics/integration/skill-check-page.png",
+        "after": "screenshots/p1/topics/integration/skill-check-after-interaction.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 102,
+      "path": "p1/topics/integration/exam-training/index.html",
+      "label": "P1 Integration Exam Training",
+      "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/integration/worksheet/index.html`.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/integration/exam-training-page.png"
+      },
+      "notes": []
+    },
+    {
+      "index": 103,
+      "path": "p1/topics/integration/worksheet/index.html",
+      "label": "P1 Integration printable Checked Practice worksheet",
+      "actionSummary": "Visited final page and checked deterministic answers.",
+      "answerSpecCount": 0,
+      "generatedFormSubmissions": 0,
+      "answerSpecFailures": [],
+      "screenshots": {
+        "page": "screenshots/p1/topics/integration/worksheet-page.png"
       },
       "notes": []
     }

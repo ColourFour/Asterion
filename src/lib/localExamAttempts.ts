@@ -1,6 +1,7 @@
 import type { Attempt, ExamAttemptSuspicionFlag } from '../types';
 import { ASTERION_PROGRESS_STORAGE_KEY } from '../skill-checks/localAttempts';
 import { assessmentFromExamAttempt, updateStudentPerformanceState } from './studentAnalytics';
+import { isStudyCourseId, normalizeStudyCourseId } from './courseProgress';
 
 export interface ExamAttemptStorageLike {
   getItem(key: string): string | null;
@@ -118,6 +119,7 @@ export function isExamAttemptRecord(value: unknown): value is Attempt {
   if (!value || typeof value !== 'object') return false;
   const attempt = value as Partial<Attempt>;
   return typeof attempt.id === 'string'
+    && (attempt.course === undefined || isStudyCourseId(attempt.course))
     && typeof attempt.questionId === 'string'
     && typeof attempt.paperFamily === 'string'
     && typeof attempt.topicDisplayName === 'string'
@@ -128,7 +130,13 @@ export function isExamAttemptRecord(value: unknown): value is Attempt {
 }
 
 export function normalizeExamAttempts(records: unknown): Attempt[] {
-  return Array.isArray(records) ? records.filter(isExamAttemptRecord) : [];
+  if (!Array.isArray(records)) return [];
+  return records
+    .filter(isExamAttemptRecord)
+    .map((attempt) => ({
+      ...attempt,
+      course: normalizeStudyCourseId(attempt.course),
+    }));
 }
 
 export function loadExamAttempts(
@@ -157,11 +165,15 @@ export function saveExamAttempt(
   }
 
   const attempts = normalizeExamAttempts(progress.attempts);
-  const nextAttempts = [...attempts, attempt];
+  const normalizedAttempt = {
+    ...attempt,
+    course: normalizeStudyCourseId(attempt.course),
+  };
+  const nextAttempts = [...attempts, normalizedAttempt];
   const nextProgress = updateStudentPerformanceState({
     ...progress,
     attempts: nextAttempts,
-  }, assessmentFromExamAttempt(attempt));
+  }, assessmentFromExamAttempt(normalizedAttempt));
   storage.setItem(key, JSON.stringify(nextProgress));
   return nextAttempts;
 }

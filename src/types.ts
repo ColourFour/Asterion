@@ -255,6 +255,7 @@ export interface QuestionBankDiagnostics {
 
 export interface Attempt {
   id: string;
+  course?: StudyCourseId;
   questionId: string;
   paperFamily: PaperFamily;
   paper?: string;
@@ -355,6 +356,7 @@ export interface QuickCheckCheckResult {
 
 export interface LearningActivityAttempt {
   id: string;
+  course?: StudyCourseId;
   regionId: string;
   activityType?: 'quick_check' | 'warm_up' | 'learn_mode';
   activityId?: string;
@@ -374,7 +376,7 @@ export interface LearningActivityAttempt {
 
 export interface SkillCheckAttemptRecord {
   attemptId: string;
-  course: 'p3';
+  course: StudyCourseId;
   topic: string;
   skillId: string;
   checkId: string;
@@ -386,14 +388,18 @@ export interface SkillCheckAttemptRecord {
   mistakeTags: string[];
   timestamp: string;
   regionId?: string;
+  retryVariantId?: string;
+  strongEvidence?: boolean;
 }
+
+export type StudyCourseId = 'p1' | 'p3';
 
 export type StudentAttemptHistorySource = 'checked_practice' | 'learn_mode';
 
 export interface StudentAttemptHistoryRecord {
   id: string;
   source: StudentAttemptHistorySource;
-  course: 'p3';
+  course: StudyCourseId;
   questionId: string;
   questionTitle?: string;
   topic?: string;
@@ -407,6 +413,7 @@ export interface StudentAttemptHistoryRecord {
   timestamp: string;
   attemptNumber: number;
   retryHref?: string;
+  retryVariantId?: string;
   relatedAttemptId?: string;
 }
 
@@ -426,6 +433,7 @@ export interface TopicCompletionRecord {
 }
 
 export interface RegionLearningRecord {
+  course?: StudyCourseId;
   regionId: string;
   fieldGuideStartedAt?: string;
   fieldGuideCompletedAt?: string;
@@ -749,6 +757,7 @@ export interface RegionDefinition {
   subtopics: string[];
   activeByDefault: boolean;
   matchTerms: string[];
+  topicIds?: string[];
 }
 
 export interface RegionProgress {

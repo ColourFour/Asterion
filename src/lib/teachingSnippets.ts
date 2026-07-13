@@ -6,7 +6,7 @@ import {
 import { staticDataFetchCache } from './loadQuestionBank';
 import { findThemeForTopic, topicAliasesForRegion } from './regionThemes';
 import { canonicalPaperFamily } from './resolveAssetPath';
-import { matchRegionForLabels, normalizeLabel } from './worldMap';
+import { matchRegionForLabels, normalizeLabel, P3_COURSE_MAP } from './worldMap';
 
 export type TeachingSnippetReviewStatus = 'needs_review' | 'teacher_reviewed' | 'published' | string;
 export type TeachingSnippetSource = 'teacher_authored' | 'template_authored' | string;
@@ -290,7 +290,7 @@ function matchesRegion(snippet: TeachingSnippet, region?: RegionDefinition): boo
   const acceptedTopics = topicAliasesForRegion(region, 'snippets').map(normalizeLabel);
   return snippet.topics.some((topic) => {
     if (acceptedTopics.includes(normalizeLabel(topic))) return true;
-    const mappedRegion = matchRegionForLabels([topic]);
+    const mappedRegion = matchRegionForLabels([topic], P3_COURSE_MAP);
     if (mappedRegion?.id === region.id) return true;
     const normalizedTopic = normalizeLabel(topic);
     const regionTerms = [region.name, ...region.subtopics, ...region.matchTerms].map(normalizeLabel);

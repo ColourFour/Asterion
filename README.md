@@ -1,8 +1,8 @@
 # Asterion
 
-Asterion is a static CAIE 9709 Paper 3 study hub for GitHub Pages.
+Asterion is a static CAIE 9709 Pure Mathematics study hub for GitHub Pages.
 
-P3 is the product path. The root page is a P3-first landing page, and `docs/` currently contains 58 generated static pages. P1, M1, and S1 are visible only as coming-soon course entries; they do not expose topic pages, Skill Checks, exam mappings, attempt storage, or progression systems on this branch.
+P3 remains the launched product path and the root stays P3-first while P1 is gated. This branch contains the complete eight-topic P1 study surface for internal review, but P1 remains marked `coming-soon` until its 1,034-question archive review is complete. Changing P1 to `ready` activates the equal P1/P3 root chooser. M1 and S1 remain coming-soon placeholders.
 
 For P3, the question image and mark-scheme image are the student-facing source of truth. Text extraction, labels, and route metadata support display and selection only.
 
@@ -74,6 +74,12 @@ Static top-level routes:
 /
 /about/
 /p1/
+/p1/diagnostic/
+/p1/topics/
+/p1/exam-training/
+/p1/need-to-know/
+/p1/review/
+/p1/content-qa/
 /p3/
 /m1/
 /s1/
@@ -94,6 +100,18 @@ Canonical P3 topic task routes:
 /p3/topics/<topic>/skill-check/
 /p3/topics/<topic>/exam-training/
 ```
+
+P1 uses the same route shape for its eight official topics:
+
+```text
+/p1/topics/<topic>/learn/
+/p1/topics/<topic>/field-guide/
+/p1/topics/<topic>/skill-check/
+/p1/topics/<topic>/exam-training/
+/p1/topics/<topic>/worksheet/
+```
+
+P1 Exam Training is intentionally empty until a question is explicitly reviewed, marked `student_runtime_safe`, assigned reviewed topic and atomic-skill evidence, and promoted through `scripts/course-topic-packet-review.mjs`. The versioned review projection pins all 1,034 packet records, manifests, source commit, and question/mark-scheme image hashes without treating packet approval as Asterion review.
 
 Static support route:
 
@@ -169,7 +187,8 @@ Keep the branch boring and reproducible:
 - no Supabase runtime code or dependencies
 - no teacher/admin/classroom flows
 - no game, lore, avatar, XP, or dynamic progression surface
-- no P1/M1/S1 topic-page expansion until separate reviewed course contracts exist
+- no M1/S1 topic-page expansion until separate reviewed course contracts exist
+- no P1 launch or root-page promotion until all eight course and archive launch gates pass
 - no duplicate route families unless a future compatibility task explicitly asks for them
 
 Student-facing language should use exam-product terms such as Field Guide, Skill Check, Exam Training, Need to Know, Review, Practice, Self-marked, Ready, In progress, and Needs repair.
