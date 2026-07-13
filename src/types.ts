@@ -389,6 +389,9 @@ export interface SkillCheckAttemptRecord {
   timestamp: string;
   regionId?: string;
   retryVariantId?: string;
+  /** False for manual/self-marked tasks whose checker is not validated for mastery evidence. */
+  strongEvidenceEligible?: boolean;
+  /** Persisted evidence decision. Legacy records may omit this and are migrated on read. */
   strongEvidence?: boolean;
 }
 

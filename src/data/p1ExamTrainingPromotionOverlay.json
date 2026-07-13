@@ -4,7 +4,19 @@
   "course_id": "p1",
   "paper_family": "p1",
   "source_projection_version": "p1-topic-packets-2026-07-13-v1",
+  "source_projection_schema_version": 1,
+  "source_repo_head": "1feccb180fcbb9f16b3e705682e5cc3636e41506",
+  "course_contract": {
+    "schema_name": "asterion.course-study-contract",
+    "schema_version": 1,
+    "course_id": "p1",
+    "syllabus_version": "4",
+    "topic_skill_sha256": "57119158a94292f883f6cef04c8c598a31e659fedabe4e634e43f1f9f62a943f"
+  },
   "promoted_question_ids": [],
   "questions": [],
-  "routing_records": {}
+  "routing_records": {},
+  "asset_imports": [],
+  "runtime_assets": [],
+  "integrity_sha256": "c793f6ac0ea99e350067fc739da8511a4c14b0a1c6bdd7ae5a82ed57859fae3b"
 }

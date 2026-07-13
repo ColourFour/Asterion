@@ -205,6 +205,63 @@ describe('local Skill Check attempts', () => {
     expect(loadSkillCheckAttempts(storage).map((record) => record.strongEvidence)).toEqual([false, false, true]);
   });
 
+  it('keeps the persisted evidence result authoritative and blocks manual-only checks', () => {
+    const normalized = normalizeSkillCheckLocalAttempts([
+      attempt({ attemptId: 'persisted-weak', checkId: 'check-a', strongEvidence: false }),
+      attempt({
+        attemptId: 'manual-only',
+        checkId: 'check-b',
+        strongEvidenceEligible: false,
+        strongEvidence: true,
+      }),
+    ]);
+
+    expect(normalized.map((record) => record.strongEvidence)).toEqual([false, false]);
+    expect(skillCheckPassState(normalized, ['check-a', 'check-b'])).toMatchObject({
+      passed: false,
+      passedCheckIds: [],
+    });
+  });
+
+  it('saves P1 attempts without mutating the legacy P3 analytics reducer', () => {
+    const storage = memoryStorage({
+      error_log: [],
+      topic_performance: {},
+      weak_topics: [],
+    });
+    saveSkillCheckAttempt(storage, attempt({
+      attemptId: 'p1-wrong',
+      course: 'p1',
+      topic: 'Quadratics',
+      regionId: 'quadratics',
+      skillId: 'p1_quad_discriminant',
+      checkId: 'p1_quad_discriminant',
+      isCorrect: false,
+    }));
+    const progress = JSON.parse(storage.getItem(ASTERION_PROGRESS_STORAGE_KEY) || '{}');
+
+    expect(progress.skillCheckAttempts).toHaveLength(1);
+    expect(progress.error_log).toEqual([]);
+    expect(progress.topic_performance).toEqual({});
+    expect(progress.weak_topics).toEqual([]);
+    expect(progress.knowledge_errors).toBeUndefined();
+  });
+
+  it('updates mistake tags only inside the requested course', () => {
+    const storage = memoryStorage({
+      skillCheckAttempts: [
+        attempt({ attemptId: 'p3-shared', course: 'p3', checkId: 'shared-check' }),
+        attempt({ attemptId: 'p1-shared', course: 'p1', checkId: 'shared-check' }),
+      ],
+    });
+
+    updateLatestSkillCheckAttemptMistakeTags(storage, 'shared-check', ['sign error'], 'p1');
+    expect(loadSkillCheckAttempts(storage).map((record) => [record.attemptId, record.mistakeTags])).toEqual([
+      ['p3-shared', []],
+      ['p1-shared', ['sign error']],
+    ]);
+  });
+
   it('normalizes malformed response history without breaking old progress', () => {
     expect(normalizeStudentAttemptHistory(undefined)).toEqual({ schemaVersion: 1, records: [] });
     expect(normalizeStudentAttemptHistory({

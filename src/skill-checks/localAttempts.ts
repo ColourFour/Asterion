@@ -54,17 +54,31 @@ export function isSkillCheckLocalAttemptRecord(value: unknown): value is SkillCh
     && attempt.mistakeTags.every((tag) => typeof tag === 'string')
     && typeof attempt.timestamp === 'string'
     && (attempt.retryVariantId === undefined || typeof attempt.retryVariantId === 'string')
+    && (attempt.strongEvidenceEligible === undefined || typeof attempt.strongEvidenceEligible === 'boolean')
     && (attempt.strongEvidence === undefined || typeof attempt.strongEvidence === 'boolean');
 }
 
 export function normalizeSkillCheckLocalAttempts(records: unknown): SkillCheckLocalAttempt[] {
   if (!Array.isArray(records)) return [];
+  const seenItems = new Set<string>();
   return records
     .filter(isSkillCheckLocalAttemptRecord)
-    .map((attempt) => ({
-      ...attempt,
-      course: normalizedStudyCourse(attempt.course) ?? 'p3',
-    }));
+    .map((attempt) => {
+      const normalizedAttempt: SkillCheckLocalAttempt = {
+        ...attempt,
+        course: normalizedStudyCourse(attempt.course) ?? 'p3',
+      };
+      const key = evidenceItemKey(normalizedAttempt);
+      const intrinsicallyStrong = isIntrinsicallyStrongSkillCheckAttempt(normalizedAttempt);
+      const migratedStrongEvidence = intrinsicallyStrong && !seenItems.has(key);
+      seenItems.add(key);
+      return {
+        ...normalizedAttempt,
+        strongEvidence: attempt.strongEvidence === undefined
+          ? migratedStrongEvidence
+          : attempt.strongEvidence && intrinsicallyStrong,
+      };
+    });
 }
 
 export function isStudentAttemptHistoryRecord(value: unknown): value is StudentAttemptHistoryRecord {
@@ -126,6 +140,7 @@ export function appendStudentAttemptHistoryRecord(
 
 function isIntrinsicallyStrongSkillCheckAttempt(attempt: SkillCheckLocalAttempt): boolean {
   return isSkillCheckLocalAttemptRecord(attempt)
+    && attempt.strongEvidenceEligible !== false
     && attempt.isCorrect
     && !attempt.usedHint
     && !attempt.revealedAnswer
@@ -142,14 +157,12 @@ export function isStrongSkillCheckEvidenceAttempt(
   attempt: SkillCheckLocalAttempt,
   attemptHistory: SkillCheckLocalAttempt[],
 ): boolean {
-  if (!isIntrinsicallyStrongSkillCheckAttempt(attempt)) return false;
   const normalizedHistory = normalizeSkillCheckLocalAttempts(attemptHistory);
-  const key = evidenceItemKey(attempt);
-  const attemptIndex = normalizedHistory.findIndex((candidate) => (
-    candidate.attemptId === attempt.attemptId && evidenceItemKey(candidate) === key
+  const persistedAttempt = normalizedHistory.find((candidate) => (
+    candidate.attemptId === attempt.attemptId
+    && evidenceItemKey(candidate) === evidenceItemKey(attempt)
   ));
-  if (attemptIndex < 0) return false;
-  return normalizedHistory.findIndex((candidate) => evidenceItemKey(candidate) === key) === attemptIndex;
+  return persistedAttempt?.strongEvidence === true;
 }
 
 export function isPassingSkillCheckAttempt(
@@ -208,11 +221,14 @@ export function saveSkillCheckAttempt(
     retryVariantId: normalizedAttempt.retryVariantId,
     relatedAttemptId: normalizedAttempt.attemptId,
   });
-  const nextProgress = updateStudentPerformanceState({
+  const progressWithAttempt = {
     ...progress,
     skillCheckAttempts: nextAttempts,
     attemptHistory: nextHistory,
-  }, assessmentFromSkillCheckAttempt(normalizedAttempt));
+  };
+  const nextProgress = normalizedAttempt.course === 'p3'
+    ? updateStudentPerformanceState(progressWithAttempt, assessmentFromSkillCheckAttempt(normalizedAttempt))
+    : progressWithAttempt;
   storage.setItem(key, JSON.stringify(nextProgress));
   return nextAttempts;
 }
@@ -221,6 +237,7 @@ export function updateLatestSkillCheckAttemptMistakeTags(
   storage: SkillCheckAttemptStorageLike,
   checkId: string,
   mistakeTags: string[],
+  course: StudyCourseId = 'p3',
   key = ASTERION_PROGRESS_STORAGE_KEY,
 ): SkillCheckLocalAttempt | undefined {
   let progress: SkillCheckProgressShape = {};
@@ -232,7 +249,7 @@ export function updateLatestSkillCheckAttemptMistakeTags(
   }
 
   const attempts = normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts);
-  const index = attempts.map((attempt) => attempt.checkId).lastIndexOf(checkId);
+  const index = attempts.map((attempt) => attempt.course === course ? attempt.checkId : '').lastIndexOf(checkId);
   if (index < 0) return undefined;
 
   const updatedAttempt = {
@@ -241,10 +258,13 @@ export function updateLatestSkillCheckAttemptMistakeTags(
   };
   const nextAttempts = attempts.slice();
   nextAttempts[index] = updatedAttempt;
-  const nextProgress = updateErrorClassificationFromTags({
+  const progressWithUpdate = {
     ...progress,
     skillCheckAttempts: nextAttempts,
-  }, checkId, mistakeTags);
+  };
+  const nextProgress = updatedAttempt.course === 'p3'
+    ? updateErrorClassificationFromTags(progressWithUpdate, checkId, mistakeTags)
+    : progressWithUpdate;
   storage.setItem(key, JSON.stringify(nextProgress));
   return updatedAttempt;
 }

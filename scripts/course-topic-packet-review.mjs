@@ -1,9 +1,9 @@
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -27,6 +27,26 @@ async function readJson(filePath) {
 async function sha256File(filePath) {
   const content = await readFile(filePath);
   return createHash('sha256').update(content).digest('hex');
+}
+
+function sha256FileSync(filePath) {
+  return createHash('sha256').update(readFileSync(filePath)).digest('hex');
+}
+
+function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value && typeof value === 'object') {
+    return `{${Object.keys(value).sort().map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function sha256Value(value) {
+  return createHash('sha256').update(canonicalJson(value)).digest('hex');
+}
+
+function exactValueMatch(left, right) {
+  return canonicalJson(left) === canonicalJson(right);
 }
 
 async function sourceAssetFingerprints(sourceRepo, assetPaths, label) {
@@ -156,6 +176,7 @@ export async function buildCourseTopicPacketSnapshot({ courseId, paperFamily = c
           reviewer: null,
           reviewed_at: null,
           notes: null,
+          visual_audit: null,
         },
       });
     }
@@ -186,7 +207,13 @@ export async function buildCourseTopicPacketSnapshot({ courseId, paperFamily = c
     policy: {
       source_packet_approval_is_not_asterion_review: true,
       default_disposition: 'hold',
-      promotion_requires: ['disposition=promote', 'review_status=reviewed', 'student_runtime_safe=true'],
+      promotion_requires: [
+        'disposition=promote',
+        'review_status=reviewed',
+        'student_runtime_safe=true',
+        'contract-backed topic and atomic skills',
+        'fingerprint-matched visual audit',
+      ],
       difficulty_metadata_drives_promotion: false,
     },
     totals,
@@ -275,7 +302,115 @@ function sourceBankRecordForCandidate(candidate, sourceBankById) {
   return record;
 }
 
-export function buildPromotionOverlay({ projection, catalog, assetRoot, sourceBank }) {
+function courseContractBinding(courseContract) {
+  if (courseContract?.schemaName !== 'asterion.course-study-contract' || courseContract?.schemaVersion !== 1) {
+    throw new Error('Promotion requires a supported course study contract.');
+  }
+  const courseId = nonEmptyString(courseContract.courseId, 'course contract course ID');
+  const topics = asArray(courseContract.topics).map((topic) => ({
+    id: nonEmptyString(topic.id, 'course contract topic ID'),
+    slug: nonEmptyString(topic.slug, `course contract slug for ${topic.id}`),
+  }));
+  const skills = asArray(courseContract.skills).map((skill) => ({
+    id: nonEmptyString(skill.id, 'course contract skill ID'),
+    topic_id: nonEmptyString(skill.topicId, `course contract topic for ${skill.id}`),
+    readiness: skill.readiness,
+    review_status: skill.reviewStatus,
+  }));
+  if (!topics.length || !skills.length) throw new Error('Promotion requires a non-empty course topic and skill contract.');
+  const topicIds = new Set(topics.map((topic) => topic.id));
+  if (topicIds.size !== topics.length) throw new Error('Course contract contains a topic ID collision.');
+  const skillIds = new Set(skills.map((skill) => skill.id));
+  if (skillIds.size !== skills.length) throw new Error('Course contract contains a skill ID collision.');
+  for (const skill of skills) {
+    if (!topicIds.has(skill.topic_id)) throw new Error(`${skill.id} has an unknown course-contract topic ${skill.topic_id}.`);
+  }
+  return {
+    schema_name: courseContract.schemaName,
+    schema_version: courseContract.schemaVersion,
+    course_id: courseId,
+    syllabus_version: nonEmptyString(courseContract.syllabus?.version, 'course contract syllabus version'),
+    topic_skill_sha256: sha256Value({ topics, skills }),
+  };
+}
+
+function reviewedContractPlacement(candidate, projection, courseContract) {
+  const id = candidate.identity.question_id;
+  const reviewedTopicId = nonEmptyString(candidate.review.reviewed_topic_id, `reviewed topic for ${id}`);
+  const projectionTopic = asArray(projection.topics).find((topic) => topic.canonical_topic_id === reviewedTopicId);
+  if (!projectionTopic) throw new Error(`${id} reviewed topic is not present in the pinned P1 topic projection: ${reviewedTopicId}.`);
+  const normalizedPacketTopic = nonEmptyString(projectionTopic.topic_id, `packet topic for ${id}`).replaceAll('_', '-');
+  const contractTopic = asArray(courseContract.topics).find((topic) => topic.slug === normalizedPacketTopic);
+  if (!contractTopic) throw new Error(`${id} reviewed topic has no exact course-contract topic: ${reviewedTopicId}.`);
+
+  const reviewedSkillIds = asArray(candidate.review.reviewed_skill_ids).map((skillId) => nonEmptyString(skillId, `reviewed skill for ${id}`));
+  if (!reviewedSkillIds.length) throw new Error(`${id} has no reviewed skill IDs.`);
+  if (new Set(reviewedSkillIds).size !== reviewedSkillIds.length) throw new Error(`${id} has duplicate reviewed skill IDs.`);
+  const contractSkills = new Map(asArray(courseContract.skills).map((skill) => [skill.id, skill]));
+  for (const skillId of reviewedSkillIds) {
+    const skill = contractSkills.get(skillId);
+    if (!skill) throw new Error(`${id} has unknown P1 course-contract skill ${skillId}.`);
+    if (skill.topicId !== contractTopic.id) {
+      throw new Error(`${id} reviewed skill ${skillId} belongs to ${skill.topicId}, not ${contractTopic.id}.`);
+    }
+    if (skill.readiness !== 'ready' || skill.reviewStatus !== 'reviewed') {
+      throw new Error(`${id} reviewed skill ${skillId} is not ready and reviewed in the course contract.`);
+    }
+  }
+  return { reviewedTopicId, reviewedRegionId: normalizedPacketTopic, contractTopic, reviewedSkillIds };
+}
+
+function verifiedVisualAudit(candidate, projection) {
+  const id = candidate.identity.question_id;
+  const audit = candidate.review.visual_audit;
+  if (!audit || audit.status !== 'passed') throw new Error(`${id} is missing a passed visual audit.`);
+  nonEmptyString(audit.auditor, `visual auditor for ${id}`);
+  const auditedAt = nonEmptyString(audit.audited_at, `visual audit timestamp for ${id}`);
+  if (!Number.isFinite(Date.parse(auditedAt))) throw new Error(`${id} has an invalid visual audit timestamp.`);
+  if (audit.source_projection_version !== projection.projection_version) {
+    throw new Error(`${id} visual audit is stale for source projection ${projection.projection_version}.`);
+  }
+  if (audit.source_manifest_sha256 !== candidate.source.manifest_sha256
+      || audit.source_manifest_projection_fingerprint !== candidate.source.manifest_projection_fingerprint) {
+    throw new Error(`${id} visual audit manifest fingerprint does not match its pinned source.`);
+  }
+  if (!exactValueMatch(audit.question_assets, candidate.source.question_assets)
+      || !exactValueMatch(audit.mark_scheme_assets, candidate.source.mark_scheme_assets)) {
+    throw new Error(`${id} visual audit asset fingerprints do not match its pinned source.`);
+  }
+  return audit;
+}
+
+function verifiedRuntimeAsset({ id, label, target, expectedAsset, assetRoot, sourceRepoPath }) {
+  if (!expectedAsset?.path || !expectedAsset?.sha256) throw new Error(`${id} has no pinned ${label} asset fingerprint.`);
+  const targetPath = path.join(assetRoot, target);
+  if (existsSync(targetPath)) {
+    const actualSha256 = sha256FileSync(targetPath);
+    if (actualSha256 !== expectedAsset.sha256) {
+      throw new Error(`${id} existing runtime ${label} asset SHA-256 does not match the reviewed source.`);
+    }
+    return;
+  }
+  const sourcePath = sourceRepoPath ? path.join(sourceRepoPath, 'output', expectedAsset.path) : null;
+  if (!sourcePath || !existsSync(sourcePath)) throw new Error(`${id} missing runtime and source ${label} asset: ${target}.`);
+  if (sha256FileSync(sourcePath) !== expectedAsset.sha256) {
+    throw new Error(`${id} source ${label} asset SHA-256 does not match the reviewed source.`);
+  }
+}
+
+function addOverlayIntegrity(overlay) {
+  return { ...overlay, integrity_sha256: sha256Value(overlay) };
+}
+
+export function buildPromotionOverlay({ projection, catalog, assetRoot, sourceBank, courseContract }) {
+  if (projection?.schema_name !== 'asterion.course_topic_packet_review_projection' || projection?.schema_version !== 1) {
+    throw new Error('Promotion requires a supported source review projection.');
+  }
+  if (projection.course_id !== 'p1' || projection.paper_family !== 'p1') {
+    throw new Error('Promotion source projection must be P1.');
+  }
+  const contractBinding = courseContractBinding(courseContract);
+  if (contractBinding.course_id !== projection.course_id) throw new Error('Course contract and source projection identities do not match.');
   assertUniqueQuestionIds(asArray(projection.records));
   const eligible = asArray(projection.records).filter(isPromotionEligible);
   const catalogRecords = asArray(catalog?.questions);
@@ -297,23 +432,25 @@ export function buildPromotionOverlay({ projection, catalog, assetRoot, sourceBa
     if (catalogRecord.course_id !== projection.course_id || catalogRecord.paper_family !== projection.paper_family) {
       throw new Error(`${id} catalog course identity does not match ${projection.course_id}.`);
     }
-    const reviewedTopicId = nonEmptyString(candidate.review.reviewed_topic_id, `reviewed topic for ${id}`);
-    const reviewedTopic = asArray(projection.topics).find((topic) => topic.canonical_topic_id === reviewedTopicId);
-    if (!reviewedTopic) throw new Error(`${id} reviewed topic is not present in the pinned P1 topic contract: ${reviewedTopicId}.`);
-    const reviewedRegionId = nonEmptyString(reviewedTopic.topic_id, `reviewed region for ${id}`).replaceAll('_', '-');
-    if (!asArray(candidate.review.reviewed_skill_ids).length) throw new Error(`${id} has no reviewed skill IDs.`);
+    const { reviewedTopicId, reviewedRegionId, reviewedSkillIds } = reviewedContractPlacement(candidate, projection, courseContract);
     const reviewer = nonEmptyString(candidate.review.reviewer, `reviewer for ${id}`);
     const reviewedAt = nonEmptyString(candidate.review.reviewed_at, `review timestamp for ${id}`);
     if (!Number.isFinite(Date.parse(reviewedAt))) throw new Error(`${id} has an invalid review timestamp.`);
-    for (const key of ['canonical_question_artifact', 'canonical_mark_scheme_artifact']) {
-      const asset = canonicalAssetPath(catalogRecord, key);
-      const sourceKey = key === 'canonical_question_artifact' ? 'question' : 'mark_scheme';
-      const sourceAsset = catalogRecord.asterion_source_assets?.[sourceKey];
-      const sourceExists = typeof sourceAsset === 'string' && existsSync(path.join(projection.source?.repo_path || '', 'output', sourceAsset));
-      if (!asset || (!existsSync(path.join(assetRoot, asset)) && !sourceExists)) {
-        throw new Error(`${id} missing ${key} asset: ${asset ?? 'unset'}.`);
-      }
+    const visualAudit = verifiedVisualAudit(candidate, projection);
+    if (Date.parse(reviewedAt) < Date.parse(visualAudit.audited_at)) {
+      throw new Error(`${id} review decision predates its visual audit.`);
     }
+    const expectedTargets = asterionAssetPaths(candidate);
+    const questionTarget = canonicalAssetPath(catalogRecord, 'canonical_question_artifact');
+    const markSchemeTarget = canonicalAssetPath(catalogRecord, 'canonical_mark_scheme_artifact');
+    if (questionTarget !== expectedTargets.question || markSchemeTarget !== expectedTargets.markScheme) {
+      throw new Error(`${id} canonical runtime asset paths do not match its normalized paper identity.`);
+    }
+    if (asArray(candidate.source.question_assets).length !== 1 || asArray(candidate.source.mark_scheme_assets).length !== 1) {
+      throw new Error(`${id} promotion requires exactly one canonical question and mark-scheme crop.`);
+    }
+    verifiedRuntimeAsset({ id, label: 'question', target: questionTarget, expectedAsset: candidate.source.question_assets[0], assetRoot, sourceRepoPath: projection.source?.repo_path });
+    verifiedRuntimeAsset({ id, label: 'mark-scheme', target: markSchemeTarget, expectedAsset: candidate.source.mark_scheme_assets[0], assetRoot, sourceRepoPath: projection.source?.repo_path });
     const promoted = JSON.parse(JSON.stringify(catalogRecord));
     promoted.review_status = 'reviewed';
     promoted.student_runtime_safe = true;
@@ -326,23 +463,26 @@ export function buildPromotionOverlay({ projection, catalog, assetRoot, sourceBa
       source_manifest_sha256: candidate.source.manifest_sha256,
       source_manifest_projection_fingerprint: candidate.source.manifest_projection_fingerprint,
       source_question_id: id,
+      source_projection_version: projection.projection_version,
       source_packet_topic_id: candidate.source.topic_id,
       source_packet_section: candidate.source.packet_section,
       source_question_assets: candidate.source.question_assets,
       source_mark_scheme_assets: candidate.source.mark_scheme_assets,
       reviewed_topic_id: reviewedTopicId,
-      reviewed_skill_ids: candidate.review.reviewed_skill_ids,
+      reviewed_skill_ids: reviewedSkillIds,
       reviewer,
       reviewed_at: reviewedAt,
+      visual_audit: visualAudit,
+      course_contract: contractBinding,
       promotion_basis: 'explicit-asterion-human-review',
     };
     questions.push(promoted);
-    if (catalogRecord.asterion_source_assets) {
-      const targets = asterionAssetPaths(candidate);
+    const targets = asterionAssetPaths(candidate);
+    if (!existsSync(path.join(assetRoot, targets.question)) || !existsSync(path.join(assetRoot, targets.markScheme))) {
       assetImports.push({
         question_id: id,
-        question: { source: catalogRecord.asterion_source_assets.question, target: targets.question, sha256: candidate.source.question_assets?.[0]?.sha256 },
-        mark_scheme: { source: catalogRecord.asterion_source_assets.mark_scheme, target: targets.markScheme, sha256: candidate.source.mark_scheme_assets?.[0]?.sha256 },
+        question: { source: candidate.source.question_assets?.[0]?.path, target: targets.question, sha256: candidate.source.question_assets?.[0]?.sha256 },
+        mark_scheme: { source: candidate.source.mark_scheme_assets?.[0]?.path, target: targets.markScheme, sha256: candidate.source.mark_scheme_assets?.[0]?.sha256 },
       });
     }
     routingRecords[id] = {
@@ -355,22 +495,34 @@ export function buildPromotionOverlay({ projection, catalog, assetRoot, sourceBa
       route_approved: true,
       route_review_status: 'course_topic_packet_promoted',
       evidence_used: ['pinned_topic_packet_source', 'explicit_asterion_human_review'],
-      reviewed_skill_ids: candidate.review.reviewed_skill_ids,
+      reviewed_skill_ids: reviewedSkillIds,
       asterion_import: promoted.asterion_import,
     };
   }
   questions.sort((left, right) => left.question_id.localeCompare(right.question_id));
-  return {
+  const runtimeAssets = questions.map((question) => {
+    const record = eligible.find((candidate) => candidate.identity.question_id === question.question_id);
+    return {
+      question_id: question.question_id,
+      question: { target: question.canonical_question_artifact, sha256: record.source.question_assets[0].sha256 },
+      mark_scheme: { target: question.canonical_mark_scheme_artifact, sha256: record.source.mark_scheme_assets[0].sha256 },
+    };
+  });
+  return addOverlayIntegrity({
     schema_name: 'asterion.course_topic_packet_promotion_overlay',
     schema_version: 1,
     course_id: projection.course_id,
     paper_family: projection.paper_family,
     source_projection_version: projection.projection_version,
+    source_projection_schema_version: projection.schema_version,
+    source_repo_head: projection.source.repo_head,
+    course_contract: contractBinding,
     promoted_question_ids: questions.map((record) => record.question_id),
     questions,
     routing_records: routingRecords,
     asset_imports: assetImports,
-  };
+    runtime_assets: runtimeAssets,
+  });
 }
 
 async function copyOverlayAssets({ overlay, sourceRepo, assetRoot }) {
@@ -385,6 +537,9 @@ async function copyOverlayAssets({ overlay, sourceRepo, assetRoot }) {
       if (!entry.sha256 || actualSha256 !== entry.sha256) throw new Error(`${item.question_id} source ${key} asset fingerprint drift.`);
       await mkdir(path.dirname(targetPath), { recursive: true });
       await copyFile(sourcePath, targetPath);
+      if (sha256FileSync(targetPath) !== entry.sha256) {
+        throw new Error(`${item.question_id} copied ${key} asset fingerprint drift.`);
+      }
     }
   }
 }
@@ -403,6 +558,19 @@ function parseArgs(argv) {
 async function writeJson(filePath, value) {
   await mkdir(path.dirname(filePath), { recursive: true });
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function loadP1CourseContract() {
+  const moduleUrl = pathToFileURL(path.join(repoRoot, 'src/data/p1CourseContract.ts')).href;
+  const loader = `import(${JSON.stringify(moduleUrl)}).then((module) => process.stdout.write(JSON.stringify(module.P1_COURSE_STUDY_CONTRACT)))`;
+  const serialized = execFileSync(process.execPath, [
+    '--no-warnings=ExperimentalWarning',
+    '--experimental-strip-types',
+    '--input-type=module',
+    '--eval',
+    loader,
+  ], { encoding: 'utf8', cwd: repoRoot });
+  return JSON.parse(serialized);
 }
 
 export async function runCli(argv = process.argv.slice(2)) {
@@ -432,6 +600,7 @@ export async function runCli(argv = process.argv.slice(2)) {
       catalog,
       assetRoot: path.resolve(args.asset_root),
       sourceBank,
+      courseContract: loadP1CourseContract(),
     });
     await copyOverlayAssets({ overlay, sourceRepo: path.resolve(args.source_repo), assetRoot: path.resolve(args.asset_root) });
     await writeJson(path.resolve(args.output), overlay);

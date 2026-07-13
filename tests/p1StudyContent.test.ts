@@ -32,45 +32,73 @@ describe('P1 authored study content', () => {
     const contractSkillIds = P1_SKILL_CONTRACT.map((skill) => skill.id);
     const contentSkillIds = P1_SKILL_STUDY_CONTENT.map((content) => content.skillId);
 
-    expect(contentSkillIds).toEqual(contractSkillIds);
+    expect(new Set(contentSkillIds)).toEqual(new Set(contractSkillIds));
     expect(new Set(contentSkillIds).size).toBe(contentSkillIds.length);
 
     const topicSkillIds = P1_TOPIC_STUDY_CONTENT.flatMap((topic) => topic.skillIds);
     expect(topicSkillIds).toEqual(contractSkillIds);
 
     const primaryItems = P1_TOPIC_STUDY_CONTENT.flatMap((topic) => topic.checkedPractice);
-    const retryItems = P1_TOPIC_STUDY_CONTENT.flatMap((topic) => topic.checkedPracticeRetries);
+    const retryItems = P1_TOPIC_STUDY_CONTENT.flatMap((topic) => topic.checkedPracticeRetries).filter(Boolean);
     expect(primaryItems).toHaveLength(contractSkillIds.length);
-    expect(retryItems).toHaveLength(contractSkillIds.length);
+    expect(retryItems).toHaveLength(P1_SKILL_CONTRACT.filter((skill) => skill.evidenceEligibility === 'strong-checked-practice').length);
   });
 
-  it('keeps every primary and retry deterministic, reviewed, distinct and progression eligible', () => {
+  it('keeps every primary and retry deterministic, reviewed and distinct', () => {
     const itemIds = P1_SKILL_STUDY_CONTENT.flatMap((content) => [
       content.checkedPractice.itemId,
-      content.checkedPracticeRetry.itemId,
-    ]);
+      content.checkedPracticeRetry?.itemId,
+    ]).filter((itemId): itemId is string => Boolean(itemId));
     expect(new Set(itemIds).size).toBe(itemIds.length);
 
-    const retryVariantIds = P1_SKILL_STUDY_CONTENT.map((content) => content.checkedPracticeRetry.retryVariantId);
+    const retryVariantIds = P1_SKILL_STUDY_CONTENT
+      .map((content) => content.checkedPracticeRetry?.retryVariantId)
+      .filter((variantId): variantId is string => Boolean(variantId));
     expect(new Set(retryVariantIds).size).toBe(retryVariantIds.length);
 
     for (const content of P1_SKILL_STUDY_CONTENT) {
       expect(content.learn.learningGoal.trim()).not.toBe('');
       expect(content.learn.teachingPoints.length).toBeGreaterThanOrEqual(2);
       expect(content.learn.workedExample.steps.length).toBeGreaterThanOrEqual(2);
-      expect(content.checkedPracticeRetry.prompt).not.toBe(content.checkedPractice.prompt);
-      expect(content.checkedPracticeRetry.retryVariantId).toBe(`${content.skillId}:retry-1`);
+      const contractSkill = P1_SKILL_CONTRACT.find((skill) => skill.id === content.skillId)!;
+      if (contractSkill.evidenceEligibility === 'manual-practice-only') {
+        expect(content.checkedPracticeRetry).toBeUndefined();
+      } else {
+        expect(content.checkedPracticeRetry?.prompt).not.toBe(content.checkedPractice.prompt);
+        expect(content.checkedPracticeRetry?.retryVariantId).toBe(`${content.skillId}:retry-1`);
+      }
 
-      for (const item of [content.checkedPractice, content.checkedPracticeRetry]) {
-        expect(item.answerType).toBe('single-choice');
-        expect(item.expectedOptionId).toBe('correct');
-        expect(item.options).toHaveLength(3);
-        expect(item.options.some((option) => option.id === 'correct')).toBe(true);
+      for (const item of [content.checkedPractice, content.checkedPracticeRetry].filter((candidate): candidate is NonNullable<typeof candidate> => Boolean(candidate))) {
         expect(item.hint.trim()).not.toBe('');
         expect(item.workedSolution.length).toBeGreaterThanOrEqual(2);
-        expect(item.progressionEligible).toBe(true);
         expect(item.reviewStatus).toBe('reviewed');
+
+        if (contractSkill.evidenceEligibility === 'manual-practice-only') {
+          expect(item.answerType).toBe('manual-self-marked');
+          expect(item.expectedOptionId).toBeNull();
+          expect(item.options).toEqual([]);
+          expect(item.progressionEligible).toBe(false);
+        } else {
+          expect(item.answerType).toBe('single-choice');
+          expect(item.expectedOptionId).toMatch(/^option-[abc]$/);
+          expect(item.options.map((option) => option.id)).toEqual(['option-a', 'option-b', 'option-c']);
+          expect(item.progressionEligible).toBe(true);
+        }
       }
+    }
+  });
+
+  it('uses opaque option ids and distributes correct choices across authored positions', () => {
+    const automaticItems = P1_SKILL_STUDY_CONTENT.flatMap((content) => [
+      content.checkedPractice,
+      content.checkedPracticeRetry,
+    ]).filter((item): item is NonNullable<typeof item> => Boolean(item) && item.answerType === 'single-choice');
+    const expectedPositions = automaticItems.map((item) => item.expectedOptionId);
+
+    expect(allStrings(automaticItems)).not.toContain('correct');
+    expect(new Set(expectedPositions)).toEqual(new Set(['option-a', 'option-b', 'option-c']));
+    for (const optionId of ['option-a', 'option-b', 'option-c']) {
+      expect(expectedPositions.filter((expected) => expected === optionId).length).toBeGreaterThan(20);
     }
   });
 

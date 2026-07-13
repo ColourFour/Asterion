@@ -150,14 +150,14 @@ async function progressSnapshot(page) {
         && progress.skillCheckAttempts?.[0]?.usedHint === false
         && progress.skillCheckAttempts?.[0]?.revealedAnswer === false
         && progress.skillCheckAttempts?.[0]?.revealedRepairStep === false,
-      completedAlgebraSteps: Object.keys(progress.regionLearning?.algebra?.fieldGuideTopicCompletions ?? {}).length,
-      completedLogExpSteps: Object.keys(progress.regionLearning?.['logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length,
-      completedTrigSteps: Object.keys(progress.regionLearning?.trigonometry?.fieldGuideTopicCompletions ?? {}).length,
-      completedDiffSteps: Object.keys(progress.regionLearning?.differentiation?.fieldGuideTopicCompletions ?? {}).length,
-      completedIntegrationSteps: Object.keys(progress.regionLearning?.integration?.fieldGuideTopicCompletions ?? {}).length,
-      completedIterationSteps: Object.keys(progress.regionLearning?.['numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length,
-      completedDeSteps: Object.keys(progress.regionLearning?.['differential-equations']?.fieldGuideTopicCompletions ?? {}).length,
-      completedComplexSteps: Object.keys(progress.regionLearning?.['complex-numbers']?.fieldGuideTopicCompletions ?? {}).length,
+      completedAlgebraSteps: Object.keys(progress.regionLearning?.['p3:algebra']?.fieldGuideTopicCompletions ?? {}).length,
+      completedLogExpSteps: Object.keys(progress.regionLearning?.['p3:logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length,
+      completedTrigSteps: Object.keys(progress.regionLearning?.['p3:trigonometry']?.fieldGuideTopicCompletions ?? {}).length,
+      completedDiffSteps: Object.keys(progress.regionLearning?.['p3:differentiation']?.fieldGuideTopicCompletions ?? {}).length,
+      completedIntegrationSteps: Object.keys(progress.regionLearning?.['p3:integration']?.fieldGuideTopicCompletions ?? {}).length,
+      completedIterationSteps: Object.keys(progress.regionLearning?.['p3:numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length,
+      completedDeSteps: Object.keys(progress.regionLearning?.['p3:differential-equations']?.fieldGuideTopicCompletions ?? {}).length,
+      completedComplexSteps: Object.keys(progress.regionLearning?.['p3:complex-numbers']?.fieldGuideTopicCompletions ?? {}).length,
       learningAttempts: progress.learningActivityAttempts ?? [],
       skillAttempts: progress.skillCheckAttempts ?? [],
     };
@@ -307,7 +307,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.algebra?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:algebra']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const algebraHintedState = await progressSnapshot(page);
   assert(algebraHintedState.skillCount === 0, 'Learn answers must not create checked Skill Check evidence.');
@@ -320,7 +320,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.algebra?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:algebra']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanAlgebraState = await progressSnapshot(page);
   assert(cleanAlgebraState.learningCount === 2, 'Clean primary and similar answers must be recorded as Learn activity.');
@@ -426,7 +426,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.['logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanLogExpState = await progressSnapshot(page);
   assert(cleanLogExpState.learningCount === 2, 'Clean Log/Exp primary and similar answers must save Learn activity.');
@@ -441,7 +441,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 2
-      && Object.keys(progress.regionLearning?.['logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const hintedLogExpState = await progressSnapshot(page);
   assert(hintedLogExpState.skillCount === 0, 'Hinted Log/Exp similar answer must not mirror into strong Skill Check evidence.');
@@ -457,7 +457,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.['logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:logarithmic-and-exponential-functions']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const revealedLogExpState = await progressSnapshot(page);
   assert(revealedLogExpState.skillCount === 0, 'Revealed Log/Exp answer must not mirror into strong Skill Check evidence.');
@@ -538,7 +538,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.trigonometry?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:trigonometry']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const revealedTrigState = await progressSnapshot(page);
   assert(revealedTrigState.skillCount === 0, 'Revealed Trigonometry answer must not mirror into strong Skill Check evidence.');
@@ -550,7 +550,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.trigonometry?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:trigonometry']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanTrigState = await progressSnapshot(page);
   assert(cleanTrigState.learningCount === 2, 'Clean Trigonometry primary and similar answers must save Learn activity.');
@@ -636,7 +636,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.differentiation?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:differentiation']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanDiffState = await progressSnapshot(page);
   const cleanDiffUi = await page.evaluate(() => ({
@@ -670,7 +670,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 2
-      && Object.keys(progress.regionLearning?.differentiation?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:differentiation']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const hintedDiffState = await progressSnapshot(page);
   assert(hintedDiffState.skillCount === 0, 'Hinted Differentiation similar answer must not mirror into strong Skill Check evidence.');
@@ -686,7 +686,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.differentiation?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:differentiation']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const revealedDiffState = await progressSnapshot(page);
   assert(revealedDiffState.skillCount === 0, 'Revealed Differentiation answer must not mirror into strong Skill Check evidence.');
@@ -770,7 +770,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.integration?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:integration']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanIntegrationState = await progressSnapshot(page);
   const cleanIntegrationUi = await page.evaluate(() => ({
@@ -804,7 +804,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 2
-      && Object.keys(progress.regionLearning?.integration?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:integration']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const hintedIntegrationState = await progressSnapshot(page);
   assert(hintedIntegrationState.skillCount === 0, 'Hinted Integration similar answer must not mirror into strong Skill Check evidence.');
@@ -820,7 +820,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.integration?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:integration']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const revealedIntegrationState = await progressSnapshot(page);
   assert(revealedIntegrationState.skillCount === 0, 'Revealed Integration answer must not mirror into strong Skill Check evidence.');
@@ -904,7 +904,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.['numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanIterationState = await progressSnapshot(page);
   const cleanIterationUi = await page.evaluate(() => ({
@@ -938,7 +938,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 2
-      && Object.keys(progress.regionLearning?.['numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const hintedIterationState = await progressSnapshot(page);
   assert(hintedIterationState.skillCount === 0, 'Hinted Iteration similar answer must not mirror into strong Skill Check evidence.');
@@ -954,7 +954,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.['numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:numerical-solution-of-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const revealedIterationState = await progressSnapshot(page);
   assert(revealedIterationState.skillCount === 0, 'Revealed Iteration answer must not mirror into strong Skill Check evidence.');
@@ -1038,7 +1038,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.['differential-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:differential-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanDeState = await progressSnapshot(page);
   const cleanDeUi = await page.evaluate(() => ({
@@ -1072,7 +1072,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 2
-      && Object.keys(progress.regionLearning?.['differential-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:differential-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const hintedDeState = await progressSnapshot(page);
   assert(hintedDeState.skillCount === 0, 'Hinted Differential Equations similar answer must not mirror into strong Skill Check evidence.');
@@ -1088,7 +1088,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.['differential-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:differential-equations']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const revealedDeState = await progressSnapshot(page);
   assert(revealedDeState.skillCount === 0, 'Revealed Differential Equations answer must not mirror into strong Skill Check evidence.');
@@ -1172,7 +1172,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 2
-      && Object.keys(progress.regionLearning?.['complex-numbers']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:complex-numbers']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const cleanComplexState = await progressSnapshot(page);
   const cleanComplexUi = await page.evaluate(() => ({
@@ -1206,7 +1206,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) === 2
-      && Object.keys(progress.regionLearning?.['complex-numbers']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:complex-numbers']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const hintedComplexState = await progressSnapshot(page);
   assert(hintedComplexState.skillCount === 0, 'Hinted Complex Numbers similar answer must not mirror into strong Skill Check evidence.');
@@ -1222,7 +1222,7 @@ try {
   await page.waitForFunction(() => {
     const progress = JSON.parse(window.localStorage.getItem('asterion.progress.v1') || '{}');
     return (progress.learningActivityAttempts?.length ?? 0) >= 3
-      && Object.keys(progress.regionLearning?.['complex-numbers']?.fieldGuideTopicCompletions ?? {}).length === 1;
+      && Object.keys(progress.regionLearning?.['p3:complex-numbers']?.fieldGuideTopicCompletions ?? {}).length === 1;
   });
   const revealedComplexState = await progressSnapshot(page);
   assert(revealedComplexState.skillCount === 0, 'Revealed Complex Numbers answer must not mirror into strong Skill Check evidence.');
@@ -1274,6 +1274,28 @@ try {
 
   await waitForStaticEnhancement(page, 'p1/topics/quadratics/skill-check/index.html');
   await resetPageProgress(page);
+  const p1FlowShape = await page.evaluate(() => ({
+    hasOneCardFlow: Boolean(document.querySelector('[data-one-card-flow]')),
+    visibleForms: Array.from(document.querySelectorAll('[data-check-skill-answer][data-course-id="p1"]'))
+      .filter((form) => !form.closest('.practice-card')?.hidden).length,
+    visibleVariant: document.querySelector('.practice-card:not([hidden]) [data-check-skill-answer][data-course-id="p1"]')
+      ?.getAttribute('data-retry-variant-id') ?? '',
+  }));
+  assert(p1FlowShape.hasOneCardFlow, 'P1 Checked Practice must use the one-card flow.');
+  assert(p1FlowShape.visibleForms === 1 && p1FlowShape.visibleVariant === 'primary', 'Fresh P1 Checked Practice must show exactly one primary and keep retries locked.');
+
+  const p1CleanPrimary = page.locator('.practice-card:not([hidden]) [data-check-skill-answer][data-course-id="p1"][data-retry-variant-id="primary"]');
+  const p1CleanPrimaryAnswer = JSON.parse(await p1CleanPrimary.getAttribute('data-accepted-answers') || '[]')[0];
+  await submitAnswer(p1CleanPrimary, p1CleanPrimaryAnswer);
+  const cleanPrimaryFlowState = await page.evaluate(() => ({
+    visibleRetries: Array.from(document.querySelectorAll('[data-p1-retry-for]')).filter((card) => !card.hidden).length,
+    isPassed: document.querySelector('.practice-card:not([hidden]) [data-check-skill-answer]')?.classList.contains('is-passed') === true,
+    inlineNextVisible: !document.querySelector('.practice-card:not([hidden]) [data-skill-check-inline-next]')?.hidden,
+  }));
+  assert(cleanPrimaryFlowState.visibleRetries === 0, 'A clean P1 primary pass must never expose its retry.');
+  assert(cleanPrimaryFlowState.isPassed && cleanPrimaryFlowState.inlineNextVisible, 'Persisted strong evidence must control pass styling and inline Next.');
+
+  await resetPageProgress(page);
   const p1Primary = page.locator('[data-check-skill-answer][data-course-id="p1"][data-retry-variant-id="primary"]').first();
   const p1PrimaryAnswer = JSON.parse(await p1Primary.getAttribute('data-accepted-answers') || '[]')[0];
   const p1WrongAnswer = await p1Primary.locator('input[name="submittedAnswer"]').evaluateAll((inputs, correct) => (
@@ -1282,6 +1304,7 @@ try {
   await submitAnswer(p1Primary, p1WrongAnswer);
   const p1Retry = page.locator('[data-check-skill-answer][data-course-id="p1"]:not([data-retry-variant-id="primary"])').first();
   assert(await p1Retry.isVisible(), 'A distinct P1 retry variant must appear after an incorrect primary submission.');
+  assert(!(await p1Primary.isVisible()), 'An invalidated P1 primary must leave the one-card flow when its distinct retry unlocks.');
   const p1RetryAnswer = JSON.parse(await p1Retry.getAttribute('data-accepted-answers') || '[]')[0];
   await submitAnswer(p1Retry, p1RetryAnswer);
   const p1Evidence = await page.evaluate((key) => {
@@ -1296,6 +1319,117 @@ try {
   assert(p1Evidence.length === 2, 'P1 primary and retry submissions must both be retained.');
   assert(p1Evidence[0].course === 'p1' && p1Evidence[0].strongEvidence === false, 'Incorrect P1 primary must not create strong evidence.');
   assert(p1Evidence[1].course === 'p1' && p1Evidence[1].retryVariantId !== 'primary' && p1Evidence[1].strongEvidence === true, 'First clean submission to the distinct P1 retry must create strong evidence.');
+  const retryUiState = await p1Retry.evaluate((form) => ({
+    feedback: form.querySelector('.skill-check-feedback')?.textContent?.trim() ?? '',
+    isPassed: form.classList.contains('is-passed'),
+    inlineNextVisible: !form.querySelector('[data-skill-check-inline-next]')?.hidden,
+  }));
+  assert(retryUiState.feedback.includes('clean Checked Practice pass') && retryUiState.isPassed, 'A distinct clean retry must display the persisted strong-evidence result.');
+  assert(retryUiState.inlineNextVisible, 'A distinct clean retry must enable inline Next.');
+  const hashBeforeInlineNext = await page.evaluate(() => window.location.hash);
+  await p1Retry.locator('[data-skill-check-inline-next]').click();
+  await page.waitForFunction((previousHash) => window.location.hash !== previousHash, hashBeforeInlineNext);
+
+  await resetPageProgress(page);
+  const hintedP1Primary = page.locator('.practice-card:not([hidden]) [data-check-skill-answer][data-course-id="p1"][data-retry-variant-id="primary"]');
+  const hintedP1Answer = JSON.parse(await hintedP1Primary.getAttribute('data-accepted-answers') || '[]')[0];
+  await hintedP1Primary.locator('[data-show-skill-hint]').click();
+  await submitAnswer(hintedP1Primary, hintedP1Answer, { closeCelebration: false });
+  const hintedP1State = await page.evaluate((key) => {
+    const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+    const primary = document.querySelector('[data-check-skill-answer][data-course-id="p1"][data-retry-variant-id="primary"]');
+    return {
+      strongEvidence: progress.skillCheckAttempts?.[0]?.strongEvidence,
+      cleanCopyShown: primary?.querySelector('.skill-check-feedback')?.textContent?.includes('Saved as a clean') === true,
+      primaryPassed: primary?.classList.contains('is-passed') === true,
+      primaryInlineNextVisible: !primary?.querySelector('[data-skill-check-inline-next]')?.hidden,
+      retryVisible: Boolean(document.querySelector('[data-p1-retry-for]:not([hidden])')),
+    };
+  }, storageKey);
+  assert(hintedP1State.strongEvidence === false, 'Hinted P1 primary work must persist a false strong-evidence result.');
+  assert(!hintedP1State.cleanCopyShown && !hintedP1State.primaryPassed && !hintedP1State.primaryInlineNextVisible, 'Hinted correction must not announce, style, or navigate as a clean pass.');
+  assert(hintedP1State.retryVisible, 'Hint-invalidated primary work must unlock its distinct retry.');
+
+  await waitForStaticEnhancement(page, 'p1/index.html');
+  await resetPageProgress(page);
+  const freshP1NextStep = await page.locator('[data-course-next-step-panel][data-course-id="p1"]').innerText();
+  assert(freshP1NextStep.includes('optional Starting Check'), 'Fresh P1 dashboard must recommend the optional Starting Check.');
+  await page.evaluate((key) => {
+    const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+    progress.regionLearning = {
+      ...(progress.regionLearning || {}),
+      'p1:quadratics': {
+        course: 'p1',
+        regionId: 'quadratics',
+        fieldGuideTopicCompletions: { 'p1_quad_complete_square': { completedAt: new Date().toISOString() } },
+      },
+    };
+    window.localStorage.setItem(key, JSON.stringify(progress));
+  }, storageKey);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'));
+  const returningP1NextStep = await page.locator('[data-course-next-step-panel][data-course-id="p1"]').innerText();
+  assert(returningP1NextStep.includes('Continue Quadratics Learn'), 'Returning P1 students must resume their started incomplete unit.');
+  await page.evaluate((key) => {
+    const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+    progress.skillCheckAttempts = Array.from(document.querySelectorAll('[data-path-unit][data-course-id="p1"]')).flatMap((card) => {
+      const regionId = card.getAttribute('data-path-unit') || '';
+      const topic = card.getAttribute('data-unit-name') || regionId;
+      const requiredNode = card.querySelector('[data-progress-skill]');
+      const requiredIds = JSON.parse(requiredNode?.getAttribute('data-required-checks') || '[]');
+      return requiredIds.map((checkId, index) => ({
+        attemptId: `browser-complete-${regionId}-${index}`,
+        course: 'p1',
+        topic,
+        skillId: checkId,
+        checkId,
+        regionId,
+        submittedAnswer: 'browser-verified',
+        isCorrect: true,
+        usedHint: false,
+        revealedAnswer: false,
+        revealedRepairStep: false,
+        retryVariantId: 'primary',
+        strongEvidenceEligible: true,
+        strongEvidence: true,
+        mistakeTags: [],
+        timestamp: new Date().toISOString(),
+      }));
+    });
+    window.localStorage.setItem(key, JSON.stringify(progress));
+  }, storageKey);
+  await page.reload({ waitUntil: 'load' });
+  await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'));
+  const completedP1NextStep = await page.locator('[data-course-next-step-panel][data-course-id="p1"]').innerText();
+  assert(completedP1NextStep.includes('Finite P1 core complete'), 'All eight strong-evidence contracts must route the dashboard to P1 Review.');
+  assert(completedP1NextStep.includes('not a claim of full exam mastery'), 'P1 completion copy must not claim full exam mastery.');
+
+  await waitForStaticEnhancement(page, 'p1/review/index.html');
+  const p1CoreSummary = await page.locator('[data-p1-core-completion-summary]').innerText();
+  assert(p1CoreSummary.includes('8/8') && p1CoreSummary.includes('Finite P1 core complete'), 'P1 Review must reconcile all eight complete units.');
+  assert(p1CoreSummary.includes('not a claim of full exam mastery'), 'P1 Review completion must preserve the finite-core qualification.');
+
+  await waitForStaticEnhancement(page, 'p1/topics/functions/skill-check/index.html');
+  await resetPageProgress(page);
+  await page.evaluate(() => { window.location.hash = 'practice-p1_func_inverse_graph_sketch'; });
+  await page.waitForFunction(() => Boolean(document.querySelector('[data-manual-practice-card]:not([hidden])')));
+  await page.locator('[data-manual-practice-card]:not([hidden]) [data-manual-practice-complete]').click();
+  const manualPracticeState = await page.evaluate((key) => {
+    const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+    const card = document.querySelector('[data-manual-practice-card]:not([hidden])');
+    const flowNext = Array.from(document.querySelectorAll('.practice-controls button')).find((button) => /Continue practice/i.test(button.textContent || ''));
+    return {
+      sessionComplete: card?.getAttribute('data-manual-practice-completed') === 'true',
+      passStyled: card?.querySelector('.is-passed') !== null,
+      flowNextEnabled: flowNext instanceof HTMLButtonElement && !flowNext.disabled,
+      skillAttempts: progress.skillCheckAttempts?.length ?? 0,
+      historyRecords: progress.attemptHistory?.records?.length ?? 0,
+      regionLearningKeys: Object.keys(progress.regionLearning || {}).length,
+    };
+  }, storageKey);
+  assert(manualPracticeState.sessionComplete && manualPracticeState.flowNextEnabled, 'Manual practice completion must enable session-only flow navigation.');
+  assert(!manualPracticeState.passStyled, 'Manual practice must never display pass styling.');
+  assert(manualPracticeState.skillAttempts === 0 && manualPracticeState.historyRecords === 0 && manualPracticeState.regionLearningKeys === 0, 'Manual practice navigation must not save academic attempts, history, or topic completion.');
 
   await waitForStaticEnhancement(page, 'p1/topics/quadratics/learn/index.html');
   await page.locator('[data-complete-field-guide-topic][data-region-id="quadratics"]').first().click();
@@ -1312,7 +1446,8 @@ try {
   await page.locator('[data-p1-starting-check-reset]').click();
   await page.locator('[data-p1-starting-check-question]').evaluateAll((questions) => {
     questions.forEach((question) => {
-      const input = question.querySelector('input[type="radio"]');
+      const expected = question.getAttribute('data-expected-option');
+      const input = Array.from(question.querySelectorAll('input[type="radio"]')).find((candidate) => candidate.value === expected);
       if (input instanceof HTMLInputElement) input.checked = true;
     });
   });
@@ -1329,6 +1464,8 @@ try {
   }, storageKey);
   assert(p1DiagnosticState.reportVisible && p1DiagnosticState.advisory === true && p1DiagnosticState.completionCredit === false, 'P1 Starting Check must save an advisory, non-credit report.');
   assert(p1DiagnosticState.skillAttempts === 0, 'P1 Starting Check must not create Checked Practice evidence.');
+  const perfectP1StartingCheckCopy = await page.locator('[data-p1-starting-check-summary]').innerText();
+  assert(perfectP1StartingCheckCopy.includes('No weak starting topic was detected'), 'A perfect P1 Starting Check must not fall back to recommending Quadratics.');
 
   console.log('P1/P3 Learn and Checked Practice interaction browser check passed.');
 } finally {

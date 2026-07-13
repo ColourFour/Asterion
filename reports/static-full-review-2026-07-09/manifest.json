@@ -161,8 +161,8 @@
           "viewportWidth": 1365,
           "visibleMainActionCount": 62,
           "visibleMainActions": [
-            "Start optional check",
-            "Skip and start Quadratics",
+            "Take Starting Check",
+            "Skip it — Start Quadratics Learn",
             "Need to Know",
             "Exam Training",
             "Review / export",
@@ -194,8 +194,8 @@
           "viewportWidth": 390,
           "visibleMainActionCount": 62,
           "visibleMainActions": [
-            "Start optional check",
-            "Skip and start Quadratics",
+            "Take Starting Check",
+            "Skip it — Start Quadratics Learn",
             "Need to Know",
             "Exam Training",
             "Review / export",
@@ -9225,13 +9225,13 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 88,
+          "visibleMainActionCount": 152,
           "visibleMainActions": [
             "Open P1 units",
             "Notation rules",
             "Formula scope",
             "Explicit exclusions",
-            "1.1Quadratics5 atomic skills",
+            "1.1Quadratics8 focused skills",
             "Learn",
             "Checked Practice",
             "Learn",
@@ -9258,13 +9258,13 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 88,
+          "visibleMainActionCount": 152,
           "visibleMainActions": [
             "Open P1 units",
             "Notation rules",
             "Formula scope",
             "Explicit exclusions",
-            "1.1Quadratics5 atomic skills",
+            "1.1Quadratics8 focused skills",
             "Learn",
             "Checked Practice",
             "Learn",
@@ -9303,10 +9303,18 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 4,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Need to Know",
             "Back to P1",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
             "Download CSV",
             "Open Email"
           ],
@@ -9328,10 +9336,18 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 4,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Need to Know",
             "Back to P1",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
+            "Continue",
             "Download CSV",
             "Open Email"
           ],
@@ -9428,10 +9444,13 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -9458,10 +9477,13 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -9558,20 +9580,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Learn support",
+            "Read a vertex from completed-square formChange skill",
+            "Read a vertex from completed-square form",
+            "Rewrite a quadratic by completing the square",
+            "Use the discriminant to classify roots",
+            "Solve quadratic inequalities by sign intervals",
+            "Solve quadratic equations",
+            "Solve linear-quadratic simultaneous equations",
+            "Choose a substitution for a hidden quadratic",
+            "Solve an equation that is quadratic in a repeated expression",
             "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Functions Learn"
+            "Hint"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -9591,20 +9613,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Learn support",
+            "Read a vertex from completed-square formChange skill",
+            "Read a vertex from completed-square form",
+            "Rewrite a quadratic by completing the square",
+            "Use the discriminant to classify roots",
+            "Solve quadratic inequalities by sign intervals",
+            "Solve quadratic equations",
+            "Solve linear-quadratic simultaneous equations",
+            "Choose a substitution for a hidden quadratic",
+            "Solve an equation that is quadratic in a repeated expression",
             "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Functions Learn"
+            "Hint"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -9613,85 +9635,133 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 10,
+        "count": 16,
         "checks": [
           {
-            "id": "p1_quad_complete_square::What is the vertex of $y=(x+2)^2-5$?::exact-text::correct",
+            "id": "p1_quad_complete_square::What is the vertex of $y=(x+2)^2-5$?::exact-text::option-c",
             "label": "What is the vertex of $y=(x+2)^2-5$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_complete_square::Write $2x^2+8x+3$ in completed-square form.::exact-text::correct",
+            "id": "p1_quad_complete_square::Write $2x^2+8x+3$ in completed-square form.::exact-text::option-a",
             "label": "Write $2x^2+8x+3$ in completed-square form.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_discriminant::How many real roots does $x^2+2x+5=0$ have?::exact-text::correct",
+            "id": "p1_quad_complete_square::Write $x^2-10x+7$ in completed-square form.::exact-text::option-a",
+            "label": "Write $x^2-10x+7$ in completed-square form.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_complete_square::Write $2x^2+12x+5$ in completed-square form.::exact-text::option-b",
+            "label": "Write $2x^2+12x+5$ in completed-square form.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_discriminant::How many real roots does $x^2+2x+5=0$ have?::exact-text::option-c",
             "label": "How many real roots does $x^2+2x+5=0$ have?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_discriminant::Classify the roots of $x^2-6x+9=0$.::exact-text::correct",
+            "id": "p1_quad_discriminant::Classify the roots of $x^2-6x+9=0$.::exact-text::option-a",
             "label": "Classify the roots of $x^2-6x+9=0$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_equations_inequalities::Solve $x^2-5x+6\\ge0$.::exact-text::correct",
+            "id": "p1_quad_equations_inequalities::Solve $x^2-5x+6\\ge0$.::exact-text::option-b",
             "label": "Solve $x^2-5x+6\\ge0$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_equations_inequalities::Solve $x^2+x-2<0$.::exact-text::correct",
+            "id": "p1_quad_equations_inequalities::Solve $x^2+x-2<0$.::exact-text::option-c",
             "label": "Solve $x^2+x-2<0$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_simultaneous::If $y=2x$ and $x^2+y=3$, which pair is a solution?::exact-text::correct",
+            "id": "p1_quad_solve_equations::Solve $2x^2-5x-3=0$.::exact-text::option-c",
+            "label": "Solve $2x^2-5x-3=0$.",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_solve_equations::Solve $3x^2+x-2=0$.::exact-text::option-a",
+            "label": "Solve $3x^2+x-2=0$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_simultaneous::If $y=2x$ and $x^2+y=3$, which pair is a solution?::exact-text::option-c",
             "label": "If $y=2x$ and $x^2+y=3$, which pair is a solution?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_simultaneous::Which ordered pair solves both $y=x$ and $x^2+y=2$?::exact-text::correct",
+            "id": "p1_quad_simultaneous::Which ordered pair solves both $y=x$ and $x^2+y=2$?::exact-text::option-a",
             "label": "Which ordered pair solves both $y=x$ and $x^2+y=2$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_substitution_forms::Which substitution simplifies $(x+1)^2-5(x+1)+6=0$?::exact-text::correct",
+            "id": "p1_quad_substitution_forms::Which substitution simplifies $(x+1)^2-5(x+1)+6=0$?::exact-text::option-c",
             "label": "Which substitution simplifies $(x+1)^2-5(x+1)+6=0$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_quad_substitution_forms::Solve $x^4-10x^2+9=0$.::exact-text::correct",
-            "label": "Solve $x^4-10x^2+9=0$.",
+            "id": "p1_quad_substitution_forms::Which substitution exposes a quadratic in $(x-2)^4-7(x-2)^2+10=0$?::exact-text::option-a",
+            "label": "Which substitution exposes a quadratic in $(x-2)^4-7(x-2)^2+10=0$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_hidden_substitution_solve::Solve $x^4-13x^2+36=0$.::exact-text::option-c",
+            "label": "Solve $x^4-13x^2+36=0$.",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_quad_hidden_substitution_solve::Solve $x^4-17x^2+16=0$.::exact-text::option-a",
+            "label": "Solve $x^4-17x^2+16=0$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           }
@@ -9850,7 +9920,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 14,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -9859,8 +9929,11 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -9880,7 +9953,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 14,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -9889,8 +9962,11 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -9980,20 +10056,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 15,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Coordinate geometry Learn"
+            "Determine a function domainChange skill",
+            "Determine a function domain",
+            "Determine a function range",
+            "Calculate a composite function",
+            "Check whether a composition is valid on a domain",
+            "Test one-one behaviour and choose a valid restriction",
+            "Find an inverse-function formula",
+            "Map points between a function and its inverse",
+            "Sketch an inverse graph by reflection",
+            "Apply graph stretches",
+            "Apply graph translations and reflections"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -10013,20 +10089,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 15,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Coordinate geometry Learn"
+            "Determine a function domainChange skill",
+            "Determine a function domain",
+            "Determine a function range",
+            "Calculate a composite function",
+            "Check whether a composition is valid on a domain",
+            "Test one-one behaviour and choose a valid restriction",
+            "Find an inverse-function formula",
+            "Map points between a function and its inverse",
+            "Sketch an inverse graph by reflection",
+            "Apply graph stretches",
+            "Apply graph translations and reflections"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -10035,85 +10111,149 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 10,
+        "count": 18,
         "checks": [
           {
-            "id": "p1_func_language_domain_range::What is the domain of $f(x)=1/(x-3)$?::exact-text::correct",
+            "id": "p1_func_language_domain_range::What is the domain of $f(x)=1/(x-3)$?::exact-text::option-b",
             "label": "What is the domain of $f(x)=1/(x-3)$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_language_domain_range::What is the range of $f(x)=(x-1)^2+4$ for real x?::exact-text::correct",
-            "label": "What is the range of $f(x)=(x-1)^2+4$ for real x?",
+            "id": "p1_func_language_domain_range::What is the domain of $f(x)=1/(2x-6)$?::exact-text::option-c",
+            "label": "What is the domain of $f(x)=1/(2x-6)$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_composition::For the same f and g, what is $fg(x)$?::exact-text::correct",
+            "id": "p1_func_ranges::Find the range of $f(x)=5-x^2$ for real x.::exact-text::option-a",
+            "label": "Find the range of $f(x)=5-x^2$ for real x.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_ranges::Find the range of $f(x)=2-(x+1)^2$ for real x.::exact-text::option-b",
+            "label": "Find the range of $f(x)=2-(x+1)^2$ for real x.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_composition::For the same f and g, what is $fg(x)$?::exact-text::option-a",
             "label": "For the same f and g, what is $fg(x)$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_composition::For $f(x)=2x+1$ and $g(x)=x-3$, find $gf(x)$.::exact-text::correct",
+            "id": "p1_func_composition::For $f(x)=2x+1$ and $g(x)=x-3$, find $gf(x)$.::exact-text::option-b",
             "label": "For $f(x)=2x+1$ and $g(x)=x-3$, find $gf(x)$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_one_one_inverse::Which restriction makes $f(x)=x^2$ one-one?::exact-text::correct",
+            "id": "p1_func_composition::For $f(x)=x-2$ and $g(x)=1/x$, where is $gf(x)$ defined?::exact-text::option-b",
+            "label": "For $f(x)=x-2$ and $g(x)=1/x$, where is $gf(x)$ defined?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_composition::For $f(x)=x+3$ and $g(x)=\\sqrt{x}$, where is $gf(x)$ defined?::exact-text::option-c",
+            "label": "For $f(x)=x+3$ and $g(x)=\\sqrt{x}$, where is $gf(x)$ defined?",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_one_one_inverse::Which restriction makes $f(x)=x^2$ one-one?::exact-text::option-b",
             "label": "Which restriction makes $f(x)=x^2$ one-one?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_one_one_inverse::Find the inverse of $f(x)=2x+5$.::exact-text::correct",
-            "label": "Find the inverse of $f(x)=2x+5$.",
+            "id": "p1_func_one_one_inverse::Which domain restriction makes $f(x)=x^2$ one-one on its left branch?::exact-text::option-c",
+            "label": "Which domain restriction makes $f(x)=x^2$ one-one on its left branch?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_inverse_graphs::Which line is the mirror line between f and $f^{-1}$?::exact-text::correct",
+            "id": "p1_func_inverse_formula::Find the inverse of $f(x)=(x-1)/3$.::exact-text::option-c",
+            "label": "Find the inverse of $f(x)=(x-1)/3$.",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_inverse_formula::Find the inverse of $f(x)=5-2x$.::exact-text::option-a",
+            "label": "Find the inverse of $f(x)=5-2x$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_inverse_graphs::Which line is the mirror line between f and $f^{-1}$?::exact-text::option-a",
             "label": "Which line is the mirror line between f and $f^{-1}$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_inverse_graphs::The graph of f contains $(-1,4)$. Which point lies on $f^{-1}$?::exact-text::correct",
+            "id": "p1_func_inverse_graphs::The graph of f contains $(-1,4)$. Which point lies on $f^{-1}$?::exact-text::option-b",
             "label": "The graph of f contains $(-1,4)$. Which point lies on $f^{-1}$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_transformations::What does $y=f(2x)$ do horizontally?::exact-text::correct",
+            "id": "p1_func_transformations::What does $y=f(2x)$ do horizontally?::exact-text::option-a",
             "label": "What does $y=f(2x)$ do horizontally?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_func_transformations::Describe the transformation from $y=f(x)$ to $y=f(x)+5$.::exact-text::correct",
-            "label": "Describe the transformation from $y=f(x)$ to $y=f(x)+5$.",
+            "id": "p1_func_transformations::Describe the transformation from $y=f(x)$ to $y=\\frac12f(x)$.::exact-text::option-b",
+            "label": "Describe the transformation from $y=f(x)$ to $y=\\frac12f(x)$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_transform_translate_reflect::What transforms $y=f(x)$ into $y=f(-x)+3$?::exact-text::option-a",
+            "label": "What transforms $y=f(x)$ into $y=f(-x)+3$?",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_func_transform_translate_reflect::Describe the transformation from $y=f(x)$ to $y=-f(x+4)$.::exact-text::option-b",
+            "label": "Describe the transformation from $y=f(x)$ to $y=-f(x+4)$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           }
@@ -10272,7 +10412,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 15,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -10281,8 +10421,11 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -10302,7 +10445,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 15,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -10311,8 +10454,11 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -10402,20 +10548,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 16,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Circular measure Learn"
+            "Form a straight-line equationChange skill",
+            "Form a straight-line equation",
+            "Find a midpoint from two coordinates",
+            "Find the distance between two coordinates",
+            "Use parallel and perpendicular gradients",
+            "Find the intersection of two straight lines",
+            "Convert an expanded circle equation to centre-radius form",
+            "Form a circle equation from its centre and radius",
+            "Recognise an algebraic tangency condition",
+            "Use the perpendicular radius to find a tangent gradient",
+            "Find line-and-circle intersection coordinates"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -10435,20 +10581,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 16,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Circular measure Learn"
+            "Form a straight-line equationChange skill",
+            "Form a straight-line equation",
+            "Find a midpoint from two coordinates",
+            "Find the distance between two coordinates",
+            "Use parallel and perpendicular gradients",
+            "Find the intersection of two straight lines",
+            "Convert an expanded circle equation to centre-radius form",
+            "Form a circle equation from its centre and radius",
+            "Recognise an algebraic tangency condition",
+            "Use the perpendicular radius to find a tangent gradient",
+            "Find line-and-circle intersection coordinates"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -10457,85 +10603,181 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 10,
+        "count": 22,
         "checks": [
           {
-            "id": "p1_coord_line_equations::Which line passes through $(1,-2)$ with gradient 3?::exact-text::correct",
+            "id": "p1_coord_line_equations::Which line passes through $(1,-2)$ with gradient 3?::exact-text::option-c",
             "label": "Which line passes through $(1,-2)$ with gradient 3?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_line_equations::Find the line through $(-1,2)$ with gradient $-2$.::exact-text::correct",
+            "id": "p1_coord_line_equations::Find the line through $(-1,2)$ with gradient $-2$.::exact-text::option-a",
             "label": "Find the line through $(-1,2)$ with gradient $-2$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_line_relationships::What is the midpoint of $(2,5)$ and $(8,-1)$?::exact-text::correct",
+            "id": "p1_coord_line_relationships::What is the midpoint of $(2,5)$ and $(8,-1)$?::exact-text::option-b",
             "label": "What is the midpoint of $(2,5)$ and $(8,-1)$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_line_relationships::What gradient is perpendicular to a line with gradient $-1/4$?::exact-text::correct",
-            "label": "What gradient is perpendicular to a line with gradient $-1/4$?",
+            "id": "p1_coord_line_relationships::Find the midpoint of $(-3,7)$ and $(5,-1)$.::exact-text::option-c",
+            "label": "Find the midpoint of $(-3,7)$ and $(5,-1)$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_circle_equations::What is the centre of $x^2+y^2+6x-4y=0$?::exact-text::correct",
+            "id": "p1_coord_distance::Find the distance between $(-1,3)$ and $(5,11)$.::exact-text::option-b",
+            "label": "Find the distance between $(-1,3)$ and $(5,11)$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_distance::Find the distance between $(2,-1)$ and $(8,7)$.::exact-text::option-c",
+            "label": "Find the distance between $(2,-1)$ and $(8,7)$.",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_parallel_perpendicular::What gradient is perpendicular to $m=-2/5$?::exact-text::option-a",
+            "label": "What gradient is perpendicular to $m=-2/5$?",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_parallel_perpendicular::A line is parallel to $y=-3x+4$. What is its gradient?::exact-text::option-b",
+            "label": "A line is parallel to $y=-3x+4$. What is its gradient?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_intersections::Find where $y=3x-2$ meets $y=x+4$.::exact-text::option-a",
+            "label": "Find where $y=3x-2$ meets $y=x+4$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_intersections::Find the intersection of $y=4x+1$ and $y=10-2x$.::exact-text::option-b",
+            "label": "Find the intersection of $y=4x+1$ and $y=10-2x$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_circle_equations::What is the centre of $x^2+y^2+6x-4y=0$?::exact-text::option-a",
             "label": "What is the centre of $x^2+y^2+6x-4y=0$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_circle_equations::State the centre and radius of $(x+4)^2+(y-3)^2=25$.::exact-text::correct",
+            "id": "p1_coord_circle_equations::State the centre and radius of $(x+4)^2+(y-3)^2=25$.::exact-text::option-b",
             "label": "State the centre and radius of $(x+4)^2+(y-3)^2=25$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_line_circle_problems::How many intersections does a tangent line have with a circle?::exact-text::correct",
+            "id": "p1_coord_circle_standard_form::Which equation has centre $(-1,5)$ and radius 3?::exact-text::option-c",
+            "label": "Which equation has centre $(-1,5)$ and radius 3?",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_circle_standard_form::Form the circle with centre $(4,-2)$ and radius 5.::exact-text::option-a",
+            "label": "Form the circle with centre $(4,-2)$ and radius 5.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_circle_problems::How many intersections does a tangent line have with a circle?::exact-text::option-a",
             "label": "How many intersections does a tangent line have with a circle?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_line_circle_problems::A radius has gradient $-3$ at contact. What is the tangent gradient?::exact-text::correct",
-            "label": "A radius has gradient $-3$ at contact. What is the tangent gradient?",
+            "id": "p1_coord_line_circle_problems::Which condition shows that a substituted line is tangent to a circle?::exact-text::option-b",
+            "label": "Which condition shows that a substituted line is tangent to a circle?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_graph_intersections::What condition means two graphs do not meet in real coordinates?::exact-text::correct",
+            "id": "p1_coord_tangent_gradient::A radius at contact has gradient $-3/4$. What is the tangent gradient?::exact-text::option-a",
+            "label": "A radius at contact has gradient $-3/4$. What is the tangent gradient?",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_tangent_gradient::A radius at contact has gradient 5. What is the tangent gradient?::exact-text::option-b",
+            "label": "A radius at contact has gradient 5. What is the tangent gradient?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_circle_intersections::Where does $y=x$ meet $x^2+y^2=8$?::exact-text::option-b",
+            "label": "Where does $y=x$ meet $x^2+y^2=8$?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_line_circle_intersections::Where does $x=0$ meet $x^2+y^2=9$?::exact-text::option-c",
+            "label": "Where does $x=0$ meet $x^2+y^2=9$?",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_coord_graph_intersections::What condition means two graphs do not meet in real coordinates?::exact-text::option-b",
             "label": "What condition means two graphs do not meet in real coordinates?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_coord_graph_intersections::Which discriminant condition means a line crosses a quadratic curve at two points?::exact-text::correct",
+            "id": "p1_coord_graph_intersections::Which discriminant condition means a line crosses a quadratic curve at two points?::exact-text::option-c",
             "label": "Which discriminant condition means a line crosses a quadratic curve at two points?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           }
@@ -10694,10 +10936,12 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 7,
+          "visibleMainActionCount": 9,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -10722,10 +10966,12 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 7,
+          "visibleMainActionCount": 9,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -10820,13 +11066,15 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 8,
+          "visibleMainActionCount": 10,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
+            "Convert and interpret radian measureChange skill",
+            "Convert and interpret radian measure",
+            "Calculate sector areas",
+            "Calculate arc lengths",
+            "Find perimeters containing arcs and straight sides",
+            "Find circular segment and composite areas",
             "Check Answer",
             "Hint",
             "Start Trigonometry Learn"
@@ -10849,13 +11097,15 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 8,
+          "visibleMainActionCount": 10,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
+            "Convert and interpret radian measureChange skill",
+            "Convert and interpret radian measure",
+            "Calculate sector areas",
+            "Calculate arc lengths",
+            "Find perimeters containing arcs and straight sides",
+            "Find circular segment and composite areas",
             "Check Answer",
             "Hint",
             "Start Trigonometry Learn"
@@ -10867,53 +11117,85 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 6,
+        "count": 10,
         "checks": [
           {
-            "id": "p1_circ_radians_degrees::Convert $2\\pi/3$ radians to degrees.::exact-text::correct",
+            "id": "p1_circ_radians_degrees::Convert $2\\pi/3$ radians to degrees.::exact-text::option-c",
             "label": "Convert $2\\pi/3$ radians to degrees.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_circ_radians_degrees::Convert $225^\\circ$ to radians.::exact-text::correct",
+            "id": "p1_circ_radians_degrees::Convert $225^\\circ$ to radians.::exact-text::option-a",
             "label": "Convert $225^\\circ$ to radians.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_circ_arc_sector::Find the sector area for $r=4$ and $\\theta=\\pi/2$.::exact-text::correct",
+            "id": "p1_circ_arc_sector::Find the sector area for $r=4$ and $\\theta=\\pi/2$.::exact-text::option-c",
             "label": "Find the sector area for $r=4$ and $\\theta=\\pi/2$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_circ_arc_sector::Find the sector area when $r=3$ and $\\theta=2$ radians.::exact-text::correct",
+            "id": "p1_circ_arc_sector::Find the sector area when $r=3$ and $\\theta=2$ radians.::exact-text::option-a",
             "label": "Find the sector area when $r=3$ and $\\theta=2$ radians.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_circ_composite_geometry::A sector perimeter contains which lengths?::exact-text::correct",
+            "id": "p1_circ_arc_length::Find the arc length for $r=9$ and $\\theta=2\\pi/3$.::exact-text::option-a",
+            "label": "Find the arc length for $r=9$ and $\\theta=2\\pi/3$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_arc_length::Find the arc length when $r=4$ and $\\theta=5\\pi/6$.::exact-text::option-b",
+            "label": "Find the arc length when $r=4$ and $\\theta=5\\pi/6$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_composite_geometry::A sector perimeter contains which lengths?::exact-text::option-a",
             "label": "A sector perimeter contains which lengths?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_circ_composite_geometry::Which calculation gives the area of a minor circular segment?::exact-text::correct",
+            "id": "p1_circ_composite_geometry::A semicircle of radius r has its diameter exposed. Which expression gives its perimeter?::exact-text::option-b",
+            "label": "A semicircle of radius r has its diameter exposed. Which expression gives its perimeter?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_segment_area::Which expression gives a minor segment area with radius r and angle $\\theta$?::exact-text::option-c",
+            "label": "Which expression gives a minor segment area with radius r and angle $\\theta$?",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_circ_segment_area::Which calculation gives the area of a minor circular segment?::exact-text::option-a",
             "label": "Which calculation gives the area of a minor circular segment?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           }
@@ -11072,10 +11354,13 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -11102,10 +11387,13 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -11202,20 +11490,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Learn support",
+            "Read amplitude, period and asymptotes from trigonometric formulaeChange skill",
+            "Read amplitude, period and asymptotes from trigonometric formulae",
+            "Sketch sine, cosine and tangent graphs",
+            "Use exact values at related angles",
+            "Recall exact values at 30, 45 and 60 degrees",
+            "Interpret inverse-trigonometric principal values",
+            "Simplify using the basic P1 trigonometric identities",
+            "Construct a trigonometric identity proof",
+            "Solve trigonometric equations over an interval",
             "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Series Learn"
+            "Hint"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -11235,20 +11523,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Learn support",
+            "Read amplitude, period and asymptotes from trigonometric formulaeChange skill",
+            "Read amplitude, period and asymptotes from trigonometric formulae",
+            "Sketch sine, cosine and tangent graphs",
+            "Use exact values at related angles",
+            "Recall exact values at 30, 45 and 60 degrees",
+            "Interpret inverse-trigonometric principal values",
+            "Simplify using the basic P1 trigonometric identities",
+            "Construct a trigonometric identity proof",
+            "Solve trigonometric equations over an interval",
             "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Series Learn"
+            "Hint"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -11257,85 +11545,101 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 10,
+        "count": 12,
         "checks": [
           {
-            "id": "p1_trig_graphs::What is the period of $y=\\cos 3x$?::exact-text::correct",
+            "id": "p1_trig_graphs::What is the period of $y=\\cos 3x$?::exact-text::option-a",
             "label": "What is the period of $y=\\cos 3x$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_graphs::What is the period of $y=\\sin(x/2)$?::exact-text::correct",
+            "id": "p1_trig_graphs::What is the period of $y=\\sin(x/2)$?::exact-text::option-b",
             "label": "What is the period of $y=\\sin(x/2)$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_exact_values::What is $\\sin225^\\circ$?::exact-text::correct",
+            "id": "p1_trig_exact_values::What is $\\sin225^\\circ$?::exact-text::option-a",
             "label": "What is $\\sin225^\\circ$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_exact_values::Find the exact value of $\\cos240^\\circ$.::exact-text::correct",
+            "id": "p1_trig_exact_values::Find the exact value of $\\cos240^\\circ$.::exact-text::option-b",
             "label": "Find the exact value of $\\cos240^\\circ$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_inverse_principal::What is the principal value of $\\cos^{-1}(-1)$?::exact-text::correct",
+            "id": "p1_trig_exact_standard::What is the exact value of $\\tan45^\\circ$?::exact-text::option-b",
+            "label": "What is the exact value of $\\tan45^\\circ$?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_exact_standard::What is the exact value of $\\sin60^\\circ$?::exact-text::option-c",
+            "label": "What is the exact value of $\\sin60^\\circ$?",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_trig_inverse_principal::What is the principal value of $\\cos^{-1}(-1)$?::exact-text::option-a",
             "label": "What is the principal value of $\\cos^{-1}(-1)$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_inverse_principal::Find the principal value of $\\tan^{-1}(1)$ in degrees.::exact-text::correct",
+            "id": "p1_trig_inverse_principal::Find the principal value of $\\tan^{-1}(1)$ in degrees.::exact-text::option-b",
             "label": "Find the principal value of $\\tan^{-1}(1)$ in degrees.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_identities::Which expression equals $\\tan x\\cos x$?::exact-text::correct",
+            "id": "p1_trig_identities::Which expression equals $\\tan x\\cos x$?::exact-text::option-a",
             "label": "Which expression equals $\\tan x\\cos x$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_identities::Simplify $\\sin^2x/(1-\\cos^2x)$ where defined.::exact-text::correct",
+            "id": "p1_trig_identities::Simplify $\\sin^2x/(1-\\cos^2x)$ where defined.::exact-text::option-b",
             "label": "Simplify $\\sin^2x/(1-\\cos^2x)$ where defined.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_equations_intervals::Solve $\\cos x=-1$ for $0^\\circ\\le x\\le360^\\circ$.::exact-text::correct",
+            "id": "p1_trig_equations_intervals::Solve $\\cos x=-1$ for $0^\\circ\\le x\\le360^\\circ$.::exact-text::option-a",
             "label": "Solve $\\cos x=-1$ for $0^\\circ\\le x\\le360^\\circ$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_trig_equations_intervals::Solve $\\tan x=0$ for $0^\\circ\\le x\\le360^\\circ$.::exact-text::correct",
+            "id": "p1_trig_equations_intervals::Solve $\\tan x=0$ for $0^\\circ\\le x\\le360^\\circ$.::exact-text::option-b",
             "label": "Solve $\\tan x=0$ for $0^\\circ\\le x\\le360^\\circ$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           }
@@ -11494,10 +11798,14 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 8,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -11523,10 +11831,14 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 8,
+          "visibleMainActionCount": 12,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
@@ -11622,18 +11934,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 10,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Learn support",
+            "Find a specified binomial term or coefficientChange skill",
+            "Find a specified binomial term or coefficient",
+            "Expand a positive-integer binomial",
+            "Recognise arithmetic and geometric progressions",
+            "Find finite arithmetic progression sums",
+            "Find arithmetic progression terms",
+            "Find geometric progression terms and finite sums",
+            "Test whether a geometric progression converges",
+            "Find a convergent geometric sum to infinity",
             "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Differentiation Learn"
+            "Hint"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -11653,18 +11967,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 10,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Learn support",
+            "Find a specified binomial term or coefficientChange skill",
+            "Find a specified binomial term or coefficient",
+            "Expand a positive-integer binomial",
+            "Recognise arithmetic and geometric progressions",
+            "Find finite arithmetic progression sums",
+            "Find arithmetic progression terms",
+            "Find geometric progression terms and finite sums",
+            "Test whether a geometric progression converges",
+            "Find a convergent geometric sum to infinity",
             "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Start Differentiation Learn"
+            "Hint"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -11673,69 +11989,133 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 8,
+        "count": 16,
         "checks": [
           {
-            "id": "p1_series_binomial::What is the coefficient of $x^2$ in $(1+x)^5$?::exact-text::correct",
+            "id": "p1_series_binomial::What is the coefficient of $x^2$ in $(1+x)^5$?::exact-text::option-a",
             "label": "What is the coefficient of $x^2$ in $(1+x)^5$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_series_binomial::Find the coefficient of $x^3$ in $(2+x)^4$.::exact-text::correct",
+            "id": "p1_series_binomial::Find the coefficient of $x^3$ in $(2+x)^4$.::exact-text::option-b",
             "label": "Find the coefficient of $x^3$ in $(2+x)^4$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_series_progression_recognition::Classify $7,11,15,19,\\ldots$.::exact-text::correct",
+            "id": "p1_series_binomial::Expand $(2-x)^3$.::exact-text::option-a",
+            "label": "Expand $(2-x)^3$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_binomial::Expand $(1-2x)^3$.::exact-text::option-b",
+            "label": "Expand $(1-2x)^3$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_progression_recognition::Classify $7,11,15,19,\\ldots$.::exact-text::option-b",
             "label": "Classify $7,11,15,19,\\ldots$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_series_progression_recognition::Classify $81,27,9,3,\\ldots$.::exact-text::correct",
+            "id": "p1_series_progression_recognition::Classify $81,27,9,3,\\ldots$.::exact-text::option-c",
             "label": "Classify $81,27,9,3,\\ldots$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_series_finite_sums::Find the sum of the first 5 terms of $2,5,8,\\ldots$.::exact-text::correct",
+            "id": "p1_series_finite_sums::Find the sum of the first 5 terms of $2,5,8,\\ldots$.::exact-text::option-c",
             "label": "Find the sum of the first 5 terms of $2,5,8,\\ldots$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_series_finite_sums::Find the sum of the first four terms of $3,6,12,24,\\ldots$.::exact-text::correct",
-            "label": "Find the sum of the first four terms of $3,6,12,24,\\ldots$.",
+            "id": "p1_series_finite_sums::Find the sum of the first 6 terms of $4,7,10,\\ldots$.::exact-text::option-a",
+            "label": "Find the sum of the first 6 terms of $4,7,10,\\ldots$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_series_geometric_infinity::Does $2-3+4.5-\\cdots$ have a sum to infinity?::exact-text::correct",
+            "id": "p1_series_arithmetic_terms::Find the 20th term of $7,11,15,\\ldots$.::exact-text::option-a",
+            "label": "Find the 20th term of $7,11,15,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_arithmetic_terms::Find the 15th term of $10,7,4,\\ldots$.::exact-text::option-b",
+            "label": "Find the 15th term of $10,7,4,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_geometric_finite::Find the sum of the first 4 terms of $2,6,18,\\ldots$.::exact-text::option-b",
+            "label": "Find the sum of the first 4 terms of $2,6,18,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_geometric_finite::Find the fourth term of $5,10,20,\\ldots$.::exact-text::option-c",
+            "label": "Find the fourth term of $5,10,20,\\ldots$.",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_geometric_infinity::Does $2-3+4.5-\\cdots$ have a sum to infinity?::exact-text::option-c",
             "label": "Does $2-3+4.5-\\cdots$ have a sum to infinity?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_series_geometric_infinity::Find the sum to infinity of $8-4+2-1+\\cdots$.::exact-text::correct",
+            "id": "p1_series_geometric_infinity::Does $8-12+18-\\cdots$ converge?::exact-text::option-a",
+            "label": "Does $8-12+18-\\cdots$ converge?",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_geometric_infinity::Find the sum to infinity of $12+4+4/3+\\cdots$.::exact-text::option-a",
+            "label": "Find the sum to infinity of $12+4+4/3+\\cdots$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_series_geometric_infinity::Find the sum to infinity of $8-4+2-1+\\cdots$.::exact-text::option-b",
             "label": "Find the sum to infinity of $8-4+2-1+\\cdots$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           }
@@ -11894,7 +12274,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 10,
+          "visibleMainActionCount": 15,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -11904,8 +12284,10 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -11925,7 +12307,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 10,
+          "visibleMainActionCount": 15,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -11935,8 +12317,10 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -12026,20 +12410,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 14,
+          "visibleMainActionCount": 16,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer"
+            "Interpret first- and second-derivative notationChange skill",
+            "Interpret first- and second-derivative notation",
+            "Interpret a derivative as a limiting gradient",
+            "Differentiate rational powers and linear combinations",
+            "Differentiate simple composites with the chain rule",
+            "Find a normal gradient and equation",
+            "Find a tangent equation",
+            "Use derivative signs for increasing and decreasing intervals",
+            "Solve connected rates-of-change problems",
+            "Classify a stationary point",
+            "Locate stationary points"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -12059,20 +12443,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 14,
+          "visibleMainActionCount": 16,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer"
+            "Interpret first- and second-derivative notationChange skill",
+            "Interpret first- and second-derivative notation",
+            "Interpret a derivative as a limiting gradient",
+            "Differentiate rational powers and linear combinations",
+            "Differentiate simple composites with the chain rule",
+            "Find a normal gradient and equation",
+            "Find a tangent equation",
+            "Use derivative signs for increasing and decreasing intervals",
+            "Solve connected rates-of-change problems",
+            "Classify a stationary point",
+            "Locate stationary points"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -12081,101 +12465,165 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 12,
+        "count": 20,
         "checks": [
           {
-            "id": "p1_diff_gradient_limit_notation::Which notation is a second derivative?::exact-text::correct",
+            "id": "p1_diff_gradient_limit_notation::Which notation is a second derivative?::exact-text::option-c",
             "label": "Which notation is a second derivative?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_gradient_limit_notation::What does $f\\doubleprime(x)<0$ say about the gradient of f?::exact-text::correct",
-            "label": "What does $f\\doubleprime(x)<0$ say about the gradient of f?",
+            "id": "p1_diff_gradient_limit_notation::What does $f^{\\prime\\prime}(x)<0$ say about the gradient of f?::exact-text::option-a",
+            "label": "What does $f^{\\prime\\prime}(x)<0$ say about the gradient of f?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_power_chain::Differentiate $3x^{1/2}$.::exact-text::correct",
+            "id": "p1_diff_limiting_gradient::What does $[f(a+h)-f(a)]/h$ approach as $h\\to0$?::exact-text::option-a",
+            "label": "What does $[f(a+h)-f(a)]/h$ approach as $h\\to0$?",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_limiting_gradient::Which expression is the derivative of f at x=2 from first principles?::exact-text::option-b",
+            "label": "Which expression is the derivative of f at x=2 from first principles?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_power_chain::Differentiate $3x^{1/2}$.::exact-text::option-b",
             "label": "Differentiate $3x^{1/2}$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_power_chain::Differentiate $(3x-2)^5$.::exact-text::correct",
-            "label": "Differentiate $(3x-2)^5$.",
+            "id": "p1_diff_power_chain::Differentiate $4x^{3/2}-x^{-2}$.::exact-text::option-c",
+            "label": "Differentiate $4x^{3/2}-x^{-2}$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_tangent_normal::What is the normal gradient to $y=x^2$ at x=1?::exact-text::correct",
+            "id": "p1_diff_chain_rule::Differentiate $(5-2x)^3$.::exact-text::option-b",
+            "label": "Differentiate $(5-2x)^3$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_chain_rule::Differentiate $(4x+3)^{-2}$.::exact-text::option-c",
+            "label": "Differentiate $(4x+3)^{-2}$.",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_tangent_normal::What is the normal gradient to $y=x^2$ at x=1?::exact-text::option-b",
             "label": "What is the normal gradient to $y=x^2$ at x=1?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_tangent_normal::What is the normal gradient to $y=x^3$ at x=1?::exact-text::correct",
+            "id": "p1_diff_tangent_normal::What is the normal gradient to $y=x^3$ at x=1?::exact-text::option-c",
             "label": "What is the normal gradient to $y=x^3$ at x=1?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_increasing_decreasing::For $f\\prime(x)=6-3x$, where is f decreasing?::exact-text::correct",
-            "label": "For $f\\prime(x)=6-3x$, where is f decreasing?",
+            "id": "p1_diff_tangent_equations::Find the tangent to $y=x^3$ at $(1,1)$.::exact-text::option-b",
+            "label": "Find the tangent to $y=x^3$ at $(1,1)$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_increasing_decreasing::If $f\\prime(x)=x+2$, where is f increasing?::exact-text::correct",
-            "label": "If $f\\prime(x)=x+2$, where is f increasing?",
+            "id": "p1_diff_tangent_equations::Find the tangent to $y=x^2+1$ at $(1,2)$.::exact-text::option-c",
+            "label": "Find the tangent to $y=x^2+1$ at $(1,2)$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_connected_rates::If $V=x^3$ and $dx/dt=4$, what is $dV/dt$ when x=2?::exact-text::correct",
+            "id": "p1_diff_increasing_decreasing::For $f^{\\prime}(x)=6-3x$, where is f decreasing?::exact-text::option-b",
+            "label": "For $f^{\\prime}(x)=6-3x$, where is f decreasing?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_increasing_decreasing::If $f^{\\prime}(x)=x+2$, where is f increasing?::exact-text::option-c",
+            "label": "If $f^{\\prime}(x)=x+2$, where is f increasing?",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_connected_rates::If $V=x^3$ and $dx/dt=4$, what is $dV/dt$ when x=2?::exact-text::option-c",
             "label": "If $V=x^3$ and $dx/dt=4$, what is $dV/dt$ when x=2?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_connected_rates::A square side grows at 3 cm/s. Find $dA/dt$ when the side is 4 cm.::exact-text::correct",
+            "id": "p1_diff_connected_rates::A square side grows at 3 cm/s. Find $dA/dt$ when the side is 4 cm.::exact-text::option-a",
             "label": "A square side grows at 3 cm/s. Find $dA/dt$ when the side is 4 cm.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_stationary_classification::If $f\\prime(a)=0$ and $f\\doubleprime(a)=-3$, what is the stationary point?::exact-text::correct",
-            "label": "If $f\\prime(a)=0$ and $f\\doubleprime(a)=-3$, what is the stationary point?",
+            "id": "p1_diff_stationary_classification::If $f^{\\prime}(a)=0$ and $f^{\\prime\\prime}(a)=-3$, what is the stationary point?::exact-text::option-a",
+            "label": "If $f^{\\prime}(a)=0$ and $f^{\\prime\\prime}(a)=-3$, what is the stationary point?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_diff_stationary_classification::If $f\\prime(a)=0$ and $f\\doubleprime(a)=5$, classify the stationary point.::exact-text::correct",
-            "label": "If $f\\prime(a)=0$ and $f\\doubleprime(a)=5$, classify the stationary point.",
+            "id": "p1_diff_stationary_classification::If $f^{\\prime}(a)=0$ and $f^{\\prime\\prime}(a)=5$, classify the stationary point.::exact-text::option-b",
+            "label": "If $f^{\\prime}(a)=0$ and $f^{\\prime\\prime}(a)=5$, classify the stationary point.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_stationary_location::Locate the stationary point of $f(x)=x^2+4x+1$.::exact-text::option-a",
+            "label": "Locate the stationary point of $f(x)=x^2+4x+1$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_diff_stationary_location::Locate the stationary point of $f(x)=x^2-8x+3$.::exact-text::option-b",
+            "label": "Locate the stationary point of $f(x)=x^2-8x+3$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           }
@@ -12334,7 +12782,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -12343,8 +12791,11 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -12364,7 +12815,7 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 9,
+          "visibleMainActionCount": 13,
           "visibleMainActions": [
             "Go to Checked Practice",
             "All P1 units",
@@ -12373,8 +12824,11 @@
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
             "Mark Learn activity reviewed",
-            "Checked Practice",
-            "Optional Exam Training"
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Mark Learn activity reviewed",
+            "Checked Practice"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -12464,20 +12918,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 1365,
           "viewportWidth": 1365,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 14,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Review / export"
+            "Integrate powers and linear combinationsChange skill",
+            "Integrate powers and linear combinations",
+            "Integrate simple linear composites",
+            "Determine a constant of integration",
+            "Evaluate a proper definite integral",
+            "Evaluate a simple improper integral",
+            "Set up an area between two curves",
+            "Split an area where graph order or sign changes",
+            "Set up a volume of revolution about the x-axis",
+            "Set up a volume of revolution about the y-axis",
+            "Check Answer"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -12497,20 +12951,20 @@
           "horizontalOverflow": false,
           "bodyWidth": 390,
           "viewportWidth": 390,
-          "visibleMainActionCount": 12,
+          "visibleMainActionCount": 14,
           "visibleMainActions": [
             "Learn support",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Check Answer",
-            "Hint",
-            "Review / export"
+            "Integrate powers and linear combinationsChange skill",
+            "Integrate powers and linear combinations",
+            "Integrate simple linear composites",
+            "Determine a constant of integration",
+            "Evaluate a proper definite integral",
+            "Evaluate a simple improper integral",
+            "Set up an area between two curves",
+            "Split an area where graph order or sign changes",
+            "Set up a volume of revolution about the x-axis",
+            "Set up a volume of revolution about the y-axis",
+            "Check Answer"
           ],
           "openMarkSchemes": 0,
           "examCards": 0,
@@ -12519,85 +12973,149 @@
         }
       ],
       "answerSpecAudit": {
-        "count": 10,
+        "count": 18,
         "checks": [
           {
-            "id": "p1_int_reverse_power::Integrate $4x^3$.::exact-text::correct",
+            "id": "p1_int_reverse_power::Integrate $4x^3$.::exact-text::option-b",
             "label": "Integrate $4x^3$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_reverse_power::Integrate $3(3x+1)^2$.::exact-text::correct",
-            "label": "Integrate $3(3x+1)^2$.",
+            "id": "p1_int_reverse_power::Integrate $3x^2-4x+2$.::exact-text::option-c",
+            "label": "Integrate $3x^2-4x+2$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_constant::If $dy/dx=3x^2$ and the curve passes through $(1,4)$, find C in $y=x^3+C$.::exact-text::correct",
+            "id": "p1_int_linear_composites::Integrate $6(3x-1)^2$.::exact-text::option-b",
+            "label": "Integrate $6(3x-1)^2$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_linear_composites::Integrate $4(2x+5)^3$.::exact-text::option-c",
+            "label": "Integrate $4(2x+5)^3$.",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_constant::If $dy/dx=3x^2$ and the curve passes through $(1,4)$, find C in $y=x^3+C$.::exact-text::option-c",
             "label": "If $dy/dx=3x^2$ and the curve passes through $(1,4)$, find C in $y=x^3+C$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_constant::A curve has $dy/dx=2x+1$ and passes through $(0,4)$. Find C in $y=x^2+x+C$.::exact-text::correct",
+            "id": "p1_int_constant::A curve has $dy/dx=2x+1$ and passes through $(0,4)$. Find C in $y=x^2+x+C$.::exact-text::option-a",
             "label": "A curve has $dy/dx=2x+1$ and passes through $(0,4)$. Find C in $y=x^2+x+C$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_definite::Evaluate $\\int_0^2 3x^2\\,dx$.::exact-text::correct",
+            "id": "p1_int_definite::Evaluate $\\int_0^2 3x^2\\,dx$.::exact-text::option-b",
             "label": "Evaluate $\\int_0^2 3x^2\\,dx$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_definite::Evaluate $\\int_1^2 3x^2\\,dx$.::exact-text::correct",
+            "id": "p1_int_definite::Evaluate $\\int_1^2 3x^2\\,dx$.::exact-text::option-c",
             "label": "Evaluate $\\int_1^2 3x^2\\,dx$.",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-c",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_areas::Which integrand gives the area between $y=5$ and $y=x^2$ where $5\\ge x^2$?::exact-text::correct",
+            "id": "p1_int_improper::Evaluate $\\int_2^\\infty 4x^{-3}\\,dx$.::exact-text::option-a",
+            "label": "Evaluate $\\int_2^\\infty 4x^{-3}\\,dx$.",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_improper::Evaluate $\\int_1^\\infty 3x^{-4}\\,dx$.::exact-text::option-b",
+            "label": "Evaluate $\\int_1^\\infty 3x^{-4}\\,dx$.",
+            "answerType": "exact-text",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_areas::Which integrand gives the area between $y=5$ and $y=x^2$ where $5\\ge x^2$?::exact-text::option-a",
             "label": "Which integrand gives the area between $y=5$ and $y=x^2$ where $5\\ge x^2$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_areas::On $0\\le x\\le1$, which integrand gives the area between $y=x$ and $y=x^2$?::exact-text::correct",
+            "id": "p1_int_areas::On $0\\le x\\le1$, which integrand gives the area between $y=x$ and $y=x^2$?::exact-text::option-b",
             "label": "On $0\\le x\\le1$, which integrand gives the area between $y=x$ and $y=x^2$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_volumes::For rotation about the x-axis, which integrand uses curve $y=f(x)$?::exact-text::correct",
+            "id": "p1_int_area_split::Which setup gives total area under $y=x^2-1$ from x=0 to x=2?::exact-text::option-c",
+            "label": "Which setup gives total area under $y=x^2-1$ from x=0 to x=2?",
+            "answerType": "exact-text",
+            "accepted": "option-c",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_area_split::Which point must split the total area under $y=2x-4$ from x=0 to x=5?::exact-text::option-a",
+            "label": "Which point must split the total area under $y=2x-4$ from x=0 to x=5?",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_volumes::For rotation about the x-axis, which integrand uses curve $y=f(x)$?::exact-text::option-a",
             "label": "For rotation about the x-axis, which integrand uses curve $y=f(x)$?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-a",
             "correctAccepted": true,
             "wrongRejected": true
           },
           {
-            "id": "p1_int_volumes::For rotation about the y-axis using $x=g(y)$, which disk integrand is required?::exact-text::correct",
-            "label": "For rotation about the y-axis using $x=g(y)$, which disk integrand is required?",
+            "id": "p1_int_volumes::For rotation about the x-axis using $y=f(x)$, which disk integrand is required?::exact-text::option-b",
+            "label": "For rotation about the x-axis using $y=f(x)$, which disk integrand is required?",
             "answerType": "exact-text",
-            "accepted": "correct",
+            "accepted": "option-b",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_volume_y_axis::For rotation about the y-axis with $x=g(y)$, which disk integrand is required?::exact-text::option-a",
+            "label": "For rotation about the y-axis with $x=g(y)$, which disk integrand is required?",
+            "answerType": "exact-text",
+            "accepted": "option-a",
+            "correctAccepted": true,
+            "wrongRejected": true
+          },
+          {
+            "id": "p1_int_volume_y_axis::For rotation about the y-axis, $x=2\\sqrt y$ gives which disk integrand?::exact-text::option-b",
+            "label": "For rotation about the y-axis, $x=2\\sqrt y$ gives which disk integrand?",
+            "answerType": "exact-text",
+            "accepted": "option-b",
             "correctAccepted": true,
             "wrongRejected": true
           }

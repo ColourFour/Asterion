@@ -3,6 +3,17 @@ import projectionJson from './p1ExamBankReviewProjection.json';
 export type P1ExamBankDisposition = 'hold' | 'promote' | 'reject';
 export type P1ExamBankReviewStatus = 'pending' | 'reviewed' | 'rejected';
 
+export interface P1ExamBankVisualAudit {
+  status: 'passed';
+  auditor: string;
+  audited_at: string;
+  source_projection_version: string;
+  source_manifest_sha256: string;
+  source_manifest_projection_fingerprint: string;
+  question_assets: Array<{ path: string; sha256: string }>;
+  mark_scheme_assets: Array<{ path: string; sha256: string }>;
+}
+
 export interface P1ExamBankReviewRecord {
   identity: {
     course_id: 'p1';
@@ -43,6 +54,7 @@ export interface P1ExamBankReviewRecord {
     reviewer: string | null;
     reviewed_at: string | null;
     notes: string | null;
+    visual_audit?: P1ExamBankVisualAudit | null;
   };
 }
 

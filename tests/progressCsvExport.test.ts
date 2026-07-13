@@ -290,6 +290,42 @@ describe('local progress CSV export', () => {
     ]);
   });
 
+  it('labels manual-only checks as practice and identifies P3-only analytics rows', () => {
+    const rows = localProgressCsvRows({
+      skillCheckAttempts: [skillAttempt({
+        attemptId: 'manual-only',
+        course: 'p1',
+        strongEvidenceEligible: false,
+        strongEvidence: false,
+      })],
+      knowledge_state_updates: [{
+        id: 'update-1',
+        skillNodeId: 'p3_alg_partial_fractions',
+        timestamp: '2026-07-13T00:00:00.000Z',
+        previousScore: 0,
+        newScore: 1,
+        previousCategory: 'unknown',
+        newCategory: 'emerging',
+        stabilityFlag: 'developing',
+        confidence: 0.5,
+        outcome: 'success',
+        source: 'checked_practice',
+        evidenceStrength: 0.85,
+      }],
+    }, '2026-07-13T00:00:00.000Z');
+
+    expect(rows).toEqual(expect.arrayContaining([
+      expect.objectContaining({ activity_type: 'Submission Summary', course: 'mixed' }),
+      expect.objectContaining({
+        activity_type: 'Checked Practice',
+        course: 'p1',
+        deterministic_pass_fail: 'fail',
+        evidence_status_label: 'practice_only_manual_or_unvalidated',
+      }),
+      expect.objectContaining({ activity_type: 'Skill State Update', course: 'p3' }),
+    ]));
+  });
+
   it('defaults missing course context to P3 in exported legacy rows', () => {
     const legacyExam = { ...examAttempt({ id: 'legacy-exam' }) };
     delete legacyExam.course;

@@ -164,6 +164,24 @@ describe('P3 student analytics', () => {
     expect(state.priority_repair_topics).toEqual(['algebra']);
   });
 
+  it('does not fold P1 assessment records into the P3 analytics model', () => {
+    const assessment = assessmentFromSkillCheckAttempt(skillAttempt({
+      course: 'p1',
+      topic: 'Quadratics',
+      regionId: 'quadratics',
+      skillId: 'p1_quad_discriminant',
+      checkId: 'p1_quad_discriminant',
+    }));
+    const state = updateStudentPerformanceState({}, assessment);
+
+    expect(assessment.course).toBe('p1');
+    expect(state.error_log).toEqual([]);
+    expect(state.topic_performance).toEqual({});
+    expect(state.topic_assessments).toEqual([]);
+    expect(state.knowledge_errors).toEqual([]);
+    expect(state.weak_topics).toEqual([]);
+  });
+
   it('updates state for partially correct Exam Training and tracks topic-level marks lost', () => {
     const state = updateStudentPerformanceState({}, assessmentFromExamAttempt(examAttempt()));
 

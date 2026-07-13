@@ -13,6 +13,7 @@ import type {
   P3TopicMarkKey,
   P3TopicPerformanceStats,
   SkillCheckAttemptRecord,
+  StudyCourseId,
 } from '../types';
 import {
   knowledgeErrorTypeFromTags,
@@ -91,6 +92,7 @@ export type StudentPerformanceAssessmentSource =
 
 export interface StudentPerformanceAssessmentInput {
   kind: 'assessment';
+  course?: StudyCourseId;
   assessment_id: string;
   student_id?: string;
   source: StudentPerformanceAssessmentSource;
@@ -225,6 +227,10 @@ export function updateStudentPerformanceState<T extends StudentAnalyticsProgress
     return applyRedoCompletion(next, input);
   }
 
+  // This reducer is the legacy P3 analytics model. P1 attempt records are kept
+  // in their course-scoped stores, but must not be folded into P3 topic/error state.
+  if (input.course === 'p1') return refreshDerivedAnalytics(next);
+
   const timestamp = Number.isFinite(input.timestamp) ? Number(input.timestamp) : Date.now();
   const breakdown = computeTopicBreakdown({
     assessment_id: input.assessment_id,
@@ -300,6 +306,7 @@ export function assessmentFromExamAttempt(attempt: Attempt, studentId = 'local-s
 
   return {
     kind: 'assessment',
+    course: attempt.course === 'p1' ? 'p1' : 'p3',
     assessment_id: attempt.id,
     student_id: studentId,
     source: 'exam_training',
@@ -315,6 +322,7 @@ export function assessmentFromSkillCheckAttempt(attempt: SkillCheckAttemptRecord
   const timestamp = Date.parse(attempt.timestamp);
   return {
     kind: 'assessment',
+    course: attempt.course,
     assessment_id: attempt.attemptId,
     student_id: studentId,
     source: 'checked_practice',

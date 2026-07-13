@@ -234,6 +234,20 @@ for (const page of requiredPages) {
   }
 }
 
+for (const page of requiredPages.filter((candidate) => candidate.startsWith('p1/'))) {
+  const html = readFileSync(path.join(siteRoot, page), 'utf8');
+  const unexpectedControl = html.match(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/);
+  if (html.includes('katex-error') || html.includes('\\doubleprime') || unexpectedControl) {
+    const reason = html.includes('katex-error')
+      ? 'contains a KaTeX parse error'
+      : html.includes('\\doubleprime')
+        ? 'contains unsupported \\doubleprime notation'
+        : `contains control character U+${unexpectedControl[0].charCodeAt(0).toString(16).padStart(4, '0')}`;
+    console.error(`${page} ${reason}.`);
+    process.exit(1);
+  }
+}
+
 for (const page of requiredPages) {
   const html = readFileSync(path.join(siteRoot, page), 'utf8');
   const text = visibleBodyText(html);

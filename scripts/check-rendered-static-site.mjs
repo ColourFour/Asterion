@@ -461,6 +461,7 @@ async function assertP1ResponsiveBasics(browser) {
           return {
             horizontalOverflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
             mainVisible: visible(document.querySelector('main')),
+            mathRenderErrors: document.querySelectorAll('.katex-error, .katex [mathcolor="#cc0000"], .katex [style*="color:#cc0000"]').length,
             retryCardsVisible: Array.from(document.querySelectorAll('[data-p1-retry-for]')).filter(visible).length,
             minimumChoiceHeight: choiceLabels.length ? Math.min(...choiceLabels.map((label) => label.getBoundingClientRect().height)) : undefined,
           };
@@ -469,6 +470,7 @@ async function assertP1ResponsiveBasics(browser) {
         consoleErrors.length = 0;
         if (result.horizontalOverflow) fail(`${pagePath} has horizontal overflow at ${viewport.width}x${viewport.height}.`);
         if (!result.mainVisible) fail(`${pagePath} has no visible main content at ${viewport.width}x${viewport.height}.`);
+        if (result.mathRenderErrors) fail(`${pagePath} has ${result.mathRenderErrors} visible mathematics render error(s) at ${viewport.width}x${viewport.height}.`);
         if (/\/skill-check\//.test(pagePath) && result.retryCardsVisible !== 0) fail(`${pagePath} exposes retry variants before a primary attempt.`);
         if (result.minimumChoiceHeight !== undefined && result.minimumChoiceHeight < 40) fail(`${pagePath} has cramped answer targets at ${viewport.width}x${viewport.height}.`);
       }
@@ -558,9 +560,11 @@ try {
   await waitForStaticEnhancement(page, 'p1/index.html');
   const p1CourseResult = await page.evaluate(() => {
     const text = document.body.textContent || '';
+    const panel = document.querySelector('[data-course-next-step-panel][data-course-id="p1"]');
     return {
       pathCards: document.querySelectorAll('[data-path-unit][data-course-id="p1"]').length,
-      hasStartingCheck: text.includes('P1 Starting Check') && text.includes('10–15 minutes'),
+      hasStartingCheck: panel?.getAttribute('data-diagnostic-href') === 'diagnostic/'
+        && Boolean(panel.querySelector('[data-course-next-step-link]')),
       hasArchiveGate: text.includes('Course-contract and archive review are still in progress.'),
       hasProgressLabels: Boolean(document.querySelector('[data-progress-field-guide]'))
         && Boolean(document.querySelector('[data-progress-skill]'))

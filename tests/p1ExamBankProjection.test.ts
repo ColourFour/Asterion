@@ -4,6 +4,7 @@ import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'nod
 import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
+import { P1_COURSE_STUDY_CONTRACT } from '../src/data/p1CourseContract';
 import {
   P1_EXAM_BANK_REVIEW_PROJECTION,
   isP1ExamBankPromotionReady,
@@ -34,27 +35,50 @@ function clone<T>(value: T): T {
 
 function reviewCandidate(overrides: Partial<P1ExamBankReviewRecord['review']> = {}): P1ExamBankReviewRecord {
   const record = clone(P1_EXAM_BANK_REVIEW_PROJECTION.records[0]);
+  const skillId = P1_COURSE_STUDY_CONTRACT.skills.find((skill) => skill.topicId === 'p1-quadratics')?.id;
+  if (!skillId) throw new Error('Missing fixture Quadratics skill.');
   record.review = {
     disposition: 'promote',
     review_status: 'reviewed',
     student_runtime_safe: true,
     reviewed_topic_id: '9709_p1_topic_quadratics',
-    reviewed_skill_ids: ['9709_p1_quadratics_completed_square'],
+    reviewed_skill_ids: [skillId],
     reviewer: 'fixture-reviewer',
     reviewed_at: '2026-07-13T00:00:00.000Z',
     notes: 'Fixture review.',
+    visual_audit: {
+      status: 'passed',
+      auditor: 'fixture-auditor',
+      audited_at: '2026-07-13T00:00:00.000Z',
+      source_projection_version: P1_EXAM_BANK_REVIEW_PROJECTION.projection_version,
+      source_manifest_sha256: record.source.manifest_sha256,
+      source_manifest_projection_fingerprint: record.source.manifest_projection_fingerprint,
+      question_assets: record.source.question_assets,
+      mark_scheme_assets: record.source.mark_scheme_assets,
+    },
     ...overrides,
-  };
+  } as P1ExamBankReviewRecord['review'];
   return record;
 }
 
 function promotionFixture() {
   const assetRoot = temporaryDirectory();
-  mkdirSync(path.join(assetRoot, 'p1', 'paper', 'questions'), { recursive: true });
-  mkdirSync(path.join(assetRoot, 'p1', 'paper', 'mark_scheme'), { recursive: true });
-  writeFileSync(path.join(assetRoot, 'p1', 'paper', 'questions', 'q01.png'), 'question');
-  writeFileSync(path.join(assetRoot, 'p1', 'paper', 'mark_scheme', 'q01.png'), 'mark scheme');
   const record = reviewCandidate();
+  const questionContent = 'question';
+  const markSchemeContent = 'mark scheme';
+  record.source.question_assets[0].sha256 = createHash('sha256').update(questionContent).digest('hex');
+  record.source.mark_scheme_assets[0].sha256 = createHash('sha256').update(markSchemeContent).digest('hex');
+  (record.review as unknown as Record<string, unknown>).visual_audit = {
+    ...(record.review as unknown as Record<string, Record<string, unknown>>).visual_audit,
+    question_assets: record.source.question_assets,
+    mark_scheme_assets: record.source.mark_scheme_assets,
+  };
+  const questionArtifact = `p1/${record.identity.paper}/questions/q01.png`;
+  const markSchemeArtifact = `p1/${record.identity.paper}/mark_scheme/q01.png`;
+  mkdirSync(path.join(assetRoot, 'p1', record.identity.paper, 'questions'), { recursive: true });
+  mkdirSync(path.join(assetRoot, 'p1', record.identity.paper, 'mark_scheme'), { recursive: true });
+  writeFileSync(path.join(assetRoot, questionArtifact), questionContent);
+  writeFileSync(path.join(assetRoot, markSchemeArtifact), markSchemeContent);
   const projection = {
     ...P1_EXAM_BANK_REVIEW_PROJECTION,
     records: [record],
@@ -66,8 +90,8 @@ function promotionFixture() {
       paper_family: 'p1',
       review_status: 'needs_review',
       student_runtime_safe: false,
-      canonical_question_artifact: 'p1/paper/questions/q01.png',
-      canonical_mark_scheme_artifact: 'p1/paper/mark_scheme/q01.png',
+      canonical_question_artifact: questionArtifact,
+      canonical_mark_scheme_artifact: markSchemeArtifact,
     }],
   };
   return { assetRoot, catalog, projection, record };
@@ -187,7 +211,7 @@ describe('P1 exam-bank review projection', () => {
 
   it('promotes only explicitly reviewed, runtime-safe records and preserves pinned provenance', () => {
     const { assetRoot, catalog, projection, record } = promotionFixture();
-    const overlay = buildPromotionOverlay({ projection, catalog, assetRoot });
+    const overlay = buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT });
     expect(overlay.promoted_question_ids).toEqual([record.identity.question_id]);
     expect(overlay.questions[0]).toMatchObject({
       question_id: record.identity.question_id,
@@ -208,19 +232,60 @@ describe('P1 exam-bank review projection', () => {
     });
 
     projection.records[0].review.disposition = 'hold';
-    expect(buildPromotionOverlay({ projection, catalog, assetRoot }).questions).toEqual([]);
+    expect(buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT }).questions).toEqual([]);
   });
 
   it('rejects ID collisions and missing canonical assets before promotion', () => {
     const { assetRoot, catalog, projection } = promotionFixture();
     const duplicateProjection = { ...projection, records: [projection.records[0], clone(projection.records[0])] };
-    expect(() => buildPromotionOverlay({ projection: duplicateProjection, catalog, assetRoot })).toThrow(/collision/i);
+    expect(() => buildPromotionOverlay({ projection: duplicateProjection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/collision/i);
 
     projection.records[0].review.reviewer = null;
-    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot })).toThrow(/reviewer/i);
+    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/reviewer/i);
     projection.records[0].review.reviewer = 'fixture-reviewer';
     catalog.questions[0].canonical_mark_scheme_artifact = 'p1/paper/mark_scheme/missing.png';
-    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot })).toThrow(/missing canonical_mark_scheme_artifact asset/i);
+    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/canonical runtime asset paths/i);
+  });
+
+  it('fails promotion on unknown or cross-topic skills and missing or stale visual audits', () => {
+    const { assetRoot, catalog, projection, record } = promotionFixture();
+    record.review.reviewed_skill_ids = ['invented_skill'];
+    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/unknown P1 course-contract skill/i);
+
+    const functionsSkill = P1_COURSE_STUDY_CONTRACT.skills.find((skill) => skill.topicId === 'p1-functions');
+    if (!functionsSkill) throw new Error('Missing fixture Functions skill.');
+    record.review.reviewed_skill_ids = [functionsSkill.id];
+    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/belongs to p1-functions/i);
+
+    record.review.reviewed_skill_ids = [P1_COURSE_STUDY_CONTRACT.skills.find((skill) => skill.topicId === 'p1-quadratics')!.id];
+    (record.review as unknown as Record<string, unknown>).visual_audit = null;
+    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/visual audit/i);
+
+    (record.review as unknown as Record<string, unknown>).visual_audit = {
+      status: 'passed',
+      auditor: 'fixture-auditor',
+      audited_at: '2026-07-13T00:00:00.000Z',
+      source_projection_version: 'stale-projection-v0',
+      source_manifest_sha256: record.source.manifest_sha256,
+      source_manifest_projection_fingerprint: record.source.manifest_projection_fingerprint,
+      question_assets: record.source.question_assets,
+      mark_scheme_assets: record.source.mark_scheme_assets,
+    };
+    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/visual audit is stale/i);
+  });
+
+  it('binds canonical runtime files to reviewed SHA-256 values, including pre-existing targets', () => {
+    const { assetRoot, catalog, projection, record } = promotionFixture();
+    const overlay = buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT });
+    expect(overlay.runtime_assets[0]).toMatchObject({
+      question_id: record.identity.question_id,
+      question: { sha256: record.source.question_assets[0].sha256 },
+      mark_scheme: { sha256: record.source.mark_scheme_assets[0].sha256 },
+    });
+    expect(overlay.integrity_sha256).toMatch(/^[a-f0-9]{64}$/);
+
+    writeFileSync(path.join(assetRoot, catalog.questions[0].canonical_question_artifact), 'wrong-but-existing question crop');
+    expect(() => buildPromotionOverlay({ projection, catalog, assetRoot, courseContract: P1_COURSE_STUDY_CONTRACT })).toThrow(/existing runtime question asset SHA-256/i);
   });
 
   it('rejects source HEAD and manifest drift against a versioned snapshot', async () => {

@@ -2,8 +2,8 @@
   "generatedAt": "2026-07-09",
   "totals": {
     "pages": 103,
-    "answerSpecs": 577,
-    "generatedFormSubmissions": 507,
+    "answerSpecs": 633,
+    "generatedFormSubmissions": 563,
     "answerFailures": 0,
     "visibleInteractions": 40,
     "visibleInteractionFailures": 0,
@@ -227,7 +227,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/algebra/skill-check-page.png",
@@ -307,7 +307,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/logarithmic-and-exponential-functions/skill-check-page.png",
@@ -387,7 +387,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/trigonometry/skill-check-page.png",
@@ -467,7 +467,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/differentiation/skill-check-page.png",
@@ -547,7 +547,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/integration/skill-check-page.png",
@@ -627,7 +627,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/numerical-solution-of-equations/skill-check-page.png",
@@ -707,7 +707,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/vectors/skill-check-page.png",
@@ -787,7 +787,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/differential-equations/skill-check-page.png",
@@ -867,7 +867,7 @@
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted correct; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p3/topics/complex-numbers/skill-check-page.png",
@@ -1020,12 +1020,12 @@
       "path": "p1/topics/quadratics/skill-check/index.html",
       "label": "P1 Quadratics Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/quadratics/exam-training/index.html`.",
-      "answerSpecCount": 10,
-      "generatedFormSubmissions": 10,
+      "answerSpecCount": 16,
+      "generatedFormSubmissions": 16,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-c; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/quadratics/skill-check-page.png",
@@ -1090,12 +1090,12 @@
       "path": "p1/topics/functions/skill-check/index.html",
       "label": "P1 Functions Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/functions/exam-training/index.html`.",
-      "answerSpecCount": 10,
-      "generatedFormSubmissions": 10,
+      "answerSpecCount": 18,
+      "generatedFormSubmissions": 18,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-b; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/functions/skill-check-page.png",
@@ -1160,12 +1160,12 @@
       "path": "p1/topics/coordinate-geometry/skill-check/index.html",
       "label": "P1 Coordinate geometry Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/coordinate-geometry/exam-training/index.html`.",
-      "answerSpecCount": 10,
-      "generatedFormSubmissions": 10,
+      "answerSpecCount": 22,
+      "generatedFormSubmissions": 22,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-c; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/coordinate-geometry/skill-check-page.png",
@@ -1230,12 +1230,12 @@
       "path": "p1/topics/circular-measure/skill-check/index.html",
       "label": "P1 Circular measure Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/circular-measure/exam-training/index.html`.",
-      "answerSpecCount": 6,
-      "generatedFormSubmissions": 6,
+      "answerSpecCount": 10,
+      "generatedFormSubmissions": 10,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-c; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/circular-measure/skill-check-page.png",
@@ -1300,12 +1300,12 @@
       "path": "p1/topics/trigonometry/skill-check/index.html",
       "label": "P1 Trigonometry Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/trigonometry/exam-training/index.html`.",
-      "answerSpecCount": 10,
-      "generatedFormSubmissions": 10,
+      "answerSpecCount": 12,
+      "generatedFormSubmissions": 12,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-a; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/trigonometry/skill-check-page.png",
@@ -1370,12 +1370,12 @@
       "path": "p1/topics/series/skill-check/index.html",
       "label": "P1 Series Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/series/exam-training/index.html`.",
-      "answerSpecCount": 8,
-      "generatedFormSubmissions": 8,
+      "answerSpecCount": 16,
+      "generatedFormSubmissions": 16,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-a; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/series/skill-check-page.png",
@@ -1440,12 +1440,12 @@
       "path": "p1/topics/differentiation/skill-check/index.html",
       "label": "P1 Differentiation Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/differentiation/exam-training/index.html`.",
-      "answerSpecCount": 12,
-      "generatedFormSubmissions": 12,
+      "answerSpecCount": 20,
+      "generatedFormSubmissions": 20,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-c; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/differentiation/skill-check-page.png",
@@ -1510,12 +1510,12 @@
       "path": "p1/topics/integration/skill-check/index.html",
       "label": "P1 Integration Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p1/topics/integration/exam-training/index.html`.",
-      "answerSpecCount": 10,
-      "generatedFormSubmissions": 10,
+      "answerSpecCount": 18,
+      "generatedFormSubmissions": 18,
       "answerSpecFailures": [],
       "visibleInteraction": {
         "ok": true,
-        "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
+        "message": "visible Checked Practice check: submitted option-b; Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence."
       },
       "screenshots": {
         "page": "screenshots/p1/topics/integration/skill-check-page.png",

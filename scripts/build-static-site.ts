@@ -2005,20 +2005,16 @@ function p1TopicIndex(topic: StudyTopic): number {
 }
 
 function p1RequiredCheckIds(context: P1TopicContext): string[] {
-  return Array.from(new Set(context.content.skillIds));
-}
-
-function p1PracticeItems(context: P1TopicContext): P1CheckedPracticeContent[] {
-  return context.content.checkedPractice.flatMap((primary, index) => [
-    primary,
-    context.content.checkedPracticeRetries[index],
-  ].filter((item): item is P1CheckedPracticeContent => Boolean(item)));
+  const strongSkillIds = new Set(P1_SKILL_CONTRACT
+    .filter((skill) => skill.topicId === context.content.topicId && skill.evidenceEligibility === 'strong-checked-practice')
+    .map((skill) => skill.id));
+  return Array.from(new Set(context.content.skillIds.filter((skillId) => strongSkillIds.has(skillId))));
 }
 
 function renderP1UnitCard(fromPagePath: string, context: P1TopicContext, index: number): string {
   const requiredCheckIds = p1RequiredCheckIds(context);
   return `
-    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(context.region.id)}" data-course-id="p1" data-unit-name="${escapeAttr(context.topic.name)}" data-unit-label="Unit ${index + 1}">
+    <article class="path-unit-card path-unit-tile" data-path-unit="${escapeAttr(context.region.id)}" data-course-id="p1" data-unit-name="${escapeAttr(context.topic.name)}" data-unit-label="Unit ${index + 1}" data-learn-href="${escapeAttr(hrefToPage(fromPagePath, p1LearnPagePath(context.topic)))}" data-skill-href="${escapeAttr(hrefToPage(fromPagePath, p1SkillCheckPagePath(context.topic)))}" data-exam-href="${escapeAttr(hrefToPage(fromPagePath, p1TopicExamTrainingPagePath(context.topic)))}">
       <div class="path-unit-number">Unit ${index + 1}</div>
       <div class="path-unit-main">
         <header><h2>${escapeHtml(context.topic.name)}</h2><p>${escapeHtml(context.topic.description)}</p></header>
@@ -2030,8 +2026,8 @@ function renderP1UnitCard(fromPagePath: string, context: P1TopicContext, index: 
         <span data-progress-skill="${escapeAttr(context.region.id)}" data-required-checks="${escapeAttr(JSON.stringify(requiredCheckIds))}" data-label="Checked">Checked: 0/${requiredCheckIds.length} passed</span>
         <span data-progress-exam="${escapeAttr(context.region.id)}" data-label="Exam">Exam: 0 self-marked</span>
       </div>
-      ${routeLink(fromPagePath, p1LearnPagePath(context.topic), `Start ${context.topic.name} Learn`, 'button primary-button path-unit-primary-action')}
-      ${routeLink(fromPagePath, p1SkillCheckPagePath(context.topic), 'Already confident? Try Checked Practice', 'path-unit-fast-lane-link text-link')}
+      <a class="button primary-button path-unit-primary-action" href="${hrefToPage(fromPagePath, p1LearnPagePath(context.topic))}" data-path-unit-primary-action>Start ${escapeHtml(context.topic.name)} Learn</a>
+      <a class="path-unit-fast-lane-link text-link" href="${hrefToPage(fromPagePath, p1SkillCheckPagePath(context.topic))}" data-path-unit-fast-lane-action>Already confident? Try Checked Practice</a>
       <details class="path-unit-direct-routes">
         <summary>Direct routes</summary>
         <nav aria-label="${escapeAttr(context.topic.name)} direct routes">
@@ -2055,10 +2051,10 @@ function renderP1DashboardPage(data: StaticSiteData, course: CourseMetadata, pag
         <p>Use the optional Starting Check for a suggested first topic, or open any of the eight official units directly.</p>
         <p class="teacher-progress-warning">Course-contract and archive review are still in progress. Exam Training only exposes explicitly reviewed runtime-safe image pairs.</p>
       </div>
-      <section class="p3-next-step-panel" aria-labelledby="p1-first-action-title">
-        <div><p class="eyebrow">Optional first action</p><h2 id="p1-first-action-title">Take the P1 Starting Check</h2><p>10–15 minutes, not a grade, never locks a topic, and never counts as completion evidence.</p></div>
-        ${routeLink(pagePath, p1StartingCheckPagePath(), 'Start optional check', 'button primary-button')}
-        ${routeLink(pagePath, p1LearnPagePath(P1_STUDY_TOPICS[0]), 'Skip and start Quadratics', 'p3-fast-lane-link text-link')}
+      <section class="p3-next-step-panel" data-course-next-step-panel data-course-id="p1" data-diagnostic-href="${escapeAttr(hrefToPage(pagePath, p1StartingCheckPagePath()))}" data-review-href="${escapeAttr(hrefToPage(pagePath, p1ReviewPagePath()))}" aria-labelledby="p1-first-action-title">
+        <div><p class="eyebrow">Recommended next action</p><h2 id="p1-first-action-title" data-course-next-step-title>Take the P1 Starting Check</h2><p data-course-next-step-copy>10–15 minutes, not a grade, never locks a topic, and never counts as completion evidence.</p></div>
+        <a class="button primary-button" data-course-next-step-link href="${hrefToPage(pagePath, p1StartingCheckPagePath())}">Start optional check</a>
+        <a class="p3-fast-lane-link text-link" data-course-fast-lane-link href="${hrefToPage(pagePath, p1LearnPagePath(P1_STUDY_TOPICS[0]))}">Skip and start Quadratics</a>
       </section>
       <nav class="p3-dashboard-secondary-links" aria-label="Other P1 routes">
         ${routeLink(pagePath, p1NeedToKnowPagePath(), 'Need to Know', 'text-link')}
@@ -2078,7 +2074,7 @@ function renderP1DashboardPage(data: StaticSiteData, course: CourseMetadata, pag
 function renderP1TopicsIndexPage(data: StaticSiteData, pagePath = p1TopicsIndexPagePath()): string {
   const contexts = P1_STUDY_TOPICS.map((topic) => p1TopicContext(topic, data));
   const body = `
-    ${renderHero('P1 Topic Overview', 'Eight official 2026–2027 syllabus units with finite Learn and Checked Practice paths.', 'ax^2+bx+c,\quad f(x),\quad \frac{dy}{dx},\quad \int f(x)\,dx', `${routeLink(pagePath, p1StartingCheckPagePath(), 'Optional Starting Check', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    ${renderHero('P1 Topic Overview', 'Eight official 2026–2027 syllabus units with finite Learn and Checked Practice paths.', String.raw`ax^2+bx+c,\quad f(x),\quad \frac{dy}{dx},\quad \int f(x)\,dx`, `${routeLink(pagePath, p1StartingCheckPagePath(), 'Optional Starting Check', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
     <section class="path-principle-strip" aria-label="How the P1 path works"><article><strong>1. Learn</strong><span>Short support attached to one atomic skill.</span></article><article><strong>2. Checked Practice</strong><span>Clean first submissions provide strong local evidence.</span></article><article><strong>3. Exam Training</strong><span>Optional canonical image-first self-marking.</span></article></section>
     <section class="p3-unit-sequence" aria-labelledby="p1-unit-sequence-title"><div class="section-heading"><div><h2 id="p1-unit-sequence-title">Units</h2><p>Choose one next action; the full packet archive is never a completion checklist.</p></div></div><div class="path-unit-grid">${contexts.map((context, index) => renderP1UnitCard(pagePath, context, index)).join('')}</div></section>
   `;
@@ -2098,22 +2094,52 @@ function p1PracticeVariantId(item: P1CheckedPracticeContent): string {
 function renderP1CheckedPracticeForm(context: P1TopicContext, item: P1CheckedPracticeContent): string {
   const skill = p1SkillForPractice(item);
   const variantId = p1PracticeVariantId(item);
+  const skillId = skill?.id ?? item.itemId;
+  if (item.answerType === 'manual-self-marked' || item.expectedOptionId === null) {
+    return `
+      <article class="practice-card manual-practice-card" id="${escapeAttr(item.itemId)}" data-manual-practice-card data-evidence-eligible="false">
+        <p class="eyebrow">${escapeHtml(skill?.title ?? 'Manual practice')}</p>
+        <h3>${renderMathText(item.prompt)}</h3>
+        <p>Complete this graph, proof, or construction on paper, then compare your reasoning with the checking guide. This task is visible practice, but it cannot create strong completion evidence.</p>
+        <div class="worksheet-working-space" aria-label="Working space for ${escapeAttr(skill?.title ?? 'manual practice')}"></div>
+        <details class="skill-check-answer-details"><summary>Show self-mark guide</summary><p>${renderMathText(item.hint)}</p><ol>${item.workedSolution.map((step) => `<li>${renderMathText(step)}</li>`).join('')}</ol></details>
+        <div class="skill-check-actions"><button class="button primary-button" type="button" data-manual-practice-complete>Continue after self-marking</button></div>
+        <p class="skill-check-feedback" role="status" aria-live="polite">Manual/self-marked practice only — no academic attempt or strong evidence is saved.</p>
+      </article>
+    `;
+  }
+  const strongEvidenceEligible = skill?.evidenceEligibility === 'strong-checked-practice' && item.progressionEligible === true;
   const labels = Object.fromEntries(item.options.map((option) => [option.id, option.label]));
-  const correctLabel = item.options.find((option) => option.id === item.expectedOptionId)?.label ?? item.expectedOptionId;
+  const correctLabel = item.options.find((option) => option.id === item.expectedOptionId)?.label ?? '';
   return `
-    <article class="practice-card" id="${escapeAttr(item.itemId)}" ${variantId === 'primary' ? `data-p1-primary-for="${escapeAttr(skill?.id)}"` : `data-p1-retry-for="${escapeAttr(skill?.id)}" hidden`}>
+    <article class="practice-card" id="${escapeAttr(item.itemId)}" ${variantId === 'primary' ? `data-p1-primary-for="${escapeAttr(skillId)}"` : `data-p1-retry-for="${escapeAttr(skillId)}" hidden`}>
       <p class="eyebrow">${escapeHtml(skill?.title ?? 'Checked Practice')}</p>
       <h3>${renderMathText(item.prompt)}</h3>
-      <form class="skill-check-form" data-check-skill-answer data-course-id="p1" data-course="p1" data-region-id="${escapeAttr(context.region.id)}" data-topic="${escapeAttr(context.topic.name)}" data-skill-id="${escapeAttr(skill?.id)}" data-check-id="${escapeAttr(skill?.id ?? item.itemId)}" data-retry-variant-id="${escapeAttr(variantId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="exact-text" data-accepted-answers="${escapeAttr(JSON.stringify([item.expectedOptionId]))}" data-answer-labels="${escapeAttr(JSON.stringify(labels))}" data-correct-answer-label="${escapeAttr(correctLabel)}" data-explanation="${escapeAttr(item.workedSolution.join(' '))}" data-order-matters="false" data-mistake-tags="[]">
+      <form class="skill-check-form" data-check-skill-answer data-course-id="p1" data-course="p1" data-evidence-eligible="${strongEvidenceEligible ? 'true' : 'false'}" data-region-id="${escapeAttr(context.region.id)}" data-topic="${escapeAttr(context.topic.name)}" data-skill-id="${escapeAttr(skillId)}" data-check-id="${escapeAttr(skillId)}" data-retry-variant-id="${escapeAttr(variantId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="exact-text" data-accepted-answers="${escapeAttr(JSON.stringify([item.expectedOptionId]))}" data-answer-labels="${escapeAttr(JSON.stringify(labels))}" data-correct-answer-label="${escapeAttr(correctLabel)}" data-explanation="${escapeAttr(item.workedSolution.join(' '))}" data-order-matters="false" data-mistake-tags="[]">
         <fieldset class="choice-list"><legend>Choose one answer</legend>${item.options.map((option) => `<label><input type="radio" name="submittedAnswer" value="${escapeAttr(option.id)}" required /><span>${renderMathText(option.label)}</span></label>`).join('')}</fieldset>
         <div class="skill-check-actions"><button class="button primary-button" type="submit">Check Answer</button><button class="button secondary-button" type="button" data-show-skill-hint>Hint</button><button class="button primary-button" type="button" data-skill-check-inline-next hidden>Next Question</button></div>
         <div class="skill-check-feedback" role="status" aria-live="polite"></div>
         <fieldset class="mistake-tag-selector" data-mistake-tag-panel hidden><legend>What went wrong?</legend><p class="targeted-prompt" data-targeted-prompt></p></fieldset>
-        <div class="skill-check-hint-panel" data-skill-hint hidden><p>${renderMathText(item.hint)}</p><p>Hint-assisted work remains useful practice but is not strong completion evidence.</p></div>
+        <div class="skill-check-hint-panel" data-skill-hint hidden><p>${renderMathText(item.hint)}</p><p>${strongEvidenceEligible ? 'Hint-assisted work remains useful practice but is not strong completion evidence.' : 'This focused task is practice-only and cannot create strong completion evidence.'}</p></div>
         <details class="skill-check-repair-details" data-skill-repair hidden><summary>Show repair step</summary><p>${renderMathText(item.workedSolution[0] ?? item.hint)}</p></details>
         <details class="skill-check-answer-details" data-skill-answer-reveal hidden><summary>Reveal Answer</summary><p>${renderMathText(correctLabel)}</p><ol>${item.workedSolution.map((step) => `<li>${renderMathText(step)}</li>`).join('')}</ol></details>
       </form>
     </article>
+  `;
+}
+
+function renderP1PracticeGroup(context: P1TopicContext, index: number): string {
+  const primary = context.content.checkedPractice[index];
+  if (!primary) return '';
+  const skillId = context.content.skillIds[index];
+  const skill = P1_SKILL_CONTRACT.find((candidate) => candidate.id === skillId);
+  const retry = context.content.checkedPracticeRetries[index];
+  return `
+    <section class="practice-subsection" id="practice-${escapeAttr(skillId)}" data-skill-check-group data-p1-skill-group="${escapeAttr(skillId)}">
+      <header class="section-heading"><div><p class="eyebrow">${escapeHtml(skill?.syllabusRef ?? '')}</p><h2>${escapeHtml(skill?.title ?? 'Checked Practice')}</h2><p>${skill?.evidenceEligibility === 'strong-checked-practice' ? 'A clean first submission can provide strong local evidence for this focused skill.' : 'Use this as manual practice; it does not create strong completion evidence.'}</p></div></header>
+      ${renderP1CheckedPracticeForm(context, primary)}
+      ${retry && primary.answerType !== 'manual-self-marked' ? renderP1CheckedPracticeForm(context, retry) : ''}
+    </section>
   `;
 }
 
@@ -2140,17 +2166,27 @@ function renderP1FieldGuideBridge(context: P1TopicContext, pagePath = p1FieldGui
 function renderP1CheckedPracticePage(context: P1TopicContext, pagePath = p1SkillCheckPagePath(context.topic)): string {
   const index = p1TopicIndex(context.topic);
   const next = P1_STUDY_TOPICS[index + 1];
+  const finalPath = next ? p1LearnPagePath(next) : p1ReviewPagePath();
+  const finalLabel = next ? `Next unit: ${next.name}` : 'Review P1 core progress';
+  const finalHref = hrefToPage(pagePath, finalPath);
   const body = `
     ${renderHero(`Unit ${index + 1}: ${context.topic.name} Checked Practice`, 'Primary checks and distinct reviewed retry variants protect strong evidence from hint use and answer cycling.', context.topic.headerFormula, `${routeLink(pagePath, p1LearnPagePath(context.topic), 'Learn support', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
-    <section class="practice-stack" data-course-id="p1">${p1PracticeItems(context).map((item) => renderP1CheckedPracticeForm(context, item)).join('')}</section>
+    <section class="practice-stack" data-one-card-flow data-course-id="p1" data-topic-id="${escapeAttr(context.content.topicId)}" data-flow-label="Focused skill" data-flow-final-href="${escapeAttr(finalHref)}" data-flow-final-label="${escapeAttr(finalLabel)}">${context.content.skillIds.map((_, skillIndex) => renderP1PracticeGroup(context, skillIndex)).join('')}</section>
     <section class="next-step-card"><h2>${next ? `Next unit: ${escapeHtml(next.name)}` : 'P1 review'}</h2><p>Complete the finite core checks, then continue when you are ready. Retry variants appear only after a primary attempt is missed or invalidated by help.</p>${routeLink(pagePath, next ? p1LearnPagePath(next) : p1ReviewPagePath(), next ? `Start ${next.name} Learn` : 'Review / export', 'button primary-button')}</section>
     <section class="attempt-history-section" data-attempt-history-list data-course-id="p1" data-attempt-history-source="checked_practice" data-attempt-history-region="${escapeAttr(context.region.id)}" data-attempt-history-limit="80" aria-labelledby="p1-attempt-history-title"><div class="section-heading"><div><p class="eyebrow">Review</p><h2 id="p1-attempt-history-title">Submitted responses</h2><p data-attempt-history-summary>No submitted responses saved in this browser yet.</p></div></div><p class="empty-state" data-attempt-history-empty>Submit a checked answer to see it here.</p><div class="attempt-history-list" data-attempt-history-items></div></section>
   `;
   return renderPage({ pagePath, title: `${context.topic.name} Checked Practice`, description: `P1 Checked Practice for ${context.topic.name}.`, active: 'p1-topics', courseId: 'p1', body });
 }
 
+function renderP1WorksheetQuestion(item: P1CheckedPracticeContent, index: number): string {
+  const responseArea = item.answerType === 'manual-self-marked'
+    ? '<p class="eyebrow">Manual/self-marked task</p><p>Use the working space to draw, construct, or prove as requested. This item is practice-only and is not automatically checked.</p>'
+    : `<ul class="worksheet-option-list">${item.options.map((option) => `<li><span class="worksheet-checkbox"></span>${renderMathText(option.label)}</li>`).join('')}</ul>`;
+  return `<article class="worksheet-question"><header><p class="eyebrow">Question ${index + 1}</p><h2>${renderMathText(item.prompt)}</h2></header>${responseArea}<div class="worksheet-working-space" aria-label="Working space"></div></article>`;
+}
+
 function renderP1WorksheetPage(context: P1TopicContext, pagePath = p1WorksheetPagePath(context.topic)): string {
-  const body = `<section class="worksheet-hero"><p class="eyebrow">Paper 1 printable worksheet</p><h1>${escapeHtml(context.topic.name)} Checked Practice Worksheet</h1><div class="worksheet-meta"><p>Student name: <span></span></p><p>Date: <span></span></p></div><div class="worksheet-actions"><button class="button primary-button" type="button" onclick="window.print()">Print / Save PDF</button>${routeLink(pagePath, p1SkillCheckPagePath(context.topic), 'Interactive Checked Practice', 'button secondary-button')}</div></section><section class="worksheet-question-list">${context.content.checkedPractice.map((item, index) => `<article class="worksheet-question"><header><p class="eyebrow">Question ${index + 1}</p><h2>${renderMathText(item.prompt)}</h2></header><ul class="worksheet-option-list">${item.options.map((option) => `<li><span class="worksheet-checkbox"></span>${renderMathText(option.label)}</li>`).join('')}</ul><div class="worksheet-working-space" aria-label="Working space"></div></article>`).join('')}</section>`;
+  const body = `<section class="worksheet-hero"><p class="eyebrow">Paper 1 printable worksheet</p><h1>${escapeHtml(context.topic.name)} Checked Practice Worksheet</h1><div class="worksheet-meta"><p>Student name: <span></span></p><p>Date: <span></span></p></div><div class="worksheet-actions"><button class="button primary-button" type="button" onclick="window.print()">Print / Save PDF</button>${routeLink(pagePath, p1SkillCheckPagePath(context.topic), 'Interactive Checked Practice', 'button secondary-button')}</div></section><section class="worksheet-question-list">${context.content.checkedPractice.map(renderP1WorksheetQuestion).join('')}</section>`;
   return renderPage({ pagePath, title: `${context.topic.name} Worksheet`, description: `Printable P1 worksheet for ${context.topic.name}.`, active: 'p1-topics', courseId: 'p1', body, bodyClass: 'worksheet-page' });
 }
 
@@ -2161,8 +2197,7 @@ function renderP1TopicExamTrainingPage(context: P1TopicContext, pagePath = p1Top
 
 function p1StartingCheckItems(data: StaticSiteData): Array<{ context: P1TopicContext; item: P1CheckedPracticeContent }> {
   return P1_STUDY_TOPICS.map((topic) => p1TopicContext(topic, data)).flatMap((context) => {
-    const primary = context.content.checkedPractice.find((item) => p1PracticeVariantId(item) === 'primary')
-      ?? context.content.checkedPractice[0];
+    const primary = context.content.checkedPractice.find((item) => item.answerType === 'single-choice' && item.expectedOptionId !== null);
     return primary ? [{ context, item: primary }] : [];
   });
 }
@@ -2170,10 +2205,10 @@ function p1StartingCheckItems(data: StaticSiteData): Array<{ context: P1TopicCon
 function renderP1StartingCheckPage(data: StaticSiteData, pagePath = p1StartingCheckPagePath()): string {
   const items = p1StartingCheckItems(data);
   const body = `
-    ${renderHero('P1 Starting Check', 'Optional, 10–15 minutes, not a grade, and never a lock. Use the result only to choose one or two useful starting topics.', 'ax^2+bx+c,\quad f(x),\quad \sin x,\quad \int f(x)\,dx', `${routeLink(pagePath, p1LearnPagePath(P1_STUDY_TOPICS[0]), 'Skip and start Quadratics', 'button secondary-button')}${routeLink(pagePath, p1TopicsIndexPagePath(), 'Choose another topic', 'button text-button')}`, 'CAIE 9709 Paper 1')}
+    ${renderHero('P1 Starting Check', 'Optional, 10–15 minutes, not a grade, and never a lock. Use the result only to choose one or two useful starting topics.', String.raw`ax^2+bx+c,\quad f(x),\quad \sin x,\quad \int f(x)\,dx`, `${routeLink(pagePath, p1LearnPagePath(P1_STUDY_TOPICS[0]), 'Skip and start Quadratics', 'button secondary-button')}${routeLink(pagePath, p1TopicsIndexPagePath(), 'Choose another topic', 'button text-button')}`, 'CAIE 9709 Paper 1')}
     <section class="summary-card"><p class="eyebrow">Starting-point check</p><h2>${items.length} short questions</h2><ul class="plain-list"><li>You can leave or retake it at any time.</li><li>It creates no completion or strong evidence.</li><li>Recommendations remain advisory.</li></ul></section>
     <form class="diagnostic-paper" data-p1-starting-check>
-      <div class="practice-card-stack">${items.map(({ context, item }, index) => `<article class="practice-card" data-p1-starting-check-question data-topic-slug="${escapeAttr(context.topic.slug)}" data-topic-name="${escapeAttr(context.topic.name)}" data-topic-href="${escapeAttr(hrefToPage(pagePath, p1LearnPagePath(context.topic)))}" data-expected-option="${escapeAttr(item.expectedOptionId)}"><p class="eyebrow">Question ${index + 1} of ${items.length} · ${escapeHtml(context.topic.name)}</p><h2>${renderMathText(item.prompt)}</h2><fieldset class="choice-list"><legend>Choose one answer</legend>${item.options.map((option) => `<label><input type="radio" name="starting-${index}" value="${escapeAttr(option.id)}" required /><span>${renderMathText(option.label)}</span></label>`).join('')}</fieldset></article>`).join('')}</div>
+      <div class="practice-card-stack">${items.map(({ context, item }, index) => `<article class="practice-card" data-p1-starting-check-question data-topic-slug="${escapeAttr(context.topic.slug)}" data-topic-name="${escapeAttr(context.topic.name)}" data-topic-href="${escapeAttr(hrefToPage(pagePath, p1LearnPagePath(context.topic)))}" data-expected-option="${escapeAttr(item.expectedOptionId ?? '')}"><p class="eyebrow">Question ${index + 1} of ${items.length} · ${escapeHtml(context.topic.name)}</p><h2>${renderMathText(item.prompt)}</h2><fieldset class="choice-list"><legend>Choose one answer</legend>${item.options.map((option) => `<label><input type="radio" name="starting-${index}" value="${escapeAttr(option.id)}" required /><span>${renderMathText(option.label)}</span></label>`).join('')}</fieldset></article>`).join('')}</div>
       <div class="diagnostic-progress-controls"><button class="button primary-button" type="submit">Show suggested starting topics</button><button class="button secondary-button" type="reset" data-p1-starting-check-reset>Retake</button></div>
     </form>
     <section class="diagnostic-report-panel summary-card" data-p1-starting-check-report hidden aria-live="polite"><p class="eyebrow">Advisory result</p><h2>Suggested next topics</h2><p data-p1-starting-check-summary></p><div class="hero-actions" data-p1-starting-check-links></div><p><a class="text-link" href="${hrefToPage(pagePath, p1TopicsIndexPagePath())}">Choose another topic instead</a></p></section>
@@ -2194,7 +2229,7 @@ function renderP1ExamTrainingPage(data: StaticSiteData, pagePath = p1ExamTrainin
     return true;
   }).slice(0, 16);
   const body = `
-    ${renderHero('P1 Exam Training', 'Optional image-first practice from explicitly reviewed, runtime-safe Paper 1 records. It never replaces Checked Practice evidence.', '\Delta,\quad s=r\theta,\quad \frac{dy}{dx},\quad \int_a^b f(x)\,dx', `${routeLink(pagePath, p1TopicsIndexPagePath(), 'Back to P1 units', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    ${renderHero('P1 Exam Training', 'Optional image-first practice from explicitly reviewed, runtime-safe Paper 1 records. It never replaces Checked Practice evidence.', String.raw`\Delta,\quad s=r\theta,\quad \frac{dy}{dx},\quad \int_a^b f(x)\,dx`, `${routeLink(pagePath, p1TopicsIndexPagePath(), 'Back to P1 units', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
     <section class="exam-question-section"><div class="section-heading"><div><h2>Mixed reviewed Paper 1 questions</h2><p>The full 2008–2025 archive remains behind the review gate; packet approval alone does not publish a question.</p></div></div><div class="exam-question-grid" data-exam-flow data-flow-label="Paper 1 mixed exam question">${mixed.map(({ context, question }) => renderExamQuestionCard(question, pagePath, { displayTopic: context.topic.name, validatedRegionId: context.region.id, displayRegionId: context.region.id, reviewLinkPath: p1LearnPagePath(context.topic) })).join('')}</div>${mixed.length ? '' : '<p class="empty-state">No P1 archive records are runtime-safe yet. Use topic Learn and Checked Practice while human image/routing review continues.</p>'}</section>
     <section class="exam-topic-panel"><div class="section-heading"><div><h2>Choose a topic</h2><p>Each topic page exposes only its reviewed runtime projection.</p></div></div><div class="exam-topic-list">${contexts.map((context) => `<article class="exam-topic-row"><div><h3>${escapeHtml(context.topic.name)}</h3><p>${context.questions.length} reviewed runtime question${context.questions.length === 1 ? '' : 's'}</p></div>${routeLink(pagePath, p1TopicExamTrainingPagePath(context.topic), 'Open topic Exam Training', 'button secondary-button')}</article>`).join('')}</div></section>
   `;
@@ -2204,13 +2239,16 @@ function renderP1ExamTrainingPage(data: StaticSiteData, pagePath = p1ExamTrainin
 function renderP1NeedToKnowPage(pagePath = p1NeedToKnowPagePath()): string {
   const assessment = P1_CURRICULUM_CONSTRAINTS.assessmentContext;
   const body = `
-    ${renderHero('P1 Need to Know', 'A finite checklist derived from the reviewed 2026–2027 syllabus contract. It is a study map, not a claim of exam mastery.', '1.1\to1.8', `${routeLink(pagePath, p1TopicsIndexPagePath(), 'Open P1 units', 'button primary-button')}`, 'CAIE 9709 Paper 1')}
+    ${renderHero('P1 Need to Know', 'A finite checklist derived from the reviewed 2026–2027 syllabus contract. It is a study map, not a claim of exam mastery.', String.raw`1.1\to1.8`, `${routeLink(pagePath, p1TopicsIndexPagePath(), 'Open P1 units', 'button primary-button')}`, 'CAIE 9709 Paper 1')}
     <section class="contract-summary-grid"><article class="summary-card"><p class="eyebrow">Assessment</p><h2>${Math.floor(assessment.durationMinutes / 60)} h ${assessment.durationMinutes % 60} min · ${assessment.marks} marks</h2><p>${assessment.structuredQuestionRange[0]}–${assessment.structuredQuestionRange[1]} compulsory structured questions. Scientific calculator and MF19 formula list available.</p></article><article class="summary-card"><p class="eyebrow">Answer discipline</p><h2>Show the route</h2><p>${escapeHtml(assessment.workingRequirement)}</p></article></section>
     <section class="contract-topic-groups"><details class="summary-card"><summary><strong>Notation rules</strong></summary><ul class="plain-list">${P1_CURRICULUM_CONSTRAINTS.notationRules.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul></details><details class="summary-card"><summary><strong>Formula scope</strong></summary><ul class="plain-list">${P1_CURRICULUM_CONSTRAINTS.formulaScope.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul></details><details class="summary-card"><summary><strong>Explicit exclusions</strong></summary><ul class="plain-list">${P1_CURRICULUM_CONSTRAINTS.explicitExclusions.map((rule) => `<li>${escapeHtml(rule)}</li>`).join('')}</ul></details></section>
     <section class="need-to-know-groups">${P1_STUDY_TOPICS.map((topic) => {
       const contractTopic = P1_COURSE_STUDY_CONTRACT.topics.find((candidate) => candidate.slug === topic.slug);
       const skills = P1_SKILL_CONTRACT.filter((skill) => skill.topicId === contractTopic?.id);
-      return `<details class="need-to-know-topic" open><summary><span>${escapeHtml(contractTopic?.syllabusRef ?? '')}</span><strong>${escapeHtml(topic.name)}</strong><span>${skills.length} atomic skills</span></summary><div class="need-to-know-skill-list">${skills.map((skill) => `<article class="need-to-know-skill"><h3>${escapeHtml(skill.title)}</h3><ul>${skill.syllabusOutcomes.map((outcome) => `<li>${escapeHtml(outcome)}</li>`).join('')}</ul><p><strong>Evidence:</strong> ${skill.evidenceEligibility === 'strong-checked-practice' ? 'reviewed deterministic Checked Practice' : 'manual practice only'}</p><div class="homepage-card-links">${routeLink(pagePath, p1LearnPagePath(topic), 'Learn', 'text-link')}${routeLink(pagePath, p1SkillCheckPagePath(topic), 'Checked Practice', 'text-link')}</div></article>`).join('')}</div></details>`;
+      return `<details class="need-to-know-topic" open><summary><span>${escapeHtml(contractTopic?.syllabusRef ?? '')}</span><strong>${escapeHtml(topic.name)}</strong><span>${skills.length} focused skills</span></summary><div class="need-to-know-skill-list">${skills.map((skill) => {
+        const prerequisites = skill.prerequisiteSkillIds.map((id) => P1_SKILL_CONTRACT.find((candidate) => candidate.id === id)?.title ?? id);
+        return `<article class="need-to-know-skill"><h3>${escapeHtml(skill.title)}</h3><p><strong>Syllabus coverage</strong></p><ul>${skill.syllabusOutcomes.map((outcome) => `<li>${escapeHtml(outcome)}</li>`).join('')}</ul><p><strong>Need to know</strong></p><ul>${skill.needToKnow.map((point) => `<li>${escapeHtml(point)}</li>`).join('')}</ul><p><strong>Common exam wording:</strong> ${escapeHtml(skill.examTriggers.join(', '))}</p>${prerequisites.length ? `<p><strong>Build on:</strong> ${escapeHtml(prerequisites.join('; '))}</p>` : ''}<p><strong>Evidence:</strong> ${skill.evidenceEligibility === 'strong-checked-practice' ? 'reviewed deterministic Checked Practice' : 'manual/self-marked practice only'}</p><div class="homepage-card-links">${routeLink(pagePath, p1LearnPagePath(topic), 'Learn', 'text-link')}${routeLink(pagePath, p1SkillCheckPagePath(topic), 'Checked Practice', 'text-link')}</div></article>`;
+      }).join('')}</div></details>`;
     }).join('')}</section>
   `;
   return renderPage({ pagePath, title: 'P1 Need to Know', description: 'Reviewed Pure Mathematics 1 syllabus checklist.', active: 'p1', courseId: 'p1', body });
@@ -2221,8 +2259,18 @@ function renderP1ProgressExportPanel(): string {
 }
 
 function renderP1ReviewPage(data: StaticSiteData, pagePath = p1ReviewPagePath()): string {
+  const contexts = p1Contexts(data);
+  const requirements = contexts.map((context) => ({
+    regionId: context.region.id,
+    name: context.topic.name,
+    fieldGuideTotal: context.content.learn.length,
+    requiredCheckIds: p1RequiredCheckIds(context),
+    skillCheckHref: hrefToPage(pagePath, p1SkillCheckPagePath(context.topic)),
+  }));
+  const totalRequiredChecks = requirements.reduce((total, requirement) => total + requirement.requiredCheckIds.length, 0);
   const body = `
-    ${renderHero('P1 Review and Export', 'Review your finite core path and export course-scoped local progress. Exam Training remains optional self-marked practice.', '\Delta,\quad f^{-1}(x),\quad S_\infty,\quad \int_a^b f(x)\,dx', `${routeLink(pagePath, p1NeedToKnowPagePath(), 'Need to Know', 'button secondary-button')}${routeLink(pagePath, p1CoursePagePath(), 'Back to P1', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    ${renderHero('P1 Review and Export', 'Review your finite core path and export course-scoped local progress. Exam Training remains optional self-marked practice.', String.raw`\Delta,\quad f^{-1}(x),\quad S_\infty,\quad \int_a^b f(x)\,dx`, `${routeLink(pagePath, p1NeedToKnowPagePath(), 'Need to Know', 'button secondary-button')}${routeLink(pagePath, p1CoursePagePath(), 'Back to P1', 'button secondary-button')}`, 'CAIE 9709 Paper 1')}
+    <section class="summary-card" data-p1-core-completion data-required-topics="${escapeAttr(JSON.stringify(requirements))}"><p class="eyebrow">Finite P1 core</p><h2 data-p1-core-completion-summary>0/${requirements.length} units · 0/${totalRequiredChecks} strong checks</h2><p>Only clean Checked Practice evidence completes a focused skill. Learn activity and Exam Training remain useful but non-completing.</p><ul class="exam-review-topic-list" data-p1-core-completion-list>${requirements.map((requirement) => `<li class="is-incomplete"><div><strong>${escapeHtml(requirement.name)}</strong><span>Checked questions 0/${requirement.requiredCheckIds.length}</span></div><a class="text-link" href="${escapeAttr(requirement.skillCheckHref)}">Continue</a></li>`).join('')}</ul></section>
     ${renderP1ProgressExportPanel()}
     <section class="attempt-history-section" data-attempt-history-list data-course-id="p1" data-attempt-history-limit="160" aria-labelledby="p1-all-attempt-history-title"><div class="section-heading"><div><p class="eyebrow">P1 response history</p><h2 id="p1-all-attempt-history-title">Review submitted answers</h2><p data-attempt-history-summary>No P1 responses saved in this browser yet.</p></div></div><p class="empty-state" data-attempt-history-empty>Complete P1 Learn or Checked Practice questions to see submissions here.</p><div class="attempt-history-list" data-attempt-history-items></div></section>
     <section class="exam-callout compact-callout"><div><p class="eyebrow">Optional practice</p><h2>Paper 1 Exam Training</h2><p>Saved self-marked attempts help plan revision but cannot complete a skill or unit.</p></div><div class="exam-stats"><span data-total-attempts data-paper-family="p1" data-paper-label="Paper 1">0 saved Paper 1 attempts</span><span data-topic-tried-count data-paper-family="p1">0 topic areas tried</span></div></section>

@@ -107,7 +107,6 @@ describe('P1 course study contract', () => {
     for (const skill of P1_SKILL_CONTRACT) {
       expect(skill.readiness).toBe('ready');
       expect(skill.reviewStatus).toBe('reviewed');
-      expect(skill.evidenceEligibility).toBe('strong-checked-practice');
       expect(skill.routeAvailability).toEqual({
         learn: true,
         checkedPractice: true,
@@ -115,6 +114,43 @@ describe('P1 course study contract', () => {
         worksheet: true,
       });
     }
+
+    const manualSkillIds = P1_SKILL_CONTRACT
+      .filter((skill) => skill.evidenceEligibility === 'manual-practice-only')
+      .map((skill) => skill.id);
+    expect(manualSkillIds).toEqual([
+      'p1_func_inverse_graph_sketch',
+      'p1_trig_graph_sketch',
+      'p1_trig_identity_proofs',
+      'p1_diff_curve_sketch',
+    ]);
+    expect(P1_SKILL_CONTRACT.filter((skill) => skill.evidenceEligibility === 'strong-checked-practice').length).toBeGreaterThan(50);
+  });
+
+  it('splits broad syllabus capabilities into independently evidenced atomic skills', () => {
+    expect(P1_SKILL_CONTRACT).toHaveLength(70);
+
+    const titlesByTopic = new Map(P1_STUDY_TOPICS.map((topic) => [
+      topic.id,
+      P1_SKILL_CONTRACT.filter((skill) => skill.topicId === topic.id).map((skill) => skill.title),
+    ]));
+    expect(titlesByTopic.get('p1-quadratics')).toEqual(expect.arrayContaining([
+      'Read a vertex from completed-square form',
+      'Rewrite a quadratic by completing the square',
+      'Solve quadratic equations',
+      'Solve quadratic inequalities by sign intervals',
+    ]));
+    expect(titlesByTopic.get('p1-series')).toEqual(expect.arrayContaining([
+      'Find arithmetic progression terms',
+      'Find finite arithmetic progression sums',
+      'Find geometric progression terms and finite sums',
+    ]));
+    expect(titlesByTopic.get('p1-differentiation')).toEqual(expect.arrayContaining([
+      'Differentiate rational powers and linear combinations',
+      'Differentiate simple composites with the chain rule',
+      'Find a tangent equation',
+      'Find a normal gradient and equation',
+    ]));
   });
 
   it('passes the shared contract validator and exposes course-keyed getters', () => {

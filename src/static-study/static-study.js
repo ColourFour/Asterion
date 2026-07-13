@@ -1049,6 +1049,11 @@
       return refreshDerivedAnalytics(progress);
     }
 
+    // P1 attempts remain available in the course-scoped attempt stores. This
+    // reducer is P3-specific, so folding P1 topics into it would corrupt the
+    // legacy weak-topic and repair recommendations.
+    if (input.course === 'p1') return refreshDerivedAnalytics(progress);
+
     var timestamp = Number.isFinite(input.timestamp) ? Number(input.timestamp) : Date.now();
     var breakdown = computeTopicBreakdown(input);
     progress.topic_assessments = safeArray(progress.topic_assessments).concat(breakdown);
@@ -1135,12 +1140,22 @@
       && value.mistakeTags.every(function (tag) { return typeof tag === 'string'; })
       && typeof value.timestamp === 'string'
       && (value.retryVariantId === undefined || typeof value.retryVariantId === 'string')
+      && (value.strongEvidenceEligible === undefined || typeof value.strongEvidenceEligible === 'boolean')
       && (value.strongEvidence === undefined || typeof value.strongEvidence === 'boolean'));
   }
 
   function normalizeSkillCheckAttempts(records) {
+    var seenItems = new Set();
     return safeArray(records).filter(isSkillCheckAttemptRecord).map(function (attempt) {
-      return Object.assign({}, attempt, { course: normalizeStudyCourse(attempt.course) });
+      var normalized = Object.assign({}, attempt, { course: normalizeStudyCourse(attempt.course) });
+      var key = skillAttemptItemKey(normalized);
+      var intrinsicallyStrong = isCleanCheckedPracticeAttempt(normalized);
+      var migratedStrongEvidence = intrinsicallyStrong && !seenItems.has(key);
+      seenItems.add(key);
+      normalized.strongEvidence = attempt.strongEvidence === undefined
+        ? migratedStrongEvidence
+        : attempt.strongEvidence === true && intrinsicallyStrong;
+      return normalized;
     });
   }
 
@@ -1419,6 +1434,17 @@
 
   function skillCheckCsvRow(attempt, exportTimestamp, history) {
     var passed = isPassingSkillCheckAttempt(attempt, history);
+    var intrinsicallyCorrect = attempt.isCorrect
+      && !attempt.usedHint
+      && !attempt.revealedAnswer
+      && !attempt.revealedRepairStep;
+    var evidenceStatus = passed
+      ? 'checked_practice_passed'
+      : attempt.strongEvidenceEligible === false
+        ? 'practice_only_manual_or_unvalidated'
+        : intrinsicallyCorrect
+          ? 'practice_only_after_prior_submission'
+          : 'not_passed';
     return Object.assign(blankCsvRow(exportTimestamp), {
       course: normalizeStudyCourse(attempt.course),
       topic: attempt.topic || '',
@@ -1429,7 +1455,7 @@
       answer_result_summary: attempt.submittedAnswer || '',
       deterministic_pass_fail: passed ? 'pass' : 'fail',
       evidence_label: passed ? 'Clean Checked Practice pass - strongest local evidence' : 'Checked Practice attempt - not a clean pass',
-      evidence_status_label: passed ? 'checked_practice_passed' : 'not_passed'
+      evidence_status_label: evidenceStatus
     });
   }
 
@@ -1962,12 +1988,12 @@
   }
 
   function isPassingSkillCheckAttempt(attempt, history) {
-    if (!isCleanCheckedPracticeAttempt(attempt)) return false;
     var normalized = normalizeSkillCheckAttempts(history || [attempt]);
-    var attemptIndex = normalized.findIndex(function (candidate) { return candidate.attemptId === attempt.attemptId; });
-    if (attemptIndex < 0) return false;
-    var key = skillAttemptItemKey(attempt);
-    return normalized.findIndex(function (candidate) { return skillAttemptItemKey(candidate) === key; }) === attemptIndex;
+    var persistedAttempt = normalized.find(function (candidate) {
+      return candidate.attemptId === attempt.attemptId
+        && skillAttemptItemKey(candidate) === skillAttemptItemKey(attempt);
+    });
+    return persistedAttempt?.strongEvidence === true;
   }
 
   function passingSkillAttemptsForRegion(progress, regionId, course) {
@@ -1976,7 +2002,12 @@
   }
 
   function isCleanCheckedPracticeAttempt(attempt) {
-    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.usedHint && !attempt.revealedAnswer && !attempt.revealedRepairStep);
+    return Boolean(isSkillCheckAttemptRecord(attempt)
+      && attempt.strongEvidenceEligible !== false
+      && attempt.isCorrect
+      && !attempt.usedHint
+      && !attempt.revealedAnswer
+      && !attempt.revealedRepairStep);
   }
 
   function parseRequiredCheckIds(node) {
@@ -2168,7 +2199,52 @@
     });
   }
 
+  function updateP1CoreCompletion(progress) {
+    document.querySelectorAll('[data-p1-core-completion]').forEach(function (section) {
+      var requirements = parseExamReviewRequirements(section);
+      var statuses = requirements.map(function (requirement) {
+        var requiredCheckIds = requirement.requiredCheckIds.filter(function (id) {
+          return typeof id === 'string' && id;
+        });
+        var passCount = passedCheckIds(progress, requiredCheckIds, requirement.regionId, 'p1').length;
+        return {
+          requirement: requirement,
+          passCount: passCount,
+          requiredCheckCount: requiredCheckIds.length,
+          complete: requiredCheckIds.length > 0 && passCount >= requiredCheckIds.length
+        };
+      });
+      var completeUnits = statuses.filter(function (status) { return status.complete; }).length;
+      var strongChecks = statuses.reduce(function (total, status) { return total + status.passCount; }, 0);
+      var requiredChecks = statuses.reduce(function (total, status) { return total + status.requiredCheckCount; }, 0);
+      var allComplete = requirements.length > 0 && completeUnits === requirements.length;
+      var summary = section.querySelector('[data-p1-core-completion-summary]');
+      var list = section.querySelector('[data-p1-core-completion-list]');
+      if (summary) {
+        summary.textContent = allComplete
+          ? 'Finite P1 core complete — this is not a claim of full exam mastery. '
+            + completeUnits + '/' + requirements.length + ' units · ' + strongChecks + '/' + requiredChecks + ' strong Checked Practice checks.'
+          : completeUnits + '/' + requirements.length + ' P1 units complete · '
+            + strongChecks + '/' + requiredChecks + ' strong Checked Practice checks.';
+      }
+      if (list) {
+        list.innerHTML = statuses.map(function (status) {
+          var requirement = status.requirement;
+          var href = requirement.skillCheckHref || '#';
+          return '<li class="' + (status.complete ? 'is-complete' : 'is-incomplete') + '">'
+            + '<div><strong>' + escapeText(requirement.name) + '</strong>'
+            + '<span>Strong checks ' + status.passCount + '/' + status.requiredCheckCount + '</span></div>'
+            + (status.complete
+              ? '<span class="unit-state">Finite core complete</span>'
+              : '<a class="text-link" href="' + escapeText(href) + '">Continue</a>')
+            + '</li>';
+        }).join('');
+      }
+    });
+  }
+
   function unitProgressFromCard(progress, card) {
+    var course = normalizeStudyCourse(card.getAttribute('data-course-id') || activeStudyCourse());
     var regionId = card.getAttribute('data-path-unit') || '';
     var name = card.getAttribute('data-unit-name') || card.querySelector('h2')?.textContent || 'this unit';
     var unitLabel = card.getAttribute('data-unit-label') || '';
@@ -2178,15 +2254,16 @@
     var guideNode = card.querySelector('[data-progress-field-guide]');
     var skillNode = card.querySelector('[data-progress-skill]');
     var fieldTotal = Number(guideNode?.getAttribute('data-total') || 1);
-    var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal);
+    var guideCount = fieldGuideCompletedCount(progress, regionId, fieldTotal, course);
     var requiredCheckIds = skillNode ? parseRequiredCheckIds(skillNode) : [];
     var passCount = requiredCheckIds.length
-      ? passedCheckIds(progress, requiredCheckIds, regionId).length
-      : passingSkillAttemptsForRegion(progress, regionId).length;
-    var examCount = attemptsForRegion(progress, regionId).length;
+      ? passedCheckIds(progress, requiredCheckIds, regionId, course).length
+      : passingSkillAttemptsForRegion(progress, regionId, course).length;
+    var examCount = attemptsForRegion(progress, regionId, course).length;
     var checkedComplete = requiredCheckIds.length > 0 && passCount >= requiredCheckIds.length;
     return {
       card: card,
+      course: course,
       name: name,
       unitLabel: unitLabel,
       learnHref: learnHref,
@@ -2215,7 +2292,9 @@
     if (status.guideCount < status.fieldTotal) {
       return {
         title: (status.guideCount > 0 ? 'Continue ' : 'Start ') + status.name + ' Learn',
-        copy: 'Default path: Diagnostic \u2192 Learn \u2192 Checked Practice \u2192 Exam Training. Confident students can still try Checked Practice now.',
+        copy: status.course === 'p1'
+          ? 'Suggested path: Learn \u2192 Checked Practice \u2192 optional Exam Training. The Starting Check is advisory, and confident students can try Checked Practice now.'
+          : 'Default path: Diagnostic \u2192 Learn \u2192 Checked Practice \u2192 Exam Training. Confident students can still try Checked Practice now.',
         href: status.learnHref,
         label: (status.guideCount > 0 ? 'Continue ' : 'Start ') + status.name + ' Learn'
       };
@@ -2236,65 +2315,70 @@
     };
   }
 
-  function updateP3NextStepPanels(progress) {
-    var panels = Array.from(document.querySelectorAll('[data-p3-next-step-panel]'));
+  function updateCourseNextStepPanels(progress) {
+    var panels = Array.from(new Set(document.querySelectorAll('[data-p3-next-step-panel], [data-course-next-step-panel]')));
     if (!panels.length) return;
-    var statuses = Array.from(document.querySelectorAll('[data-path-unit]')).map(function (card) {
-      return unitProgressFromCard(progress, card);
-    });
-    if (!statuses.length) return;
-    var allReviewReady = statuses.every(function (status) { return status.reviewReady; });
-    var hasDiagnosticReport = safeArray(progress.diagnosticReports).length > 0;
-    var hasAnyStartedUnit = statuses.some(function (status) { return status.started; });
-    var startedIncomplete = statuses.find(function (status) { return status.started && !status.reviewReady; });
-    var checkedReadyForExam = statuses.find(function (status) { return status.reviewReady && status.examCount === 0; });
-    var firstIncomplete = statuses.find(function (status) { return !status.reviewReady; });
-    var selected = allReviewReady ? null : (startedIncomplete || checkedReadyForExam || firstIncomplete || statuses[0]);
-    var action = selected ? actionForUnitStatus(selected) : null;
-
-    statuses.forEach(function (status) {
-      var cardAction = actionForUnitStatus(status);
-      var cardLink = status.card.querySelector('[data-path-unit-primary-action]');
-      var fastLaneLink = status.card.querySelector('[data-path-unit-fast-lane-action]');
-      status.card.classList.toggle('is-current-local-step', Boolean(selected && status.card === selected.card));
-      status.card.classList.toggle('is-complete', status.reviewReady);
-      status.card.classList.toggle('has-exam-evidence', status.examCount > 0);
-      if (cardLink && cardAction) {
-        cardLink.textContent = cardAction.label;
-        cardLink.setAttribute('href', cardAction.href);
-        cardLink.setAttribute('aria-label', cardAction.title);
-      }
-      if (fastLaneLink) {
-        fastLaneLink.setAttribute('href', status.skillHref);
-      }
-    });
-
     panels.forEach(function (panel) {
-      var title = panel.querySelector('[data-p3-next-step-title]');
-      var copy = panel.querySelector('[data-p3-next-step-copy]');
-      var link = panel.querySelector('[data-p3-next-step-link]');
-      var fastLaneLink = panel.querySelector('[data-p3-fast-lane-link]');
+      var course = normalizeStudyCourse(panel.getAttribute('data-course-id') || 'p3');
+      var statuses = Array.from(document.querySelectorAll('[data-path-unit]')).map(function (card) {
+        return unitProgressFromCard(progress, card);
+      }).filter(function (status) { return status.course === course; });
+      if (!statuses.length) return;
+      var allReviewReady = statuses.every(function (status) { return status.reviewReady; });
+      var hasDiagnosticReport = safeArray(progress.diagnosticReports).some(function (report) {
+        return normalizeStudyCourse(report?.course) === course;
+      });
+      var hasAnyStartedUnit = statuses.some(function (status) { return status.started; });
+      var startedIncomplete = statuses.find(function (status) { return status.started && !status.reviewReady; });
+      var checkedReadyForExam = statuses.find(function (status) { return status.reviewReady && status.examCount === 0; });
+      var firstIncomplete = statuses.find(function (status) { return !status.reviewReady; });
+      var selected = allReviewReady ? null : (startedIncomplete || checkedReadyForExam || firstIncomplete || statuses[0]);
+      var action = selected ? actionForUnitStatus(selected) : null;
+      statuses.forEach(function (status) {
+        var cardAction = actionForUnitStatus(status);
+        var cardLink = status.card.querySelector('[data-path-unit-primary-action]');
+        var fastLaneCardLink = status.card.querySelector('[data-path-unit-fast-lane-action]');
+        status.card.classList.toggle('is-current-local-step', Boolean(selected && status.card === selected.card));
+        status.card.classList.toggle('is-complete', status.reviewReady);
+        status.card.classList.toggle('has-exam-evidence', status.examCount > 0);
+        if (cardLink && cardAction) {
+          cardLink.textContent = cardAction.label;
+          cardLink.setAttribute('href', cardAction.href);
+          cardLink.setAttribute('aria-label', cardAction.title);
+        }
+        if (fastLaneCardLink) fastLaneCardLink.setAttribute('href', status.skillHref);
+      });
+      var title = panel.querySelector('[data-course-next-step-title], [data-p3-next-step-title]');
+      var copy = panel.querySelector('[data-course-next-step-copy], [data-p3-next-step-copy]');
+      var link = panel.querySelector('[data-course-next-step-link], [data-p3-next-step-link]');
+      var fastLaneLink = panel.querySelector('[data-course-fast-lane-link], [data-p3-fast-lane-link]');
       if (!hasDiagnosticReport && !hasAnyStartedUnit) {
         var diagnosticHref = panel.getAttribute('data-diagnostic-href') || '#';
-        if (title) title.textContent = 'Start diagnostic';
-        if (copy) copy.textContent = 'The summer homework path starts with the diagnostic, then Learn \u2192 Checked Practice \u2192 Exam Training.';
+        if (title) title.textContent = course === 'p1' ? 'Try the optional Starting Check' : 'Start diagnostic';
+        if (copy) copy.textContent = course === 'p1'
+          ? 'The 10–15 minute Starting Check is advisory, skippable, and gives no completion credit. It can suggest one or two places to begin.'
+          : 'The summer homework path starts with the diagnostic, then Learn \u2192 Checked Practice \u2192 Exam Training.';
         if (link) {
-          link.textContent = 'Start diagnostic';
+          link.textContent = course === 'p1' ? 'Take Starting Check' : 'Start diagnostic';
           link.setAttribute('href', diagnosticHref);
         }
         if (fastLaneLink && selected) {
           fastLaneLink.hidden = false;
-          fastLaneLink.textContent = 'Already completed it? Start ' + selected.name + ' Learn';
+          fastLaneLink.textContent = course === 'p1'
+            ? 'Skip it — Start ' + selected.name + ' Learn'
+            : 'Already completed it? Start ' + selected.name + ' Learn';
           fastLaneLink.setAttribute('href', selected.learnHref);
         }
         return;
       }
       if (allReviewReady) {
         var reviewHref = panel.getAttribute('data-review-href') || '#';
-        if (title) title.textContent = 'Export progress';
-        if (copy) copy.textContent = 'All unit Learn and Checked Practice progress is recorded in this browser. Clean Checked Practice passes are the strongest local evidence.';
+        if (title) title.textContent = course === 'p1' ? 'Finite P1 core complete' : 'Export progress';
+        if (copy) copy.textContent = course === 'p1'
+          ? 'Finite P1 core complete — this is not a claim of full exam mastery. Review or export the strong Checked Practice evidence saved in this browser.'
+          : 'All unit Learn and Checked Practice progress is recorded in this browser. Clean Checked Practice passes are the strongest local evidence.';
         if (link) {
-          link.textContent = 'Export Progress';
+          link.textContent = course === 'p1' ? 'Review P1 progress' : 'Export Progress';
           link.setAttribute('href', reviewHref);
         }
         if (fastLaneLink) fastLaneLink.hidden = true;
@@ -2397,7 +2481,8 @@
     updateSkillCheckForms(progress);
     renderAttemptHistorySections(progress);
     updateExamReviewGate(progress);
-    updateP3NextStepPanels(progress);
+    updateCourseNextStepPanels(progress);
+    updateP1CoreCompletion(progress);
     updateP1RepairLaneStatus(progress);
     updateLocalProgressTeacherSummaries(progress);
     applyP1RepairP3Locks(progress);
@@ -3830,14 +3915,17 @@
   function updateLatestSkillCheckAttemptMistakeTags(form) {
     var progress = loadProgress();
     var checkId = form.getAttribute('data-check-id') || '';
+    var course = normalizeStudyCourse(form.getAttribute('data-course-id') || activeStudyCourse());
     var latestIndex = progress.skillCheckAttempts.map(function (attempt) {
-      return attempt.checkId;
+      return normalizeStudyCourse(attempt.course) === course ? attempt.checkId : '';
     }).lastIndexOf(checkId);
     if (latestIndex < 0) return;
     progress.skillCheckAttempts[latestIndex] = Object.assign({}, progress.skillCheckAttempts[latestIndex], {
       mistakeTags: selectedMistakeTags(form)
     });
-    progress = updateErrorClassificationFromTags(progress, checkId, selectedMistakeTags(form));
+    if (course === 'p3') {
+      progress = updateErrorClassificationFromTags(progress, checkId, selectedMistakeTags(form));
+    }
     saveProgress(progress);
   }
 
@@ -4729,6 +4817,7 @@
       revealedAnswer: form.getAttribute('data-revealed-answer') === 'true',
       revealedRepairStep: form.getAttribute('data-revealed-repair-step') === 'true',
       retryVariantId: form.getAttribute('data-retry-variant-id') || undefined,
+      strongEvidenceEligible: form.getAttribute('data-evidence-eligible') !== 'false',
       mistakeTags: selectedMistakeTags(form),
       timestamp: now
     };
@@ -4743,6 +4832,7 @@
     );
     progress = updateStudentPerformanceState(progress, {
       kind: 'assessment',
+      course: attempt.course,
       assessment_id: attempt.attemptId,
       student_id: PROFILE_ID,
       source: 'checked_practice',
@@ -4869,12 +4959,18 @@
       if (next) next.hidden = false;
       var submit = form.querySelector('button[type="submit"]');
       if (submit) submit.className = 'button secondary-button';
+    } else {
+      form.classList.remove('is-passed');
+      if (next) next.hidden = true;
     }
   }
 
   function updateSkillCheckForms(progress) {
     document.querySelectorAll('[data-check-skill-answer]').forEach(function (form) {
       if (form instanceof HTMLFormElement) updateSkillCheckFormState(form, progress);
+    });
+    document.querySelectorAll('[data-one-card-flow]').forEach(function (flow) {
+      flow.dispatchEvent(new CustomEvent('asterion:skill-check-state'));
     });
   }
 
@@ -4894,13 +4990,13 @@
   function checkSkillAnswer(form) {
     var submittedAnswer = submittedAnswerFromForm(form);
     var checkResult = checkSubmittedSkillAnswer(skillCheckSpecFromForm(form), submittedAnswer);
-    saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
+    var savedAttempt = saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
     var submitButton = form.querySelector('button[type="submit"]');
     var nextButton = form.querySelector('[data-skill-check-inline-next]');
     var repair = form.querySelector('[data-skill-repair]');
     var answerReveal = form.querySelector('[data-skill-answer-reveal]');
     var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
-    if (checkResult.isCorrect && form.getAttribute('data-revealed-answer') !== 'true' && form.getAttribute('data-revealed-repair-step') !== 'true') {
+    if (savedAttempt.strongEvidence === true) {
       setSkillFeedback(form, 'Correct. Saved as a clean Checked Practice pass.', 'correct');
       form.classList.add('is-passed');
       if (nextButton) nextButton.hidden = false;
@@ -4917,13 +5013,19 @@
       return;
     }
     if (checkResult.isCorrect) {
-      setSkillFeedback(form, 'Correct, but this was already revealed or repaired, so it is not a clean pass.', 'repaired');
-      if (nextButton) nextButton.hidden = false;
+      var evidenceEligible = savedAttempt.strongEvidenceEligible !== false;
+      setSkillFeedback(form, evidenceEligible
+        ? 'Correct practice, but this item was already attempted or help was used, so it is not a clean pass. Use the distinct retry for strong evidence.'
+        : 'Correct practice. This manual or unvalidated task is practice-only and cannot create strong evidence.', 'repaired');
+      form.classList.remove('is-passed');
+      if (nextButton) nextButton.hidden = true;
       showCorrectCelebration({
         title: 'Correct',
-        message: 'Hints, revealed answers, and repair help you learn, but they do not count as a clean pass.',
-        primaryLabel: celebrationButtonLabel(nextButton, 'Continue'),
-        onPrimary: celebrationButtonAction(nextButton)
+        message: evidenceEligible
+          ? 'This correction is useful practice, but only a first clean submission to this item or its distinct retry counts as strong evidence.'
+          : 'This task is useful practice, but its checking contract is not validated for strong evidence.',
+        primaryLabel: 'Close',
+        onPrimary: undefined
       });
       return;
     }
@@ -5169,6 +5271,7 @@
     progress.attempts.push(attempt);
     progress = updateStudentPerformanceState(progress, {
       kind: 'assessment',
+      course: attempt.course,
       assessment_id: attempt.id,
       student_id: PROFILE_ID,
       source: 'exam_training',
@@ -5556,6 +5659,25 @@
         var matches = allCards.filter(function (card) {
           return selectedContainer ? selectedContainer.contains(card) : true;
         });
+        var progress = loadProgress();
+        var eligibleMatches = matches.filter(function (card) {
+          var form = card.querySelector('[data-check-skill-answer][data-course-id="p1"]');
+          if (!(form instanceof HTMLFormElement)) return true;
+          var checkId = form.getAttribute('data-check-id') || '';
+          var variant = form.getAttribute('data-retry-variant-id') || 'primary';
+          var attempts = normalizeSkillCheckAttempts(progress.skillCheckAttempts).filter(function (attempt) {
+            return attempt.course === 'p1' && attempt.checkId === checkId;
+          });
+          var primaryAttempts = attempts.filter(function (attempt) {
+            return (attempt.retryVariantId || 'primary') === 'primary';
+          });
+          var primaryPassed = primaryAttempts.some(function (attempt) {
+            return attempt.strongEvidence === true;
+          });
+          var primaryInvalidated = primaryAttempts.length > 0 && !primaryPassed;
+          return variant === 'primary' ? !primaryInvalidated : primaryInvalidated;
+        });
+        if (eligibleMatches.length) return eligibleMatches;
         return matches.length ? matches : allCards;
       }
 
@@ -5593,9 +5715,11 @@
         if (!completion || !completionText || !completionAction) return;
         var groupIndex = activeSkillGroupIndex();
         var hasNextGroup = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1;
+        var questionCount = Math.max(1, selectedCards.length);
+        var checkDescription = questionCount + '-question check';
         completionText.textContent = hasNextGroup
-          ? 'That was the 3-question check for ' + activeSkillLabel() + '.'
-          : 'That was the last 3-question check for this topic.';
+          ? 'That was the ' + checkDescription + ' for ' + activeSkillLabel() + '.'
+          : 'That was the last ' + checkDescription + ' for this topic.';
         completionAction.textContent = hasNextGroup ? 'Next subtopic' : finalLabel;
       }
 
@@ -5675,13 +5799,24 @@
         if (activeCard instanceof HTMLElement) {
           var activeSkillForm = activeCard.querySelector('[data-check-skill-answer]');
           var activeSkillPassed = activeSkillForm?.classList?.contains('is-passed');
-          if (activeSkillForm && !activeSkillPassed) {
+          var isManualPracticeCard = activeCard.hasAttribute('data-manual-practice-card');
+          var manualPracticeCompleted = activeCard.getAttribute('data-manual-practice-completed') === 'true';
+          if ((activeSkillForm && !activeSkillPassed && !manualPracticeCompleted) || (isManualPracticeCard && !manualPracticeCompleted)) {
             next.className = 'button secondary-button';
-            next.textContent = 'Pass to continue';
+            next.textContent = isManualPracticeCard ? 'Complete manual practice to continue' : 'Pass to continue';
             next.disabled = true;
+          } else if (isManualPracticeCard && manualPracticeCompleted) {
+            next.className = 'button primary-button';
+            next.textContent = 'Continue practice';
+            next.disabled = false;
           }
           Array.from(activeCard.querySelectorAll('[data-skill-check-inline-next]')).forEach(function (button) {
             if (!(button instanceof HTMLButtonElement)) return;
+            if (isManualPracticeCard) {
+              button.textContent = 'Continue practice';
+              button.hidden = !manualPracticeCompleted;
+              return;
+            }
             if (isLastCardInChunk && skillCheckGroups.length > 1) {
               var groupIndex = activeSkillGroupIndex();
               button.textContent = groupIndex >= 0 && groupIndex < skillCheckGroups.length - 1 ? 'Next subtopic' : finalLabel;
@@ -5732,6 +5867,20 @@
 
       flow.addEventListener('click', function (event) {
         var target = event.target;
+        var manualComplete = target instanceof Element ? target.closest('[data-manual-practice-complete]') : null;
+        if (manualComplete instanceof HTMLButtonElement) {
+          var manualCard = manualComplete.closest('[data-manual-practice-card]');
+          if (manualCard instanceof HTMLElement) {
+            manualCard.setAttribute('data-manual-practice-completed', 'true');
+            manualComplete.disabled = true;
+            manualComplete.textContent = 'Manual practice noted for this session';
+            render();
+            var inlineManualNext = manualCard.querySelector('[data-skill-check-inline-next]');
+            if (inlineManualNext instanceof HTMLButtonElement) inlineManualNext.focus({ preventScroll: true });
+            else next.focus({ preventScroll: true });
+          }
+          return;
+        }
         if (!(target instanceof Element) || !target.closest('[data-skill-check-inline-next]')) return;
         if (index >= cards.length - 1 && skillCheckGroups.length > 1) {
           moveToNextSkillOrFinalAction();
@@ -5767,6 +5916,11 @@
         index = 0;
         setIndex = 0;
         if (groupSwitcher) groupSwitcher.open = false;
+        render();
+      });
+
+      flow.addEventListener('asterion:skill-check-state', function () {
+        index = 0;
         render();
       });
 
@@ -6348,20 +6502,25 @@
             href: question.getAttribute('data-topic-href') || '../topics/'
           }];
         }).slice(0, 2);
-        if (!misses.length) {
-          var first = form.querySelector('[data-p1-starting-check-question]');
-          if (first) misses = [{
-            topicSlug: first.getAttribute('data-topic-slug') || 'quadratics',
-            topicName: first.getAttribute('data-topic-name') || 'Quadratics',
-            href: first.getAttribute('data-topic-href') || '../topics/quadratics/learn/'
-          }];
+        var perfectResult = misses.length === 0;
+        if (summary) summary.textContent = perfectResult
+          ? 'No weak starting topic was detected. Choose any P1 unit, or use the confident-student fast lane to Checked Practice.'
+          : misses.length === 1
+            ? 'Start with ' + misses[0].topicName + ', or choose any other P1 unit.'
+            : 'Start with ' + misses.map(function (item) { return item.topicName; }).join(' and ') + ', or choose any other P1 unit.';
+        if (links) {
+          if (perfectResult) {
+            var first = form.querySelector('[data-p1-starting-check-question]');
+            var firstLearnHref = first?.getAttribute('data-topic-href') || '../topics/quadratics/learn/';
+            var firstSkillHref = firstLearnHref.replace(/\/learn\/?$/, '/skill-check/');
+            links.innerHTML = '<a class="button primary-button" href="../topics/">Choose any P1 unit</a>'
+              + '<a class="button secondary-button" href="' + escapeText(firstSkillHref) + '">Try Checked Practice</a>';
+          } else {
+            links.innerHTML = misses.map(function (item) {
+              return '<a class="button primary-button" href="' + escapeText(item.href) + '">Start ' + escapeText(item.topicName) + ' Learn</a>';
+            }).join('');
+          }
         }
-        if (summary) summary.textContent = misses.length === 1
-          ? 'Start with ' + misses[0].topicName + ', or choose any other P1 unit.'
-          : 'Start with ' + misses.map(function (item) { return item.topicName; }).join(' and ') + ', or choose any other P1 unit.';
-        if (links) links.innerHTML = misses.map(function (item) {
-          return '<a class="button primary-button" href="' + escapeText(item.href) + '">Start ' + escapeText(item.topicName) + ' Learn</a>';
-        }).join('');
         if (report) {
           report.hidden = false;
           report.scrollIntoView({ behavior: 'smooth', block: 'start' });

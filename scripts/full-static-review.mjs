@@ -306,6 +306,10 @@ async function fillCheckForm(page, selector, answerKind = 'correct') {
   return page.evaluate(({ selector, answerKind: requestedKind }) => {
     const form = document.querySelector(selector);
     if (!(form instanceof HTMLFormElement)) return { ok: false, message: 'Form not found.' };
+    document.querySelectorAll('[data-static-review-submitted]').forEach((candidate) => {
+      candidate.removeAttribute('data-static-review-submitted');
+    });
+    form.setAttribute('data-static-review-submitted', 'true');
     const spec = {
       answerType: form.getAttribute('data-answer-type') || 'exact-text',
       acceptedAnswers: JSON.parse(form.getAttribute('data-accepted-answers') || '[]'),
@@ -362,11 +366,11 @@ async function submitAndReadFeedback(page, selector, answerKind = 'correct') {
   await page.locator(selector).locator('button[type="submit"]').first().click();
   await page.waitForTimeout(150);
   await closeCelebration(page);
-  return page.evaluate((formSelector) => {
-    const form = document.querySelector(formSelector);
+  return page.evaluate(() => {
+    const form = document.querySelector('[data-static-review-submitted="true"]');
     const feedback = form?.querySelector('.skill-check-feedback')?.textContent?.replace(/\s+/g, ' ').trim() || '';
     return { ok: true, feedback };
-  }, selector);
+  });
 }
 
 async function auditSurfaceInteractions(page, pagePath) {

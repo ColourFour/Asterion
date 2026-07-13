@@ -178,6 +178,11 @@ function coursesForProgress(progress: Partial<StoredProgress>): StudyCourseId[] 
   normalizeSkillCheckLocalAttempts(progress.skillCheckAttempts).forEach((attempt) => courses.add(attempt.course));
   normalizeExamAttempts(progress.attempts).forEach((attempt) => courses.add(normalizeStudyCourseId(attempt.course)));
   (progress.learningActivityAttempts ?? []).forEach((attempt) => courses.add(normalizeStudyCourseId(attempt.course)));
+  if (
+    (progress.knowledge_state_updates?.length ?? 0) > 0
+    || (progress.knowledge_errors?.length ?? 0) > 0
+    || (progress.knowledge_interventions?.length ?? 0) > 0
+  ) courses.add('p3');
   return Array.from(courses).sort();
 }
 
@@ -217,6 +222,8 @@ function rowForSkillCheckAttempt(
     evidence_label: passed ? 'Deterministic checked practice evidence' : 'Checked Practice attempt',
     evidence_status_label: passed
       ? 'checked_practice_passed'
+      : attempt.strongEvidenceEligible === false
+        ? 'practice_only_manual_or_unvalidated'
       : intrinsicallyCorrect
         ? 'practice_only_after_prior_submission'
         : 'not_passed',
@@ -290,6 +297,7 @@ function rowForLearningActivity(attempt: LearningActivityAttempt, exportTimestam
 function rowForKnowledgeStateUpdate(update: KnowledgeSkillStateUpdate, exportTimestamp: string): LocalProgressCsvRow {
   return {
     ...blankRow(exportTimestamp),
+    course: 'p3',
     topic: update.skillNodeId,
     route_page_type: 'knowledge-state',
     activity_type: 'Skill State Update',
@@ -311,6 +319,7 @@ function rowForKnowledgeStateUpdate(update: KnowledgeSkillStateUpdate, exportTim
 function rowForKnowledgeError(error: KnowledgeErrorObject, exportTimestamp: string): LocalProgressCsvRow {
   return {
     ...blankRow(exportTimestamp),
+    course: 'p3',
     topic: error.primarySkillNodeId,
     route_page_type: 'knowledge-state',
     activity_type: 'Error Diagnostic',
@@ -336,6 +345,7 @@ function rowForKnowledgeIntervention(
   const schedule = schedules.find((candidate) => candidate.interventionId === intervention.id);
   return {
     ...blankRow(exportTimestamp),
+    course: 'p3',
     topic: intervention.skillNodeId,
     route_page_type: 'knowledge-state',
     activity_type: 'Intervention Plan',
