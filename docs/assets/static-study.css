@@ -6002,6 +6002,64 @@ body.learn-mode-page .learn-exam-transfer {
   gap: 6px;
 }
 
+.ordered-card-input {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ordered-card-input legend {
+  padding: 0;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.ordered-card-bank {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.ordered-card-bank li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 10px;
+  border: 1px solid rgba(82, 97, 122, 0.22);
+  border-radius: var(--radius);
+  background: rgba(238, 246, 255, 0.66);
+}
+
+.ordered-card-order-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.ordered-card-order-fields label {
+  display: grid;
+  gap: 6px;
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.ordered-card-order-fields select {
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
+  border: 1px solid rgba(82, 97, 122, 0.34);
+  border-radius: var(--radius);
+  color: var(--ink);
+  background: #ffffff;
+  font: inherit;
+}
+
 .math-answer-input {
   display: grid;
   gap: 6px;

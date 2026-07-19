@@ -524,6 +524,28 @@ describe('static P3 product contract', () => {
     }
   });
 
+  it('renders ordered-card checks as numbered selection controls instead of math text fields', () => {
+    const orderedChecks = [
+      ['docs/p3/topics/algebra/skill-check/index.html', 'sc-alg-polynomial-division-foundation-001', 4],
+      ['docs/p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'sc-log-natural-challenge-001', 3],
+      ['docs/p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'sc-log-domain-challenge-001', 4],
+      ['docs/p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'sc-log-linearisation-foundation-001', 4],
+      ['docs/p3/topics/logarithmic-and-exponential-functions/skill-check/index.html', 'sc-log-linearisation-challenge-001', 4],
+    ] as const;
+
+    for (const [generatedPath, checkId, positionCount] of orderedChecks) {
+      if (!existsSync(generatedPath)) continue;
+      withStaticDocument(generatedPath, (document) => {
+        const form = document.querySelector(`[data-check-id="${checkId}"]`);
+        expect(form, checkId).not.toBeNull();
+        expect(form?.querySelector('.ordered-card-input'), checkId).not.toBeNull();
+        expect(form?.querySelectorAll('.ordered-card-bank li'), checkId).toHaveLength(positionCount);
+        expect(form?.querySelectorAll('select[name="submittedAnswer"]'), checkId).toHaveLength(positionCount);
+        expect(form?.querySelector('.math-answer-input'), checkId).toBeNull();
+      });
+    }
+  });
+
   it('keeps local agent-loop run artifacts out of git status noise', () => {
     const gitignore = readFileSync('.gitignore', 'utf8').split(/\r?\n/);
 

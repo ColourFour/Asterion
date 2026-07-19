@@ -2801,6 +2801,42 @@ function renderExpectedAnswerSummary(item: SkillCheckItem): string {
   `;
 }
 
+function orderedCardsForDisplay(item: SkillCheckItem): NonNullable<SkillCheckItem['cards']> {
+  const cards = [...(item.cards ?? [])];
+  const displayedIds = cards.map((card) => card.id).join(',');
+  const expectedIds = (item.expectedOrder ?? []).join(',');
+  if (cards.length > 1 && displayedIds === expectedIds) {
+    cards.unshift(cards.pop()!);
+  }
+  return cards;
+}
+
+function renderOrderedCardInput(item: SkillCheckItem): string {
+  const cards = orderedCardsForDisplay(item);
+  const positions = item.expectedOrder?.length ?? cards.length;
+  return `
+    <fieldset class="ordered-card-input">
+      <legend>Put the cards in the correct order.</legend>
+      <ol class="ordered-card-bank">
+        ${cards.map((card, index) => `
+          <li><strong>Card ${index + 1}</strong><span>${renderMathText(card.label)}</span></li>
+        `).join('')}
+      </ol>
+      <div class="ordered-card-order-fields">
+        ${Array.from({ length: positions }, (_, index) => `
+          <label>
+            <span>Step ${index + 1}</span>
+            <select name="submittedAnswer" aria-label="Card for step ${index + 1}" required>
+              <option value="">Choose a card</option>
+              ${cards.map((card, cardIndex) => `<option value="${escapeAttr(card.id)}">Card ${cardIndex + 1}</option>`).join('')}
+            </select>
+          </label>
+        `).join('')}
+      </div>
+    </fieldset>
+  `;
+}
+
 function renderLearnAnswerInput(item: SkillCheckItem, acceptedAnswers?: string[]): string {
   const options = item.options ?? item.cards ?? [];
   if (options.length && (item.inputType === 'multiple_choice' || item.inputType === 'checkbox')) {
@@ -2821,6 +2857,9 @@ function renderLearnAnswerInput(item: SkillCheckItem, acceptedAnswers?: string[]
         `).join('')}
       </fieldset>
     `;
+  }
+  if (item.inputType === 'ordered_cards' && item.cards?.length && item.expectedOrder?.length) {
+    return renderOrderedCardInput(item);
   }
   if (item.inputType === 'two_value' && item.fields?.length) {
     return `

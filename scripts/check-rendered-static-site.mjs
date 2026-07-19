@@ -32,6 +32,15 @@ const p3TopicSlugs = [
 
 const p3ExamTrainingPages = p3TopicSlugs.map((slug) => `p3/topics/${slug}/exam-training/index.html`);
 
+const touchMathInputPages = [
+  'p3/diagnostic/index.html',
+  'p3/repair-lane/index.html',
+  ...p3LearnVisualPages,
+  ...p3TopicSlugs
+    .filter((slug) => slug !== 'integration')
+    .map((slug) => `p3/topics/${slug}/skill-check/index.html`),
+];
+
 const p3SkillSelectorPages = p3TopicSlugs.flatMap((slug) => [
   `p3/topics/${slug}/skill-check/index.html`,
   `p3/topics/${slug}/worksheet/index.html`,
@@ -200,6 +209,30 @@ async function assertAlgebraTouchInput(browser) {
     hasTouch: true,
   });
   try {
+    for (const pagePath of touchMathInputPages) {
+      await waitForStaticEnhancement(page, pagePath);
+      const routeState = await page.evaluate(() => {
+        const fields = Array.from(document.querySelectorAll('.math-answer-input'));
+        return {
+          count: fields.length,
+          invalid: fields.flatMap((field, index) => {
+            const input = field.querySelector('input[data-math-answer-raw]');
+            const style = input ? getComputedStyle(input) : null;
+            const valid = input instanceof HTMLInputElement
+              && field.classList.contains('math-answer-input-native')
+              && !field.querySelector('[data-math-editor]')
+              && style?.position === 'static'
+              && style.pointerEvents !== 'none'
+              && Number(style.opacity) === 1;
+            return valid ? [] : [index];
+          }),
+        };
+      });
+      if (routeState.count === 0 || routeState.invalid.length) {
+        fail(`${pagePath} must expose native touch controls for every math field; saw ${JSON.stringify(routeState)}.`);
+      }
+    }
+
     await waitForStaticEnhancement(page, 'p3/topics/algebra/skill-check/index.html');
     const form = page.locator('[data-check-id="sc-alg-polynomial-division-core-001"]');
     await form.evaluate((element) => {
@@ -241,6 +274,49 @@ async function assertAlgebraTouchInput(browser) {
     }));
     if (result.quotient !== 'x^2+5x+9' || result.remainder !== '23' || result.state !== 'correct' || !result.feedback.includes('clean Checked Practice pass')) {
       fail(`Algebra touch input must submit both native fields as a clean correct answer; saw ${JSON.stringify(result)}.`);
+    }
+    await page.evaluate(() => {
+      const close = document.querySelector('[data-correct-celebration-close]');
+      if (close instanceof HTMLElement) close.click();
+    });
+
+    const orderedForm = page.locator('[data-check-id="sc-alg-polynomial-division-foundation-001"]');
+    await orderedForm.evaluate((element) => {
+      const flow = element.closest('[data-one-card-flow]');
+      let current = element.parentElement;
+      while (current && current !== flow) {
+        current.hidden = false;
+        current = current.parentElement;
+      }
+    });
+    const orderedSelects = orderedForm.locator('.ordered-card-order-fields select');
+    const expectedOrder = ['divide-leading', 'multiply-back', 'subtract', 'continue'];
+    if (await orderedSelects.count() !== expectedOrder.length) {
+      fail(`Algebra ordered-card check must render ${expectedOrder.length} numbered controls.`);
+    } else {
+      for (let index = 0; index < expectedOrder.length; index += 1) {
+        await orderedSelects.nth(index).selectOption('continue');
+      }
+      await orderedForm.locator('button[type="submit"]').click();
+      const duplicateResult = await orderedForm.evaluate((element) => ({
+        passed: element.classList.contains('is-passed'),
+        state: element.querySelector('.skill-check-feedback')?.getAttribute('data-state') || '',
+      }));
+      if (duplicateResult.passed || duplicateResult.state !== 'incorrect') {
+        fail(`Duplicate ordered-card choices must remain incorrect with no clean pass; saw ${JSON.stringify(duplicateResult)}.`);
+      }
+
+      for (let index = 0; index < expectedOrder.length; index += 1) {
+        await orderedSelects.nth(index).selectOption(expectedOrder[index]);
+      }
+      await orderedForm.locator('button[type="submit"]').click();
+      const orderedResult = await orderedForm.locator('.skill-check-feedback').evaluate((element) => ({
+        feedback: element.textContent || '',
+        state: element.getAttribute('data-state') || '',
+      }));
+      if (orderedResult.state !== 'correct' || !orderedResult.feedback.includes('clean Checked Practice pass')) {
+        fail(`Algebra ordered-card controls must submit the authored order; saw ${JSON.stringify(orderedResult)}.`);
+      }
     }
   } finally {
     await page.close();
