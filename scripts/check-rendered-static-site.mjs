@@ -193,6 +193,60 @@ async function assertMathEditorStructuredInput(browser) {
   }
 }
 
+async function assertAlgebraTouchInput(browser) {
+  const page = await browser.newPage({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+  });
+  try {
+    await waitForStaticEnhancement(page, 'p3/topics/algebra/skill-check/index.html');
+    const form = page.locator('[data-check-id="sc-alg-polynomial-division-core-001"]');
+    await form.evaluate((element) => {
+      const flow = element.closest('[data-one-card-flow]');
+      let current = element.parentElement;
+      while (current && current !== flow) {
+        current.hidden = false;
+        current = current.parentElement;
+      }
+    });
+
+    const quotient = form.locator('input[aria-label="quotient"]');
+    const remainder = form.locator('input[aria-label="remainder"]');
+    await quotient.tap();
+    const touchState = await form.evaluate((element) => {
+      const active = document.activeElement;
+      const input = element.querySelector('input[aria-label="quotient"]');
+      const field = input?.closest('.math-answer-input');
+      const rect = input?.getBoundingClientRect();
+      return {
+        activeIsInput: active === input,
+        nativeMode: field?.classList.contains('math-answer-input-native'),
+        inputVisible: Boolean(rect && rect.width > 100 && rect.height >= 44 && getComputedStyle(input).pointerEvents !== 'none'),
+        editorAbsent: !field?.querySelector('[data-math-editor]'),
+      };
+    });
+    if (!touchState.activeIsInput || !touchState.nativeMode || !touchState.inputVisible || !touchState.editorAbsent) {
+      fail(`Algebra touch input must expose and focus the real editable control; saw ${JSON.stringify(touchState)}.`);
+    }
+
+    await quotient.fill('x^2+5x+9');
+    await remainder.fill('23');
+    await form.locator('button[type="submit"]').click();
+    const result = await form.evaluate((element) => ({
+      quotient: element.querySelector('input[aria-label="quotient"]')?.value,
+      remainder: element.querySelector('input[aria-label="remainder"]')?.value,
+      feedback: element.querySelector('.skill-check-feedback')?.textContent || '',
+      state: element.querySelector('.skill-check-feedback')?.getAttribute('data-state') || '',
+    }));
+    if (result.quotient !== 'x^2+5x+9' || result.remainder !== '23' || result.state !== 'correct' || !result.feedback.includes('clean Checked Practice pass')) {
+      fail(`Algebra touch input must submit both native fields as a clean correct answer; saw ${JSON.stringify(result)}.`);
+    }
+  } finally {
+    await page.close();
+  }
+}
+
 async function assertLearnVisualBasics(browser) {
   const viewports = [
     { width: 1280, height: 720, firstActionRequired: true },
@@ -810,6 +864,7 @@ try {
 
   await assertLearnVisualBasics(browser);
   await assertMathEditorStructuredInput(browser);
+  await assertAlgebraTouchInput(browser);
   await assertExamTrainingMobileVisuals(browser);
   await assertMobileSkillSelectorLabels(browser);
 

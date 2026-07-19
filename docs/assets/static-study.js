@@ -4250,6 +4250,18 @@
       if (!(input instanceof HTMLInputElement) || !(mount instanceof HTMLElement)) return;
       field.setAttribute('data-math-editor-ready', 'true');
 
+      // A focusable span can accept hardware key events, but it cannot summon a
+      // phone or tablet's software keyboard. Keep the real input as the primary
+      // control on touch-first devices so students can type, paste, move the
+      // caret, and use their platform's accessibility tools normally.
+      var prefersNativeMathInput = (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0)
+        || (typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches);
+      if (prefersNativeMathInput) {
+        field.classList.add('math-answer-input-native');
+        mount.replaceChildren();
+        return;
+      }
+
       var kind = field.getAttribute('data-answer-kind') || 'text';
       var state = { nodes: [], cursor: { path: [], offset: 0 } };
       var editor = document.createElement('span');

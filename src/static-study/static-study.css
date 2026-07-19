@@ -6042,6 +6042,21 @@ body.learn-mode-page .learn-exam-transfer {
   pointer-events: none;
 }
 
+.static-enhanced .math-answer-input-native .math-answer-raw {
+  position: static;
+  inline-size: 100%;
+  block-size: auto;
+  min-height: 48px;
+  padding: 9px 11px;
+  border: 1px solid rgba(82, 97, 122, 0.42);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.math-answer-input-native .math-editor-mount {
+  display: none;
+}
+
 .math-editor-mount,
 .math-editor,
 .math-editor-panel,
