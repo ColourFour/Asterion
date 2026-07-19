@@ -95,9 +95,10 @@ export function appendStudentAttemptHistoryRecord(
 }
 
 export function isPassingSkillCheckAttempt(attempt: SkillCheckLocalAttempt): boolean {
-  // Phase 3 pass rule: a check passes only on a correct answer before answer/repair reveal.
+  // Phase 3 pass rule: a check passes only on a correct answer without assistance.
   return isSkillCheckLocalAttemptRecord(attempt)
     && attempt.isCorrect
+    && !attempt.usedHint
     && !attempt.revealedAnswer
     && !attempt.revealedRepairStep;
 }
@@ -144,11 +145,14 @@ export function saveSkillCheckAttempt(
     timestamp: attempt.timestamp,
     relatedAttemptId: attempt.attemptId,
   });
-  const nextProgress = updateStudentPerformanceState({
+  const progressWithAttempt = {
     ...progress,
     skillCheckAttempts: nextAttempts,
     attemptHistory: nextHistory,
-  }, assessmentFromSkillCheckAttempt(attempt));
+  };
+  const nextProgress = !attempt.isCorrect || isPassingSkillCheckAttempt(attempt)
+    ? updateStudentPerformanceState(progressWithAttempt, assessmentFromSkillCheckAttempt(attempt))
+    : progressWithAttempt;
   storage.setItem(key, JSON.stringify(nextProgress));
   return nextAttempts;
 }

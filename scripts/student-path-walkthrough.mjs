@@ -113,6 +113,15 @@ async function fillForm(page, selector, answerKind) {
       });
       return { ok: true, submitted };
     }
+    const selects = Array.from(form.querySelectorAll('select[name="submittedAnswer"]'));
+    if (selects.length) {
+      const values = answerKind === 'wrong' ? selects.map(() => selects[0]?.options[1]?.value || '') : acceptedValues;
+      selects.forEach((select, index) => {
+        select.value = values[index] || '';
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      return { ok: true, submitted: values.join(', ') };
+    }
     const checkboxes = Array.from(form.querySelectorAll('input[name="submittedAnswer"][type="checkbox"]'));
     if (checkboxes.length) {
       const wrongBox = checkboxes.find((input) => !acceptedValues.includes(input.value)) || checkboxes[0];
@@ -293,6 +302,14 @@ async function answerSpecAudit(page) {
         return true;
       }
       const acceptedValues = String(answer).split(/\s*,\s*/).filter(Boolean);
+      const selects = Array.from(form.querySelectorAll('select[name="submittedAnswer"]'));
+      if (selects.length) {
+        selects.forEach((select, index) => {
+          select.value = acceptedValues[index] || '';
+          select.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+        return true;
+      }
       const checkboxes = Array.from(form.querySelectorAll('input[name="submittedAnswer"][type="checkbox"]'));
       if (checkboxes.length) {
         checkboxes.forEach((input) => {

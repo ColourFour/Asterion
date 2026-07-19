@@ -164,7 +164,7 @@ describe('P3 student analytics', () => {
     expect(state.priority_repair_topics).toEqual(['algebra']);
   });
 
-  it('updates state for partially correct Exam Training and tracks topic-level marks lost', () => {
+  it('tracks Exam Training misses without changing mastery-like knowledge state', () => {
     const state = updateStudentPerformanceState({}, assessmentFromExamAttempt(examAttempt()));
 
     expect(state.error_log).toHaveLength(1);
@@ -183,8 +183,9 @@ describe('P3 student analytics', () => {
       score_lost: 2,
       questions: 2,
     });
-    expect(state.knowledge_state_updates.some((update) => update.skillNodeId === 'trigonometry')).toBe(true);
-    expect(state.knowledge_errors.length).toBeGreaterThan(0);
+    expect(state.knowledge_state_updates).toEqual([]);
+    expect(state.knowledge_errors).toEqual([]);
+    expect(state.knowledge_interventions).toEqual([]);
   });
 
   it('marks redo completion on the error log and gives redo repair higher weight', () => {

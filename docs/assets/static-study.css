@@ -6685,7 +6685,7 @@ body.learn-mode-page .learn-exam-transfer {
 }
 
 .is-repair-locked-link {
-  cursor: not-allowed;
+  cursor: pointer;
 }
 
 .exam-training-page .page-hero,
@@ -7571,7 +7571,7 @@ body.skill-check-page .exam-question-section {
 
   .theme-toggle {
     width: auto;
-    min-height: 34px;
+    min-height: 44px;
     padding: 7px 10px;
   }
 
@@ -7592,7 +7592,7 @@ body.skill-check-page .exam-question-section {
   .progress-transfer-button,
   body.home-page .progress-transfer-button {
     flex: 0 0 auto;
-    min-height: 34px;
+    min-height: 44px;
     padding: 7px 9px;
     font-size: 0.78rem;
   }
@@ -7623,7 +7623,7 @@ body.skill-check-page .exam-question-section {
     flex: 0 0 auto;
     width: auto;
     min-width: 0;
-    min-height: 34px;
+    min-height: 44px;
     padding: 7px 9px;
     font-size: 0.78rem;
   }

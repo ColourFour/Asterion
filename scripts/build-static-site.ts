@@ -620,8 +620,8 @@ function primaryNav(pagePath: string, active: RenderPageOptions['active']): stri
 function progressTransferControls(): string {
   return `
     <div class="progress-transfer-controls" data-progress-transfer-controls aria-label="Progress transfer">
-      <button class="progress-transfer-button" type="button" data-export-progress-json>Export</button>
-      <button class="progress-transfer-button" type="button" data-import-progress-json>Import</button>
+      <button class="progress-transfer-button" type="button" data-export-progress-json>Back up JSON</button>
+      <button class="progress-transfer-button" type="button" data-import-progress-json>Restore JSON</button>
       <span class="progress-transfer-status" data-progress-transfer-status aria-live="polite"></span>
     </div>
   `;
@@ -3156,7 +3156,7 @@ function renderCheckableSkillCheckForm(
     ...SKILL_CHECK_MISTAKE_TAGS,
   ]));
   return `
-    <form class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="${escapeAttr(renderedSpec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(renderedSpec.acceptedAnswers))}" data-answer-labels="${escapeAttr(JSON.stringify(answerLabelMap(item)))}" data-correct-answer-label="${escapeAttr(expectedAnswerPlainText(item))}" data-explanation="${escapeAttr(item.workedRoute.map(stripMathDelimiters).join(' '))}" data-tolerance="${escapeAttr(renderedSpec.tolerance)}" data-order-matters="${renderedSpec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
+    <form id="check-${escapeAttr(item.itemId)}" class="skill-check-form" data-check-skill-answer data-course="p3" data-region-id="${escapeAttr(item.regionId)}" data-topic="${escapeAttr(group.topic.title)}" data-skill-id="${escapeAttr(item.skillId)}" data-check-id="${escapeAttr(item.itemId)}" data-question-title="${escapeAttr(item.prompt)}" data-answer-type="${escapeAttr(renderedSpec.answerType)}" data-accepted-answers="${escapeAttr(JSON.stringify(renderedSpec.acceptedAnswers))}" data-answer-labels="${escapeAttr(JSON.stringify(answerLabelMap(item)))}" data-correct-answer-label="${escapeAttr(expectedAnswerPlainText(item))}" data-explanation="${escapeAttr(item.workedRoute.map(stripMathDelimiters).join(' '))}" data-tolerance="${escapeAttr(renderedSpec.tolerance)}" data-order-matters="${renderedSpec.orderMatters === true ? 'true' : 'false'}" data-mistake-tags="${escapeAttr(JSON.stringify(item.mistakeTags ?? []))}">
       ${renderLearnAnswerInput(item, renderedSpec.acceptedAnswers)}
       <div class="skill-check-actions">
         <button class="button primary-button" type="submit">Check Answer</button>

@@ -123,18 +123,9 @@ describe('local exam self-marked attempts', () => {
       }),
     ]);
     expect(progress.topic_performance.differential_equations.score_lost).toBe(1);
-    expect(progress.knowledge_errors).toEqual([
-      expect.objectContaining({
-        markPointId: '32spring21_q04_b_mp01',
-        markPointLabel: 'Use the initial condition',
-        primarySkillNodeId: 'differential-equations',
-      }),
-    ]);
-    expect(progress.knowledge_interventions).toEqual([
-      expect.objectContaining({
-        action: 'micro_reteach',
-      }),
-    ]);
+    expect(progress.knowledge_state_updates).toEqual([]);
+    expect(progress.knowledge_errors).toEqual([]);
+    expect(progress.knowledge_interventions).toEqual([]);
   });
 
   it('creates tickable mark points only from reviewed plain-text mark points', () => {

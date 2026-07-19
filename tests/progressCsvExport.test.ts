@@ -51,6 +51,12 @@ function examAttempt(overrides: Partial<Attempt> = {}): Attempt {
 }
 
 describe('local progress CSV export', () => {
+  it('neutralizes spreadsheet formulas in exported cells', () => {
+    expect(csvEscapeCell('=HYPERLINK("https://example.com")')).toBe('"\'=HYPERLINK(""https://example.com"")"');
+    expect(csvEscapeCell('  +1+1')).toBe("'  +1+1");
+    expect(csvEscapeCell('@SUM(A1:A2)')).toBe("'@SUM(A1:A2)");
+  });
+
   it('escapes commas, quotes, and newlines in CSV cells', () => {
     expect(csvEscapeCell('plain')).toBe('plain');
     expect(csvEscapeCell('a,b')).toBe('"a,b"');

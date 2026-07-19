@@ -266,7 +266,9 @@ export function updateStudentPerformanceState<T extends StudentAnalyticsProgress
     next.redo_queue.push(redoItemForError(error));
   }
 
-  applyKnowledgeAssessment(next, input, timestamp);
+  // Exam Training is self-marked weak practice. Its misses may guide review,
+  // but it must not mutate the mastery-like knowledge-state graph.
+  if (input.source !== 'exam_training') applyKnowledgeAssessment(next, input, timestamp);
   return refreshDerivedAnalytics(next);
 }
 

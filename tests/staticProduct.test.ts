@@ -412,7 +412,7 @@ describe('static P3 product contract', () => {
     }
   });
 
-  it('renders structured math editor mounts for deterministic typed answer inputs', () => {
+  it('renders labeled native controls for deterministic typed answer inputs', () => {
     const oldGenericInstruction = 'Type a compact expression, e.g. ln(5x) or x^2-x-6.';
     const generatorSource = readFileSync('scripts/build-static-site.ts', 'utf8');
     const staticClientSource = readFileSync('src/static-study/static-study.js', 'utf8');
@@ -425,8 +425,7 @@ describe('static P3 product contract', () => {
     expect(generatorSource).toContain('data-math-editor-mount');
     expect(generatorSource).not.toContain(oldGenericInstruction);
     expect(staticClientSource).toContain('setupMathAnswerEditors');
-    expect(staticClientSource).toContain('MATH_EDITOR_BUTTON_GROUPS');
-    expect(staticClientSource).toContain('normalizeMathEditorValue');
+    expect(staticClientSource).toContain("field.classList.add('math-answer-input-native')");
 
     for (const generatedPath of [
       'docs/p3/topics/vectors/learn/index.html',

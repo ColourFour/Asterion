@@ -73,7 +73,8 @@ function cleanCell(value: unknown): string {
 }
 
 export function csvEscapeCell(value: unknown): string {
-  const cell = cleanCell(value);
+  let cell = cleanCell(value);
+  if (/^[\t\r\n ]*[=+\-@]/.test(cell)) cell = `'${cell}`;
   return /[",\n\r]/.test(cell) ? `"${cell.replace(/"/g, '""')}"` : cell;
 }
 
@@ -138,7 +139,7 @@ export function localProgressSubmissionSummary(progress: Partial<StoredProgress>
   const examAttempts = Array.isArray(progress.attempts) ? progress.attempts : [];
   return {
     checkedPracticeAttempts: skillAttempts.length,
-    checkedPracticePasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
+    checkedPracticePasses: new Set(skillAttempts.filter(isCleanCheckedPracticeAttempt).map((attempt) => attempt.checkId)).size,
     reviewCandidates,
     selfMarkedExamAttempts: examAttempts.filter((attempt) => attempt.selfMarked === true).length,
     learningActivityAttempts: Array.isArray(progress.learningActivityAttempts) ? progress.learningActivityAttempts.length : 0,

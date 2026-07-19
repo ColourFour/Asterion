@@ -118,24 +118,21 @@ async function activeTypedInputDetails(page) {
     const activeCard = document.querySelector('[data-learn-step-card]:not([hidden])');
     const label = activeCard?.querySelector('[data-check-learn-answer][data-learn-variant="primary"] label.math-answer-input');
     const input = label?.querySelector('input[name="submittedAnswer"][type="text"]');
-    const editor = label?.querySelector('[data-math-editor]');
-    const display = label?.querySelector('.math-editor-display');
     const help = label?.querySelector('.answer-format-guidance');
-    const displayRect = display?.getBoundingClientRect();
+    const inputRect = input?.getBoundingClientRect();
     const describedBy = input?.getAttribute('aria-describedby') || '';
     const helpId = help?.id || '';
     return {
       stepId: activeCard?.getAttribute('data-learn-step-id'),
       hasTextInput: Boolean(input),
       hasMathAnswerInput: Boolean(label),
-      hasMathEditor: Boolean(editor),
-      displayVisible: Boolean(displayRect && displayRect.width > 0 && displayRect.height > 0),
-      displayText: display?.textContent || '',
+      nativeInput: Boolean(label?.classList.contains('math-answer-input-native')),
+      inputVisible: Boolean(inputRect && inputRect.width > 100 && inputRect.height >= 44),
+      duplicateEditor: Boolean(label?.querySelector('[data-math-editor]')),
       answerKind: label?.getAttribute('data-answer-kind') || '',
       helpText: help?.textContent || '',
       describedBy,
       hasDescribedGuidance: Boolean(describedBy && helpId && describedBy.split(/\s+/).includes(helpId)),
-      keyText: Array.from(label?.querySelectorAll('.math-editor-key') ?? []).map((element) => element.textContent || '').join(' '),
     };
   });
 }
@@ -285,15 +282,14 @@ try {
   await algebraPrimary.locator('[data-retry-learn-primary]').click();
   const algebraRetryState = await page.evaluate(() => {
     const input = document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [name="submittedAnswer"]');
-    const display = document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] .math-editor-display');
     return {
       answerCleared: input instanceof HTMLInputElement && input.value === '',
-      editorFocused: display instanceof HTMLElement && document.activeElement === display,
+      inputFocused: input instanceof HTMLInputElement && document.activeElement === input,
       explanationStillVisible: !document.querySelector('[data-check-learn-answer][data-learn-variant="primary"] [data-learn-after-attempt]')?.hidden,
     };
   });
   assert(algebraRetryState.answerCleared, 'Retrying the first Learn setup must clear the previous wrong answer.');
-  assert(algebraRetryState.editorFocused, 'Retrying the first Learn setup must focus the visible math editor.');
+  assert(algebraRetryState.inputFocused, 'Retrying the first Learn setup must focus the visible native input.');
   assert(algebraRetryState.explanationStillVisible, 'Retrying the first Learn setup must keep the explanation available.');
 
   await submitAnswer(algebraPrimary, '2', { closeCelebration: false });
@@ -654,12 +650,11 @@ try {
   assert(diffTypedHelp.stepId === 'learn-diff-power-negative-fractional', 'Differentiation second step should expose a typed input.');
   assert(diffTypedHelp.hasTextInput, 'Differentiation typed steps must render a text answer input.');
   assert(diffTypedHelp.hasMathAnswerInput, 'Differentiation typed steps must use the standardized math input wrapper.');
-  assert(diffTypedHelp.hasMathEditor, 'Differentiation typed steps must mount the structured math editor.');
+  assert(diffTypedHelp.nativeInput && !diffTypedHelp.duplicateEditor, 'Differentiation typed steps must expose one native input.');
   assert(diffTypedHelp.hasDescribedGuidance, 'Differentiation typed input must describe itself with the nearby guidance.');
   assert(diffTypedHelp.answerKind === 'expression', `Differentiation typed input should be expression kind; saw "${diffTypedHelp.answerKind}".`);
-  assert(/xⁿ/.test(diffTypedHelp.keyText), `Differentiation typed input must expose a power key; saw "${diffTypedHelp.keyText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(diffTypedHelp.helpText), `Differentiation typed input must show answer-format help; saw "${diffTypedHelp.helpText}".`);
-  assert(diffTypedHelp.displayVisible, 'Differentiation math editor display must be visible.');
+  assert(diffTypedHelp.inputVisible, 'Differentiation native math input must be visible.');
 
   await resetPageProgress(page);
   const hintedDiffCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -788,12 +783,11 @@ try {
   assert(integrationTypedHelp.stepId === 'learn-int-power-negative-fractional', 'Integration second step should expose a typed input.');
   assert(integrationTypedHelp.hasTextInput, 'Integration typed steps must render a text answer input.');
   assert(integrationTypedHelp.hasMathAnswerInput, 'Integration typed steps must use the standardized math input wrapper.');
-  assert(integrationTypedHelp.hasMathEditor, 'Integration typed steps must mount the structured math editor.');
+  assert(integrationTypedHelp.nativeInput && !integrationTypedHelp.duplicateEditor, 'Integration typed steps must expose one native input.');
   assert(integrationTypedHelp.hasDescribedGuidance, 'Integration typed input must describe itself with the nearby guidance.');
   assert(integrationTypedHelp.answerKind === 'expression', `Integration typed input should be expression kind; saw "${integrationTypedHelp.answerKind}".`);
-  assert(/xⁿ/.test(integrationTypedHelp.keyText), `Integration typed input must expose a power key; saw "${integrationTypedHelp.keyText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(integrationTypedHelp.helpText), `Integration typed input must show answer-format help; saw "${integrationTypedHelp.helpText}".`);
-  assert(integrationTypedHelp.displayVisible, 'Integration math editor display must be visible.');
+  assert(integrationTypedHelp.inputVisible, 'Integration native math input must be visible.');
 
   await resetPageProgress(page);
   const hintedIntegrationCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -922,12 +916,11 @@ try {
   assert(iterationTypedHelp.stepId === 'learn-iteration-rearrange-fixed-point', 'Iteration second step should expose a typed input.');
   assert(iterationTypedHelp.hasTextInput, 'Iteration typed steps must render a text answer input.');
   assert(iterationTypedHelp.hasMathAnswerInput, 'Iteration typed steps must use the standardized math input wrapper.');
-  assert(iterationTypedHelp.hasMathEditor, 'Iteration typed steps must mount the structured math editor.');
+  assert(iterationTypedHelp.nativeInput && !iterationTypedHelp.duplicateEditor, 'Iteration typed steps must expose one native input.');
   assert(iterationTypedHelp.hasDescribedGuidance, 'Iteration typed input must describe itself with the nearby guidance.');
   assert(iterationTypedHelp.answerKind === 'expression', `Iteration typed input should be expression kind; saw "${iterationTypedHelp.answerKind}".`);
-  assert(/xⁿ/.test(iterationTypedHelp.keyText), `Iteration typed input must expose a power key; saw "${iterationTypedHelp.keyText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(iterationTypedHelp.helpText), `Iteration typed input must show answer-format help; saw "${iterationTypedHelp.helpText}".`);
-  assert(iterationTypedHelp.displayVisible, 'Iteration math editor display must be visible.');
+  assert(iterationTypedHelp.inputVisible, 'Iteration native math input must be visible.');
 
   await resetPageProgress(page);
   const hintedIterationCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -1056,12 +1049,11 @@ try {
   assert(deTypedHelp.stepId === 'learn-de-separate-variables', 'Differential Equations second step should expose a typed input.');
   assert(deTypedHelp.hasTextInput, 'Differential Equations typed steps must render a text answer input.');
   assert(deTypedHelp.hasMathAnswerInput, 'Differential Equations typed steps must use the standardized math input wrapper.');
-  assert(deTypedHelp.hasMathEditor, 'Differential Equations typed steps must mount the structured math editor.');
+  assert(deTypedHelp.nativeInput && !deTypedHelp.duplicateEditor, 'Differential Equations typed steps must expose one native input.');
   assert(deTypedHelp.hasDescribedGuidance, 'Differential Equations typed input must describe itself with the nearby guidance.');
   assert(deTypedHelp.answerKind === 'expression', `Differential Equations typed input should be expression kind; saw "${deTypedHelp.answerKind}".`);
-  assert(/xⁿ/.test(deTypedHelp.keyText), `Differential Equations typed input must expose a power key; saw "${deTypedHelp.keyText}".`);
   assert(/Answer format: type a compact expression using \^ for powers\./i.test(deTypedHelp.helpText), `Differential Equations typed input must show answer-format help; saw "${deTypedHelp.helpText}".`);
-  assert(deTypedHelp.displayVisible, 'Differential Equations math editor display must be visible.');
+  assert(deTypedHelp.inputVisible, 'Differential Equations native math input must be visible.');
 
   await resetPageProgress(page);
   const hintedDeCard = page.locator('[data-learn-step-card]:not([hidden])').first();
@@ -1190,12 +1182,11 @@ try {
   assert(complexTypedHelp.stepId === 'learn-complex-multiply-i-squared', 'Complex Numbers second step should expose a typed input.');
   assert(complexTypedHelp.hasTextInput, 'Complex Numbers typed steps must render a text answer input.');
   assert(complexTypedHelp.hasMathAnswerInput, 'Complex Numbers typed steps must use the standardized math input wrapper.');
-  assert(complexTypedHelp.hasMathEditor, 'Complex Numbers typed steps must mount the structured math editor.');
+  assert(complexTypedHelp.nativeInput && !complexTypedHelp.duplicateEditor, 'Complex Numbers typed steps must expose one native input.');
   assert(complexTypedHelp.hasDescribedGuidance, 'Complex Numbers typed input must describe itself with the nearby guidance.');
   assert(complexTypedHelp.answerKind === 'complex', `Complex Numbers typed input should be complex kind; saw "${complexTypedHelp.answerKind}".`);
-  assert(/\bi\b/.test(complexTypedHelp.keyText), `Complex Numbers typed input must expose i notation; saw "${complexTypedHelp.keyText}".`);
   assert(/Answer format: complex number in a\+bi form\./i.test(complexTypedHelp.helpText), `Complex Numbers typed input must show complex-number format help; saw "${complexTypedHelp.helpText}".`);
-  assert(complexTypedHelp.displayVisible, 'Complex Numbers math editor display must be visible.');
+  assert(complexTypedHelp.inputVisible, 'Complex Numbers native math input must be visible.');
 
   await resetPageProgress(page);
   const hintedComplexCard = page.locator('[data-learn-step-card]:not([hidden])').first();

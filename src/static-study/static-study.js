@@ -301,6 +301,7 @@
       attempts: [],
       learningActivityAttempts: [],
       skillCheckAttempts: [],
+      skillCheckAssistance: {},
       attemptHistory: { schemaVersion: 1, records: [] },
       exportProfile: {},
       diagnosticReports: [],
@@ -1047,7 +1048,9 @@
       progress.error_log.push(error);
       progress.redo_queue.push(redoItemForError(error));
     });
-    applyKnowledgeAssessment(progress, input, timestamp);
+    // Exam Training is self-marked practice. Keep its topic/error signals, but
+    // never let it change the mastery-like knowledge graph.
+    if (input.source !== 'exam_training') applyKnowledgeAssessment(progress, input, timestamp);
     return refreshDerivedAnalytics(progress);
   }
 
@@ -1102,6 +1105,21 @@
 
   function normalizeSkillCheckAttempts(records) {
     return safeArray(records).filter(isSkillCheckAttemptRecord);
+  }
+
+  function normalizeSkillCheckAssistance(value) {
+    if (!isRecord(value)) return {};
+    return Object.keys(value).reduce(function (result, checkId) {
+      var state = value[checkId];
+      if (!checkId || !isRecord(state)) return result;
+      result[checkId] = {
+        usedHint: state.usedHint === true,
+        revealedAnswer: state.revealedAnswer === true,
+        revealedRepairStep: state.revealedRepairStep === true,
+        updatedAt: typeof state.updatedAt === 'string' ? state.updatedAt : ''
+      };
+      return result;
+    }, {});
   }
 
   function isStudentAttemptHistoryRecord(value) {
@@ -1159,13 +1177,14 @@
     if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return emptyProgress();
     return normalizeAnalyticsProgress(Object.assign(emptyProgress(), parsed, {
       schemaVersion: typeof parsed.schemaVersion === 'number' ? parsed.schemaVersion : 1,
-      attempts: safeArray(parsed.attempts),
-      learningActivityAttempts: safeArray(parsed.learningActivityAttempts),
+      attempts: safeArray(parsed.attempts).filter(isRecord),
+      learningActivityAttempts: safeArray(parsed.learningActivityAttempts).filter(isRecord),
       skillCheckAttempts: normalizeSkillCheckAttempts(parsed.skillCheckAttempts),
+      skillCheckAssistance: normalizeSkillCheckAssistance(parsed.skillCheckAssistance),
       attemptHistory: normalizeStudentAttemptHistory(parsed.attemptHistory),
       exportProfile: parsed.exportProfile && typeof parsed.exportProfile === 'object' ? parsed.exportProfile : {},
-      diagnosticReports: safeArray(parsed.diagnosticReports),
-      p1RepairLaneModules: safeArray(parsed.p1RepairLaneModules),
+      diagnosticReports: safeArray(parsed.diagnosticReports).filter(isRecord),
+      p1RepairLaneModules: safeArray(parsed.p1RepairLaneModules).filter(isRecord),
       topicProfiles: parsed.topicProfiles && typeof parsed.topicProfiles === 'object' ? parsed.topicProfiles : {},
       issueReports: safeArray(parsed.issueReports),
       regionLearning: parsed.regionLearning && typeof parsed.regionLearning === 'object' ? parsed.regionLearning : {},
@@ -1194,6 +1213,7 @@
     var cell = value === undefined || value === null || value === ''
       ? ''
       : Array.isArray(value) ? value.filter(Boolean).join('|') : String(value);
+    if (/^[\t\r\n ]*[=+\-@]/.test(cell)) cell = "'" + cell;
     return /[",\n\r]/.test(cell) ? '"' + cell.replace(/"/g, '""') + '"' : cell;
   }
 
@@ -1242,7 +1262,7 @@
     var examAttempts = safeArray(progress.attempts);
     return {
       checkedPracticeAttempts: skillAttempts.length,
-      checkedPracticePasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
+      checkedPracticePasses: new Set(skillAttempts.filter(isCleanCheckedPracticeAttempt).map(function (attempt) { return attempt.checkId; })).size,
       reviewCandidates: reviewCandidates,
       selfMarkedExamAttempts: examAttempts.filter(function (attempt) { return attempt.selfMarked === true; }).length,
       learningActivityAttempts: safeArray(progress.learningActivityAttempts).length,
@@ -1287,7 +1307,7 @@
     return {
       completeUnits: validRequirements.length ? completeUnits : undefined,
       incompleteUnits: validRequirements.length ? incompleteUnits : undefined,
-      totalCleanPasses: skillAttempts.filter(isCleanCheckedPracticeAttempt).length,
+      totalCleanPasses: new Set(skillAttempts.filter(isCleanCheckedPracticeAttempt).map(function (attempt) { return attempt.checkId; })).size,
       hintUsedAttempts: skillAttempts.filter(function (attempt) { return attempt.usedHint; }).length
         + learningAttempts.filter(function (attempt) { return attempt && attempt.usedHint === true; }).length,
       revealedAnswerAttempts: skillAttempts.filter(function (attempt) { return attempt.revealedAnswer; }).length
@@ -1878,7 +1898,7 @@
   }
 
   function isPassingSkillCheckAttempt(attempt) {
-    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.revealedAnswer && !attempt.revealedRepairStep);
+    return Boolean(isSkillCheckAttemptRecord(attempt) && attempt.isCorrect && !attempt.usedHint && !attempt.revealedAnswer && !attempt.revealedRepairStep);
   }
 
   function isCleanCheckedPracticeAttempt(attempt) {
@@ -3566,14 +3586,18 @@
       if (!isP3Progression) return;
       link.classList.toggle('is-repair-locked-link', shouldLock);
       if (shouldLock) {
-        link.setAttribute('aria-disabled', 'true');
         link.setAttribute('data-original-href', link.getAttribute('data-original-href') || href);
+        link.setAttribute('data-original-aria-label', link.getAttribute('data-original-aria-label') || link.getAttribute('aria-label') || '');
         link.setAttribute('href', repairLaneHrefForCurrentPage());
         link.setAttribute('title', P1_REPAIR_LOCK_MESSAGE);
+        link.setAttribute('aria-label', 'Complete P1 Review before opening ' + (link.textContent?.trim() || 'this P3 page'));
       } else if (link.getAttribute('data-original-href')) {
         link.setAttribute('href', link.getAttribute('data-original-href') || href);
         link.removeAttribute('data-original-href');
-        link.removeAttribute('aria-disabled');
+        var originalAriaLabel = link.getAttribute('data-original-aria-label') || '';
+        if (originalAriaLabel) link.setAttribute('aria-label', originalAriaLabel);
+        else link.removeAttribute('aria-label');
+        link.removeAttribute('data-original-aria-label');
         link.removeAttribute('title');
       }
     });
@@ -3775,6 +3799,7 @@
       && attempt.course === 'p3'
       && attempt.skillId === source.skillId
       && attempt.isCorrect
+      && !attempt.usedHint
       && !attempt.revealedAnswer
       && !attempt.revealedRepairStep);
   }
@@ -4250,17 +4275,12 @@
       if (!(input instanceof HTMLInputElement) || !(mount instanceof HTMLElement)) return;
       field.setAttribute('data-math-editor-ready', 'true');
 
-      // A focusable span can accept hardware key events, but it cannot summon a
-      // phone or tablet's software keyboard. Keep the real input as the primary
-      // control on touch-first devices so students can type, paste, move the
-      // caret, and use their platform's accessibility tools normally.
-      var prefersNativeMathInput = (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 0)
-        || (typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches);
-      if (prefersNativeMathInput) {
-        field.classList.add('math-answer-input-native');
-        mount.replaceChildren();
-        return;
-      }
+      // The real input is the single source of truth on every device. A fake
+      // textbox cannot participate reliably in native validation, screen-reader
+      // labelling, speech input, or software keyboards.
+      field.classList.add('math-answer-input-native');
+      mount.replaceChildren();
+      return;
 
       var kind = field.getAttribute('data-answer-kind') || 'text';
       var state = { nodes: [], cursor: { path: [], offset: 0 } };
@@ -4523,8 +4543,8 @@
     var state = record.correct ? 'correct' : 'incorrect';
     var statusLabel = record.correct ? 'Correct' : 'Incorrect';
     var response = record.responseDisplay || record.response || 'No answer submitted';
-    var correctAnswer = record.correctAnswer || 'Check the revealed answer on the question.';
-    var explanation = record.explanation || '';
+    var correctAnswer = record.correct ? (record.correctAnswer || 'Correct response saved.') : '';
+    var explanation = record.correct ? (record.explanation || '') : '';
     return '<article class="attempt-history-record is-' + state + '">'
       + '<header>'
       + '<span class="attempt-history-indicator">' + statusLabel + '</span>'
@@ -4532,7 +4552,7 @@
       + '</header>'
       + '<dl class="attempt-history-answer-list">'
       + '<div><dt>Your answer</dt><dd>' + escapeText(response) + '</dd></div>'
-      + '<div><dt>Correct answer</dt><dd>' + escapeText(correctAnswer) + '</dd></div>'
+      + (correctAnswer ? '<div><dt>Correct answer</dt><dd>' + escapeText(correctAnswer) + '</dd></div>' : '')
       + (explanation ? '<div><dt>Explanation</dt><dd>' + escapeText(explanation) + '</dd></div>' : '')
       + '</dl>'
       + (!record.correct && record.retryHref ? '<a class="button secondary-button attempt-history-retry" href="' + escapeText(record.retryHref) + '">Retry</a>' : '')
@@ -4599,8 +4619,39 @@
     }).join(', ');
   }
 
+  function skillAssistanceState(progress, checkId) {
+    var stored = normalizeSkillCheckAssistance(progress.skillCheckAssistance)[checkId] || {};
+    return {
+      usedHint: stored.usedHint === true,
+      revealedAnswer: stored.revealedAnswer === true,
+      revealedRepairStep: stored.revealedRepairStep === true
+    };
+  }
+
+  function applyStoredSkillAssistance(form, progress) {
+    var state = skillAssistanceState(progress, form.getAttribute('data-check-id') || '');
+    if (state.usedHint) form.setAttribute('data-used-hint', 'true');
+    if (state.revealedAnswer) form.setAttribute('data-revealed-answer', 'true');
+    if (state.revealedRepairStep) form.setAttribute('data-revealed-repair-step', 'true');
+    return state;
+  }
+
+  function recordSkillAssistance(form, kind) {
+    var progress = loadProgress();
+    var checkId = form.getAttribute('data-check-id') || '';
+    if (!checkId) return;
+    var current = skillAssistanceState(progress, checkId);
+    if (kind === 'hint') current.usedHint = true;
+    if (kind === 'answer') current.revealedAnswer = true;
+    if (kind === 'repair') current.revealedRepairStep = true;
+    progress.skillCheckAssistance = normalizeSkillCheckAssistance(progress.skillCheckAssistance);
+    progress.skillCheckAssistance[checkId] = Object.assign(current, { updatedAt: new Date().toISOString() });
+    saveProgress(progress);
+    applyStoredSkillAssistance(form, progress);
+  }
+
   function currentPageRetryHref(form) {
-    var id = form.closest('[id]')?.getAttribute('id') || form.getAttribute('data-check-id') || '';
+    var id = form.getAttribute('id') || form.getAttribute('data-check-id') || form.closest('[id]')?.getAttribute('id') || '';
     var base = window.location.pathname + window.location.search;
     return id ? base + '#' + encodeURIComponent(id) : base;
   }
@@ -4629,6 +4680,7 @@
 
   function saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult) {
     var progress = loadProgress();
+    applyStoredSkillAssistance(form, progress);
     var now = new Date().toISOString();
     var attempt = {
       attemptId: createId('skill_attempt'),
@@ -4650,7 +4702,7 @@
       progress,
       historyRecordFromForm(form, attempt.attemptId, 'checked_practice', submittedAnswer, attempt.isCorrect, now)
     );
-    progress = updateStudentPerformanceState(progress, {
+    if (!attempt.isCorrect || isCleanCheckedPracticeAttempt(attempt)) progress = updateStudentPerformanceState(progress, {
       kind: 'assessment',
       assessment_id: attempt.attemptId,
       student_id: PROFILE_ID,
@@ -4690,6 +4742,13 @@
         mistakeTags: attempt.mistakeTags
       }]
     });
+    // Assistance belongs to the current learning attempt, not to the question
+    // forever. Preserve it through reloads until an assisted correct response,
+    // then allow a later fresh retest to earn clean evidence.
+    if (attempt.isCorrect && (attempt.usedHint || attempt.revealedAnswer || attempt.revealedRepairStep)) {
+      progress.skillCheckAssistance = normalizeSkillCheckAssistance(progress.skillCheckAssistance);
+      delete progress.skillCheckAssistance[attempt.checkId];
+    }
     saveProgress(progress);
     updateProgressText();
     return attempt;
@@ -4747,6 +4806,7 @@
 
   function updateSkillCheckFormState(form, progress) {
     var checkId = form.getAttribute('data-check-id') || '';
+    applyStoredSkillAssistance(form, progress);
     var passingAttempt = progress.skillCheckAttempts.find(function (attempt) {
       return attempt.checkId === checkId && isPassingSkillCheckAttempt(attempt);
     });
@@ -4756,7 +4816,11 @@
       setSkillFeedback(form, 'Passed locally with a correct unrevealed answer.', 'passed');
       if (next) next.hidden = false;
       var submit = form.querySelector('button[type="submit"]');
-      if (submit) submit.className = 'button secondary-button';
+      if (submit) {
+        submit.textContent = 'Passed';
+        submit.className = 'button secondary-button';
+        submit.disabled = true;
+      }
     }
   }
 
@@ -4767,34 +4831,49 @@
   }
 
   function saveSkillReveal(form, revealKind) {
-    form.setAttribute(revealKind === 'answer' ? 'data-revealed-answer' : 'data-revealed-repair-step', 'true');
-    var submitted = String(new FormData(form).get('submittedAnswer') || '').trim();
-    saveSkillCheckLocalAttempt(form, submitted, {
-      isCorrect: false,
-      normalizedSubmittedAnswer: submitted,
-      reason: revealKind === 'answer' ? 'Answer revealed.' : 'Repair step revealed.'
-    });
+    recordSkillAssistance(form, revealKind);
     setSkillFeedback(form, revealKind === 'answer'
       ? 'Answer revealed. This helps you learn, but it does not count as a clean pass.'
       : 'Repair step revealed. This helps you learn, but it does not count as a clean pass.', 'repaired');
   }
 
   function checkSkillAnswer(form) {
+    var existingProgress = loadProgress();
+    applyStoredSkillAssistance(form, existingProgress);
+    var checkId = form.getAttribute('data-check-id') || '';
+    if (existingProgress.skillCheckAttempts.some(function (attempt) {
+      return attempt.checkId === checkId && isCleanCheckedPracticeAttempt(attempt);
+    })) {
+      updateSkillCheckFormState(form, existingProgress);
+      return;
+    }
+    var orderedValues = Array.from(form.querySelectorAll('.ordered-card-order-fields select')).map(function (select) {
+      return select.value;
+    }).filter(Boolean);
+    if (orderedValues.length && new Set(orderedValues).size !== orderedValues.length) {
+      setSkillFeedback(form, 'Use each card once when ordering the steps.', 'incorrect');
+      var repeated = Array.from(form.querySelectorAll('.ordered-card-order-fields select')).find(function (select, index, fields) {
+        return select.value && fields.findIndex(function (field) { return field.value === select.value; }) !== index;
+      });
+      if (repeated instanceof HTMLElement) repeated.focus();
+      return;
+    }
     var submittedAnswer = submittedAnswerFromForm(form);
     var checkResult = checkSubmittedSkillAnswer(skillCheckSpecFromForm(form), submittedAnswer);
-    saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
+    var savedAttempt = saveSkillCheckLocalAttempt(form, submittedAnswer, checkResult);
     var submitButton = form.querySelector('button[type="submit"]');
     var nextButton = form.querySelector('[data-skill-check-inline-next]');
     var repair = form.querySelector('[data-skill-repair]');
     var answerReveal = form.querySelector('[data-skill-answer-reveal]');
     var mistakePanel = form.querySelector('[data-mistake-tag-panel]');
-    if (checkResult.isCorrect && form.getAttribute('data-revealed-answer') !== 'true' && form.getAttribute('data-revealed-repair-step') !== 'true') {
+    if (isCleanCheckedPracticeAttempt(savedAttempt)) {
       setSkillFeedback(form, 'Correct. Saved as a clean Checked Practice pass.', 'correct');
       form.classList.add('is-passed');
       if (nextButton) nextButton.hidden = false;
       if (submitButton) {
-        submitButton.textContent = 'Check Answer';
+        submitButton.textContent = 'Passed';
         submitButton.className = 'button secondary-button';
+        submitButton.disabled = true;
       }
       showCorrectCelebration({
         title: 'Correct',
@@ -4805,7 +4884,7 @@
       return;
     }
     if (checkResult.isCorrect) {
-      setSkillFeedback(form, 'Correct, but this was already revealed or repaired, so it is not a clean pass.', 'repaired');
+      setSkillFeedback(form, 'Correct, but support was used, so this is not a clean pass. Return later for a fresh retest.', 'repaired');
       if (nextButton) nextButton.hidden = false;
       showCorrectCelebration({
         title: 'Correct',
@@ -4986,6 +5065,11 @@
       if (!Number.isFinite(part.marksEarned) || part.marksEarned < 0 || part.marksEarned > part.marksAvailable) {
         return 'Check the self-awarded marks for ' + part.label + '.';
       }
+      if (part.markPointsAvailable === part.marksAvailable
+        && part.markPointsAvailable > 0
+        && part.markPointIds.length !== part.marksEarned) {
+        return 'For ' + part.label + ', the marks entered must match the mark points ticked.';
+      }
     }
     return '';
   }
@@ -5135,12 +5219,20 @@
     updateProgressText();
   }
 
+  function ensureExamAttemptStarted(form) {
+    if (form instanceof HTMLFormElement && !form.getAttribute('data-started-at')) {
+      form.setAttribute('data-started-at', String(Date.now()));
+    }
+  }
+
   function setupExamSelfMarking() {
     document.querySelectorAll('[data-save-exam-attempt]').forEach(function (form) {
       if (!(form instanceof HTMLFormElement)) return;
-      if (!form.getAttribute('data-started-at')) form.setAttribute('data-started-at', String(Date.now()));
+      var card = form.closest('.exam-question-card');
+      if (!(card instanceof HTMLElement) || !card.hidden) ensureExamAttemptStarted(form);
       form.querySelectorAll('[data-part-attempted], [data-part-marks-earned], [data-mark-point]').forEach(function (input) {
         input.addEventListener('change', function () {
+          ensureExamAttemptStarted(form);
           form.setAttribute('data-started-marking', 'true');
         });
       });
@@ -5433,6 +5525,7 @@
       function cardsForCurrentHash() {
         var hash = window.location.hash ? window.location.hash.slice(1) : '';
         var target = hash ? document.getElementById(hash) : null;
+        var targetCard = target?.closest?.('.practice-card');
         var selectedContainer = target?.closest?.('.practice-topic, .practice-subsection') || target;
         if (!(selectedContainer instanceof HTMLElement) || !flow.contains(selectedContainer)) {
           selectedContainer = skillCheckGroups[0] || sectionContainers[0] || containers[0];
@@ -5441,6 +5534,9 @@
         var matches = allCards.filter(function (card) {
           return selectedContainer ? selectedContainer.contains(card) : true;
         });
+        if (targetCard instanceof HTMLElement && matches.includes(targetCard)) {
+          return [targetCard].concat(matches.filter(function (card) { return card !== targetCard; }));
+        }
         return matches.length ? matches : allCards;
       }
 
@@ -5694,6 +5790,7 @@
         cards.forEach(function (card, cardIndex) {
           card.hidden = cardIndex !== index;
         });
+        ensureExamAttemptStarted(cards[index]?.querySelector('[data-save-exam-attempt]'));
         label.textContent = 'Question ' + (index + 1) + ' of ' + cards.length;
         previous.disabled = index === 0;
         next.disabled = index === cards.length - 1;
@@ -6253,7 +6350,7 @@
       if (hintButton) {
         var form = hintButton.closest('[data-check-skill-answer]');
         if (form) {
-          form.setAttribute('data-used-hint', 'true');
+          recordSkillAssistance(form, 'hint');
           var hint = form.querySelector('[data-skill-hint]');
           if (hint) hint.hidden = false;
         }

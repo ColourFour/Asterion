@@ -100,6 +100,7 @@ function isCleanCorrectRelatedAttempt(attempt: SkillCheckAttemptRecord, source: 
   return attempt.course === 'p3'
     && attempt.skillId === source.skillId
     && attempt.isCorrect
+    && !attempt.usedHint
     && !attempt.revealedAnswer
     && !attempt.revealedRepairStep;
 }

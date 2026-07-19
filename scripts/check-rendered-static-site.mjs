@@ -109,19 +109,23 @@ async function clickMathEditorKey(page, label) {
   }, label);
 }
 
-async function runMathEditorSequence(page, sequence, expectedRaw, label) {
+async function runMathEditorSequence(page, _sequence, expectedRaw, label) {
   const scope = '[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"]';
-  const display = page.locator(`${scope} .math-editor-display`).first();
   const rawInput = page.locator(`${scope} input[name="submittedAnswer"][type="text"]`).first();
-  await display.click();
-  await clickMathEditorKey(page, 'Clear');
-  for (const step of sequence) {
-    if (await clickMathEditorKey(page, step)) continue;
-    await display.press(step);
-  }
+  await rawInput.click();
+  await rawInput.fill(expectedRaw);
   const raw = await rawInput.inputValue();
+  const state = await rawInput.evaluate((input) => ({
+    focused: document.activeElement === input,
+    visible: input.getBoundingClientRect().width > 100 && input.getBoundingClientRect().height >= 44,
+    native: input.closest('.math-answer-input')?.classList.contains('math-answer-input-native'),
+    duplicateEditor: Boolean(input.closest('.math-answer-input')?.querySelector('[data-math-editor]')),
+  }));
   if (raw !== expectedRaw) {
-    fail(`${label} expected math editor raw value "${expectedRaw}", saw "${raw}".`);
+    fail(`${label} expected native math value "${expectedRaw}", saw "${raw}".`);
+  }
+  if (!state.focused || !state.visible || !state.native || state.duplicateEditor) {
+    fail(`${label} must expose one visible, focused native math input; saw ${JSON.stringify(state)}.`);
   }
 }
 
@@ -275,6 +279,18 @@ async function assertAlgebraTouchInput(browser) {
     if (result.quotient !== 'x^2+5x+9' || result.remainder !== '23' || result.state !== 'correct' || !result.feedback.includes('clean Checked Practice pass')) {
       fail(`Algebra touch input must submit both native fields as a clean correct answer; saw ${JSON.stringify(result)}.`);
     }
+    const duplicateSaveState = await form.evaluate((element) => {
+      const key = 'asterion.progress.v1';
+      const before = JSON.parse(localStorage.getItem(key) || '{}').skillCheckAttempts
+        ?.filter((attempt) => attempt.checkId === element.getAttribute('data-check-id')).length || 0;
+      element.dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+      const after = JSON.parse(localStorage.getItem(key) || '{}').skillCheckAttempts
+        ?.filter((attempt) => attempt.checkId === element.getAttribute('data-check-id')).length || 0;
+      return { before, after, disabled: element.querySelector('button[type="submit"]')?.disabled === true };
+    });
+    if (duplicateSaveState.before !== 1 || duplicateSaveState.after !== 1 || !duplicateSaveState.disabled) {
+      fail(`A passed check must save once and disable duplicate submission; saw ${JSON.stringify(duplicateSaveState)}.`);
+    }
     await page.evaluate(() => {
       const close = document.querySelector('[data-correct-celebration-close]');
       if (close instanceof HTMLElement) close.click();
@@ -318,6 +334,87 @@ async function assertAlgebraTouchInput(browser) {
         fail(`Algebra ordered-card controls must submit the authored order; saw ${JSON.stringify(orderedResult)}.`);
       }
     }
+    await page.evaluate(() => {
+      const close = document.querySelector('[data-correct-celebration-close]');
+      if (close instanceof HTMLElement) close.click();
+    });
+
+    const hintedForm = page.locator('[data-check-id="sc-alg-remainder-factor-core-001"]');
+    await hintedForm.evaluate((element) => {
+      let current = element.parentElement;
+      const flow = element.closest('[data-one-card-flow]');
+      while (current && current !== flow) {
+        current.hidden = false;
+        current = current.parentElement;
+      }
+    });
+    await hintedForm.locator('[data-show-skill-hint]').click();
+    await page.reload({ waitUntil: 'load' });
+    await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'));
+    const persistedHintState = await page.locator('[data-check-id="sc-alg-remainder-factor-core-001"]').evaluate((element) => ({
+      usedHint: element.getAttribute('data-used-hint') === 'true',
+      passed: element.classList.contains('is-passed'),
+    }));
+    if (!persistedHintState.usedHint || persistedHintState.passed) {
+      fail(`Hint assistance must survive reload before submission without granting a pass; saw ${JSON.stringify(persistedHintState)}.`);
+    }
+    const assistedForm = page.locator('[data-check-id="sc-alg-remainder-factor-core-001"]');
+    await assistedForm.evaluate((element) => {
+      let current = element.parentElement;
+      const flow = element.closest('[data-one-card-flow]');
+      while (current && current !== flow) {
+        current.hidden = false;
+        current = current.parentElement;
+      }
+    });
+    const hintedAnswer = await assistedForm.getAttribute('data-accepted-answers').then((value) => JSON.parse(value || '[]')[0]);
+    await assistedForm.locator('input[name="submittedAnswer"]').fill(String(hintedAnswer));
+    await assistedForm.locator('button[type="submit"]').click();
+    const hintedState = await assistedForm.evaluate((element) => {
+      const progress = JSON.parse(localStorage.getItem('asterion.progress.v1') || '{}');
+      const attempt = progress.skillCheckAttempts?.filter((item) => item.checkId === element.getAttribute('data-check-id')).at(-1);
+      return {
+        usedHint: attempt?.usedHint === true,
+        passed: element.classList.contains('is-passed'),
+        feedback: element.querySelector('.skill-check-feedback')?.textContent || '',
+        knowledgeUpdates: progress.knowledge_state_updates?.length || 0,
+        assistanceCleared: !progress.skillCheckAssistance?.[element.getAttribute('data-check-id')],
+      };
+    });
+    if (!hintedState.usedHint || hintedState.passed || !hintedState.assistanceCleared || /clean Checked Practice pass/i.test(hintedState.feedback)) {
+      fail(`Hinted correct work must remain assisted evidence without a clean pass; saw ${JSON.stringify(hintedState)}.`);
+    }
+    await page.reload({ waitUntil: 'load' });
+    await page.waitForFunction(() => document.documentElement.classList.contains('static-enhanced'));
+    const freshRetestForm = page.locator('[data-check-id="sc-alg-remainder-factor-core-001"]');
+    const reloadedHintState = await freshRetestForm.evaluate((element) => ({
+      usedHint: element.getAttribute('data-used-hint') === 'true',
+      passed: element.classList.contains('is-passed'),
+    }));
+    if (reloadedHintState.usedHint || reloadedHintState.passed) {
+      fail(`A completed assisted attempt must allow a later fresh retest; saw ${JSON.stringify(reloadedHintState)}.`);
+    }
+    await freshRetestForm.evaluate((element) => {
+      let current = element.parentElement;
+      const flow = element.closest('[data-one-card-flow]');
+      while (current && current !== flow) {
+        current.hidden = false;
+        current = current.parentElement;
+      }
+    });
+    await freshRetestForm.locator('input[name="submittedAnswer"]').fill('definitely-wrong');
+    await freshRetestForm.locator('button[type="submit"]').click();
+    await freshRetestForm.locator('input[name="submittedAnswer"]').fill(String(hintedAnswer));
+    await freshRetestForm.locator('button[type="submit"]').click();
+    const freshRetestState = await freshRetestForm.evaluate((element) => ({
+      passed: element.classList.contains('is-passed'),
+      state: element.querySelector('.skill-check-feedback')?.getAttribute('data-state') || '',
+      attempts: JSON.parse(localStorage.getItem('asterion.progress.v1') || '{}').skillCheckAttempts
+        ?.filter((item) => item.checkId === element.getAttribute('data-check-id')).map((item) => ({ correct: item.isCorrect, hinted: item.usedHint })) || [],
+    }));
+    if (!freshRetestState.passed || freshRetestState.state !== 'correct' || freshRetestState.attempts.at(-2)?.correct !== false || freshRetestState.attempts.at(-1)?.hinted !== false) {
+      fail(`Wrong then correct fresh retest must earn one clean pass; saw ${JSON.stringify(freshRetestState)}.`);
+    }
   } finally {
     await page.close();
   }
@@ -360,8 +457,6 @@ async function assertLearnVisualBasics(browser) {
           const firstAnswerControl = primaryForm?.querySelector('.math-editor-display, input[name="submittedAnswer"]');
           const typedAnswerControl = primaryForm?.querySelector('.math-answer-input input[name="submittedAnswer"][type="text"]');
           const mathAnswerInput = typedAnswerControl?.closest('.math-answer-input');
-          const mathEditor = mathAnswerInput?.querySelector('[data-math-editor]');
-          const mathEditorDisplay = mathAnswerInput?.querySelector('.math-editor-display');
           const checkButton = primaryForm?.querySelector('button[type="submit"]');
           const typedHelp = mathAnswerInput?.querySelector('.answer-format-guidance');
           const optionLegend = primaryForm?.querySelector('.learn-option-bank legend');
@@ -380,10 +475,10 @@ async function assertLearnVisualBasics(browser) {
             helperText: (typedHelp?.textContent || optionLegend?.textContent || '').trim(),
             hasTypedControl: Boolean(typedAnswerControl),
             hasMathAnswerInput: Boolean(mathAnswerInput),
-            hasMathEditor: Boolean(mathEditor),
-            mathEditorVisible: inViewport(mathEditorDisplay),
+            nativeMathInput: mathAnswerInput?.classList.contains('math-answer-input-native'),
+            typedControlVisible: inViewport(typedAnswerControl),
+            duplicateMathEditor: Boolean(mathAnswerInput?.querySelector('[data-math-editor]')),
             hasDescribedGuidance: Boolean(describedBy && mathAnswerInput?.querySelector(`#${CSS.escape(describedBy)}`)),
-            keyCount: mathAnswerInput?.querySelectorAll('.math-editor-key').length ?? 0,
             optionCount: visibleOptionLabels.length,
             optionMinHeight: visibleOptionLabels.length
               ? Math.min(...visibleOptionLabels.map((label) => label.getBoundingClientRect().height))
@@ -407,22 +502,15 @@ async function assertLearnVisualBasics(browser) {
         if (!result.helperText) {
           fail(`${pagePath} is missing nearby answer-format help at ${viewport.width}x${viewport.height}.`);
         }
-        if (result.hasTypedControl && (!result.hasMathAnswerInput || !result.hasMathEditor || !result.mathEditorVisible || !result.hasDescribedGuidance || result.keyCount < 1)) {
-          fail(`${pagePath} typed answer input is missing the standardized math editor, keyboard, or aria description at ${viewport.width}x${viewport.height}.`);
+        if (result.hasTypedControl && (!result.hasMathAnswerInput || !result.nativeMathInput || !result.typedControlVisible || result.duplicateMathEditor || !result.hasDescribedGuidance)) {
+          fail(`${pagePath} typed answer input is missing its visible native control or aria description at ${viewport.width}x${viewport.height}.`);
         }
         if (result.hasTypedControl) {
-          const display = visualPage.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"] .math-editor-display').first();
-          await display.click();
-          const panelVisible = await visualPage.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"] .math-editor.is-open .math-editor-panel').first().isVisible();
-          if (!panelVisible) {
-            fail(`${pagePath} math editor keyboard did not stay open after clicking the visible editor at ${viewport.width}x${viewport.height}.`);
-          }
-          await display.press('1');
-          await display.press('2');
-          await display.press('3');
-          const typedValue = await visualPage.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"] input[name="submittedAnswer"][type="text"]').first().inputValue();
+          const input = visualPage.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"] input[name="submittedAnswer"][type="text"]').first();
+          await input.fill('123');
+          const typedValue = await input.inputValue();
           if (typedValue !== '123') {
-            fail(`${pagePath} math editor physical-key input must preserve order; expected "123", saw "${typedValue}" at ${viewport.width}x${viewport.height}.`);
+            fail(`${pagePath} native math input must preserve typed order; expected "123", saw "${typedValue}" at ${viewport.width}x${viewport.height}.`);
           }
         }
         if (result.optionCount && result.optionMinHeight < 40) {
@@ -444,6 +532,25 @@ async function assertExamTrainingMobileVisuals(browser) {
   try {
     for (const pagePath of p3ExamTrainingPages) {
       await waitForStaticEnhancement(visualPage, pagePath);
+      if (pagePath === p3ExamTrainingPages[0]) {
+        const beforeTiming = await visualPage.evaluate(() => {
+          const forms = Array.from(document.querySelectorAll('[data-save-exam-attempt]'));
+          return {
+            firstStarted: Boolean(forms[0]?.getAttribute('data-started-at')),
+            secondStarted: Boolean(forms[1]?.getAttribute('data-started-at')),
+            count: forms.length,
+          };
+        });
+        if (beforeTiming.count > 1 && (!beforeTiming.firstStarted || beforeTiming.secondStarted)) {
+          fail(`Exam timing must start only for the visible first question; saw ${JSON.stringify(beforeTiming)}.`);
+        }
+        if (beforeTiming.count > 1) {
+          await visualPage.locator('.exam-controls button', { hasText: 'Next Question' }).click();
+          const secondStarted = await visualPage.locator('[data-save-exam-attempt]').nth(1).getAttribute('data-started-at');
+          if (!secondStarted) fail('Exam timing must start when the second question becomes active.');
+          await waitForStaticEnhancement(visualPage, pagePath);
+        }
+      }
       const result = await visualPage.evaluate(() => {
         const isVisible = (element) => {
           if (!element || element.hidden) return false;
