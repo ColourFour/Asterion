@@ -108,6 +108,23 @@ describe('Skill Check answer checker', () => {
     expect(check({ answerType: 'expression-text', acceptedAnswers: ['12x^3-2'] }, 'dy/dx = 12x^3 - 2').isCorrect).toBe(true);
   });
 
+  it('accepts the visually ambiguous capital-I spelling of natural log on touch keyboards', () => {
+    const spec: SkillCheckAnswerSpec = {
+      answerType: 'expression-text',
+      acceptedAnswers: ['ln(2x)'],
+    };
+
+    expect(check(spec, 'ln(2x)')).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: 'ln2x',
+    });
+    expect(check(spec, 'In(2x)')).toMatchObject({
+      isCorrect: true,
+      normalizedSubmittedAnswer: 'ln2x',
+      matchedAcceptedAnswer: 'ln(2x)',
+    });
+  });
+
   it('supports order-insensitive multi-value checking by default', () => {
     const result = check(
       { answerType: 'multi-value', acceptedAnswers: ['-1, 1, 5/2'] },

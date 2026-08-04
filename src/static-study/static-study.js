@@ -2577,7 +2577,11 @@
   }
 
   function normalizeExpressionText(value) {
-    return stripBalancedOuterParentheses(normalizeFunctionNotation(compactAnswerText(value)))
+    // On touch keyboards, `ln(...)` is easily entered as `In(...)` (capital i + n),
+    // and the two are visually indistinguishable in several system fonts. `in(` is
+    // not valid notation in these expression checks, so normalize that narrow typo.
+    var compact = compactAnswerText(value).replace(/\bin(?=\()/g, 'ln');
+    return stripBalancedOuterParentheses(normalizeFunctionNotation(compact))
       .replace(/\*/g, '')
       .replace(/^\(([-+]?(?:\d+(?:\.\d+)?|\d*\.\d+)(?:\/[-+]?\d+(?:\.\d+)?)?)\)(?=\()/, '$1')
       .replace(/^\((\([^()]+\)\^\d+)\)(?=\/)/, '$1')

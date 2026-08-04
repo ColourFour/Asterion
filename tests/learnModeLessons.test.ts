@@ -190,6 +190,19 @@ describe('P3 Learn Mode lessons', () => {
     }
   });
 
+  it('accepts the reported product-law answer in the similar Learn check', () => {
+    const step = getLearnStepsForRegion('logarithmic-and-exponential-functions')
+      .find((candidate) => candidate.id === 'learn-log-product-law');
+    const spec = skillCheckAnswerSpecForItem(step!.similarCheck!);
+
+    expect(spec).toMatchObject({
+      answerType: 'expression-text',
+      acceptedAnswers: expect.arrayContaining(['ln(2x)']),
+    });
+    expect(checkSkillCheckAnswer({ spec: spec!, submittedAnswer: 'ln(2x)' }).isCorrect).toBe(true);
+    expect(checkSkillCheckAnswer({ spec: spec!, submittedAnswer: 'In(2x)' }).isCorrect).toBe(true);
+  });
+
   it('uses an explicit authored fourteen-step Trigonometry sequence', () => {
     const trigSteps = getLearnStepsForRegion('trigonometry');
 

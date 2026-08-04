@@ -110,6 +110,19 @@ export const ANSWER_CHECKER_PARITY_CASES: AnswerCheckerParityCase[] = [
     },
   },
   {
+    name: 'expression-text touch keyboard natural log ambiguity',
+    spec: { answerType: 'expression-text', acceptedAnswers: ['ln(2x)'] },
+    submittedAnswer: 'In(2x)',
+    expected: {
+      isCorrect: true,
+      normalizedSubmittedAnswer: 'ln2x',
+      matchedAcceptedAnswer: 'ln(2x)',
+      reason: 'Matched normalized expression text.',
+      answerType: 'expression-text',
+      unsupported: false,
+    },
+  },
+  {
     name: 'expression-text harmless coefficient parentheses',
     spec: { answerType: 'expression-text', acceptedAnswers: ['1/5(3x^2+1)^5+C'] },
     submittedAnswer: '(1/5)(3x^2+1)^5 + C',

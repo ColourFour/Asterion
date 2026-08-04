@@ -206,6 +206,7 @@ try {
       numeric: check({ answerType: 'numeric', acceptedAnswers: ['2.5'], tolerance: 0.01 }, '2.504'),
       exactText: check({ answerType: 'exact-text', acceptedAnswers: ['one repeated real root'] }, 'One repeated real root.'),
       expressionText: check({ answerType: 'expression-text', acceptedAnswers: ['sin^2x+cos^2x=1'] }, 'sin^2 x + cos^2 x = 1'),
+      touchKeyboardNaturalLog: check({ answerType: 'expression-text', acceptedAnswers: ['ln(2x)'] }, 'In(2x)'),
       multiValue: check({ answerType: 'multi-value', acceptedAnswers: ['-1/2, 1'] }, '1, -0.5'),
       complexNumber: check({ answerType: 'complex-number', acceptedAnswers: ['2+3i'] }, '2+3i'),
       interval: check({ answerType: 'interval', acceptedAnswers: ['-1/3 < x < 1/3'] }, '(-1/3, 1/3)'),
@@ -380,6 +381,29 @@ try {
   assert(logExpInitialShape.transferHidden, 'Log/Exp exam transfer must be hidden before primary attempt.');
   assert(logExpInitialShape.answerRevealHidden, 'Log/Exp answer reveal must be unavailable before first submitted attempt.');
   assert(!logExpInitialShape.nextOpen, 'Log/Exp next button must stay disabled before the step is completed.');
+
+  const reportedNaturalLogAnswer = await page.evaluate((key) => {
+    const form = document.querySelector('[data-check-id="learn-log-product-law-similar"]');
+    const input = form?.querySelector('input[name="submittedAnswer"][type="text"]');
+    if (!(form instanceof HTMLFormElement) || !(input instanceof HTMLInputElement)) {
+      return { feedbackState: '', savedCorrect: false, savedAnswer: '' };
+    }
+    input.value = 'In(2x)';
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+    form.requestSubmit();
+    const progress = JSON.parse(window.localStorage.getItem(key) || '{}');
+    const savedAttempt = progress.learningActivityAttempts?.at(-1);
+    return {
+      feedbackState: form.querySelector('.skill-check-feedback')?.getAttribute('data-state') || '',
+      savedCorrect: savedAttempt?.isCorrect === true,
+      savedAnswer: savedAttempt?.submittedAnswer || '',
+    };
+  }, storageKey);
+  assert(reportedNaturalLogAnswer.feedbackState === 'correct', 'The reported ln(2x) product-law answer must receive correct feedback.');
+  assert(reportedNaturalLogAnswer.savedCorrect, 'The reported ln(2x) product-law answer must save as correct Learn activity.');
+  assert(reportedNaturalLogAnswer.savedAnswer === 'In(2x)', 'The product-law regression check must exercise the touch-keyboard spelling.');
+
+  await resetPageProgress(page);
 
   const logExpOptionForm = page.locator('[data-learn-step-card]:not([hidden]) [data-check-learn-answer][data-learn-variant="primary"]').first();
   await logExpOptionForm.locator('.learn-option-bank label').first().click();

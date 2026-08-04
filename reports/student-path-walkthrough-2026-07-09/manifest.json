@@ -3,8 +3,8 @@
   "totals": {
     "pages": 57,
     "answerSpecs": 501,
-    "generatedFormSubmissions": 431,
-    "answerFailures": 0,
+    "generatedFormSubmissions": 426,
+    "answerFailures": 5,
     "visibleInteractions": 31,
     "visibleInteractionFailures": 0,
     "screenshots": 88
@@ -223,8 +223,10 @@
       "label": "P3 Algebra Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/algebra/exam-training/index.html`.",
       "answerSpecCount": 24,
-      "generatedFormSubmissions": 24,
-      "answerSpecFailures": [],
+      "generatedFormSubmissions": 23,
+      "answerSpecFailures": [
+        "Order the opening long-division moves for dividing $x^3-6x^2+11x-6$ by $x-1$.: generated form could not be filled with accepted answer"
+      ],
       "visibleInteraction": {
         "ok": true,
         "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
@@ -233,7 +235,9 @@
         "page": "screenshots/p3/topics/algebra/skill-check-page.png",
         "after": "screenshots/p3/topics/algebra/skill-check-after-interaction.png"
       },
-      "notes": []
+      "notes": [
+        "Order the opening long-division moves for dividing $x^3-6x^2+11x-6$ by $x-1$.: generated form could not be filled with accepted answer"
+      ]
     },
     {
       "index": 16,
@@ -303,8 +307,13 @@
       "label": "P3 Logarithmic and Exponential Functions Checked Practice",
       "actionSummary": "Visited page, checked deterministic answers, then continued toward `p3/topics/logarithmic-and-exponential-functions/exam-training/index.html`.",
       "answerSpecCount": 20,
-      "generatedFormSubmissions": 20,
-      "answerSpecFailures": [],
+      "generatedFormSubmissions": 16,
+      "answerSpecFailures": [
+        "Order the moves to solve $2e^{x+1}=9$ exactly.: generated form could not be filled with accepted answer",
+        "Order the safe solving moves for $\\ln(x-2)+\\ln(x+1)=\\ln10$.: generated form could not be filled with accepted answer",
+        "For $y=Ae^{kx}$, order the steps that produce the linear form for plotting $\\ln y$ against $x$.: generated form could not be filled with accepted answer",
+        "Order the moves to linearise $y=4e^{2x}$ by taking natural logs.: generated form could not be filled with accepted answer"
+      ],
       "visibleInteraction": {
         "ok": true,
         "message": "visible Checked Practice check: submitted correct; Correct. Saved as a clean Checked Practice pass."
@@ -313,7 +322,12 @@
         "page": "screenshots/p3/topics/logarithmic-and-exponential-functions/skill-check-page.png",
         "after": "screenshots/p3/topics/logarithmic-and-exponential-functions/skill-check-after-interaction.png"
       },
-      "notes": []
+      "notes": [
+        "Order the moves to solve $2e^{x+1}=9$ exactly.: generated form could not be filled with accepted answer",
+        "Order the safe solving moves for $\\ln(x-2)+\\ln(x+1)=\\ln10$.: generated form could not be filled with accepted answer",
+        "For $y=Ae^{kx}$, order the steps that produce the linear form for plotting $\\ln y$ against $x$.: generated form could not be filled with accepted answer",
+        "Order the moves to linearise $y=4e^{2x}$ by taking natural logs.: generated form could not be filled with accepted answer"
+      ]
     },
     {
       "index": 21,
